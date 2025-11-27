@@ -95,30 +95,27 @@ export const AppointmentCard = ({ open, onOpenChange }: AppointmentCardProps) =>
               </div>
             </div>
 
-            <div className="flex flex-col gap-2 items-end">
-              <Badge className={`${currentStatus.color} text-white shadow-lg border-0 px-4 py-2 text-sm font-semibold animate-slide-up`}>
-                <StatusIcon className="h-4 w-4 mr-1.5" />
-                {currentStatus.label}
-              </Badge>
-              <Select value={status} onValueChange={(value) => setStatus(value as AppointmentStatus)}>
-                <SelectTrigger className="w-[220px] h-8 text-xs bg-white/20 backdrop-blur-sm border-white/30 text-white">
+            <Select value={status} onValueChange={(value) => setStatus(value as AppointmentStatus)}>
+              <SelectTrigger className="w-auto min-w-[200px] h-auto px-4 py-2.5 bg-white/20 backdrop-blur-md border-white/30 text-white rounded-xl shadow-lg hover:bg-white/30 transition-all duration-300 animate-slide-up">
+                <div className="flex items-center gap-2">
+                  <StatusIcon className="h-4 w-4" />
                   <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {Object.entries(statusConfig).map(([key, config]) => {
-                    const Icon = config.icon;
-                    return (
-                      <SelectItem key={key} value={key}>
-                        <div className="flex items-center gap-2">
-                          <div className={`h-2 w-2 rounded-full ${config.color}`} />
-                          <span>{config.label}</span>
-                        </div>
-                      </SelectItem>
-                    );
-                  })}
-                </SelectContent>
-              </Select>
-            </div>
+                </div>
+              </SelectTrigger>
+              <SelectContent>
+                {Object.entries(statusConfig).map(([key, config]) => {
+                  const Icon = config.icon;
+                  return (
+                    <SelectItem key={key} value={key}>
+                      <div className="flex items-center gap-2">
+                        <div className={`h-2 w-2 rounded-full ${config.color}`} />
+                        <span>{config.label}</span>
+                      </div>
+                    </SelectItem>
+                  );
+                })}
+              </SelectContent>
+            </Select>
           </div>
         </div>
 
@@ -187,7 +184,7 @@ export const AppointmentCard = ({ open, onOpenChange }: AppointmentCardProps) =>
               <Button 
                 size="sm" 
                 variant="default"
-                className="shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300"
+                className="shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 bg-gradient-to-r from-primary to-primary-glow border-0"
               >
                 <CreditCard className="h-3.5 w-3.5 mr-1.5" />
                 Cobrar
@@ -228,7 +225,7 @@ export const AppointmentCard = ({ open, onOpenChange }: AppointmentCardProps) =>
               
               <Button 
                 size="lg"
-                className="w-full font-semibold shadow-lg hover:shadow-xl transition-all duration-300 group"
+                className="w-full font-semibold shadow-lg hover:shadow-xl transition-all duration-300 group bg-gradient-to-r from-primary to-primary-glow border-0"
               >
                 <Sparkles className="h-5 w-5 mr-2 group-hover:rotate-12 transition-transform duration-300" />
                 Abrir Atendimento
