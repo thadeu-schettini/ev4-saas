@@ -1,6 +1,11 @@
+import { useState } from "react";
 import { AppointmentCard } from "@/components/AppointmentCard";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "lucide-react";
 
 const Index = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-primary/3 p-4 md:p-8 relative overflow-hidden">
       {/* Animated background elements */}
@@ -16,7 +21,17 @@ const Index = () => {
           </h1>
           <p className="text-muted-foreground">Gerencie seus atendimentos com facilidade e eficiência</p>
         </div>
-        <AppointmentCard />
+        
+        <Button 
+          onClick={() => setIsModalOpen(true)}
+          size="lg"
+          className="shadow-lg hover:shadow-xl transition-all duration-300"
+        >
+          <Calendar className="h-5 w-5 mr-2" />
+          Ver Detalhes do Agendamento
+        </Button>
+
+        <AppointmentCard open={isModalOpen} onOpenChange={setIsModalOpen} />
       </div>
     </div>
   );
