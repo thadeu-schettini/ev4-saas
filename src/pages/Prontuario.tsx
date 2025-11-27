@@ -21,119 +21,185 @@ const Prontuario = () => {
       <div className="max-w-[1800px] mx-auto space-y-6 relative z-10 animate-fade-in">
         {/* Header Section - Patient Overview */}
         <div className="relative">
-          <Card className="overflow-hidden border-0 shadow-2xl bg-gradient-to-br from-card/95 via-card to-card/95 backdrop-blur-xl">
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-secondary/10" />
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_120%,rgba(120,119,198,0.1),rgba(255,255,255,0))]" />
+          {/* System Branding Header */}
+          <div className="mb-4 flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="relative">
+                <div className="absolute inset-0 bg-gradient-to-r from-primary to-secondary rounded-2xl blur-xl opacity-50" />
+                <div className="relative p-4 bg-gradient-to-br from-primary via-primary to-secondary rounded-2xl shadow-2xl">
+                  <Stethoscope className="h-8 w-8 text-white" strokeWidth={2.5} />
+                </div>
+              </div>
+              <div>
+                <h2 className="text-3xl font-bold bg-gradient-to-r from-primary via-primary to-secondary bg-clip-text text-transparent">
+                  MediCare Pro
+                </h2>
+                <p className="text-sm text-muted-foreground font-medium">Sistema de Prontuário Eletrônico</p>
+              </div>
+            </div>
+            
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-background/80 to-background/60 backdrop-blur-sm border border-border/50">
+                <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
+                <span className="text-sm font-medium">Online</span>
+              </div>
+              <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-background/80 to-background/60 backdrop-blur-sm border border-border/50">
+                <Clock className="h-4 w-4 text-primary" />
+                <span className="text-sm font-medium">{new Date().toLocaleDateString('pt-BR')}</span>
+              </div>
+            </div>
+          </div>
+
+          <Card className="overflow-hidden border-0 shadow-2xl bg-gradient-to-br from-card/95 via-card to-card/95 backdrop-blur-xl relative">
+            {/* Decorative Medical Pattern Background */}
+            <div className="absolute inset-0 opacity-[0.03]">
+              <div className="absolute inset-0" style={{
+                backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+                backgroundSize: '60px 60px'
+              }} />
+            </div>
+            
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5" />
+            <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-br from-primary/10 via-transparent to-transparent rounded-full blur-3xl" />
+            <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-gradient-to-tr from-secondary/10 via-transparent to-transparent rounded-full blur-3xl" />
+            
+            {/* Top Medical Accent Bar */}
+            <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-primary via-secondary to-primary" />
             
             <CardContent className="relative p-10">
               <div className="flex items-start justify-between mb-8">
                 <div className="flex items-start gap-8">
                   <div className="relative group">
-                    <div className="absolute -inset-2 bg-gradient-to-r from-primary via-secondary to-primary rounded-full opacity-50 group-hover:opacity-75 blur-xl transition-all duration-500 animate-pulse" />
-                    <div className="absolute -inset-1 bg-gradient-to-r from-primary to-secondary rounded-full opacity-75 blur-md" />
-                    <Avatar className="relative h-32 w-32 ring-4 ring-background shadow-2xl transition-transform duration-300 group-hover:scale-105">
-                      <AvatarImage src="" alt="Paciente" />
-                      <AvatarFallback className="text-4xl font-bold bg-gradient-to-br from-primary to-secondary text-primary-foreground">
-                        PE
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="absolute -bottom-2 -right-2 h-10 w-10 bg-green-500 rounded-full border-4 border-background flex items-center justify-center shadow-lg">
-                      <CheckCircle2 className="h-5 w-5 text-white" />
+                    {/* Outer glow effect */}
+                    <div className="absolute -inset-3 bg-gradient-to-r from-primary via-secondary to-primary rounded-full opacity-30 group-hover:opacity-50 blur-2xl transition-all duration-500 animate-pulse" />
+                    
+                    {/* Medical ring indicator */}
+                    <div className="absolute -inset-2 rounded-full">
+                      <div className="h-full w-full rounded-full border-4 border-dashed border-primary/20 animate-[spin_20s_linear_infinite]" />
+                    </div>
+                    
+                    {/* Main avatar with enhanced styling */}
+                    <div className="relative">
+                      <div className="absolute -inset-1 bg-gradient-to-r from-primary to-secondary rounded-full opacity-75 blur-md" />
+                      <Avatar className="relative h-36 w-36 ring-4 ring-background shadow-2xl transition-transform duration-300 group-hover:scale-105 border-4 border-white/10">
+                        <AvatarImage src="" alt="Paciente" />
+                        <AvatarFallback className="text-5xl font-bold bg-gradient-to-br from-primary via-primary to-secondary text-white">
+                          PE
+                        </AvatarFallback>
+                      </Avatar>
+                    </div>
+                    
+                    {/* Status indicator with pulse */}
+                    <div className="absolute -bottom-2 -right-2 h-12 w-12 bg-gradient-to-br from-green-500 to-emerald-500 rounded-full border-4 border-background flex items-center justify-center shadow-xl">
+                      <CheckCircle2 className="h-6 w-6 text-white" strokeWidth={3} />
+                      <div className="absolute inset-0 rounded-full bg-green-500 animate-ping opacity-20" />
                     </div>
                   </div>
                   
-                  <div className="space-y-4 pt-2">
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-3">
-                        <h1 className="text-5xl font-bold bg-gradient-to-r from-foreground via-foreground to-foreground/60 bg-clip-text text-transparent tracking-tight">
-                          Paciente 13 Ebert-Lynch
-                        </h1>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <Badge className="bg-gradient-to-r from-green-500 to-emerald-500 text-white border-0 shadow-lg shadow-green-500/25 px-4 py-1.5 text-sm">
-                          <CheckCircle2 className="h-3.5 w-3.5 mr-1.5" />
-                          Confirmada
-                        </Badge>
-                        <Badge variant="outline" className="bg-background/80 backdrop-blur-sm px-4 py-1.5">
-                          <User className="h-3.5 w-3.5 mr-1.5" />
-                          ID: PE-2025-001
-                        </Badge>
+                  <div className="space-y-5 pt-2 flex-1">
+                    <div className="space-y-3">
+                      <div className="flex items-start justify-between">
+                        <div className="space-y-2">
+                          <div className="flex items-center gap-3">
+                            <h1 className="text-5xl font-bold bg-gradient-to-r from-foreground via-foreground to-foreground/70 bg-clip-text text-transparent tracking-tight leading-tight">
+                              Paciente 13 Ebert-Lynch
+                            </h1>
+                          </div>
+                          <div className="flex items-center gap-3 flex-wrap">
+                            <Badge className="bg-gradient-to-r from-green-500 to-emerald-500 text-white border-0 shadow-lg shadow-green-500/30 px-4 py-1.5 text-sm font-semibold">
+                              <CheckCircle2 className="h-4 w-4 mr-1.5" />
+                              Consulta Confirmada
+                            </Badge>
+                            <Badge variant="outline" className="bg-primary/5 backdrop-blur-sm px-4 py-1.5 border-primary/20 font-semibold">
+                              <Heart className="h-3.5 w-3.5 mr-1.5 text-primary" />
+                              Cardiologia
+                            </Badge>
+                            <Badge variant="outline" className="bg-background/80 backdrop-blur-sm px-4 py-1.5 font-mono text-xs">
+                              ID: PE-2025-001
+                            </Badge>
+                          </div>
+                        </div>
                       </div>
                     </div>
                     
-                    <div className="grid grid-cols-3 gap-6">
-                      <div className="flex items-center gap-3 p-3 rounded-xl bg-background/60 backdrop-blur-sm hover:bg-background/80 transition-all duration-200 group cursor-pointer border border-border/50">
-                        <div className="p-2.5 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
-                          <Phone className="h-4 w-4 text-primary" />
+                    {/* Contact Grid - More compact and elegant */}
+                    <div className="grid grid-cols-3 gap-4">
+                      <div className="flex items-center gap-3 p-4 rounded-2xl bg-gradient-to-br from-primary/5 to-primary/0 backdrop-blur-sm hover:from-primary/10 hover:to-primary/5 transition-all duration-300 group cursor-pointer border border-primary/10 hover:border-primary/20 hover:shadow-lg">
+                        <div className="p-3 rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 group-hover:from-primary/30 group-hover:to-primary/20 transition-all duration-300 shadow-sm">
+                          <Phone className="h-5 w-5 text-primary" strokeWidth={2.5} />
                         </div>
                         <div>
-                          <p className="text-xs text-muted-foreground mb-0.5">Telefone</p>
-                          <p className="text-sm font-semibold">551191014814</p>
+                          <p className="text-xs font-semibold text-muted-foreground mb-0.5">Telefone</p>
+                          <p className="text-sm font-bold">551191014814</p>
                         </div>
                       </div>
-                      <div className="flex items-center gap-3 p-3 rounded-xl bg-background/60 backdrop-blur-sm hover:bg-background/80 transition-all duration-200 group cursor-pointer border border-border/50">
-                        <div className="p-2.5 rounded-lg bg-secondary/10 group-hover:bg-secondary/20 transition-colors">
-                          <Mail className="h-4 w-4 text-secondary" />
+                      
+                      <div className="flex items-center gap-3 p-4 rounded-2xl bg-gradient-to-br from-secondary/5 to-secondary/0 backdrop-blur-sm hover:from-secondary/10 hover:to-secondary/5 transition-all duration-300 group cursor-pointer border border-secondary/10 hover:border-secondary/20 hover:shadow-lg">
+                        <div className="p-3 rounded-xl bg-gradient-to-br from-secondary/20 to-secondary/10 group-hover:from-secondary/30 group-hover:to-secondary/20 transition-all duration-300 shadow-sm">
+                          <Mail className="h-5 w-5 text-secondary" strokeWidth={2.5} />
                         </div>
                         <div>
-                          <p className="text-xs text-muted-foreground mb-0.5">E-mail</p>
-                          <p className="text-sm font-semibold">paciente@email.com</p>
+                          <p className="text-xs font-semibold text-muted-foreground mb-0.5">E-mail</p>
+                          <p className="text-sm font-bold">paciente@email.com</p>
                         </div>
                       </div>
-                      <div className="flex items-center gap-3 p-3 rounded-xl bg-background/60 backdrop-blur-sm hover:bg-background/80 transition-all duration-200 group cursor-pointer border border-border/50">
-                        <div className="p-2.5 rounded-lg bg-accent/50 group-hover:bg-accent/70 transition-colors">
-                          <MapPin className="h-4 w-4 text-accent-foreground" />
+                      
+                      <div className="flex items-center gap-3 p-4 rounded-2xl bg-gradient-to-br from-accent/20 to-accent/5 backdrop-blur-sm hover:from-accent/30 hover:to-accent/10 transition-all duration-300 group cursor-pointer border border-accent/20 hover:border-accent/30 hover:shadow-lg">
+                        <div className="p-3 rounded-xl bg-gradient-to-br from-accent/40 to-accent/20 group-hover:from-accent/50 group-hover:to-accent/30 transition-all duration-300 shadow-sm">
+                          <MapPin className="h-5 w-5 text-accent-foreground" strokeWidth={2.5} />
                         </div>
                         <div>
-                          <p className="text-xs text-muted-foreground mb-0.5">Localização</p>
-                          <p className="text-sm font-semibold">São Paulo, SP</p>
+                          <p className="text-xs font-semibold text-muted-foreground mb-0.5">Localização</p>
+                          <p className="text-sm font-bold">São Paulo, SP</p>
                         </div>
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-3 pt-2">
-                      <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-primary/10 to-primary/5 border border-primary/20">
-                        <Calendar className="h-4 w-4 text-primary" />
-                        <span className="text-sm font-medium">28 anos</span>
+                    {/* Medical Info Pills - Enhanced design */}
+                    <div className="flex items-center gap-3 flex-wrap pt-2">
+                      <div className="flex items-center gap-2.5 px-5 py-2.5 rounded-full bg-gradient-to-r from-blue-500/10 via-blue-500/5 to-transparent border border-blue-500/20 hover:border-blue-500/40 transition-all duration-300 group cursor-pointer">
+                        <Calendar className="h-4 w-4 text-blue-500 group-hover:scale-110 transition-transform" />
+                        <span className="text-sm font-bold">28 anos</span>
                       </div>
-                      <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-red-500/10 to-red-500/5 border border-red-500/20">
-                        <Droplets className="h-4 w-4 text-red-500" />
-                        <span className="text-sm font-medium">Tipo O+</span>
+                      <div className="flex items-center gap-2.5 px-5 py-2.5 rounded-full bg-gradient-to-r from-red-500/10 via-red-500/5 to-transparent border border-red-500/20 hover:border-red-500/40 transition-all duration-300 group cursor-pointer">
+                        <Droplets className="h-4 w-4 text-red-500 group-hover:scale-110 transition-transform" />
+                        <span className="text-sm font-bold">Tipo O+</span>
                       </div>
-                      <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-blue-500/10 to-blue-500/5 border border-blue-500/20">
-                        <TrendingUp className="h-4 w-4 text-blue-500" />
-                        <span className="text-sm font-medium">75kg • 1.75m</span>
+                      <div className="flex items-center gap-2.5 px-5 py-2.5 rounded-full bg-gradient-to-r from-purple-500/10 via-purple-500/5 to-transparent border border-purple-500/20 hover:border-purple-500/40 transition-all duration-300 group cursor-pointer">
+                        <TrendingUp className="h-4 w-4 text-purple-500 group-hover:scale-110 transition-transform" />
+                        <span className="text-sm font-bold">75kg • 1.75m</span>
                       </div>
-                      <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-purple-500/10 to-purple-500/5 border border-purple-500/20">
-                        <Activity className="h-4 w-4 text-purple-500" />
-                        <span className="text-sm font-medium">IMC: 24.5</span>
+                      <div className="flex items-center gap-2.5 px-5 py-2.5 rounded-full bg-gradient-to-r from-green-500/10 via-green-500/5 to-transparent border border-green-500/20 hover:border-green-500/40 transition-all duration-300 group cursor-pointer">
+                        <Activity className="h-4 w-4 text-green-500 group-hover:scale-110 transition-transform" />
+                        <span className="text-sm font-bold">IMC: 24.5</span>
                       </div>
                     </div>
                   </div>
                 </div>
 
+                {/* Action Buttons - Refined */}
                 <div className="flex items-center gap-3">
-                  <Button variant="outline" size="sm" className="gap-2 hover-scale">
-                    <Download className="h-4 w-4" />
+                  <Button variant="outline" size="sm" className="gap-2 hover:bg-accent/50 hover:border-primary/30 transition-all duration-200 group h-10 px-4 shadow-sm hover:shadow-md">
+                    <Download className="h-4 w-4 group-hover:scale-110 transition-transform" />
                     Exportar
                   </Button>
-                  <Button variant="outline" size="sm" className="gap-2 hover-scale">
-                    <Share2 className="h-4 w-4" />
+                  <Button variant="outline" size="sm" className="gap-2 hover:bg-accent/50 hover:border-secondary/30 transition-all duration-200 group h-10 px-4 shadow-sm hover:shadow-md">
+                    <Share2 className="h-4 w-4 group-hover:scale-110 transition-transform" />
                     Compartilhar
                   </Button>
                   {isEditing ? (
                     <>
-                      <Button size="sm" variant="ghost" onClick={() => setIsEditing(false)} className="hover-scale">
+                      <Button size="sm" variant="ghost" onClick={() => setIsEditing(false)} className="h-10 px-4 hover:bg-destructive/10 hover:text-destructive transition-all duration-200">
                         <X className="h-4 w-4" />
                       </Button>
-                      <Button size="sm" onClick={() => setIsEditing(false)} className="gap-2 bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary shadow-lg shadow-primary/25 hover-scale">
+                      <Button size="sm" onClick={() => setIsEditing(false)} className="gap-2 bg-gradient-to-r from-primary via-primary to-secondary hover:from-primary/90 hover:to-secondary/90 shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/40 transition-all duration-300 h-10 px-6">
                         <Save className="h-4 w-4" />
                         Salvar
                       </Button>
                     </>
                   ) : (
-                    <Button size="sm" variant="outline" onClick={() => setIsEditing(true)} className="gap-2 hover-scale">
-                      <Edit className="h-4 w-4" />
+                    <Button size="sm" variant="outline" onClick={() => setIsEditing(true)} className="gap-2 h-10 px-6 hover:bg-primary/10 hover:border-primary/30 transition-all duration-200 group shadow-sm hover:shadow-md">
+                      <Edit className="h-4 w-4 group-hover:scale-110 transition-transform" />
                       Editar
                     </Button>
                   )}
