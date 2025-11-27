@@ -67,101 +67,119 @@ export const AppointmentListItem = ({
 
   return (
     <>
-      <div className={`group relative overflow-hidden bg-card/80 backdrop-blur-sm border ${urgent ? 'border-destructive/50 shadow-[0_0_20px_rgba(239,68,68,0.15)]' : 'border-border/50'} hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 animate-fade-in rounded-xl ${urgent ? 'ring-2 ring-destructive/20' : ''}`}>
-        {/* Shimmer effect */}
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/5 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
+      <div className={`group relative bg-card border ${urgent ? 'border-destructive/50 shadow-[0_0_15px_rgba(239,68,68,0.1)]' : 'border-border'} hover:border-primary/30 hover:shadow-md transition-all duration-300 rounded-lg overflow-hidden`}>
+        {/* Status accent line */}
+        <div className={`absolute left-0 top-0 bottom-0 w-1 ${urgent ? 'bg-destructive' : config.dotColor}`} />
         
-        {/* Status accent bar */}
-        <div className={`absolute left-0 top-0 bottom-0 w-1 ${urgent ? 'bg-destructive' : `bg-gradient-to-b ${config.gradient.replace('from-', 'from-').replace('to-', 'to-')}`}`} />
-        
-        {/* Urgent indicator */}
-        {urgent && (
-          <div className="absolute top-3 right-3 flex items-center gap-2">
-            <div className="relative">
-              <div className="h-2 w-2 bg-destructive rounded-full animate-pulse" />
-              <div className="absolute inset-0 h-2 w-2 bg-destructive rounded-full animate-ping" />
+        <div className="relative p-4 pl-5">
+          <div className="flex items-center gap-4">
+            {/* Time Display */}
+            <div className="flex flex-col items-center justify-center min-w-[72px] p-3 rounded-lg bg-muted/40 border border-border/50">
+              <Clock className="h-4 w-4 text-muted-foreground mb-1" />
+              <span className="text-sm font-bold text-foreground">{time}</span>
             </div>
-          </div>
-        )}
-        
-        <div className="relative p-5">
-          {/* Header */}
-          <div className="flex items-start justify-between mb-4">
-            <div className="flex items-start gap-3 flex-1">
-              {/* Avatar */}
-              <div className={`relative h-12 w-12 rounded-xl bg-gradient-to-br ${config.gradient} flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform duration-300 shadow-sm`}>
-                <User className={`h-5 w-5 ${config.textColor}`} />
-                <div className={`absolute -bottom-1 -right-1 h-4 w-4 rounded-full ${config.dotColor} border-2 border-card shadow-sm`} />
+
+            {/* Patient Info */}
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 mb-1">
+                <h3 className="text-base font-semibold text-foreground truncate">
+                  {patientName}
+                </h3>
+                {urgent && (
+                  <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-destructive/10 border border-destructive/20">
+                    <div className="h-1.5 w-1.5 rounded-full bg-destructive animate-pulse" />
+                    <span className="text-[10px] font-semibold text-destructive uppercase tracking-wide">Urgente</span>
+                  </div>
+                )}
               </div>
               
-              {/* Patient Info */}
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-1">
-                  <h3 className="text-base font-bold text-foreground group-hover:text-primary transition-colors truncate">
-                    {patientName}
-                  </h3>
-                  {urgent && (
-                    <Badge variant="destructive" className="text-[10px] px-2 py-0.5 animate-pulse flex items-center gap-1 shadow-sm">
-                      <AlertTriangle className="h-2.5 w-2.5" />
-                      Urgente
-                    </Badge>
-                  )}
-                </div>
-                <div className="flex items-center gap-2 flex-wrap">
-                  <Badge 
-                    variant="secondary" 
-                    className={`text-xs font-semibold ${config.textColor} bg-gradient-to-r ${config.gradient} border-0 shadow-sm`}
-                  >
-                    {config.label}
-                  </Badge>
-                </div>
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Badge 
+                  variant="secondary" 
+                  className={`text-[11px] px-2 py-0 h-5 ${config.textColor} border ${config.borderColor}`}
+                >
+                  {config.label}
+                </Badge>
+                {service && (
+                  <>
+                    <span className="text-muted-foreground/50">•</span>
+                    <span className="text-xs">{service}</span>
+                  </>
+                )}
+                {professional && (
+                  <>
+                    <span className="text-muted-foreground/50">•</span>
+                    <span className="text-xs truncate">{professional}</span>
+                  </>
+                )}
               </div>
             </div>
-            
-            {/* Menu button */}
+
+            {/* Quick Actions - Desktop */}
+            <div className="hidden md:flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+              {onUrgencyToggle && (
+                <Button
+                  size="sm"
+                  variant={urgent ? "destructive" : "ghost"}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onUrgencyToggle();
+                  }}
+                  className="h-8 w-8 p-0"
+                  title={urgent ? "Remover urgência" : "Marcar como urgente"}
+                >
+                  <AlertTriangle className="h-3.5 w-3.5" />
+                </Button>
+              )}
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setCheckInOpen(true);
+                }}
+                className="h-8 px-3 hover:bg-success/10 hover:text-success"
+              >
+                <CheckCircle2 className="h-3.5 w-3.5 mr-1.5" />
+                <span className="text-xs">Check-in</span>
+              </Button>
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setPaymentOpen(true);
+                }}
+                className="h-8 px-3 hover:bg-warning/10 hover:text-warning"
+              >
+                <DollarSign className="h-3.5 w-3.5 mr-1.5" />
+                <span className="text-xs">Pagar</span>
+              </Button>
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setCommunicationOpen(true);
+                }}
+                className="h-8 w-8 p-0 hover:bg-primary/10 hover:text-primary"
+              >
+                <MessageSquare className="h-3.5 w-3.5" />
+              </Button>
+            </div>
+
+            {/* Menu button - Mobile */}
             <Button 
               variant="ghost" 
               size="icon"
-              className="h-8 w-8 rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-primary/10 hover:rotate-90"
+              className="md:hidden h-8 w-8"
             >
-              <MoreVertical className="h-4 w-4 text-muted-foreground" />
+              <MoreVertical className="h-4 w-4" />
             </Button>
           </div>
 
-          {/* Time info */}
-          <div className="flex items-center gap-3 mb-4">
-            <div className={`flex items-center gap-2 px-3 py-2 rounded-lg bg-gradient-to-r ${config.gradient} group-hover:scale-[1.02] transition-transform duration-300 shadow-sm`}>
-              <Clock className={`h-4 w-4 ${config.textColor}`} />
-              <span className={`font-bold text-sm ${config.textColor}`}>{time}</span>
-            </div>
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <div className={`h-1.5 w-1.5 rounded-full ${config.dotColor} animate-pulse`} />
-              <span className="font-medium">Hoje</span>
-            </div>
-          </div>
-
-          {/* Service info (optional) */}
-          {(service || professional) && (
-            <div className="mb-4 p-3 rounded-lg bg-muted/30 border border-border/30">
-              <div className="space-y-1 text-xs">
-                {service && (
-                  <div className="flex items-center gap-2 text-muted-foreground">
-                    <div className="h-1 w-1 rounded-full bg-primary" />
-                    <span>{service}</span>
-                  </div>
-                )}
-                {professional && (
-                  <div className="flex items-center gap-2 text-muted-foreground">
-                    <div className="h-1 w-1 rounded-full bg-primary" />
-                    <span>{professional}</span>
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
-
-          {/* Quick Actions */}
-          <div className="flex gap-2 pt-3 border-t border-border/50 opacity-0 group-hover:opacity-100 transition-all duration-300">
+          {/* Mobile Actions */}
+          <div className="md:hidden flex gap-2 mt-3 pt-3 border-t border-border/50">
             {onUrgencyToggle && (
               <Button
                 size="sm"
@@ -170,10 +188,9 @@ export const AppointmentListItem = ({
                   e.stopPropagation();
                   onUrgencyToggle();
                 }}
-                className="h-9 px-3 hover:scale-105 transition-transform duration-200 shadow-sm"
-                title={urgent ? "Remover urgência" : "Marcar como urgente"}
+                className="h-8 px-2.5"
               >
-                <AlertTriangle className="h-3.5 w-3.5" />
+                <AlertTriangle className="h-3 w-3" />
               </Button>
             )}
             <Button
@@ -183,10 +200,10 @@ export const AppointmentListItem = ({
                 e.stopPropagation();
                 setCheckInOpen(true);
               }}
-              className="flex-1 h-9 hover:bg-success/10 hover:border-success/50 hover:text-success hover:scale-105 transition-all duration-200 shadow-sm"
+              className="flex-1 h-8 text-xs"
             >
-              <CheckCircle2 className="h-3.5 w-3.5 mr-1.5" />
-              <span className="text-xs font-medium">Check-in</span>
+              <CheckCircle2 className="h-3 w-3 mr-1" />
+              Check-in
             </Button>
             <Button
               size="sm"
@@ -195,10 +212,10 @@ export const AppointmentListItem = ({
                 e.stopPropagation();
                 setPaymentOpen(true);
               }}
-              className="flex-1 h-9 hover:bg-warning/10 hover:border-warning/50 hover:text-warning hover:scale-105 transition-all duration-200 shadow-sm"
+              className="flex-1 h-8 text-xs"
             >
-              <DollarSign className="h-3.5 w-3.5 mr-1.5" />
-              <span className="text-xs font-medium">Pagamento</span>
+              <DollarSign className="h-3 w-3 mr-1" />
+              Pagar
             </Button>
             <Button
               size="sm"
@@ -207,10 +224,9 @@ export const AppointmentListItem = ({
                 e.stopPropagation();
                 setCommunicationOpen(true);
               }}
-              className="flex-1 h-9 hover:bg-primary/10 hover:border-primary/50 hover:text-primary hover:scale-105 transition-all duration-200 shadow-sm"
+              className="h-8 px-2.5"
             >
-              <MessageSquare className="h-3.5 w-3.5 mr-1.5" />
-              <span className="text-xs font-medium">Mensagem</span>
+              <MessageSquare className="h-3 w-3" />
             </Button>
           </div>
         </div>
