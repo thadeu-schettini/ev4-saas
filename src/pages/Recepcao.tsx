@@ -77,7 +77,6 @@ const Recepcao = () => {
                       <div className="p-4 space-y-4">
                         <QuickActions />
                         <AlertsPanel />
-                        <NextAppointments />
                       </div>
                     </SheetContent>
                   </Sheet>
@@ -134,7 +133,6 @@ const Recepcao = () => {
               <div className="sticky top-32 space-y-4">
                 <QuickActions />
                 <AlertsPanel />
-                <NextAppointments />
               </div>
             </div>
           </div>
