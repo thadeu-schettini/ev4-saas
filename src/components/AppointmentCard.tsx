@@ -139,8 +139,8 @@ export const AppointmentCard = ({ open, onOpenChange }: AppointmentCardProps) =>
           <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS1vcGFjaXR5PSIwLjEiIHN0cm9rZS13aWR0aD0iMSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmlkKSIvPjwvc3ZnPg==')] opacity-30" />
           
           <div className="relative">
-            <div className="flex flex-col sm:flex-row items-start justify-between gap-4 mb-4">
-              <div className="flex items-center gap-3 sm:gap-4 flex-1 min-w-0">
+            <div className="flex flex-col gap-4 mb-4">
+              <div className="flex items-center gap-3 sm:gap-4">
                 <div className="relative group flex-shrink-0">
                   <div className="absolute inset-0 bg-white/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-500" />
                   <div className="relative h-16 w-16 sm:h-20 sm:w-20 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/30 shadow-xl group-hover:scale-110 transition-transform duration-300">
@@ -163,60 +163,60 @@ export const AppointmentCard = ({ open, onOpenChange }: AppointmentCardProps) =>
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 w-full sm:w-auto">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full">
+                <Select value={status} onValueChange={(value) => setStatus(value as AppointmentStatus)}>
+                  <SelectTrigger className="w-full sm:flex-1 h-auto px-3 sm:px-4 py-2 sm:py-2.5 bg-white/20 backdrop-blur-md border-white/30 text-white rounded-xl shadow-lg hover:bg-white/30 transition-all duration-300">
+                    <div className="flex items-center gap-2">
+                      <StatusIcon className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                      <SelectValue className="text-xs sm:text-sm" />
+                    </div>
+                  </SelectTrigger>
+                  <SelectContent className="z-50">
+                    {Object.entries(statusConfig).map(([key, config]) => {
+                      const Icon = config.icon;
+                      return (
+                        <SelectItem key={key} value={key}>
+                          <div className="flex items-center gap-2">
+                            <div className={`h-2 w-2 rounded-full ${config.color}`} />
+                            <span>{config.label}</span>
+                          </div>
+                        </SelectItem>
+                      );
+                    })}
+                  </SelectContent>
+                </Select>
+
                 <Button
                   size="sm"
                   variant="ghost"
                   onClick={() => isEditing ? handleSave() : setIsEditing(true)}
-                  className="bg-white/20 backdrop-blur-md border-white/30 text-white hover:bg-white/30 h-8 sm:h-9 px-2 sm:px-3 flex-1 sm:flex-initial"
+                  className="bg-white/20 backdrop-blur-md border-white/30 text-white hover:bg-white/30 h-auto py-2 sm:py-2.5 px-4 sm:px-5"
                 >
                   {isEditing ? (
                     <>
-                      <Save className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1 sm:mr-1.5" />
-                      <span className="text-xs sm:text-sm">Salvar</span>
+                      <Save className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1.5 sm:mr-2" />
+                      <span className="text-xs sm:text-sm font-medium">Salvar</span>
                     </>
                   ) : (
                     <>
-                      <Pencil className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1 sm:mr-1.5" />
-                      <span className="text-xs sm:text-sm">Editar</span>
+                      <Pencil className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1.5 sm:mr-2" />
+                      <span className="text-xs sm:text-sm font-medium">Editar</span>
                     </>
                   )}
                 </Button>
+                
                 {isEditing && (
                   <Button
                     size="sm"
                     variant="ghost"
                     onClick={() => setIsEditing(false)}
-                    className="bg-white/20 backdrop-blur-md border-white/30 text-white hover:bg-white/30 h-8 sm:h-9 w-8 sm:w-9 p-0"
+                    className="bg-white/20 backdrop-blur-md border-white/30 text-white hover:bg-white/30 h-auto py-2 sm:py-2.5 px-3 sm:px-4"
                   >
-                    <X className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                    <X className="h-4 w-4 sm:h-4 sm:w-4 mr-1 sm:mr-1.5" />
+                    <span className="text-xs sm:text-sm font-medium">Cancelar</span>
                   </Button>
                 )}
               </div>
-            </div>
-
-            <div className="flex items-center gap-2 w-full sm:w-auto">
-              <Select value={status} onValueChange={(value) => setStatus(value as AppointmentStatus)}>
-                <SelectTrigger className="w-full sm:w-auto sm:min-w-[200px] h-auto px-3 sm:px-4 py-2 sm:py-2.5 bg-white/20 backdrop-blur-md border-white/30 text-white rounded-xl shadow-lg hover:bg-white/30 transition-all duration-300">
-                  <div className="flex items-center gap-2">
-                    <StatusIcon className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                    <SelectValue className="text-xs sm:text-sm" />
-                  </div>
-                </SelectTrigger>
-                <SelectContent className="z-50">
-                  {Object.entries(statusConfig).map(([key, config]) => {
-                    const Icon = config.icon;
-                    return (
-                      <SelectItem key={key} value={key}>
-                        <div className="flex items-center gap-2">
-                          <div className={`h-2 w-2 rounded-full ${config.color}`} />
-                          <span>{config.label}</span>
-                        </div>
-                      </SelectItem>
-                    );
-                  })}
-                </SelectContent>
-              </Select>
             </div>
           </div>
         </div>
