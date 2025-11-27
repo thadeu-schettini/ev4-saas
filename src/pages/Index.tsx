@@ -1,7 +1,8 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { AppointmentCard } from "@/components/AppointmentCard";
 import { Button } from "@/components/ui/button";
-import { Calendar } from "lucide-react";
+import { Calendar, Users } from "lucide-react";
 
 const Index = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -22,14 +23,27 @@ const Index = () => {
           <p className="text-muted-foreground">Gerencie seus atendimentos com facilidade e eficiência</p>
         </div>
         
-        <Button 
-          onClick={() => setIsModalOpen(true)}
-          size="lg"
-          className="shadow-lg hover:shadow-xl transition-all duration-300"
-        >
-          <Calendar className="h-5 w-5 mr-2" />
-          Ver Detalhes do Agendamento
-        </Button>
+        <div className="flex flex-wrap gap-4">
+          <Button 
+            onClick={() => setIsModalOpen(true)}
+            size="lg"
+            className="shadow-lg hover:shadow-xl transition-all duration-300"
+          >
+            <Calendar className="h-5 w-5 mr-2" />
+            Ver Detalhes do Agendamento
+          </Button>
+
+          <Link to="/recepcao">
+            <Button 
+              size="lg"
+              variant="outline"
+              className="shadow-lg hover:shadow-xl transition-all duration-300"
+            >
+              <Users className="h-5 w-5 mr-2" />
+              Ir para Recepção
+            </Button>
+          </Link>
+        </div>
 
         <AppointmentCard open={isModalOpen} onOpenChange={setIsModalOpen} />
       </div>
