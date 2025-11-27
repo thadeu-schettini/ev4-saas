@@ -162,97 +162,109 @@ const SortableAppointmentCard = ({ apt }: { apt: Appointment }) => {
     <div
       ref={setNodeRef}
       style={style}
-      className={`group relative p-3 bg-background/80 backdrop-blur-sm rounded-lg border border-border/50 hover:border-primary/30 transition-all duration-300 ${
+      className={`group relative bg-background/90 backdrop-blur-sm rounded-lg border border-border/50 hover:border-primary/30 transition-all duration-300 overflow-hidden ${
         isDragging ? "cursor-grabbing shadow-2xl scale-105 z-50" : ""
-      } hover:scale-[1.02] hover:shadow-xl`}
+      } hover:shadow-lg`}
     >
-      {/* Indicador de Tempo de Espera */}
-      <div className="absolute top-2 right-2 z-10">
-        <Badge className={`text-[10px] px-1.5 py-0.5 ${getWaitingTimeColor(apt.waitingMinutes)}`}>
-          <Clock className="h-2.5 w-2.5 mr-0.5" />
+      {/* Header com Drag Handle e Tempo */}
+      <div className="flex items-center justify-between px-3 py-2 bg-muted/30 border-b border-border/30">
+        <div
+          {...attributes}
+          {...listeners}
+          className="cursor-grab active:cursor-grabbing hover:text-primary transition-colors p-0.5 rounded hover:bg-primary/10"
+        >
+          <GripVertical className="h-3.5 w-3.5 text-muted-foreground" />
+        </div>
+        <Badge className={`text-[10px] px-2 py-0.5 ${getWaitingTimeColor(apt.waitingMinutes)}`}>
+          <Clock className="h-2.5 w-2.5 mr-1" />
           {getWaitingTimeLabel(apt.waitingMinutes)}
         </Badge>
       </div>
 
-      {/* Drag Handle - Posicionado absolutamente */}
-      <div
-        {...attributes}
-        {...listeners}
-        className="absolute left-1 top-1/2 -translate-y-1/2 cursor-grab active:cursor-grabbing hover:text-primary transition-colors p-1 rounded hover:bg-primary/5 z-10"
-      >
-        <GripVertical className="h-3.5 w-3.5 text-muted-foreground" />
-      </div>
-
-      {/* Content com padding left para não sobrepor o handle */}
-      <div className="pl-6 pr-1">
-        <div className="flex items-start gap-2 mb-3">
-          <Avatar className="h-8 w-8 border-2 border-primary/20 flex-shrink-0 group-hover:scale-110 transition-transform">
+      {/* Content Principal */}
+      <div className="p-3 space-y-3">
+        {/* Paciente Info */}
+        <div className="flex items-center gap-2">
+          <Avatar className="h-9 w-9 border-2 border-primary/20 flex-shrink-0 group-hover:scale-105 transition-transform">
             <AvatarFallback className="bg-primary/10 text-primary font-semibold text-xs">
               {apt.initials}
             </AvatarFallback>
           </Avatar>
           <div className="flex-1 min-w-0">
-            <h4 className="text-xs font-semibold text-foreground truncate group-hover:text-primary transition-colors">
+            <h4 className="text-sm font-semibold text-foreground truncate group-hover:text-primary transition-colors leading-tight">
               {apt.patientName}
             </h4>
-            <p className="text-[10px] text-muted-foreground truncate">{apt.service}</p>
+            <p className="text-[10px] text-muted-foreground truncate leading-tight mt-0.5">
+              {apt.service}
+            </p>
           </div>
         </div>
 
-        {/* Informações Básicas - Sempre visíveis */}
-        <div className="space-y-1.5 mb-3">
-          <div className="flex items-center gap-1.5 text-xs">
-            <Clock className="h-3 w-3 text-primary flex-shrink-0" />
+        {/* Informações Básicas */}
+        <div className="space-y-2">
+          <div className="flex items-center gap-2 text-xs">
+            <div className="flex items-center justify-center w-5 h-5 rounded bg-primary/10 flex-shrink-0">
+              <Clock className="h-3 w-3 text-primary" />
+            </div>
             <span className="text-muted-foreground text-[11px]">{apt.time}</span>
           </div>
-          <div className="flex items-center gap-1.5 text-xs">
-            <Stethoscope className="h-3 w-3 text-accent flex-shrink-0" />
+          <div className="flex items-center gap-2 text-xs">
+            <div className="flex items-center justify-center w-5 h-5 rounded bg-accent/10 flex-shrink-0">
+              <Stethoscope className="h-3 w-3 text-accent" />
+            </div>
             <span className="text-muted-foreground truncate text-[11px]">{apt.professional}</span>
           </div>
-          <div className="flex items-center gap-1.5 text-xs">
-            <DollarSign className="h-3 w-3 text-success flex-shrink-0" />
+          <div className="flex items-center gap-2 text-xs">
+            <div className="flex items-center justify-center w-5 h-5 rounded bg-success/10 flex-shrink-0">
+              <DollarSign className="h-3 w-3 text-success" />
+            </div>
             <span className="text-muted-foreground text-[11px]">{apt.price}</span>
           </div>
         </div>
 
         {/* Detalhes Extras - Visíveis apenas no hover */}
-        <div className="space-y-1.5 mb-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 max-h-0 group-hover:max-h-32 overflow-hidden">
-          {apt.phone && (
-            <div className="flex items-center gap-1.5 text-xs">
-              <Phone className="h-3 w-3 text-blue-500 flex-shrink-0" />
-              <span className="text-muted-foreground text-[11px]">{apt.phone}</span>
-            </div>
-          )}
-          {apt.email && (
-            <div className="flex items-center gap-1.5 text-xs">
-              <Mail className="h-3 w-3 text-purple-500 flex-shrink-0" />
-              <span className="text-muted-foreground truncate text-[11px]">{apt.email}</span>
-            </div>
-          )}
-          {apt.address && (
-            <div className="flex items-center gap-1.5 text-xs">
-              <MapPin className="h-3 w-3 text-red-500 flex-shrink-0" />
-              <span className="text-muted-foreground truncate text-[11px]">{apt.address}</span>
-            </div>
-          )}
+        <div className="space-y-2 opacity-0 group-hover:opacity-100 transition-all duration-300 max-h-0 group-hover:max-h-40 overflow-hidden">
+          <div className="pt-2 border-t border-border/30">
+            {apt.phone && (
+              <div className="flex items-center gap-2 text-xs mb-1.5">
+                <Phone className="h-3 w-3 text-blue-500 flex-shrink-0" />
+                <span className="text-muted-foreground text-[11px]">{apt.phone}</span>
+              </div>
+            )}
+            {apt.email && (
+              <div className="flex items-center gap-2 text-xs mb-1.5">
+                <Mail className="h-3 w-3 text-purple-500 flex-shrink-0" />
+                <span className="text-muted-foreground truncate text-[11px]">{apt.email}</span>
+              </div>
+            )}
+            {apt.address && (
+              <div className="flex items-center gap-2 text-xs">
+                <MapPin className="h-3 w-3 text-red-500 flex-shrink-0" />
+                <span className="text-muted-foreground truncate text-[11px]">{apt.address}</span>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Alerta de Tempo Crítico */}
         {apt.waitingMinutes >= 60 && (
-          <div className="mb-2 p-2 rounded bg-red-500/10 border border-red-500/20 opacity-0 group-hover:opacity-100 transition-opacity">
-            <div className="flex items-center gap-1.5">
-              <AlertCircle className="h-3 w-3 text-red-500 flex-shrink-0" />
-              <span className="text-[10px] text-red-700 dark:text-red-400">Tempo de espera crítico!</span>
+          <div className="p-2 rounded-md bg-red-500/10 border border-red-500/20 opacity-0 group-hover:opacity-100 transition-opacity">
+            <div className="flex items-center gap-2">
+              <AlertCircle className="h-3.5 w-3.5 text-red-500 flex-shrink-0" />
+              <span className="text-[10px] text-red-700 dark:text-red-400 font-medium">
+                Tempo de espera crítico!
+              </span>
             </div>
           </div>
         )}
 
+        {/* Botão de Ação */}
         <Button
           size="sm"
           variant="outline"
-          className="w-full h-7 text-[11px] hover:bg-primary/5"
+          className="w-full h-8 text-xs hover:bg-primary/5 hover:text-primary hover:border-primary/30"
         >
-          <User className="h-3 w-3 mr-1" />
+          <User className="h-3.5 w-3.5 mr-1.5" />
           Ver Detalhes
         </Button>
       </div>
