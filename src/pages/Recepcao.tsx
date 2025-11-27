@@ -36,42 +36,6 @@ const Recepcao = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  // Mock data for metrics
-  const metrics = [
-    {
-      icon: Users,
-      label: "Agendamentos Hoje",
-      value: "24",
-      change: "+12%",
-      positive: true,
-      color: "text-primary"
-    },
-    {
-      icon: CheckCircle2,
-      label: "Taxa de Comparecimento",
-      value: "92%",
-      change: "+5%",
-      positive: true,
-      color: "text-success"
-    },
-    {
-      icon: Clock,
-      label: "Tempo Médio",
-      value: "28min",
-      change: "-3min",
-      positive: true,
-      color: "text-accent"
-    },
-    {
-      icon: DollarSign,
-      label: "Receita do Dia",
-      value: "R$ 4.850",
-      change: "+18%",
-      positive: true,
-      color: "text-success"
-    }
-  ];
-
   const renderView = () => {
     switch (currentView) {
       case "timeline":
@@ -110,7 +74,11 @@ const Recepcao = () => {
                       </Button>
                     </SheetTrigger>
                     <SheetContent side="left" className="w-80 p-0">
-                      <QuickActions />
+                      <div className="p-4 space-y-4">
+                        <QuickActions />
+                        <AlertsPanel />
+                        <NextAppointments />
+                      </div>
                     </SheetContent>
                   </Sheet>
                   
@@ -136,31 +104,6 @@ const Recepcao = () => {
                 </div>
               </div>
 
-              {/* Metrics Cards */}
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-                {metrics.map((metric, index) => (
-                  <div
-                    key={index}
-                    className="group p-3 sm:p-4 bg-card/50 backdrop-blur-sm rounded-xl border border-border/50 hover:border-primary/30 hover:shadow-lg transition-all duration-300 animate-fade-in"
-                    style={{ animationDelay: `${index * 100}ms` }}
-                  >
-                    <div className="flex items-start justify-between mb-2">
-                      <div className={`h-8 w-8 sm:h-10 sm:w-10 rounded-lg bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}>
-                        <metric.icon className={`h-4 w-4 sm:h-5 sm:w-5 ${metric.color}`} />
-                      </div>
-                      <Badge
-                        variant="secondary"
-                        className={`text-xs ${metric.positive ? 'bg-success/10 text-success' : 'bg-destructive/10 text-destructive'}`}
-                      >
-                        {metric.change}
-                      </Badge>
-                    </div>
-                    <p className="text-xs sm:text-sm text-muted-foreground mb-1">{metric.label}</p>
-                    <p className="text-xl sm:text-2xl font-bold text-foreground">{metric.value}</p>
-                  </div>
-                ))}
-              </div>
-
               {/* Search and View Selector */}
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                 <div className="relative flex-1">
@@ -181,22 +124,17 @@ const Recepcao = () => {
         {/* Main Content */}
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex gap-6">
-            {/* Main View Area */}
-            <div className="flex-1 space-y-6">
-              {/* Alerts Panel */}
-              <AlertsPanel />
-
-              {/* Next Appointments */}
-              <NextAppointments />
-
-              {/* Dynamic View */}
+            {/* Main View Area - Agendamentos em Foco */}
+            <div className="flex-1">
               {renderView()}
             </div>
 
-            {/* Quick Actions Sidebar - Desktop */}
+            {/* Informações Complementares - Desktop */}
             <div className="hidden lg:block w-80 flex-shrink-0">
-              <div className="sticky top-32">
+              <div className="sticky top-32 space-y-4">
                 <QuickActions />
+                <AlertsPanel />
+                <NextAppointments />
               </div>
             </div>
           </div>
