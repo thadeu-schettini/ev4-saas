@@ -3,8 +3,11 @@ import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTr
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { History, Calendar, Stethoscope, Pill, FileText, AlertCircle } from "lucide-react";
+import { History, Calendar, Stethoscope, Pill, FileText, AlertCircle, Filter, X } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useState, useMemo } from "react";
 
 type Medication = {
   name: string;
@@ -61,6 +64,29 @@ const mockConsultations: Consultation[] = [
 ];
 
 export function ConsultationHistory() {
+  const [searchDate, setSearchDate] = useState("");
+  const [filterType, setFilterType] = useState<string>("all");
+  const [filterDiagnosis, setFilterDiagnosis] = useState("");
+
+  const filteredConsultations = useMemo(() => {
+    return mockConsultations.filter(consultation => {
+      const matchesDate = searchDate === "" || consultation.date.includes(searchDate);
+      const matchesType = filterType === "all" || consultation.type === filterType;
+      const matchesDiagnosis = filterDiagnosis === "" || 
+        consultation.diagnosis.some(d => d.toLowerCase().includes(filterDiagnosis.toLowerCase()));
+      
+      return matchesDate && matchesType && matchesDiagnosis;
+    });
+  }, [searchDate, filterType, filterDiagnosis]);
+
+  const clearFilters = () => {
+    setSearchDate("");
+    setFilterType("all");
+    setFilterDiagnosis("");
+  };
+
+  const hasActiveFilters = searchDate !== "" || filterType !== "all" || filterDiagnosis !== "";
+
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -70,21 +96,90 @@ export function ConsultationHistory() {
         </Button>
       </SheetTrigger>
       <SheetContent className="w-full sm:max-w-[540px] p-0">
-        <SheetHeader className="px-6 pt-6 pb-4 border-b">
-          <SheetTitle className="flex items-center gap-3 text-xl">
-            <div className="p-2 rounded-lg bg-primary/10">
-              <History className="h-5 w-5 text-primary" />
+        <SheetHeader className="px-6 pt-6 pb-4 border-b space-y-4">
+          <div>
+            <SheetTitle className="flex items-center gap-3 text-xl">
+              <div className="p-2 rounded-lg bg-primary/10">
+                <History className="h-5 w-5 text-primary" />
+              </div>
+              Histórico de Consultas
+            </SheetTitle>
+            <SheetDescription>
+              Resumo das últimas consultas, diagnósticos e medicamentos prescritos
+            </SheetDescription>
+          </div>
+
+          {/* Filters */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Filter className="h-4 w-4 text-primary" />
+                <span className="text-sm font-medium text-foreground">Filtros</span>
+              </div>
+              {hasActiveFilters && (
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={clearFilters}
+                  className="h-7 text-xs gap-1"
+                >
+                  <X className="h-3 w-3" />
+                  Limpar
+                </Button>
+              )}
             </div>
-            Histórico de Consultas
-          </SheetTitle>
-          <SheetDescription>
-            Resumo das últimas consultas, diagnósticos e medicamentos prescritos
-          </SheetDescription>
+
+            <div className="grid grid-cols-1 gap-2">
+              <Input
+                placeholder="Buscar por data..."
+                value={searchDate}
+                onChange={(e) => setSearchDate(e.target.value)}
+                className="h-9 text-sm"
+              />
+              
+              <Select value={filterType} onValueChange={setFilterType}>
+                <SelectTrigger className="h-9 text-sm">
+                  <SelectValue placeholder="Tipo de consulta" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Todos os tipos</SelectItem>
+                  <SelectItem value="Consulta de Rotina">Consulta de Rotina</SelectItem>
+                  <SelectItem value="Retorno">Retorno</SelectItem>
+                  <SelectItem value="Primeira Consulta">Primeira Consulta</SelectItem>
+                  <SelectItem value="Urgência">Urgência</SelectItem>
+                </SelectContent>
+              </Select>
+
+              <Input
+                placeholder="Filtrar por diagnóstico..."
+                value={filterDiagnosis}
+                onChange={(e) => setFilterDiagnosis(e.target.value)}
+                className="h-9 text-sm"
+              />
+            </div>
+
+            {hasActiveFilters && (
+              <div className="text-xs text-muted-foreground">
+                Exibindo {filteredConsultations.length} de {mockConsultations.length} consultas
+              </div>
+            )}
+          </div>
         </SheetHeader>
 
-        <ScrollArea className="h-[calc(100vh-120px)]">
+        <ScrollArea className="h-[calc(100vh-320px)]">
           <div className="px-6 py-4 space-y-4">
-            {mockConsultations.map((consultation, index) => (
+            {filteredConsultations.length === 0 ? (
+              <Card className="border-dashed">
+                <CardContent className="p-8 text-center">
+                  <AlertCircle className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
+                  <p className="text-sm font-medium text-foreground mb-1">Nenhuma consulta encontrada</p>
+                  <p className="text-xs text-muted-foreground">
+                    Tente ajustar os filtros para ver mais resultados
+                  </p>
+                </CardContent>
+              </Card>
+            ) : (
+              filteredConsultations.map((consultation, index) => (
               <Card key={consultation.id} className="border-0 shadow-md hover:shadow-lg transition-shadow">
                 <CardContent className="p-5 space-y-4">
                   {/* Header */}
@@ -161,7 +256,8 @@ export function ConsultationHistory() {
                   </div>
                 </CardContent>
               </Card>
-            ))}
+              ))
+            )}
 
             {/* Footer info */}
             <Card className="border-dashed">

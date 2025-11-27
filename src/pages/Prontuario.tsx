@@ -11,6 +11,8 @@ import { useState, useEffect, useRef } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { z } from "zod";
 import { ConsultationHistory } from "@/components/ConsultationHistory";
+import { MedicalAlerts } from "@/components/MedicalAlerts";
+import { VitalSignsChart } from "@/components/VitalSignsChart";
 
 // Validation schemas
 const vitalSignsSchema = z.object({
@@ -564,8 +566,16 @@ const Prontuario = () => {
         </Card>
       </div>
 
-      {/* Main Layout */}
-      <div className="max-w-[1800px] mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
+      {/* Layout Principal */}
+      <div className="max-w-[1800px] mx-auto space-y-6">
+        {/* Medical Alerts - Full Width */}
+        <MedicalAlerts />
+
+        {/* Vital Signs Chart - Full Width */}
+        <VitalSignsChart />
+
+        {/* Grid com Formulário e Sidebar */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Main Panel - Dynamic Form */}
         <div className="lg:col-span-2 space-y-6">
           {renderFormFields()}
@@ -786,6 +796,7 @@ const Prontuario = () => {
             </CardContent>
           </Card>
         </div>
+      </div>
       </div>
     </div>
   );
