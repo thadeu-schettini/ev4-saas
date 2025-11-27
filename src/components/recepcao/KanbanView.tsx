@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Clock, User, Stethoscope, DollarSign, CheckCircle2, GripVertical } from "lucide-react";
+import { Clock, User, Stethoscope, DollarSign, CheckCircle2, GripVertical, Phone, Mail, MapPin, AlertCircle } from "lucide-react";
 import {
   DndContext,
   DragOverlay,
@@ -38,6 +38,10 @@ interface Appointment {
   service: string;
   status: string;
   price: string;
+  phone?: string;
+  email?: string;
+  address?: string;
+  waitingMinutes: number;
 }
 
 const initialAppointments: Appointment[] = [
@@ -49,7 +53,11 @@ const initialAppointments: Appointment[] = [
     professional: "Dr. João Santos",
     service: "Consulta Cardiologia",
     status: "waiting_confirmation",
-    price: "R$ 200,00"
+    price: "R$ 200,00",
+    phone: "(11) 98765-4321",
+    email: "maria.silva@email.com",
+    address: "Rua das Flores, 123 - Centro",
+    waitingMinutes: 45
   },
   {
     id: 2,
@@ -59,7 +67,10 @@ const initialAppointments: Appointment[] = [
     professional: "Dr(a). Rollin Durgan",
     service: "Consulta Cardiologia",
     status: "in_service",
-    price: "R$ 180,00"
+    price: "R$ 180,00",
+    phone: "(11) 91234-5678",
+    email: "glover@email.com",
+    waitingMinutes: 120
   },
   {
     id: 3,
@@ -69,7 +80,9 @@ const initialAppointments: Appointment[] = [
     professional: "Dr(a). Cleta Bogisich",
     service: "Consulta Dermatologia",
     status: "completed",
-    price: "R$ 210,00"
+    price: "R$ 210,00",
+    phone: "(11) 99876-5432",
+    waitingMinutes: 5
   },
   {
     id: 4,
@@ -79,7 +92,11 @@ const initialAppointments: Appointment[] = [
     professional: "Dra. Ana Costa",
     service: "Consulta Dermatologia",
     status: "waiting_confirmation",
-    price: "R$ 150,00"
+    price: "R$ 150,00",
+    phone: "(11) 97654-3210",
+    email: "carlos@email.com",
+    address: "Av. Paulista, 1000",
+    waitingMinutes: 15
   }
 ];
 
@@ -114,6 +131,17 @@ const columns = [
   }
 ];
 
+const getWaitingTimeColor = (minutes: number) => {
+  if (minutes >= 60) return "bg-red-500/20 text-red-700 dark:text-red-400 border-red-500/30";
+  if (minutes >= 30) return "bg-orange-500/20 text-orange-700 dark:text-orange-400 border-orange-500/30";
+  return "bg-green-500/20 text-green-700 dark:text-green-400 border-green-500/30";
+};
+
+const getWaitingTimeLabel = (minutes: number) => {
+  if (minutes >= 60) return `${Math.floor(minutes / 60)}h ${minutes % 60}m`;
+  return `${minutes}m`;
+};
+
 const SortableAppointmentCard = ({ apt }: { apt: Appointment }) => {
   const {
     attributes,
@@ -134,33 +162,44 @@ const SortableAppointmentCard = ({ apt }: { apt: Appointment }) => {
     <div
       ref={setNodeRef}
       style={style}
-      className={`group relative p-3 bg-background/80 backdrop-blur-sm rounded-lg border border-border/50 hover:border-primary/30 hover:shadow-lg transition-all duration-300 ${
+      className={`group relative p-3 bg-background/80 backdrop-blur-sm rounded-lg border border-border/50 hover:border-primary/30 transition-all duration-300 ${
         isDragging ? "cursor-grabbing shadow-2xl scale-105 z-50" : ""
-      }`}
+      } hover:scale-[1.02] hover:shadow-xl`}
     >
+      {/* Indicador de Tempo de Espera */}
+      <div className="absolute top-2 right-2 z-10">
+        <Badge className={`text-[10px] px-1.5 py-0.5 ${getWaitingTimeColor(apt.waitingMinutes)}`}>
+          <Clock className="h-2.5 w-2.5 mr-0.5" />
+          {getWaitingTimeLabel(apt.waitingMinutes)}
+        </Badge>
+      </div>
+
       {/* Drag Handle - Posicionado absolutamente */}
       <div
         {...attributes}
         {...listeners}
-        className="absolute left-1 top-1/2 -translate-y-1/2 cursor-grab active:cursor-grabbing hover:text-primary transition-colors p-1 rounded hover:bg-primary/5"
+        className="absolute left-1 top-1/2 -translate-y-1/2 cursor-grab active:cursor-grabbing hover:text-primary transition-colors p-1 rounded hover:bg-primary/5 z-10"
       >
         <GripVertical className="h-3.5 w-3.5 text-muted-foreground" />
       </div>
 
       {/* Content com padding left para não sobrepor o handle */}
-      <div className="pl-6">
+      <div className="pl-6 pr-1">
         <div className="flex items-start gap-2 mb-3">
-          <Avatar className="h-8 w-8 border-2 border-primary/20 flex-shrink-0">
+          <Avatar className="h-8 w-8 border-2 border-primary/20 flex-shrink-0 group-hover:scale-110 transition-transform">
             <AvatarFallback className="bg-primary/10 text-primary font-semibold text-xs">
               {apt.initials}
             </AvatarFallback>
           </Avatar>
           <div className="flex-1 min-w-0">
-            <h4 className="text-xs font-semibold text-foreground truncate">{apt.patientName}</h4>
+            <h4 className="text-xs font-semibold text-foreground truncate group-hover:text-primary transition-colors">
+              {apt.patientName}
+            </h4>
             <p className="text-[10px] text-muted-foreground truncate">{apt.service}</p>
           </div>
         </div>
 
+        {/* Informações Básicas - Sempre visíveis */}
         <div className="space-y-1.5 mb-3">
           <div className="flex items-center gap-1.5 text-xs">
             <Clock className="h-3 w-3 text-primary flex-shrink-0" />
@@ -175,6 +214,38 @@ const SortableAppointmentCard = ({ apt }: { apt: Appointment }) => {
             <span className="text-muted-foreground text-[11px]">{apt.price}</span>
           </div>
         </div>
+
+        {/* Detalhes Extras - Visíveis apenas no hover */}
+        <div className="space-y-1.5 mb-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 max-h-0 group-hover:max-h-32 overflow-hidden">
+          {apt.phone && (
+            <div className="flex items-center gap-1.5 text-xs">
+              <Phone className="h-3 w-3 text-blue-500 flex-shrink-0" />
+              <span className="text-muted-foreground text-[11px]">{apt.phone}</span>
+            </div>
+          )}
+          {apt.email && (
+            <div className="flex items-center gap-1.5 text-xs">
+              <Mail className="h-3 w-3 text-purple-500 flex-shrink-0" />
+              <span className="text-muted-foreground truncate text-[11px]">{apt.email}</span>
+            </div>
+          )}
+          {apt.address && (
+            <div className="flex items-center gap-1.5 text-xs">
+              <MapPin className="h-3 w-3 text-red-500 flex-shrink-0" />
+              <span className="text-muted-foreground truncate text-[11px]">{apt.address}</span>
+            </div>
+          )}
+        </div>
+
+        {/* Alerta de Tempo Crítico */}
+        {apt.waitingMinutes >= 60 && (
+          <div className="mb-2 p-2 rounded bg-red-500/10 border border-red-500/20 opacity-0 group-hover:opacity-100 transition-opacity">
+            <div className="flex items-center gap-1.5">
+              <AlertCircle className="h-3 w-3 text-red-500 flex-shrink-0" />
+              <span className="text-[10px] text-red-700 dark:text-red-400">Tempo de espera crítico!</span>
+            </div>
+          </div>
+        )}
 
         <Button
           size="sm"
@@ -325,7 +396,8 @@ export const KanbanView = ({ searchQuery }: KanbanViewProps) => {
       onDragEnd={handleDragEnd}
     >
       <div className="animate-fade-in [animation-delay:200ms]">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* Grid responsivo: 1 coluna em mobile, 2 em tablet, 4 em desktop */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           {columns.map((column, columnIndex) => {
             const columnAppointments = filteredAppointments.filter(
               apt => apt.status === column.id
@@ -334,12 +406,14 @@ export const KanbanView = ({ searchQuery }: KanbanViewProps) => {
             return (
               <div
                 key={column.id}
-                className={`p-4 rounded-xl border-2 ${column.borderColor} ${column.color} min-h-[400px] animate-fade-in transition-all`}
+                className={`p-3 sm:p-4 rounded-xl border-2 ${column.borderColor} ${column.color} min-h-[300px] sm:min-h-[400px] animate-fade-in transition-all`}
                 style={{ animationDelay: `${columnIndex * 100}ms` }}
               >
-                <div className="flex items-center justify-between mb-4 pb-3 border-b border-border/50">
-                  <h3 className="text-sm font-semibold text-foreground">{column.title}</h3>
-                  <Badge variant="secondary" className={column.badgeColor}>
+                <div className="flex items-center justify-between mb-3 sm:mb-4 pb-2 sm:pb-3 border-b border-border/50">
+                  <h3 className="text-xs sm:text-sm font-semibold text-foreground truncate pr-2">
+                    {column.title}
+                  </h3>
+                  <Badge variant="secondary" className={`${column.badgeColor} text-xs flex-shrink-0`}>
                     {columnAppointments.length}
                   </Badge>
                 </div>
@@ -348,7 +422,7 @@ export const KanbanView = ({ searchQuery }: KanbanViewProps) => {
                   items={[...columnAppointments.map(apt => apt.id), column.id]}
                   strategy={verticalListSortingStrategy}
                 >
-                  <div className="space-y-3 min-h-[300px]">
+                  <div className="space-y-2 sm:space-y-3 min-h-[200px] sm:min-h-[300px]">
                     {columnAppointments.map((apt, index) => (
                       <div
                         key={apt.id}
@@ -360,9 +434,11 @@ export const KanbanView = ({ searchQuery }: KanbanViewProps) => {
                     ))}
 
                     {columnAppointments.length === 0 && (
-                      <div className="text-center py-8">
-                        <CheckCircle2 className="h-12 w-12 text-muted-foreground/30 mx-auto mb-2" />
-                        <p className="text-xs text-muted-foreground">Arraste cards aqui</p>
+                      <div className="text-center py-6 sm:py-8">
+                        <CheckCircle2 className="h-10 w-10 sm:h-12 sm:w-12 text-muted-foreground/30 mx-auto mb-2" />
+                        <p className="text-[10px] sm:text-xs text-muted-foreground">
+                          {window.innerWidth < 640 ? "Sem agendamentos" : "Arraste cards aqui"}
+                        </p>
                       </div>
                     )}
                     
