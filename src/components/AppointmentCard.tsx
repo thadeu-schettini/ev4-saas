@@ -17,6 +17,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { useToast } from "@/hooks/use-toast";
 import { 
   Calendar, 
   MessageCircle, 
@@ -35,7 +36,8 @@ import {
   Save,
   X,
   Link as LinkIcon,
-  MapPin
+  MapPin,
+  Copy
 } from "lucide-react";
 
 type AppointmentStatus = 
@@ -67,8 +69,13 @@ const statusConfig: Record<AppointmentStatus, { label: string; color: string; ic
 };
 
 export const AppointmentCard = ({ open, onOpenChange }: AppointmentCardProps) => {
+  const { toast } = useToast();
   const [status, setStatus] = useState<AppointmentStatus>("realizado");
   const [isEditing, setIsEditing] = useState(false);
+  const [roomLinks, setRoomLinks] = useState<{
+    patientLink: string;
+    professionalLink: string;
+  } | null>(null);
   const [formData, setFormData] = useState({
     date: "2025-11-27",
     startTime: "12:05",
@@ -78,7 +85,7 @@ export const AppointmentCard = ({ open, onOpenChange }: AppointmentCardProps) =>
     serviceValue: "210,00",
     attendanceType: "Consulta Padrão",
     mode: "online", // "online" | "presencial" | "domiciliar"
-    onlineLink: "https://meet.google.com/abc-defg-hij",
+    onlineLink: "",
     homeAddress: "Rua Example, 123 - Bairro - Cidade/UF",
     planSession: "",
     observations: "Agendamento gerado automaticamente (57)"
@@ -89,7 +96,39 @@ export const AppointmentCard = ({ open, onOpenChange }: AppointmentCardProps) =>
 
   const handleSave = () => {
     setIsEditing(false);
-    // Aqui você pode adicionar a lógica para salvar no backend
+    toast({
+      title: "Alterações salvas",
+      description: "As informações do agendamento foram atualizadas.",
+    });
+  };
+
+  const generateRoomLinks = () => {
+    const roomId = `sala-${Date.now()}-${Math.random().toString(36).substring(7)}`;
+    const baseUrl = window.location.origin;
+    
+    setRoomLinks({
+      patientLink: `${baseUrl}/sala/${roomId}/paciente`,
+      professionalLink: `${baseUrl}/sala/${roomId}/profissional`
+    });
+    
+    // Atualiza o formData com o link do profissional como referência
+    setFormData({
+      ...formData,
+      onlineLink: `${baseUrl}/sala/${roomId}/profissional`
+    });
+
+    toast({
+      title: "Sala criada com sucesso!",
+      description: "Os links foram gerados. Copie e envie ao paciente.",
+    });
+  };
+
+  const copyToClipboard = (text: string, label: string) => {
+    navigator.clipboard.writeText(text);
+    toast({
+      title: `Link copiado!`,
+      description: `Link do ${label} copiado para a área de transferência.`,
+    });
   };
 
   return (
@@ -186,145 +225,223 @@ export const AppointmentCard = ({ open, onOpenChange }: AppointmentCardProps) =>
         <div className="p-6 space-y-6">
           {isEditing ? (
             /* Edit Mode */
-            <div className="space-y-4 animate-fade-in">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <Label htmlFor="date" className="text-sm font-medium">Data</Label>
-                  <Input
-                    id="date"
-                    type="date"
-                    value={formData.date}
-                    onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                    className="mt-1"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="startTime" className="text-sm font-medium">Hora inicial</Label>
-                  <Input
-                    id="startTime"
-                    type="time"
-                    value={formData.startTime}
-                    onChange={(e) => setFormData({ ...formData, startTime: e.target.value })}
-                    className="mt-1"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="endTime" className="text-sm font-medium">Hora final</Label>
-                  <Input
-                    id="endTime"
-                    type="time"
-                    value={formData.endTime}
-                    onChange={(e) => setFormData({ ...formData, endTime: e.target.value })}
-                    className="mt-1"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <Label htmlFor="professional" className="text-sm font-medium">Profissional</Label>
-                <Input
-                  id="professional"
-                  value={formData.professional}
-                  onChange={(e) => setFormData({ ...formData, professional: e.target.value })}
-                  className="mt-1"
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="service" className="text-sm font-medium">Serviço</Label>
-                <Input
-                  id="service"
-                  value={formData.service}
-                  onChange={(e) => setFormData({ ...formData, service: e.target.value })}
-                  className="mt-1"
-                />
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="serviceValue" className="text-sm font-medium">Valor do serviço (R$)</Label>
-                  <Input
-                    id="serviceValue"
-                    value={formData.serviceValue}
-                    onChange={(e) => setFormData({ ...formData, serviceValue: e.target.value })}
-                    className="mt-1"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="attendanceType" className="text-sm font-medium">Tipo de atendimento</Label>
-                  <Select value={formData.attendanceType} onValueChange={(value) => setFormData({ ...formData, attendanceType: value })}>
-                    <SelectTrigger id="attendanceType" className="mt-1">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Consulta Padrão">Consulta Padrão</SelectItem>
-                      <SelectItem value="Retorno">Retorno</SelectItem>
-                      <SelectItem value="Emergência">Emergência</SelectItem>
-                    </SelectContent>
-                  </Select>
+            <div className="space-y-6 animate-fade-in">
+              {/* Informações Básicas */}
+              <div className="p-5 bg-muted/30 rounded-xl border border-border/50">
+                <h3 className="text-sm font-semibold text-foreground mb-4 flex items-center gap-2">
+                  <Calendar className="h-4 w-4 text-primary" />
+                  Informações do Agendamento
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <Label htmlFor="date" className="text-xs font-medium text-muted-foreground">Data</Label>
+                    <Input
+                      id="date"
+                      type="date"
+                      value={formData.date}
+                      onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+                      className="mt-1.5"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="startTime" className="text-xs font-medium text-muted-foreground">Hora inicial</Label>
+                    <Input
+                      id="startTime"
+                      type="time"
+                      value={formData.startTime}
+                      onChange={(e) => setFormData({ ...formData, startTime: e.target.value })}
+                      className="mt-1.5"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="endTime" className="text-xs font-medium text-muted-foreground">Hora final</Label>
+                    <Input
+                      id="endTime"
+                      type="time"
+                      value={formData.endTime}
+                      onChange={(e) => setFormData({ ...formData, endTime: e.target.value })}
+                      className="mt-1.5"
+                    />
+                  </div>
                 </div>
               </div>
 
-              <div>
-                <Label htmlFor="mode" className="text-sm font-medium">Modo</Label>
-                <Select value={formData.mode} onValueChange={(value) => setFormData({ ...formData, mode: value })}>
-                  <SelectTrigger id="mode" className="mt-1">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="presencial">Presencial</SelectItem>
-                    <SelectItem value="online">Online</SelectItem>
-                    <SelectItem value="domiciliar">Domiciliar</SelectItem>
-                  </SelectContent>
-                </Select>
+              {/* Profissional e Serviço */}
+              <div className="p-5 bg-muted/30 rounded-xl border border-border/50">
+                <h3 className="text-sm font-semibold text-foreground mb-4 flex items-center gap-2">
+                  <Stethoscope className="h-4 w-4 text-primary" />
+                  Profissional e Serviço
+                </h3>
+                <div className="space-y-4">
+                  <div>
+                    <Label htmlFor="professional" className="text-xs font-medium text-muted-foreground">Profissional</Label>
+                    <Input
+                      id="professional"
+                      value={formData.professional}
+                      onChange={(e) => setFormData({ ...formData, professional: e.target.value })}
+                      className="mt-1.5"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="service" className="text-xs font-medium text-muted-foreground">Serviço</Label>
+                    <Input
+                      id="service"
+                      value={formData.service}
+                      onChange={(e) => setFormData({ ...formData, service: e.target.value })}
+                      className="mt-1.5"
+                    />
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="attendanceType" className="text-xs font-medium text-muted-foreground">Tipo de atendimento</Label>
+                      <Select value={formData.attendanceType} onValueChange={(value) => setFormData({ ...formData, attendanceType: value })}>
+                        <SelectTrigger id="attendanceType" className="mt-1.5">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Consulta Padrão">Consulta Padrão</SelectItem>
+                          <SelectItem value="Retorno">Retorno</SelectItem>
+                          <SelectItem value="Emergência">Emergência</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label htmlFor="serviceValue" className="text-xs font-medium text-muted-foreground">Valor do serviço (R$)</Label>
+                      <Input
+                        id="serviceValue"
+                        value={formData.serviceValue}
+                        onChange={(e) => setFormData({ ...formData, serviceValue: e.target.value })}
+                        className="mt-1.5"
+                      />
+                    </div>
+                  </div>
+                </div>
               </div>
 
-              {formData.mode === "online" && (
-                <div>
-                  <Label htmlFor="onlineLink" className="text-sm font-medium">Link da sala online</Label>
-                  <Input
-                    id="onlineLink"
-                    value={formData.onlineLink}
-                    onChange={(e) => setFormData({ ...formData, onlineLink: e.target.value })}
-                    placeholder="https://meet.google.com/..."
-                    className="mt-1"
-                  />
-                </div>
-              )}
+              {/* Modo de Atendimento */}
+              <div className="p-5 bg-muted/30 rounded-xl border border-border/50">
+                <h3 className="text-sm font-semibold text-foreground mb-4">Modo de Atendimento</h3>
+                <div className="space-y-4">
+                  <div>
+                    <Label htmlFor="mode" className="text-xs font-medium text-muted-foreground">Modo</Label>
+                    <Select value={formData.mode} onValueChange={(value) => setFormData({ ...formData, mode: value })}>
+                      <SelectTrigger id="mode" className="mt-1.5">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="presencial">Presencial</SelectItem>
+                        <SelectItem value="online">Online</SelectItem>
+                        <SelectItem value="domiciliar">Domiciliar</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
 
-              {formData.mode === "domiciliar" && (
-                <div>
-                  <Label htmlFor="homeAddress" className="text-sm font-medium">Endereço para atendimento domiciliar</Label>
-                  <Input
-                    id="homeAddress"
-                    value={formData.homeAddress}
-                    onChange={(e) => setFormData({ ...formData, homeAddress: e.target.value })}
-                    placeholder="Rua, número - Bairro - Cidade/UF"
-                    className="mt-1"
-                  />
-                </div>
-              )}
+                  {formData.mode === "online" && (
+                    <div className="space-y-3 p-4 bg-blue-500/10 rounded-lg border border-blue-500/20">
+                      <div className="flex items-center justify-between">
+                        <Label className="text-xs font-medium text-muted-foreground">Sala Online</Label>
+                        <Button
+                          type="button"
+                          size="sm"
+                          onClick={generateRoomLinks}
+                          className="bg-gradient-to-r from-primary to-primary-glow"
+                        >
+                          <Sparkles className="h-3.5 w-3.5 mr-1.5" />
+                          Criar Sala
+                        </Button>
+                      </div>
+                      
+                      {roomLinks && (
+                        <div className="space-y-3 animate-fade-in">
+                          <div className="p-3 bg-background/50 rounded-lg">
+                            <div className="flex items-center justify-between mb-2">
+                              <span className="text-xs font-semibold text-foreground">Link do Paciente</span>
+                              <Button
+                                type="button"
+                                size="sm"
+                                variant="ghost"
+                                onClick={() => copyToClipboard(roomLinks.patientLink, 'Paciente')}
+                                className="h-7 px-2 text-xs"
+                              >
+                                <Copy className="h-3 w-3 mr-1" />
+                                Copiar
+                              </Button>
+                            </div>
+                            <p className="text-xs text-muted-foreground break-all font-mono">
+                              {roomLinks.patientLink}
+                            </p>
+                          </div>
+                          
+                          <div className="p-3 bg-background/50 rounded-lg">
+                            <div className="flex items-center justify-between mb-2">
+                              <span className="text-xs font-semibold text-foreground">Link do Profissional</span>
+                              <Button
+                                type="button"
+                                size="sm"
+                                variant="ghost"
+                                onClick={() => copyToClipboard(roomLinks.professionalLink, 'Profissional')}
+                                className="h-7 px-2 text-xs"
+                              >
+                                <Copy className="h-3 w-3 mr-1" />
+                                Copiar
+                              </Button>
+                            </div>
+                            <p className="text-xs text-muted-foreground break-all font-mono">
+                              {roomLinks.professionalLink}
+                            </p>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
 
-              <div>
-                <Label htmlFor="planSession" className="text-sm font-medium">Sessão do plano (opcional)</Label>
-                <Input
-                  id="planSession"
-                  value={formData.planSession}
-                  onChange={(e) => setFormData({ ...formData, planSession: e.target.value })}
-                  placeholder="Sem vínculo"
-                  className="mt-1"
-                />
+                  {formData.mode === "domiciliar" && (
+                    <div className="p-4 bg-purple-500/10 rounded-lg border border-purple-500/20">
+                      <Label htmlFor="homeAddress" className="text-xs font-medium text-muted-foreground">
+                        Endereço para atendimento domiciliar
+                      </Label>
+                      <Input
+                        id="homeAddress"
+                        value={formData.homeAddress}
+                        onChange={(e) => setFormData({ ...formData, homeAddress: e.target.value })}
+                        placeholder="Rua, número - Bairro - Cidade/UF"
+                        className="mt-1.5"
+                      />
+                    </div>
+                  )}
+                </div>
               </div>
 
-              <div>
-                <Label htmlFor="observations" className="text-sm font-medium">Observações</Label>
-                <Textarea
-                  id="observations"
-                  value={formData.observations}
-                  onChange={(e) => setFormData({ ...formData, observations: e.target.value })}
-                  rows={3}
-                  className="mt-1"
-                />
+              {/* Informações Adicionais */}
+              <div className="p-5 bg-muted/30 rounded-xl border border-border/50">
+                <h3 className="text-sm font-semibold text-foreground mb-4 flex items-center gap-2">
+                  <FileText className="h-4 w-4 text-primary" />
+                  Informações Adicionais
+                </h3>
+                <div className="space-y-4">
+                  <div>
+                    <Label htmlFor="planSession" className="text-xs font-medium text-muted-foreground">
+                      Sessão do plano (opcional)
+                    </Label>
+                    <Input
+                      id="planSession"
+                      value={formData.planSession}
+                      onChange={(e) => setFormData({ ...formData, planSession: e.target.value })}
+                      placeholder="Sem vínculo"
+                      className="mt-1.5"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="observations" className="text-xs font-medium text-muted-foreground">Observações</Label>
+                    <Textarea
+                      id="observations"
+                      value={formData.observations}
+                      onChange={(e) => setFormData({ ...formData, observations: e.target.value })}
+                      rows={3}
+                      className="mt-1.5"
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           ) : (
@@ -356,7 +473,7 @@ export const AppointmentCard = ({ open, onOpenChange }: AppointmentCardProps) =>
               </div>
 
               {/* Mode-specific information */}
-              {formData.mode === "online" && (
+              {formData.mode === "online" && formData.onlineLink && (
                 <div className="p-4 bg-blue-500/10 rounded-xl border border-blue-500/30 animate-slide-up [animation-delay:150ms]">
                   <div className="flex items-center gap-3">
                     <div className="h-10 w-10 rounded-lg bg-blue-500/20 flex items-center justify-center">
@@ -370,7 +487,7 @@ export const AppointmentCard = ({ open, onOpenChange }: AppointmentCardProps) =>
                         rel="noopener noreferrer"
                         className="text-sm font-semibold text-blue-600 dark:text-blue-400 hover:underline"
                       >
-                        {formData.onlineLink}
+                        Acessar sala
                       </a>
                     </div>
                   </div>
