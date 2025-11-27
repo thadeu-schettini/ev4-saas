@@ -162,9 +162,9 @@ const SortableAppointmentCard = ({ apt }: { apt: Appointment }) => {
     <div
       ref={setNodeRef}
       style={style}
-      className={`group relative bg-background/90 backdrop-blur-sm rounded-lg border border-border/50 hover:border-primary/30 transition-all duration-300 overflow-hidden ${
+      className={`group relative bg-background/90 backdrop-blur-sm rounded-lg border border-border/50 hover:border-primary/30 transition-all duration-200 overflow-hidden ${
         isDragging ? "cursor-grabbing shadow-2xl scale-105 z-50" : ""
-      } hover:shadow-lg`}
+      }`}
     >
       {/* Header com Drag Handle e Tempo */}
       <div className="flex items-center justify-between px-3 py-2 bg-muted/30 border-b border-border/30">
@@ -185,13 +185,13 @@ const SortableAppointmentCard = ({ apt }: { apt: Appointment }) => {
       <div className="p-3 space-y-3">
         {/* Paciente Info */}
         <div className="flex items-center gap-2">
-          <Avatar className="h-9 w-9 border-2 border-primary/20 flex-shrink-0 group-hover:scale-105 transition-transform">
+          <Avatar className="h-9 w-9 border-2 border-primary/20 flex-shrink-0">
             <AvatarFallback className="bg-primary/10 text-primary font-semibold text-xs">
               {apt.initials}
             </AvatarFallback>
           </Avatar>
           <div className="flex-1 min-w-0">
-            <h4 className="text-sm font-semibold text-foreground truncate group-hover:text-primary transition-colors leading-tight">
+            <h4 className="text-sm font-semibold text-foreground truncate leading-tight">
               {apt.patientName}
             </h4>
             <p className="text-[10px] text-muted-foreground truncate leading-tight mt-0.5">
@@ -221,42 +221,6 @@ const SortableAppointmentCard = ({ apt }: { apt: Appointment }) => {
             <span className="text-muted-foreground text-[11px]">{apt.price}</span>
           </div>
         </div>
-
-        {/* Detalhes Extras - Visíveis apenas no hover */}
-        <div className="space-y-2 opacity-0 group-hover:opacity-100 transition-all duration-300 max-h-0 group-hover:max-h-40 overflow-hidden">
-          <div className="pt-2 border-t border-border/30">
-            {apt.phone && (
-              <div className="flex items-center gap-2 text-xs mb-1.5">
-                <Phone className="h-3 w-3 text-blue-500 flex-shrink-0" />
-                <span className="text-muted-foreground text-[11px]">{apt.phone}</span>
-              </div>
-            )}
-            {apt.email && (
-              <div className="flex items-center gap-2 text-xs mb-1.5">
-                <Mail className="h-3 w-3 text-purple-500 flex-shrink-0" />
-                <span className="text-muted-foreground truncate text-[11px]">{apt.email}</span>
-              </div>
-            )}
-            {apt.address && (
-              <div className="flex items-center gap-2 text-xs">
-                <MapPin className="h-3 w-3 text-red-500 flex-shrink-0" />
-                <span className="text-muted-foreground truncate text-[11px]">{apt.address}</span>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Alerta de Tempo Crítico */}
-        {apt.waitingMinutes >= 60 && (
-          <div className="p-2 rounded-md bg-red-500/10 border border-red-500/20 opacity-0 group-hover:opacity-100 transition-opacity">
-            <div className="flex items-center gap-2">
-              <AlertCircle className="h-3.5 w-3.5 text-red-500 flex-shrink-0" />
-              <span className="text-[10px] text-red-700 dark:text-red-400 font-medium">
-                Tempo de espera crítico!
-              </span>
-            </div>
-          </div>
-        )}
 
         {/* Botão de Ação */}
         <Button
