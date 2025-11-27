@@ -133,52 +133,52 @@ export const AppointmentCard = ({ open, onOpenChange }: AppointmentCardProps) =>
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-0 gap-0 bg-background">
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-0 gap-0 bg-background w-[95vw] sm:w-full">
         {/* Header with gradient */}
-        <div className="relative p-6 pb-8 bg-gradient-to-r from-primary to-primary overflow-hidden">
+        <div className="relative p-4 sm:p-6 pb-6 sm:pb-8 bg-gradient-to-r from-primary to-primary overflow-hidden">
           <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS1vcGFjaXR5PSIwLjEiIHN0cm9rZS13aWR0aD0iMSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmlkKSIvPjwvc3ZnPg==')] opacity-30" />
           
           <div className="relative">
-            <div className="flex items-start justify-between mb-4">
-              <div className="flex items-center gap-4">
-                <div className="relative group">
+            <div className="flex flex-col sm:flex-row items-start justify-between gap-4 mb-4">
+              <div className="flex items-center gap-3 sm:gap-4 flex-1 min-w-0">
+                <div className="relative group flex-shrink-0">
                   <div className="absolute inset-0 bg-white/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-500" />
-                  <div className="relative h-20 w-20 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/30 shadow-xl group-hover:scale-110 transition-transform duration-300">
-                    <span className="text-3xl font-bold text-white">PC</span>
+                  <div className="relative h-16 w-16 sm:h-20 sm:w-20 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/30 shadow-xl group-hover:scale-110 transition-transform duration-300">
+                    <span className="text-2xl sm:text-3xl font-bold text-white">PC</span>
                   </div>
                 </div>
                 
-                <div className="animate-fade-in">
-                  <h2 className="text-2xl font-bold text-white mb-1 flex items-center gap-2">
-                    Paciente 7 Cruickshank
-                    <Sparkles className="h-5 w-5 text-white/80 animate-pulse" />
+                <div className="animate-fade-in flex-1 min-w-0">
+                  <h2 className="text-lg sm:text-2xl font-bold text-white mb-1 flex items-center gap-2 flex-wrap">
+                    <span className="truncate">Paciente 7 Cruickshank</span>
+                    <Sparkles className="h-4 w-4 sm:h-5 sm:w-5 text-white/80 animate-pulse flex-shrink-0" />
                   </h2>
-                  <div className="flex items-center gap-3 text-white/90">
-                    <span className="text-sm font-medium">551910074070</span>
-                    <div className="flex items-center gap-1.5 bg-green-500/30 backdrop-blur-sm px-3 py-1 rounded-full border border-green-400/50">
-                      <MessageCircle className="h-3.5 w-3.5 text-green-100" />
+                  <div className="flex items-center gap-2 sm:gap-3 text-white/90 flex-wrap">
+                    <span className="text-xs sm:text-sm font-medium">551910074070</span>
+                    <div className="flex items-center gap-1.5 bg-green-500/30 backdrop-blur-sm px-2 sm:px-3 py-0.5 sm:py-1 rounded-full border border-green-400/50">
+                      <MessageCircle className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-green-100" />
                       <span className="text-xs font-semibold text-green-50">WhatsApp</span>
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 w-full sm:w-auto">
                 <Button
                   size="sm"
                   variant="ghost"
                   onClick={() => isEditing ? handleSave() : setIsEditing(true)}
-                  className="bg-white/20 backdrop-blur-md border-white/30 text-white hover:bg-white/30 h-9 px-3"
+                  className="bg-white/20 backdrop-blur-md border-white/30 text-white hover:bg-white/30 h-8 sm:h-9 px-2 sm:px-3 flex-1 sm:flex-initial"
                 >
                   {isEditing ? (
                     <>
-                      <Save className="h-4 w-4 mr-1.5" />
-                      Salvar
+                      <Save className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1 sm:mr-1.5" />
+                      <span className="text-xs sm:text-sm">Salvar</span>
                     </>
                   ) : (
                     <>
-                      <Pencil className="h-4 w-4 mr-1.5" />
-                      Editar
+                      <Pencil className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1 sm:mr-1.5" />
+                      <span className="text-xs sm:text-sm">Editar</span>
                     </>
                   )}
                 </Button>
@@ -187,20 +187,20 @@ export const AppointmentCard = ({ open, onOpenChange }: AppointmentCardProps) =>
                     size="sm"
                     variant="ghost"
                     onClick={() => setIsEditing(false)}
-                    className="bg-white/20 backdrop-blur-md border-white/30 text-white hover:bg-white/30 h-9 w-9 p-0"
+                    className="bg-white/20 backdrop-blur-md border-white/30 text-white hover:bg-white/30 h-8 sm:h-9 w-8 sm:w-9 p-0"
                   >
-                    <X className="h-4 w-4" />
+                    <X className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                   </Button>
                 )}
               </div>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 w-full sm:w-auto">
               <Select value={status} onValueChange={(value) => setStatus(value as AppointmentStatus)}>
-                <SelectTrigger className="w-auto min-w-[200px] h-auto px-4 py-2.5 bg-white/20 backdrop-blur-md border-white/30 text-white rounded-xl shadow-lg hover:bg-white/30 transition-all duration-300">
+                <SelectTrigger className="w-full sm:w-auto sm:min-w-[200px] h-auto px-3 sm:px-4 py-2 sm:py-2.5 bg-white/20 backdrop-blur-md border-white/30 text-white rounded-xl shadow-lg hover:bg-white/30 transition-all duration-300">
                   <div className="flex items-center gap-2">
-                    <StatusIcon className="h-4 w-4" />
-                    <SelectValue />
+                    <StatusIcon className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                    <SelectValue className="text-xs sm:text-sm" />
                   </div>
                 </SelectTrigger>
                 <SelectContent className="z-50">
@@ -222,17 +222,17 @@ export const AppointmentCard = ({ open, onOpenChange }: AppointmentCardProps) =>
         </div>
 
         {/* Main Content */}
-        <div className="p-6 space-y-6">
+        <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
           {isEditing ? (
             /* Edit Mode */
-            <div className="space-y-6 animate-fade-in">
+            <div className="space-y-4 sm:space-y-6 animate-fade-in">
               {/* Informações Básicas */}
-              <div className="p-5 bg-muted/30 rounded-xl border border-border/50">
-                <h3 className="text-sm font-semibold text-foreground mb-4 flex items-center gap-2">
-                  <Calendar className="h-4 w-4 text-primary" />
+              <div className="p-4 sm:p-5 bg-muted/30 rounded-xl border border-border/50">
+                <h3 className="text-xs sm:text-sm font-semibold text-foreground mb-3 sm:mb-4 flex items-center gap-2">
+                  <Calendar className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary" />
                   Informações do Agendamento
                 </h3>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
                   <div>
                     <Label htmlFor="date" className="text-xs font-medium text-muted-foreground">Data</Label>
                     <Input
@@ -267,12 +267,12 @@ export const AppointmentCard = ({ open, onOpenChange }: AppointmentCardProps) =>
               </div>
 
               {/* Profissional e Serviço */}
-              <div className="p-5 bg-muted/30 rounded-xl border border-border/50">
-                <h3 className="text-sm font-semibold text-foreground mb-4 flex items-center gap-2">
-                  <Stethoscope className="h-4 w-4 text-primary" />
+              <div className="p-4 sm:p-5 bg-muted/30 rounded-xl border border-border/50">
+                <h3 className="text-xs sm:text-sm font-semibold text-foreground mb-3 sm:mb-4 flex items-center gap-2">
+                  <Stethoscope className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary" />
                   Profissional e Serviço
                 </h3>
-                <div className="space-y-4">
+                <div className="space-y-3 sm:space-y-4">
                   <div>
                     <Label htmlFor="professional" className="text-xs font-medium text-muted-foreground">Profissional</Label>
                     <Input
@@ -291,7 +291,7 @@ export const AppointmentCard = ({ open, onOpenChange }: AppointmentCardProps) =>
                       className="mt-1.5"
                     />
                   </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                     <div>
                       <Label htmlFor="attendanceType" className="text-xs font-medium text-muted-foreground">Tipo de atendimento</Label>
                       <Select value={formData.attendanceType} onValueChange={(value) => setFormData({ ...formData, attendanceType: value })}>
@@ -319,9 +319,9 @@ export const AppointmentCard = ({ open, onOpenChange }: AppointmentCardProps) =>
               </div>
 
               {/* Modo de Atendimento */}
-              <div className="p-5 bg-muted/30 rounded-xl border border-border/50">
-                <h3 className="text-sm font-semibold text-foreground mb-4">Modo de Atendimento</h3>
-                <div className="space-y-4">
+              <div className="p-4 sm:p-5 bg-muted/30 rounded-xl border border-border/50">
+                <h3 className="text-xs sm:text-sm font-semibold text-foreground mb-3 sm:mb-4">Modo de Atendimento</h3>
+                <div className="space-y-3 sm:space-y-4">
                   <div>
                     <Label htmlFor="mode" className="text-xs font-medium text-muted-foreground">Modo</Label>
                     <Select value={formData.mode} onValueChange={(value) => setFormData({ ...formData, mode: value })}>
@@ -362,12 +362,12 @@ export const AppointmentCard = ({ open, onOpenChange }: AppointmentCardProps) =>
               </div>
 
               {/* Informações Adicionais */}
-              <div className="p-5 bg-muted/30 rounded-xl border border-border/50">
-                <h3 className="text-sm font-semibold text-foreground mb-4 flex items-center gap-2">
-                  <FileText className="h-4 w-4 text-primary" />
+              <div className="p-4 sm:p-5 bg-muted/30 rounded-xl border border-border/50">
+                <h3 className="text-xs sm:text-sm font-semibold text-foreground mb-3 sm:mb-4 flex items-center gap-2">
+                  <FileText className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary" />
                   Informações Adicionais
                 </h3>
-                <div className="space-y-4">
+                <div className="space-y-3 sm:space-y-4">
                   <div>
                     <Label htmlFor="planSession" className="text-xs font-medium text-muted-foreground">
                       Sessão do plano (opcional)
@@ -397,48 +397,49 @@ export const AppointmentCard = ({ open, onOpenChange }: AppointmentCardProps) =>
             /* View Mode */
             <>
               {/* Date & Time Card */}
-              <div className="flex items-center gap-4 p-4 bg-muted/30 rounded-xl border border-border/50 hover:border-primary/30 transition-all duration-300 group animate-slide-up [animation-delay:100ms]">
-                <div className="flex items-center gap-3 flex-1">
-                  <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors duration-300">
-                    <Calendar className="h-6 w-6 text-primary" />
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 p-3 sm:p-4 bg-muted/30 rounded-xl border border-border/50 hover:border-primary/30 transition-all duration-300 group animate-slide-up [animation-delay:100ms]">
+                <div className="flex items-center gap-3 flex-1 w-full sm:w-auto">
+                  <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors duration-300 flex-shrink-0">
+                    <Calendar className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
                   </div>
-                  <div>
+                  <div className="min-w-0">
                     <p className="text-xs text-muted-foreground font-medium">Data do Agendamento</p>
-                    <p className="text-base font-bold text-foreground">27 de Novembro, 2025</p>
+                    <p className="text-sm sm:text-base font-bold text-foreground truncate">27 de Novembro, 2025</p>
                   </div>
                 </div>
                 
-                <div className="h-12 w-px bg-border" />
+                <div className="hidden sm:block h-12 w-px bg-border" />
+                <div className="block sm:hidden h-px w-full bg-border" />
                 
-                <div className="flex items-center gap-3 flex-1">
-                  <div className="h-12 w-12 rounded-xl bg-accent/10 flex items-center justify-center group-hover:bg-accent/20 transition-colors duration-300">
-                    <Clock className="h-6 w-6 text-accent" />
+                <div className="flex items-center gap-3 flex-1 w-full sm:w-auto">
+                  <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-xl bg-accent/10 flex items-center justify-center group-hover:bg-accent/20 transition-colors duration-300 flex-shrink-0">
+                    <Clock className="h-5 w-5 sm:h-6 sm:w-6 text-accent" />
                   </div>
-                  <div>
+                  <div className="min-w-0">
                     <p className="text-xs text-muted-foreground font-medium">Horário</p>
-                    <p className="text-base font-bold text-foreground">12:05 - 12:35</p>
+                    <p className="text-sm sm:text-base font-bold text-foreground">12:05 - 12:35</p>
                   </div>
                 </div>
               </div>
 
               {/* Mode-specific information */}
               {formData.mode === "online" && (
-                <div className="space-y-3 p-4 bg-blue-500/10 rounded-xl border border-blue-500/30 animate-slide-up [animation-delay:150ms]">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="h-10 w-10 rounded-lg bg-blue-500/20 flex items-center justify-center">
+                <div className="space-y-3 p-3 sm:p-4 bg-blue-500/10 rounded-xl border border-blue-500/30 animate-slide-up [animation-delay:150ms]">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0">
+                    <div className="flex items-center gap-3 flex-1 min-w-0">
+                      <div className="h-10 w-10 rounded-lg bg-blue-500/20 flex items-center justify-center flex-shrink-0">
                         <LinkIcon className="h-5 w-5 text-blue-600 dark:text-blue-400" />
                       </div>
-                      <div>
+                      <div className="min-w-0">
                         <p className="text-xs text-muted-foreground font-medium mb-1">Atendimento Online</p>
-                        <p className="text-sm font-semibold text-foreground">Sala Virtual</p>
+                        <p className="text-sm font-semibold text-foreground truncate">Sala Virtual</p>
                       </div>
                     </div>
                     {!roomLinks && (
                       <Button
                         size="sm"
                         onClick={generateRoomLinks}
-                        className="bg-gradient-to-r from-primary to-primary-glow shadow-md hover:shadow-lg"
+                        className="bg-gradient-to-r from-primary to-primary-glow shadow-md hover:shadow-lg w-full sm:w-auto"
                       >
                         <Sparkles className="h-3.5 w-3.5 mr-1.5" />
                         Criar Sala
@@ -489,30 +490,30 @@ export const AppointmentCard = ({ open, onOpenChange }: AppointmentCardProps) =>
               )}
 
               {formData.mode === "domiciliar" && (
-                <div className="p-4 bg-purple-500/10 rounded-xl border border-purple-500/30 animate-slide-up [animation-delay:150ms]">
+                <div className="p-3 sm:p-4 bg-purple-500/10 rounded-xl border border-purple-500/30 animate-slide-up [animation-delay:150ms]">
                   <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 rounded-lg bg-purple-500/20 flex items-center justify-center">
+                    <div className="h-10 w-10 rounded-lg bg-purple-500/20 flex items-center justify-center flex-shrink-0">
                       <MapPin className="h-5 w-5 text-purple-600 dark:text-purple-400" />
                     </div>
-                    <div className="flex-1">
+                    <div className="flex-1 min-w-0">
                       <p className="text-xs text-muted-foreground font-medium mb-1">Endereço do Atendimento</p>
-                      <p className="text-sm font-semibold text-foreground">{formData.homeAddress}</p>
+                      <p className="text-sm font-semibold text-foreground break-words">{formData.homeAddress}</p>
                     </div>
                   </div>
                 </div>
               )}
 
               {/* Service & Payment Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 {/* Service Card */}
-                <div className="group p-5 bg-muted/30 rounded-xl border border-border/50 hover:border-primary/30 hover:shadow-lg transition-all duration-300 animate-slide-up [animation-delay:200ms]">
+                <div className="group p-4 sm:p-5 bg-muted/30 rounded-xl border border-border/50 hover:border-primary/30 hover:shadow-lg transition-all duration-300 animate-slide-up [animation-delay:200ms]">
                   <div className="flex items-start gap-3 mb-3">
-                    <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 flex-shrink-0">
                       <Stethoscope className="h-5 w-5 text-primary" />
                     </div>
-                    <div className="flex-1">
+                    <div className="flex-1 min-w-0">
                       <p className="text-xs text-muted-foreground font-medium mb-1">Serviço</p>
-                      <p className="text-lg font-bold text-foreground">{formData.service}</p>
+                      <p className="text-base sm:text-lg font-bold text-foreground break-words">{formData.service}</p>
                     </div>
                   </div>
                   <div className="pt-3 border-t border-border/50">
@@ -522,25 +523,25 @@ export const AppointmentCard = ({ open, onOpenChange }: AppointmentCardProps) =>
                 </div>
 
                 {/* Payment Card */}
-                <div className="group p-5 bg-muted/30 rounded-xl border border-border/50 hover:border-success/30 hover:shadow-lg transition-all duration-300 animate-slide-up [animation-delay:300ms]">
+                <div className="group p-4 sm:p-5 bg-muted/30 rounded-xl border border-border/50 hover:border-success/30 hover:shadow-lg transition-all duration-300 animate-slide-up [animation-delay:300ms]">
                   <div className="flex items-start gap-3 mb-3">
-                    <div className="h-10 w-10 rounded-lg bg-success/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    <div className="h-10 w-10 rounded-lg bg-success/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 flex-shrink-0">
                       <DollarSign className="h-5 w-5 text-success" />
                     </div>
-                    <div className="flex-1">
+                    <div className="flex-1 min-w-0">
                       <p className="text-xs text-muted-foreground font-medium mb-1">Valor do serviço</p>
-                      <p className="text-2xl font-bold text-success">R$ {formData.serviceValue}</p>
+                      <p className="text-xl sm:text-2xl font-bold text-success">R$ {formData.serviceValue}</p>
                     </div>
                   </div>
-                  <div className="pt-3 border-t border-border/50 flex items-center justify-between">
-                    <div>
+                  <div className="pt-3 border-t border-border/50 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-0">
+                    <div className="flex-1">
                       <p className="text-xs text-muted-foreground font-medium mb-1">Status do pagamento</p>
                       <p className="text-sm font-semibold text-warning">Pendente</p>
                     </div>
                     <Button 
                       size="sm" 
                       variant="default"
-                      className="shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 bg-gradient-to-r from-primary to-primary-glow border-0"
+                      className="shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 bg-gradient-to-r from-primary to-primary-glow border-0 w-full sm:w-auto"
                     >
                       <CreditCard className="h-3.5 w-3.5 mr-1.5" />
                       Cobrar
@@ -550,29 +551,29 @@ export const AppointmentCard = ({ open, onOpenChange }: AppointmentCardProps) =>
               </div>
 
               {/* Observations */}
-              <div className="p-5 bg-muted/30 rounded-xl border border-border/50 animate-slide-up [animation-delay:400ms]">
+              <div className="p-4 sm:p-5 bg-muted/30 rounded-xl border border-border/50 animate-slide-up [animation-delay:400ms]">
                 <div className="flex items-center gap-2 mb-3">
-                  <FileText className="h-4 w-4 text-primary" />
-                  <p className="text-sm font-semibold text-foreground">Observações</p>
+                  <FileText className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary" />
+                  <p className="text-xs sm:text-sm font-semibold text-foreground">Observações</p>
                 </div>
-                <p className="text-sm text-muted-foreground leading-relaxed">
+                <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
                   {formData.observations}
                 </p>
               </div>
 
               {/* Action Section */}
-              <div className="relative overflow-hidden p-6 bg-primary/5 rounded-2xl border border-primary/20 animate-slide-up [animation-delay:500ms] group">
-                <div className="relative space-y-4">
+              <div className="relative overflow-hidden p-4 sm:p-6 bg-primary/5 rounded-2xl border border-primary/20 animate-slide-up [animation-delay:500ms] group">
+                <div className="relative space-y-3 sm:space-y-4">
                   <div className="flex items-start gap-3">
-                    <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
-                      <Stethoscope className="h-6 w-6 text-primary" />
+                    <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+                      <Stethoscope className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
                     </div>
-                    <div className="flex-1">
-                      <h3 className="text-lg font-bold text-foreground mb-2 flex items-center gap-2">
-                        Iniciar Atendimento
-                        <ArrowRight className="h-5 w-5 text-primary group-hover:translate-x-1 transition-transform duration-300" />
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-base sm:text-lg font-bold text-foreground mb-2 flex items-center gap-2">
+                        <span>Iniciar Atendimento</span>
+                        <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5 text-primary group-hover:translate-x-1 transition-transform duration-300" />
                       </h3>
-                      <p className="text-sm text-muted-foreground leading-relaxed">
+                      <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
                         Abra o modo de atendimento para acompanhar cronômetro, registrar prontuário e criar prescrições. 
                         Todas as alterações são registradas automaticamente no histórico do paciente.
                       </p>
@@ -581,11 +582,11 @@ export const AppointmentCard = ({ open, onOpenChange }: AppointmentCardProps) =>
                   
                   <Button 
                     size="lg"
-                    className="w-full font-semibold shadow-lg hover:shadow-xl transition-all duration-300 group bg-gradient-to-r from-primary to-primary-glow border-0"
+                    className="w-full font-semibold shadow-lg hover:shadow-xl transition-all duration-300 group bg-gradient-to-r from-primary to-primary-glow border-0 h-11 sm:h-12"
                   >
-                    <Sparkles className="h-5 w-5 mr-2 group-hover:rotate-12 transition-transform duration-300" />
-                    Abrir Atendimento
-                    <ArrowRight className="h-5 w-5 ml-2 group-hover:translate-x-1 transition-transform duration-300" />
+                    <Sparkles className="h-4 w-4 sm:h-5 sm:w-5 mr-2 group-hover:rotate-12 transition-transform duration-300" />
+                    <span className="text-sm sm:text-base">Abrir Atendimento</span>
+                    <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5 ml-2 group-hover:translate-x-1 transition-transform duration-300" />
                   </Button>
                 </div>
               </div>
