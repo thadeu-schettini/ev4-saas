@@ -14,6 +14,7 @@ import { ConsultationHistory } from "@/components/ConsultationHistory";
 import { MedicalPrescription } from "@/components/MedicalPrescription";
 import { SafetyAnalysisDialog } from "@/components/SafetyAnalysisDialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { DynamicFormBuilder, FormSection } from "@/components/DynamicFormBuilder";
 
 // Validation schemas
 const vitalSignsSchema = z.object({
@@ -255,202 +256,305 @@ const Prontuario = () => {
     }
   };
 
-  const renderFormFields = () => {
+  // Dynamic form sections based on form type
+  const getFormSections = (): FormSection[] => {
     switch (formType) {
       case 'soap':
-        return (
-          <>
-            <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow">
-              <CardHeader className="pb-3 bg-muted/30">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-lg bg-primary/10">
-                      <User2 className="h-5 w-5 text-primary" />
-                    </div>
-                    <div>
-                      <CardTitle className="text-lg">Subjetivo</CardTitle>
-                      <p className="text-xs text-muted-foreground mt-0.5">Queixa principal e história</p>
-                    </div>
-                  </div>
-                  <Button size="sm" variant="outline" className="gap-2" onClick={() => handleAIAnalysis('sintomas')}>
-                    <Brain className="h-4 w-4" />
-                    IA Analisar
-                  </Button>
-                </div>
-              </CardHeader>
-              <CardContent className="pt-4">
-                <Textarea
-                  placeholder="Descreva a queixa principal, história da doença atual..."
-                  className="min-h-[140px] resize-none"
-                  value={consultationData.subjective}
-                  onChange={(e) => setConsultationData({...consultationData, subjective: e.target.value})}
-                />
-              </CardContent>
-            </Card>
-
-            <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow">
-              <CardHeader className="pb-3 bg-muted/30">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-lg bg-primary/10">
-                      <Activity className="h-5 w-5 text-primary" />
-                    </div>
-                    <div>
-                      <CardTitle className="text-lg">Objetivo</CardTitle>
-                      <p className="text-xs text-muted-foreground mt-0.5">Exame físico</p>
-                    </div>
-                  </div>
-                  <Button size="sm" variant="outline" className="gap-2" onClick={() => handleAIAnalysis('exame físico')}>
-                    <Brain className="h-4 w-4" />
-                    IA Analisar
-                  </Button>
-                </div>
-              </CardHeader>
-              <CardContent className="pt-4">
-                <Textarea
-                  placeholder="Registre os achados do exame físico..."
-                  className="min-h-[140px] resize-none"
-                  value={consultationData.objective}
-                  onChange={(e) => setConsultationData({...consultationData, objective: e.target.value})}
-                />
-              </CardContent>
-            </Card>
-
-            <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow">
-              <CardHeader className="pb-3 bg-muted/30">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-lg bg-primary/10">
-                      <Brain className="h-5 w-5 text-primary" />
-                    </div>
-                    <div>
-                      <CardTitle className="text-lg">Avaliação</CardTitle>
-                      <p className="text-xs text-muted-foreground mt-0.5">Hipóteses diagnósticas</p>
-                    </div>
-                  </div>
-                  <Button size="sm" variant="outline" className="gap-2" onClick={() => handleAIAnalysis('diagnósticos')}>
-                    <Sparkles className="h-4 w-4" />
-                    IA Sugerir
-                  </Button>
-                </div>
-              </CardHeader>
-              <CardContent className="pt-4">
-                <Textarea
-                  placeholder="Descreva as hipóteses diagnósticas..."
-                  className="min-h-[120px] resize-none"
-                  value={consultationData.assessment}
-                  onChange={(e) => setConsultationData({...consultationData, assessment: e.target.value})}
-                />
-              </CardContent>
-            </Card>
-
-            <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow">
-              <CardHeader className="pb-3 bg-muted/30">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-lg bg-primary/10">
-                      <FileText className="h-5 w-5 text-primary" />
-                    </div>
-                    <div>
-                      <CardTitle className="text-lg">Plano</CardTitle>
-                      <p className="text-xs text-muted-foreground mt-0.5">Conduta e tratamento</p>
-                    </div>
-                  </div>
-                  <Button size="sm" variant="outline" className="gap-2" onClick={() => handleAIAnalysis('tratamento')}>
-                    <Sparkles className="h-4 w-4" />
-                    IA Sugerir
-                  </Button>
-                </div>
-              </CardHeader>
-              <CardContent className="pt-4">
-                <Textarea
-                  placeholder="Descreva o plano terapêutico, medicações prescritas..."
-                  className="min-h-[140px] resize-none"
-                  value={consultationData.plan}
-                  onChange={(e) => setConsultationData({...consultationData, plan: e.target.value})}
-                />
-              </CardContent>
-            </Card>
-          </>
-        );
+        return [
+          {
+            id: 'subjetivo',
+            title: 'Subjetivo',
+            fields: [
+              {
+                id: 'queixa_principal',
+                label: 'Queixa Principal',
+                type: 'texto-longo',
+                required: true,
+                placeholder: 'Descreva a queixa principal do paciente...'
+              },
+              {
+                id: 'historia_doenca',
+                label: 'História da Doença Atual',
+                type: 'texto-longo',
+                placeholder: 'Descreva quando começou, evolução, fatores agravantes...'
+              }
+            ]
+          },
+          {
+            id: 'objetivo',
+            title: 'Objetivo',
+            fields: [
+              {
+                id: 'exame_fisico',
+                label: 'Exame Físico',
+                type: 'texto-longo',
+                placeholder: 'Registre os achados do exame físico...'
+              },
+              {
+                id: 'imagens_exame',
+                label: 'Imagens e Anexos do Exame',
+                type: 'imagens-anexos'
+              }
+            ]
+          },
+          {
+            id: 'avaliacao',
+            title: 'Avaliação',
+            fields: [
+              {
+                id: 'hipotese_diagnostica',
+                label: 'Hipótese Diagnóstica',
+                type: 'texto-longo',
+                required: true,
+                placeholder: 'Descreva as hipóteses diagnósticas...'
+              },
+              {
+                id: 'nivel_gravidade',
+                label: 'Nível de Gravidade',
+                type: 'escala',
+                scaleMin: 0,
+                scaleMax: 10
+              }
+            ]
+          },
+          {
+            id: 'plano',
+            title: 'Plano',
+            fields: [
+              {
+                id: 'conduta',
+                label: 'Conduta Terapêutica',
+                type: 'texto-longo',
+                placeholder: 'Descreva o plano terapêutico...'
+              },
+              {
+                id: 'retorno_necessario',
+                label: 'Retorno Necessário?',
+                type: 'sim-nao'
+              },
+              {
+                id: 'data_retorno',
+                label: 'Data do Retorno',
+                type: 'data'
+              }
+            ]
+          }
+        ];
 
       case 'anamnesis':
-        return (
-          <>
-            <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow">
-              <CardHeader className="pb-3 bg-muted/30">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg bg-primary/10">
-                    <Clipboard className="h-5 w-5 text-primary" />
-                  </div>
-                  <div>
-                    <CardTitle className="text-lg">Queixa Principal</CardTitle>
-                    <p className="text-xs text-muted-foreground mt-0.5">Motivo da consulta</p>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent className="pt-4">
-                <Textarea
-                  placeholder="Qual o motivo principal da consulta?"
-                  className="min-h-[100px] resize-none"
-                  value={consultationData.chiefComplaint}
-                  onChange={(e) => setConsultationData({...consultationData, chiefComplaint: e.target.value})}
-                />
-              </CardContent>
-            </Card>
-
-            <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow">
-              <CardHeader className="pb-3 bg-muted/30">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg bg-primary/10">
-                    <ClipboardList className="h-5 w-5 text-primary" />
-                  </div>
-                  <div>
-                    <CardTitle className="text-lg">História da Doença Atual</CardTitle>
-                    <p className="text-xs text-muted-foreground mt-0.5">Evolução dos sintomas</p>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent className="pt-4">
-                <Textarea
-                  placeholder="Descreva quando começou, como evoluiu, fatores que pioram/melhoram..."
-                  className="min-h-[160px] resize-none"
-                  value={consultationData.history}
-                  onChange={(e) => setConsultationData({...consultationData, history: e.target.value})}
-                />
-              </CardContent>
-            </Card>
-          </>
-        );
+        return [
+          {
+            id: 'identificacao',
+            title: 'Identificação e Queixa',
+            fields: [
+              {
+                id: 'queixa_principal',
+                label: 'Queixa Principal',
+                type: 'texto-longo',
+                required: true,
+                placeholder: 'Motivo principal da consulta...'
+              },
+              {
+                id: 'duracao_sintomas',
+                label: 'Há quanto tempo?',
+                type: 'texto-curto',
+                placeholder: 'Ex: 3 dias, 2 semanas...'
+              }
+            ]
+          },
+          {
+            id: 'historia',
+            title: 'História da Doença Atual',
+            fields: [
+              {
+                id: 'inicio_sintomas',
+                label: 'Como os sintomas começaram?',
+                type: 'texto-longo',
+                placeholder: 'Descreva o início e evolução...'
+              },
+              {
+                id: 'fatores_piora',
+                label: 'Fatores que Pioram',
+                type: 'lista-multipla',
+                options: ['Movimento', 'Repouso', 'Alimentação', 'Estresse', 'Frio', 'Calor', 'Outros']
+              },
+              {
+                id: 'fatores_melhora',
+                label: 'Fatores que Melhoram',
+                type: 'lista-multipla',
+                options: ['Repouso', 'Medicação', 'Alimentação', 'Exercício', 'Outros']
+              }
+            ]
+          },
+          {
+            id: 'antecedentes',
+            title: 'Antecedentes',
+            fields: [
+              {
+                id: 'doencas_previas',
+                label: 'Doenças Prévias',
+                type: 'lista-multipla',
+                options: ['Hipertensão', 'Diabetes', 'Cardiopatia', 'Asma', 'Outros']
+              },
+              {
+                id: 'cirurgias_previas',
+                label: 'Cirurgias Prévias',
+                type: 'texto-longo',
+                placeholder: 'Liste cirurgias realizadas...'
+              },
+              {
+                id: 'medicacoes_uso',
+                label: 'Medicações em Uso',
+                type: 'texto-longo',
+                placeholder: 'Liste medicações atuais...'
+              },
+              {
+                id: 'alergias',
+                label: 'Alergias',
+                type: 'texto-longo',
+                placeholder: 'Medicamentos, alimentos, outros...'
+              }
+            ]
+          },
+          {
+            id: 'habitos',
+            title: 'Hábitos de Vida',
+            fields: [
+              {
+                id: 'tabagismo',
+                label: 'Tabagismo',
+                type: 'sim-nao'
+              },
+              {
+                id: 'etilismo',
+                label: 'Consumo de Álcool',
+                type: 'sim-nao'
+              },
+              {
+                id: 'atividade_fisica',
+                label: 'Pratica Atividade Física?',
+                type: 'sim-nao'
+              },
+              {
+                id: 'qualidade_sono',
+                label: 'Qualidade do Sono',
+                type: 'escala',
+                scaleMin: 0,
+                scaleMax: 10
+              }
+            ]
+          },
+          {
+            id: 'documentos',
+            title: 'Documentos e Exames',
+            fields: [
+              {
+                id: 'exames_anteriores',
+                label: 'Exames Anteriores (PDF/Imagens)',
+                type: 'imagens-anexos'
+              }
+            ]
+          }
+        ];
 
       case 'return':
-        return (
-          <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow">
-            <CardHeader className="pb-3 bg-muted/30">
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-primary/10">
-                  <FileText className="h-5 w-5 text-primary" />
-                </div>
-                <div>
-                  <CardTitle className="text-lg">Evolução do Quadro</CardTitle>
-                  <p className="text-xs text-muted-foreground mt-0.5">Como está desde a última consulta?</p>
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent className="pt-4">
-              <Textarea
-                placeholder="Descreva a evolução do paciente desde o último atendimento, aderência ao tratamento, novos sintomas..."
-                className="min-h-[200px] resize-none"
-                value={consultationData.plan}
-                onChange={(e) => setConsultationData({...consultationData, plan: e.target.value})}
-              />
-            </CardContent>
-          </Card>
-        );
+        return [
+          {
+            id: 'evolucao',
+            title: 'Evolução do Quadro',
+            fields: [
+              {
+                id: 'melhora_sintomas',
+                label: 'Houve melhora dos sintomas?',
+                type: 'sim-nao',
+                required: true
+              },
+              {
+                id: 'evolucao_descricao',
+                label: 'Descreva a Evolução',
+                type: 'texto-longo',
+                placeholder: 'Como o paciente evoluiu desde a última consulta...'
+              },
+              {
+                id: 'nivel_melhora',
+                label: 'Nível de Melhora (0-10)',
+                type: 'escala',
+                scaleMin: 0,
+                scaleMax: 10
+              }
+            ]
+          },
+          {
+            id: 'aderencia',
+            title: 'Aderência ao Tratamento',
+            fields: [
+              {
+                id: 'seguiu_prescricao',
+                label: 'Seguiu a prescrição corretamente?',
+                type: 'sim-nao'
+              },
+              {
+                id: 'dificuldades',
+                label: 'Dificuldades Encontradas',
+                type: 'lista-multipla',
+                options: ['Custo', 'Esquecimento', 'Efeitos colaterais', 'Dificuldade de acesso', 'Outros']
+              },
+              {
+                id: 'detalhes_dificuldades',
+                label: 'Detalhes das Dificuldades',
+                type: 'texto-longo',
+                placeholder: 'Descreva os problemas encontrados...'
+              }
+            ]
+          },
+          {
+            id: 'novos_sintomas',
+            title: 'Novos Sintomas',
+            fields: [
+              {
+                id: 'sintomas_novos',
+                label: 'Surgiram novos sintomas?',
+                type: 'sim-nao'
+              },
+              {
+                id: 'descricao_novos',
+                label: 'Descrição dos Novos Sintomas',
+                type: 'texto-longo',
+                placeholder: 'Descreva os novos sintomas, se houver...'
+              }
+            ]
+          },
+          {
+            id: 'plano_continuidade',
+            title: 'Plano de Continuidade',
+            fields: [
+              {
+                id: 'manter_tratamento',
+                label: 'Manter Tratamento Atual?',
+                type: 'sim-nao'
+              },
+              {
+                id: 'ajustes_necessarios',
+                label: 'Ajustes Necessários',
+                type: 'texto-longo',
+                placeholder: 'Descreva ajustes no tratamento, se necessário...'
+              },
+              {
+                id: 'novo_retorno',
+                label: 'Data do Próximo Retorno',
+                type: 'data'
+              }
+            ]
+          }
+        ];
 
       default:
-        return null;
+        return [];
     }
+  };
+
+  const renderFormFields = () => {
+    return <DynamicFormBuilder sections={getFormSections()} />;
   };
 
   return (
