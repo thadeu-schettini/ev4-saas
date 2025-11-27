@@ -10,6 +10,7 @@ import { Calendar, Clock, Heart, Activity, FileText, Stethoscope, Phone, Mail, A
 import { useState, useEffect, useRef } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { z } from "zod";
+import { ConsultationHistory } from "@/components/ConsultationHistory";
 
 // Validation schemas
 const vitalSignsSchema = z.object({
@@ -508,10 +509,7 @@ const Prontuario = () => {
 
               {/* Right: Actions */}
               <div className="flex items-center gap-2">
-                <Button variant="outline" size="sm" className="gap-2">
-                  <FileSearch className="h-4 w-4" />
-                  Histórico
-                </Button>
+                <ConsultationHistory />
                 <Button size="sm" className="gap-2">
                   <Save className="h-4 w-4" />
                   Salvar
