@@ -5,9 +5,28 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Calendar, Clock, Heart, Activity, FileText, Stethoscope, Phone, Mail, AlertCircle, TrendingUp, Droplets, Wind, Sparkles, Brain, FileSearch, PlayCircle, PauseCircle, StopCircle, Save, Send, Zap, User2, Thermometer, Pill, Mic, MicOff, Clipboard, ClipboardList } from "lucide-react";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Calendar, Clock, Heart, Activity, FileText, Stethoscope, Phone, Mail, AlertCircle, TrendingUp, Droplets, Wind, Sparkles, Brain, FileSearch, PlayCircle, PauseCircle, StopCircle, Save, Send, Zap, User2, Thermometer, Pill, Mic, MicOff, Clipboard, ClipboardList, MessageSquare } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { z } from "zod";
+
+// Validation schemas
+const vitalSignsSchema = z.object({
+  heartRate: z.string().regex(/^\d+$/, "Apenas números").min(1, "Obrigatório"),
+  bloodPressure: z.string().regex(/^\d+\/\d+$/, "Formato: 120/80"),
+  temperature: z.string().regex(/^\d+\.?\d*$/, "Formato: 36.5"),
+  oxygenSaturation: z.string().regex(/^\d+$/, "Apenas números").refine(val => parseInt(val) <= 100, "Máximo 100%")
+});
+
+type VitalSigns = z.infer<typeof vitalSignsSchema>;
+
+type AIMessage = {
+  id: string;
+  question: string;
+  answer: string;
+  timestamp: Date;
+};
 
 const Prontuario = () => {
   const { toast } = useToast();
@@ -15,6 +34,15 @@ const Prontuario = () => {
   const [elapsedTime, setElapsedTime] = useState(0);
   const [formType, setFormType] = useState('soap');
   const [isRecording, setIsRecording] = useState(false);
+  const [vitalSigns, setVitalSigns] = useState<VitalSigns>({
+    heartRate: '72',
+    bloodPressure: '120/80',
+    temperature: '36.5',
+    oxygenSaturation: '98'
+  });
+  const [aiQuestion, setAiQuestion] = useState('');
+  const [aiMessages, setAiMessages] = useState<AIMessage[]>([]);
+  const [isAskingAI, setIsAskingAI] = useState(false);
   const [consultationData, setConsultationData] = useState({
     subjective: '',
     objective: '',
@@ -28,6 +56,7 @@ const Prontuario = () => {
   });
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
+  const aiScrollRef = useRef<HTMLDivElement>(null);
 
   // Timer effect
   useEffect(() => {
@@ -146,6 +175,78 @@ const Prontuario = () => {
         description: "Não foi possível transcrever o áudio.",
         variant: "destructive",
       });
+    }
+  };
+
+  const handleVitalSignChange = (field: keyof VitalSigns, value: string) => {
+    setVitalSigns(prev => ({ ...prev, [field]: value }));
+  };
+
+  const validateVitalSigns = () => {
+    try {
+      vitalSignsSchema.parse(vitalSigns);
+      toast({
+        title: "Sinais Vitais Validados",
+        description: "Todos os valores estão corretos.",
+      });
+      return true;
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        toast({
+          title: "Erro na Validação",
+          description: error.errors[0].message,
+          variant: "destructive",
+        });
+      }
+      return false;
+    }
+  };
+
+  const handleAskAI = async () => {
+    if (!aiQuestion.trim()) {
+      toast({
+        title: "Pergunta vazia",
+        description: "Digite uma pergunta para a IA.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsAskingAI(true);
+    
+    try {
+      // Simulate AI response (in production, call edge function)
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      const newMessage: AIMessage = {
+        id: Date.now().toString(),
+        question: aiQuestion,
+        answer: `Resposta simulada para: "${aiQuestion}". Em produção, isso seria processado por IA com base no contexto do prontuário, sinais vitais e histórico do paciente.`,
+        timestamp: new Date()
+      };
+
+      setAiMessages(prev => [...prev, newMessage]);
+      setAiQuestion('');
+      
+      // Scroll to bottom
+      setTimeout(() => {
+        if (aiScrollRef.current) {
+          aiScrollRef.current.scrollTop = aiScrollRef.current.scrollHeight;
+        }
+      }, 100);
+
+      toast({
+        title: "IA Respondeu",
+        description: "Confira a resposta abaixo.",
+      });
+    } catch (error) {
+      toast({
+        title: "Erro ao consultar IA",
+        description: "Tente novamente.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsAskingAI(false);
     }
   };
 
@@ -477,54 +578,148 @@ const Prontuario = () => {
           {/* Vital Signs */}
           <Card className="border shadow-sm">
             <CardHeader className="pb-3">
-              <CardTitle className="text-lg flex items-center gap-2">
-                <Activity className="h-5 w-5 text-primary" />
-                Sinais Vitais
-              </CardTitle>
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <Activity className="h-5 w-5 text-primary" />
+                  Sinais Vitais
+                </CardTitle>
+                <Button size="sm" variant="ghost" onClick={validateVitalSigns}>
+                  <Save className="h-4 w-4" />
+                </Button>
+              </div>
             </CardHeader>
             <CardContent className="space-y-3">
-              <div className="flex items-center justify-between p-3 rounded-lg bg-muted/30 border">
+              <div className="space-y-2">
                 <div className="flex items-center gap-2">
                   <Heart className="h-4 w-4 text-red-500" />
-                  <span className="text-sm font-medium">FC</span>
+                  <label className="text-sm font-medium">FC (bpm)</label>
                 </div>
-                <span className="text-lg font-bold">72 bpm</span>
+                <Input
+                  type="text"
+                  value={vitalSigns.heartRate}
+                  onChange={(e) => handleVitalSignChange('heartRate', e.target.value)}
+                  placeholder="72"
+                  className="h-9"
+                />
               </div>
-              <div className="flex items-center justify-between p-3 rounded-lg bg-muted/30 border">
+
+              <div className="space-y-2">
                 <div className="flex items-center gap-2">
                   <TrendingUp className="h-4 w-4 text-blue-500" />
-                  <span className="text-sm font-medium">PA</span>
+                  <label className="text-sm font-medium">PA (mmHg)</label>
                 </div>
-                <span className="text-lg font-bold">120/80</span>
+                <Input
+                  type="text"
+                  value={vitalSigns.bloodPressure}
+                  onChange={(e) => handleVitalSignChange('bloodPressure', e.target.value)}
+                  placeholder="120/80"
+                  className="h-9"
+                />
               </div>
-              <div className="flex items-center justify-between p-3 rounded-lg bg-muted/30 border">
+
+              <div className="space-y-2">
                 <div className="flex items-center gap-2">
                   <Thermometer className="h-4 w-4 text-orange-500" />
-                  <span className="text-sm font-medium">Temp</span>
+                  <label className="text-sm font-medium">Temp (°C)</label>
                 </div>
-                <span className="text-lg font-bold">36.5°C</span>
+                <Input
+                  type="text"
+                  value={vitalSigns.temperature}
+                  onChange={(e) => handleVitalSignChange('temperature', e.target.value)}
+                  placeholder="36.5"
+                  className="h-9"
+                />
               </div>
-              <div className="flex items-center justify-between p-3 rounded-lg bg-muted/30 border">
+
+              <div className="space-y-2">
                 <div className="flex items-center gap-2">
                   <Wind className="h-4 w-4 text-green-500" />
-                  <span className="text-sm font-medium">SpO₂</span>
+                  <label className="text-sm font-medium">SpO₂ (%)</label>
                 </div>
-                <span className="text-lg font-bold">98%</span>
+                <Input
+                  type="text"
+                  value={vitalSigns.oxygenSaturation}
+                  onChange={(e) => handleVitalSignChange('oxygenSaturation', e.target.value)}
+                  placeholder="98"
+                  className="h-9"
+                />
               </div>
             </CardContent>
           </Card>
 
-          {/* AI Assistant */}
-          <Card className="border shadow-sm bg-muted/30">
+          {/* AI Chat */}
+          <Card className="border shadow-sm">
             <CardHeader className="pb-3">
               <CardTitle className="text-lg flex items-center gap-2">
-                <Sparkles className="h-5 w-5 text-primary" />
-                Assistente IA
+                <MessageSquare className="h-5 w-5 text-primary" />
+                Consultar IA
               </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {/* Messages History */}
+              {aiMessages.length > 0 && (
+                <ScrollArea className="h-[200px] rounded-md border p-3" ref={aiScrollRef}>
+                  <div className="space-y-3">
+                    {aiMessages.map((msg) => (
+                      <div key={msg.id} className="space-y-2">
+                        <div className="bg-primary/10 rounded-lg p-2">
+                          <p className="text-xs font-semibold text-primary mb-1">Você</p>
+                          <p className="text-sm">{msg.question}</p>
+                        </div>
+                        <div className="bg-muted/50 rounded-lg p-2">
+                          <p className="text-xs font-semibold text-muted-foreground mb-1">IA</p>
+                          <p className="text-sm">{msg.answer}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </ScrollArea>
+              )}
+
+              {/* Input */}
+              <div className="space-y-2">
+                <Textarea
+                  placeholder="Faça uma pergunta sobre o caso clínico..."
+                  value={aiQuestion}
+                  onChange={(e) => setAiQuestion(e.target.value)}
+                  className="min-h-[80px] resize-none"
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                      e.preventDefault();
+                      handleAskAI();
+                    }
+                  }}
+                />
+                <Button 
+                  onClick={handleAskAI} 
+                  disabled={isAskingAI || !aiQuestion.trim()}
+                  className="w-full gap-2"
+                >
+                  {isAskingAI ? (
+                    <>
+                      <Sparkles className="h-4 w-4 animate-pulse" />
+                      Consultando...
+                    </>
+                  ) : (
+                    <>
+                      <Send className="h-4 w-4" />
+                      Perguntar
+                    </>
+                  )}
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Quick AI Actions */}
+          <Card className="border shadow-sm bg-muted/30">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm">Análises Rápidas</CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
               <Button 
                 variant="outline" 
+                size="sm"
                 className="w-full justify-start gap-2"
                 onClick={() => handleAIAnalysis('sintomas completos')}
               >
@@ -533,6 +728,7 @@ const Prontuario = () => {
               </Button>
               <Button 
                 variant="outline" 
+                size="sm"
                 className="w-full justify-start gap-2"
                 onClick={() => handleAIAnalysis('diagnóstico diferencial')}
               >
@@ -541,6 +737,7 @@ const Prontuario = () => {
               </Button>
               <Button 
                 variant="outline" 
+                size="sm"
                 className="w-full justify-start gap-2"
                 onClick={() => handleAIAnalysis('plano de tratamento')}
               >
