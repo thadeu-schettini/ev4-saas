@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { 
@@ -6,6 +7,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { 
   Calendar, 
   MessageCircle, 
@@ -16,15 +24,46 @@ import {
   DollarSign,
   CheckCircle2,
   Sparkles,
-  ArrowRight
+  ArrowRight,
+  AlertCircle,
+  XCircle,
+  UserX
 } from "lucide-react";
+
+type AppointmentStatus = 
+  | "pendente"
+  | "aguardando_confirmacao"
+  | "agendado"
+  | "confirmado"
+  | "remarcado"
+  | "realizado"
+  | "nao_compareceu"
+  | "cancelado_clinica"
+  | "cancelado_paciente";
 
 interface AppointmentCardProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
+const statusConfig: Record<AppointmentStatus, { label: string; color: string; icon: any }> = {
+  pendente: { label: "Pendente", color: "bg-orange-500", icon: AlertCircle },
+  aguardando_confirmacao: { label: "Aguardando confirmação", color: "bg-orange-500", icon: Clock },
+  agendado: { label: "Agendado", color: "bg-orange-500", icon: Calendar },
+  confirmado: { label: "Confirmado", color: "bg-blue-500", icon: CheckCircle2 },
+  remarcado: { label: "Remarcado", color: "bg-orange-500", icon: Calendar },
+  realizado: { label: "Realizado", color: "bg-green-500", icon: CheckCircle2 },
+  nao_compareceu: { label: "Não compareceu", color: "bg-red-500", icon: UserX },
+  cancelado_clinica: { label: "Cancelado (clínica)", color: "bg-red-500", icon: XCircle },
+  cancelado_paciente: { label: "Cancelado (paciente)", color: "bg-red-500", icon: XCircle },
+};
+
 export const AppointmentCard = ({ open, onOpenChange }: AppointmentCardProps) => {
+  const [status, setStatus] = useState<AppointmentStatus>("realizado");
+  
+  const currentStatus = statusConfig[status];
+  const StatusIcon = currentStatus.icon;
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-0 gap-0 bg-background">
@@ -56,10 +95,30 @@ export const AppointmentCard = ({ open, onOpenChange }: AppointmentCardProps) =>
               </div>
             </div>
 
-            <Badge className="bg-success text-success-foreground hover:bg-success/90 shadow-lg border-0 px-4 py-2 text-sm font-semibold animate-slide-up">
-              <CheckCircle2 className="h-4 w-4 mr-1.5" />
-              Concluída
-            </Badge>
+            <div className="flex flex-col gap-2 items-end">
+              <Badge className={`${currentStatus.color} text-white shadow-lg border-0 px-4 py-2 text-sm font-semibold animate-slide-up`}>
+                <StatusIcon className="h-4 w-4 mr-1.5" />
+                {currentStatus.label}
+              </Badge>
+              <Select value={status} onValueChange={(value) => setStatus(value as AppointmentStatus)}>
+                <SelectTrigger className="w-[220px] h-8 text-xs bg-white/20 backdrop-blur-sm border-white/30 text-white">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {Object.entries(statusConfig).map(([key, config]) => {
+                    const Icon = config.icon;
+                    return (
+                      <SelectItem key={key} value={key}>
+                        <div className="flex items-center gap-2">
+                          <div className={`h-2 w-2 rounded-full ${config.color}`} />
+                          <span>{config.label}</span>
+                        </div>
+                      </SelectItem>
+                    );
+                  })}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
         </div>
 
