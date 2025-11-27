@@ -134,52 +134,57 @@ const SortableAppointmentCard = ({ apt }: { apt: Appointment }) => {
     <div
       ref={setNodeRef}
       style={style}
-      className={`group p-4 bg-background/80 backdrop-blur-sm rounded-lg border border-border/50 hover:border-primary/30 hover:shadow-lg transition-all duration-300 ${
-        isDragging ? "cursor-grabbing shadow-2xl scale-105 z-50" : "cursor-grab"
+      className={`group relative p-3 bg-background/80 backdrop-blur-sm rounded-lg border border-border/50 hover:border-primary/30 hover:shadow-lg transition-all duration-300 ${
+        isDragging ? "cursor-grabbing shadow-2xl scale-105 z-50" : ""
       }`}
     >
-      <div className="flex items-start gap-3 mb-3">
-        <div
-          {...attributes}
-          {...listeners}
-          className="mt-1 cursor-grab active:cursor-grabbing hover:text-primary transition-colors"
-        >
-          <GripVertical className="h-4 w-4 text-muted-foreground" />
-        </div>
-        <Avatar className="h-10 w-10 border-2 border-primary/20">
-          <AvatarFallback className="bg-primary/10 text-primary font-semibold text-sm">
-            {apt.initials}
-          </AvatarFallback>
-        </Avatar>
-        <div className="flex-1 min-w-0">
-          <h4 className="text-sm font-semibold text-foreground truncate">{apt.patientName}</h4>
-          <p className="text-xs text-muted-foreground truncate">{apt.service}</p>
-        </div>
-      </div>
-
-      <div className="space-y-2 mb-3 ml-7">
-        <div className="flex items-center gap-2 text-xs">
-          <Clock className="h-3.5 w-3.5 text-primary flex-shrink-0" />
-          <span className="text-muted-foreground">{apt.time}</span>
-        </div>
-        <div className="flex items-center gap-2 text-xs">
-          <Stethoscope className="h-3.5 w-3.5 text-accent flex-shrink-0" />
-          <span className="text-muted-foreground truncate">{apt.professional}</span>
-        </div>
-        <div className="flex items-center gap-2 text-xs">
-          <DollarSign className="h-3.5 w-3.5 text-success flex-shrink-0" />
-          <span className="text-muted-foreground">{apt.price}</span>
-        </div>
-      </div>
-
-      <Button
-        size="sm"
-        variant="outline"
-        className="w-full text-xs hover:bg-primary/5 ml-7"
+      {/* Drag Handle - Posicionado absolutamente */}
+      <div
+        {...attributes}
+        {...listeners}
+        className="absolute left-1 top-1/2 -translate-y-1/2 cursor-grab active:cursor-grabbing hover:text-primary transition-colors p-1 rounded hover:bg-primary/5"
       >
-        <User className="h-3 w-3 mr-1" />
-        Ver Detalhes
-      </Button>
+        <GripVertical className="h-3.5 w-3.5 text-muted-foreground" />
+      </div>
+
+      {/* Content com padding left para não sobrepor o handle */}
+      <div className="pl-6">
+        <div className="flex items-start gap-2 mb-3">
+          <Avatar className="h-8 w-8 border-2 border-primary/20 flex-shrink-0">
+            <AvatarFallback className="bg-primary/10 text-primary font-semibold text-xs">
+              {apt.initials}
+            </AvatarFallback>
+          </Avatar>
+          <div className="flex-1 min-w-0">
+            <h4 className="text-xs font-semibold text-foreground truncate">{apt.patientName}</h4>
+            <p className="text-[10px] text-muted-foreground truncate">{apt.service}</p>
+          </div>
+        </div>
+
+        <div className="space-y-1.5 mb-3">
+          <div className="flex items-center gap-1.5 text-xs">
+            <Clock className="h-3 w-3 text-primary flex-shrink-0" />
+            <span className="text-muted-foreground text-[11px]">{apt.time}</span>
+          </div>
+          <div className="flex items-center gap-1.5 text-xs">
+            <Stethoscope className="h-3 w-3 text-accent flex-shrink-0" />
+            <span className="text-muted-foreground truncate text-[11px]">{apt.professional}</span>
+          </div>
+          <div className="flex items-center gap-1.5 text-xs">
+            <DollarSign className="h-3 w-3 text-success flex-shrink-0" />
+            <span className="text-muted-foreground text-[11px]">{apt.price}</span>
+          </div>
+        </div>
+
+        <Button
+          size="sm"
+          variant="outline"
+          className="w-full h-7 text-[11px] hover:bg-primary/5"
+        >
+          <User className="h-3 w-3 mr-1" />
+          Ver Detalhes
+        </Button>
+      </div>
     </div>
   );
 };
