@@ -396,7 +396,13 @@ export default function Configuracoes() {
                       {section.requiresActivation && (
                         <Tooltip>
                           <TooltipTrigger asChild>
-                            <div onClick={(e) => e.stopPropagation()}>
+                            <div 
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                e.preventDefault();
+                              }}
+                              className="relative z-50"
+                            >
                               <Switch
                                 checked={resources[section.id as keyof typeof resources] || false}
                                 onCheckedChange={(checked) => {
