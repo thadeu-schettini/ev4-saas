@@ -233,9 +233,9 @@ const Indicacoes = () => {
               <div>
                 <h3 className="text-lg font-bold mb-1 flex items-center gap-2">
                   <Trophy className="h-5 w-5 text-primary" />
-                  Progresso dos Níveis
+                  Nível e Progresso
                 </h3>
-                <p className="text-sm text-muted-foreground">Acompanhe sua evolução em cada nível</p>
+                <p className="text-sm text-muted-foreground">Continue indicando para subir de nível</p>
               </div>
               <Badge className={`bg-gradient-to-r ${currentLevel.color} text-white border-0 px-4 py-2 text-sm font-bold shadow-lg`}>
                 <Crown className="h-4 w-4 mr-1" />
@@ -243,67 +243,36 @@ const Indicacoes = () => {
               </Badge>
             </div>
 
-            <ScrollArea className="h-[320px]">
-              <div className="space-y-4 pr-4">
-                {allLevels.map((level, index) => {
-                  const isCurrentLevel = level.name === currentLevel.name;
-                  const isPastLevel = currentLevel.currentPoints > level.nextPoints;
-                  const isFutureLevel = currentLevel.currentPoints < level.points;
-                  
-                  let levelProgress = 0;
-                  if (isPastLevel) {
-                    levelProgress = 100;
-                  } else if (isCurrentLevel) {
-                    const pointsInLevel = currentLevel.currentPoints - level.points;
-                    const levelRange = level.nextPoints ? level.nextPoints - level.points : 1;
-                    levelProgress = (pointsInLevel / levelRange) * 100;
-                  }
-
-                  return (
-                    <Card 
-                      key={level.name}
-                      className={`p-4 transition-all ${
-                        isCurrentLevel 
-                          ? 'bg-gradient-to-r from-primary/10 to-primary/5 border-primary/30 shadow-md' 
-                          : isPastLevel
-                          ? 'bg-green-500/10 border-green-500/20'
-                          : 'bg-muted/30 border-border/50 opacity-60'
-                      }`}
-                    >
-                      <div className="flex items-center justify-between mb-3">
-                        <div className="flex items-center gap-3">
-                          <div className={`h-10 w-10 rounded-full bg-gradient-to-r ${level.color} flex items-center justify-center`}>
-                            {isPastLevel ? (
-                              <Check className="h-5 w-5 text-white" />
-                            ) : (
-                              <Crown className="h-5 w-5 text-white" />
-                            )}
-                          </div>
-                          <div>
-                            <h4 className="font-bold text-sm">{level.name}</h4>
-                            <p className="text-xs text-muted-foreground">
-                              {level.points} - {level.nextPoints ? `${level.nextPoints} pts` : '∞'}
-                            </p>
-                          </div>
-                        </div>
-                        {isCurrentLevel && (
-                          <Badge variant="secondary" className="text-xs">
-                            Nível Atual
-                          </Badge>
-                        )}
-                      </div>
-                      <div>
-                        <div className="flex justify-between text-xs mb-1">
-                          <span className="text-muted-foreground">Progresso</span>
-                          <span className="font-semibold">{levelProgress.toFixed(0)}%</span>
-                        </div>
-                        <Progress value={levelProgress} className="h-2" />
-                      </div>
-                    </Card>
-                  );
-                })}
+            <div className="space-y-4">
+              <div>
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-2xl font-bold text-foreground">{currentLevel.currentPoints} pts</span>
+                  <span className="text-sm text-muted-foreground">
+                    Rumo ao <span className="font-semibold text-foreground">{currentLevel.nextLevel}</span> ({currentLevel.pointsToNext} pts)
+                  </span>
+                </div>
+                <Progress value={currentLevel.progress} className="h-3 bg-muted" />
+                <div className="flex justify-between mt-2 text-xs text-muted-foreground">
+                  <span>{currentLevel.currentPoints} pontos totais</span>
+                  <span>{currentLevel.pointsToNext - currentLevel.currentPoints} pontos restantes</span>
+                </div>
               </div>
-            </ScrollArea>
+
+              <Card className="p-4 bg-gradient-to-r from-primary/5 to-primary/10 border-primary/20">
+                <div className="flex items-start gap-3">
+                  <div className="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
+                    <Zap className="h-5 w-5 text-primary" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold mb-1 text-sm">Dicas rápidas</h4>
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      Convide de 1 a 3 contas na semana para garantir os bônus em dobro. 
+                      Ajude o indicado a completar o onboarding para validar a recompensa.
+                    </p>
+                  </div>
+                </div>
+              </Card>
+            </div>
           </Card>
 
           {/* Stats Cards */}
