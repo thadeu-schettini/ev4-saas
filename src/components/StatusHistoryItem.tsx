@@ -51,45 +51,26 @@ export const StatusHistoryItem = ({
   const IconComponent = config.icon;
 
   return (
-    <div className="group relative px-4 py-3 hover:bg-gradient-to-r hover:from-muted/40 hover:to-transparent transition-all duration-300 animate-fade-in cursor-pointer">
-      {/* Timeline line */}
-      <div className="absolute left-[19px] top-0 bottom-0 w-px bg-gradient-to-b from-border via-border/50 to-transparent" />
-      
-      <div className="flex items-start gap-4">
-        {/* Timeline dot with icon */}
-        <div className="relative flex-shrink-0">
-          <div className={`relative z-10 h-10 w-10 rounded-xl bg-gradient-to-br ${config.gradient} flex items-center justify-center border-2 border-background group-hover:scale-110 group-hover:rotate-3 transition-all duration-300`}>
-            <IconComponent className={`h-4 w-4 ${config.dotColor.replace('bg-', 'text-')}`} />
-          </div>
-          <div className={`absolute inset-0 ${config.dotColor} opacity-20 rounded-xl blur-md group-hover:blur-lg transition-all duration-300`} />
+    <div className="group relative px-3 py-2 hover:bg-muted/30 transition-all duration-200 cursor-pointer border-l-2 border-transparent hover:border-primary/50">
+      <div className="flex items-center gap-2.5">
+        {/* Compact icon */}
+        <div className={`h-7 w-7 rounded-lg bg-gradient-to-br ${config.gradient} flex items-center justify-center flex-shrink-0`}>
+          <IconComponent className={`h-3.5 w-3.5 ${config.dotColor.replace('bg-', 'text-')}`} />
         </div>
 
-        {/* Content */}
-        <div className="flex-1 min-w-0 pt-1">
-          <div className="flex items-start justify-between gap-2 mb-2">
-            <Badge className={`${config.color} text-xs font-bold px-3 py-1 border-0 shadow-sm group-hover:shadow-md transition-shadow duration-300`}>
-              {config.label}
-            </Badge>
-          </div>
-          
-          <div className="space-y-1.5">
-            <div className="flex items-center gap-2">
-              <User className="h-3.5 w-3.5 text-muted-foreground flex-shrink-0" />
-              <span className="font-semibold text-foreground text-sm group-hover:text-primary transition-colors">{patientName}</span>
-            </div>
-            
-            <div className="flex items-center gap-2">
-              <Calendar className="h-3.5 w-3.5 text-muted-foreground flex-shrink-0" />
-              <span className="text-muted-foreground text-xs">{serviceName}</span>
-            </div>
-            
-            <div className="flex items-center gap-2 text-xs text-muted-foreground/80">
-              <Clock className="h-3 w-3 flex-shrink-0" />
-              <span>{timestamp}</span>
-              <span className="text-muted-foreground/60">•</span>
-              <span>{userName}</span>
-            </div>
-          </div>
+        {/* Condensed content */}
+        <div className="flex-1 min-w-0 flex items-center gap-2">
+          <Badge className={`${config.color} text-[10px] font-semibold px-2 py-0.5 border-0`}>
+            {config.label}
+          </Badge>
+          <span className="font-medium text-foreground text-xs truncate">{patientName}</span>
+          <span className="text-muted-foreground/60 text-xs">•</span>
+          <span className="text-muted-foreground text-[10px] truncate">{serviceName}</span>
+        </div>
+
+        {/* Compact timestamp */}
+        <div className="text-[10px] text-muted-foreground/70 flex-shrink-0">
+          {timestamp.split(' ')[1]}
         </div>
       </div>
     </div>
