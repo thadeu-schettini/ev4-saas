@@ -290,9 +290,9 @@ export const BillingModal = ({ open, onOpenChange, appointment }: BillingModalPr
                 />
               </div>
 
-              {/* Items */}
-              <div>
-                <div className="flex items-center justify-between mb-3">
+              {/* Items - Enhanced */}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
                   <Label className="text-sm font-semibold flex items-center gap-2">
                     <Receipt className="h-4 w-4 text-primary" />
                     Itens da Fatura
@@ -301,65 +301,63 @@ export const BillingModal = ({ open, onOpenChange, appointment }: BillingModalPr
                     onClick={addItem}
                     size="sm"
                     variant="outline"
-                    className="gap-2 h-9"
+                    className="gap-2 h-8 text-xs"
                   >
-                    <Plus className="h-4 w-4" />
-                    Adicionar
+                    <Plus className="h-3.5 w-3.5" />
+                    Novo
                   </Button>
                 </div>
 
-                <div className="space-y-3">
+                <div className="space-y-2">
                   {items.map((item, index) => (
-                    <div key={item.id} className="p-4 bg-card rounded-lg border border-border space-y-3">
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-semibold text-muted-foreground">
-                          Item {index + 1}
-                        </span>
-                        {items.length > 1 && (
-                          <Button
-                            onClick={() => removeItem(item.id)}
-                            size="icon"
-                            variant="ghost"
-                            className="h-7 w-7 text-destructive"
-                          >
-                            <Trash2 className="h-3.5 w-3.5" />
-                          </Button>
-                        )}
-                      </div>
-                      
+                    <div key={item.id} className="group p-4 bg-card rounded-lg border border-border hover:border-primary/30 transition-all">
                       <div className="space-y-3">
-                        <Input
-                          value={item.description}
-                          onChange={(e) => updateItem(item.id, "description", e.target.value)}
-                          placeholder="Descrição do serviço ou produto"
-                          className="h-10"
-                        />
+                        <div className="flex items-start gap-3">
+                          <div className="flex-1">
+                            <Input
+                              value={item.description}
+                              onChange={(e) => updateItem(item.id, "description", e.target.value)}
+                              placeholder="Descrição do item"
+                              className="h-9 font-medium"
+                            />
+                          </div>
+                          {items.length > 1 && (
+                            <Button
+                              onClick={() => removeItem(item.id)}
+                              size="icon"
+                              variant="ghost"
+                              className="h-9 w-9 text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          )}
+                        </div>
                         
-                        <div className="grid grid-cols-3 gap-2">
+                        <div className="grid grid-cols-3 gap-3">
                           <div>
-                            <Label className="text-xs text-muted-foreground mb-1">Qtde</Label>
+                            <Label className="text-xs text-muted-foreground mb-1.5">Quantidade</Label>
                             <Input
                               type="number"
                               min="1"
                               value={item.quantity}
                               onChange={(e) => updateItem(item.id, "quantity", Number(e.target.value))}
-                              className="h-10"
+                              className="h-9"
                             />
                           </div>
                           <div>
-                            <Label className="text-xs text-muted-foreground mb-1">Valor Un.</Label>
+                            <Label className="text-xs text-muted-foreground mb-1.5">Valor Unit.</Label>
                             <Input
                               type="number"
                               step="0.01"
                               min="0"
                               value={item.unitPrice}
                               onChange={(e) => updateItem(item.id, "unitPrice", Number(e.target.value))}
-                              className="h-10"
+                              className="h-9"
                             />
                           </div>
                           <div>
-                            <Label className="text-xs text-muted-foreground mb-1">Total</Label>
-                            <div className="h-10 flex items-center px-3 bg-muted/50 rounded-md font-semibold text-sm">
+                            <Label className="text-xs text-muted-foreground mb-1.5">Total</Label>
+                            <div className="h-9 flex items-center justify-end px-3 bg-primary/5 rounded-md font-bold text-sm text-primary border border-primary/20">
                               R$ {item.total.toFixed(2)}
                             </div>
                           </div>
@@ -368,33 +366,129 @@ export const BillingModal = ({ open, onOpenChange, appointment }: BillingModalPr
                     </div>
                   ))}
                 </div>
+
+                {/* Subtotal Display */}
+                <div className="p-4 bg-muted/30 rounded-lg border border-border">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-semibold text-muted-foreground">Subtotal dos Itens</span>
+                    <span className="text-lg font-bold text-foreground">
+                      R$ {totals.subtotal.toFixed(2)}
+                    </span>
+                  </div>
+                </div>
               </div>
 
-              {/* Payment Method */}
-              <div>
-                <Label className="text-sm font-semibold mb-3 flex items-center gap-2">
-                  <CreditCard className="h-4 w-4 text-primary" />
-                  Método de Pagamento
-                </Label>
-                <div className="grid grid-cols-2 gap-3">
-                  {paymentMethods.map((method) => {
-                    const Icon = method.icon;
-                    return (
-                      <button
-                        key={method.id}
-                        onClick={() => setPaymentMethod(method.id)}
-                        className={cn(
-                          "p-4 rounded-xl border-2 transition-all text-left",
-                          paymentMethod === method.id
-                            ? "border-primary bg-primary/5 shadow-md"
-                            : "border-border hover:border-primary/50"
-                        )}
+              {/* Payment Method & Installments - Integrated */}
+              <div className="p-5 bg-gradient-to-br from-card to-muted/30 rounded-xl border border-border space-y-5">
+                <div>
+                  <Label className="text-sm font-semibold mb-3 flex items-center gap-2">
+                    <CreditCard className="h-4 w-4 text-primary" />
+                    Forma de Pagamento
+                  </Label>
+                  <div className="grid grid-cols-2 gap-3">
+                    {paymentMethods.map((method) => {
+                      const Icon = method.icon;
+                      return (
+                        <button
+                          key={method.id}
+                          onClick={() => setPaymentMethod(method.id)}
+                          className={cn(
+                            "p-4 rounded-xl border-2 transition-all text-left",
+                            paymentMethod === method.id
+                              ? "border-primary bg-primary/5 shadow-md"
+                              : "border-border hover:border-primary/50"
+                          )}
+                        >
+                          <Icon className={cn("h-5 w-5 mb-2", method.color)} />
+                          <p className="text-sm font-semibold">{method.label}</p>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                <Separator />
+
+                {/* Installments */}
+                <div className="space-y-3">
+                  <Label className="text-sm font-semibold flex items-center gap-2">
+                    <CalendarDays className="h-4 w-4 text-primary" />
+                    Parcelamento
+                  </Label>
+                  
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <Label htmlFor="installments" className="text-xs text-muted-foreground mb-2">
+                        Número de Parcelas
+                      </Label>
+                      <Select 
+                        value={installments.toString()} 
+                        onValueChange={(value) => setInstallments(Number(value))}
                       >
-                        <Icon className={cn("h-5 w-5 mb-2", method.color)} />
-                        <p className="text-sm font-semibold">{method.label}</p>
-                      </button>
-                    );
-                  })}
+                        <SelectTrigger id="installments" className="h-11">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((num) => (
+                            <SelectItem key={num} value={num.toString()}>
+                              {num === 1 ? "À vista" : `${num}x de R$ ${(totals.total / num).toFixed(2)}`}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    {installments > 1 && (
+                      <div>
+                        <Label htmlFor="interval" className="text-xs text-muted-foreground mb-2">
+                          Intervalo
+                        </Label>
+                        <Select 
+                          value={installmentInterval.toString()} 
+                          onValueChange={(value) => setInstallmentInterval(Number(value))}
+                        >
+                          <SelectTrigger id="interval" className="h-11">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="7">Semanal</SelectItem>
+                            <SelectItem value="15">Quinzenal</SelectItem>
+                            <SelectItem value="30">Mensal</SelectItem>
+                            <SelectItem value="60">Bimestral</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    )}
+                  </div>
+
+                  {installments > 1 && (
+                    <div className="p-4 bg-primary/5 rounded-lg border border-primary/20 space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-muted-foreground">Valor de cada parcela</span>
+                        <span className="text-lg font-bold text-primary">
+                          R$ {totals.installmentValue.toFixed(2)}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="text-muted-foreground">
+                          Primeira parcela vence em
+                        </span>
+                        <span className="font-semibold">
+                          {new Date(dueDate).toLocaleDateString('pt-BR')}
+                        </span>
+                      </div>
+                      {installmentDates.length > 1 && (
+                        <div className="flex items-center justify-between text-xs">
+                          <span className="text-muted-foreground">
+                            Última parcela vence em
+                          </span>
+                          <span className="font-semibold">
+                            {new Date(installmentDates[installmentDates.length - 1]).toLocaleDateString('pt-BR')}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -454,82 +548,6 @@ export const BillingModal = ({ open, onOpenChange, appointment }: BillingModalPr
                     </p>
                   </div>
                 )}
-              </div>
-
-              {/* Installments */}
-              <div className="p-5 bg-gradient-to-br from-card to-muted/30 rounded-xl border border-border space-y-4">
-                <Label className="text-sm font-semibold flex items-center gap-2">
-                  <CalendarDays className="h-4 w-4 text-primary" />
-                  Parcelamento
-                  {installments > 1 && (
-                    <Badge variant="outline" className="text-xs ml-auto">
-                      <TrendingUp className="h-3 w-3 mr-1" />
-                      {installments}x de R$ {totals.installmentValue.toFixed(2)}
-                    </Badge>
-                  )}
-                </Label>
-                
-                <div className="space-y-3">
-                  <div>
-                    <Label htmlFor="installments" className="text-xs text-muted-foreground mb-2">
-                      Número de Parcelas
-                    </Label>
-                    <Select 
-                      value={installments.toString()} 
-                      onValueChange={(value) => setInstallments(Number(value))}
-                    >
-                      <SelectTrigger id="installments" className="h-11">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((num) => (
-                          <SelectItem key={num} value={num.toString()}>
-                            {num === 1 ? "À vista" : `${num}x de R$ ${(totals.total / num).toFixed(2)}`}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  {installments > 1 && (
-                    <div>
-                      <Label htmlFor="interval" className="text-xs text-muted-foreground mb-2">
-                        Intervalo entre Parcelas
-                      </Label>
-                      <Select 
-                        value={installmentInterval.toString()} 
-                        onValueChange={(value) => setInstallmentInterval(Number(value))}
-                      >
-                        <SelectTrigger id="interval" className="h-11">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="7">7 dias (semanal)</SelectItem>
-                          <SelectItem value="15">15 dias (quinzenal)</SelectItem>
-                          <SelectItem value="30">30 dias (mensal)</SelectItem>
-                          <SelectItem value="60">60 dias (bimestral)</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  )}
-
-                  {installments > 1 && (
-                    <div className="p-4 bg-primary/5 rounded-lg border border-primary/20">
-                      <p className="text-xs font-semibold text-foreground mb-3 flex items-center gap-2">
-                        <CalendarDays className="h-3.5 w-3.5 text-primary" />
-                        Datas de Vencimento das Parcelas
-                      </p>
-                      <div className="grid grid-cols-2 gap-2 max-h-[120px] overflow-y-auto">
-                        {installmentDates.map((date, index) => (
-                          <div key={index} className="flex items-center justify-between text-xs p-2 bg-background/50 rounded">
-                            <span className="text-muted-foreground">Parcela {index + 1}</span>
-                            <span className="font-semibold">{new Date(date).toLocaleDateString('pt-BR')}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
               </div>
 
               {/* Observations */}
@@ -715,42 +733,56 @@ export const BillingModal = ({ open, onOpenChange, appointment }: BillingModalPr
                       <>
                         <Separator />
                         <div>
-                          <p className="text-xs font-semibold text-muted-foreground mb-3 flex items-center gap-2">
-                            <CalendarDays className="h-3.5 w-3.5" />
-                            PARCELAMENTO ({installments}x)
-                          </p>
-                          <div className="space-y-2">
-                            {installmentDates.map((date, index) => (
-                              <div 
-                                key={index} 
-                                className={cn(
-                                  "flex justify-between items-center p-3 rounded-lg text-sm",
-                                  index === 0 ? "bg-primary/10 border border-primary/20" : "bg-muted/30"
-                                )}
-                              >
-                                <div>
-                                  <p className="font-semibold">
-                                    Parcela {index + 1}/{installments}
-                                  </p>
-                                  <p className="text-xs text-muted-foreground">
-                                    Venc: {new Date(date).toLocaleDateString('pt-BR')}
-                                  </p>
-                                </div>
-                                <p className="font-bold">
-                                  R$ {totals.installmentValue.toFixed(2)}
-                                </p>
-                              </div>
-                            ))}
+                          <div className="flex items-center justify-between mb-3">
+                            <p className="text-xs font-semibold text-muted-foreground flex items-center gap-2">
+                              <CalendarDays className="h-3.5 w-3.5" />
+                              PARCELAMENTO
+                            </p>
+                            <Badge variant="outline" className="text-xs">
+                              {installments}x parcelas
+                            </Badge>
                           </div>
                           
-                          {installmentInterval !== 30 && (
-                            <div className="mt-3 p-3 bg-blue-500/10 rounded-lg border border-blue-500/20">
-                              <p className="text-xs text-blue-600 dark:text-blue-400 flex items-center gap-1.5">
-                                <Clock className="h-3.5 w-3.5" />
-                                Intervalo de {installmentInterval} dias entre parcelas
-                              </p>
+                          <div className="space-y-3">
+                            <div className="p-4 bg-primary/5 rounded-lg border border-primary/20">
+                              <div className="flex items-center justify-between mb-2">
+                                <span className="text-sm text-muted-foreground">Valor de cada parcela</span>
+                                <span className="text-xl font-bold text-primary">
+                                  R$ {totals.installmentValue.toFixed(2)}
+                                </span>
+                              </div>
+                              <div className="flex items-center justify-between text-xs pt-2 border-t border-primary/20">
+                                <span className="text-muted-foreground">Total parcelado</span>
+                                <span className="font-semibold">
+                                  {installments}x de R$ {totals.installmentValue.toFixed(2)}
+                                </span>
+                              </div>
                             </div>
-                          )}
+
+                            <div className="grid grid-cols-2 gap-2 text-xs">
+                              <div className="p-2.5 bg-muted/30 rounded">
+                                <p className="text-muted-foreground mb-1">Primeira parcela</p>
+                                <p className="font-semibold">
+                                  {new Date(installmentDates[0]).toLocaleDateString('pt-BR')}
+                                </p>
+                              </div>
+                              <div className="p-2.5 bg-muted/30 rounded">
+                                <p className="text-muted-foreground mb-1">Última parcela</p>
+                                <p className="font-semibold">
+                                  {new Date(installmentDates[installmentDates.length - 1]).toLocaleDateString('pt-BR')}
+                                </p>
+                              </div>
+                            </div>
+
+                            {installmentInterval !== 30 && (
+                              <div className="p-2.5 bg-blue-500/10 rounded-lg border border-blue-500/20">
+                                <p className="text-xs text-blue-600 dark:text-blue-400 flex items-center gap-1.5">
+                                  <Clock className="h-3.5 w-3.5" />
+                                  Intervalo de {installmentInterval} dias entre parcelas
+                                </p>
+                              </div>
+                            )}
+                          </div>
                         </div>
                       </>
                     )}
