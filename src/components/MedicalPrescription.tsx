@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Trash2, Plus, FileText, Calendar } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { SignaturePad } from "@/components/SignaturePad";
+import { StampUpload } from "@/components/StampUpload";
 
 type Medication = {
   id: string;
@@ -324,13 +325,16 @@ export const MedicalPrescription = () => {
         </div>
       </div>
 
-      {/* Signature Section */}
+      {/* Professional Credentials Section */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">Assinatura do Profissional</CardTitle>
+          <CardTitle className="text-base">Credenciais do Profissional</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-6">
           <SignaturePad />
+          <div className="border-t pt-6">
+            <StampUpload />
+          </div>
         </CardContent>
       </Card>
 

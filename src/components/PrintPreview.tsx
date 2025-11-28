@@ -11,6 +11,7 @@ import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { useToast } from "@/hooks/use-toast";
 import { getStoredSignature } from "@/components/SignaturePad";
+import { getStoredStamp } from "@/components/StampUpload";
 
 type PrintSection = {
   id: string;
@@ -49,6 +50,7 @@ export const PrintPreview = ({ type, triggerLabel }: PrintPreviewProps) => {
   );
   const [template, setTemplate] = useState<"complete" | "simple">("complete");
   const savedSignature = getStoredSignature();
+  const savedStamp = getStoredStamp();
 
   const toggleSection = (sectionId: string) => {
     setSelectedSections(prev =>
@@ -157,16 +159,34 @@ export const PrintPreview = ({ type, triggerLabel }: PrintPreviewProps) => {
         {selectedSections.includes("signature") && (
           <div className="pt-12 mt-8 border-t">
             <div className="text-center space-y-4">
-              {savedSignature && (
-                <div className="flex justify-center mb-2">
-                  <img 
-                    src={savedSignature} 
-                    alt="Assinatura do médico" 
-                    className="h-16 object-contain"
-                  />
-                </div>
-              )}
-              <div className="w-64 mx-auto border-t-2 border-gray-800 pt-2">
+              <div className="flex items-center justify-center gap-8">
+                {/* Signature */}
+                {savedSignature && (
+                  <div className="flex flex-col items-center gap-2">
+                    <img 
+                      src={savedSignature} 
+                      alt="Assinatura do médico" 
+                      className="h-16 object-contain"
+                    />
+                    <div className="border-t-2 border-gray-800 pt-1 min-w-[200px]">
+                      <p className="text-xs text-gray-600">Assinatura</p>
+                    </div>
+                  </div>
+                )}
+                
+                {/* Stamp */}
+                {savedStamp && (
+                  <div className="flex flex-col items-center gap-2">
+                    <img 
+                      src={savedStamp} 
+                      alt="Carimbo do médico" 
+                      className="h-20 object-contain"
+                    />
+                  </div>
+                )}
+              </div>
+              
+              <div className="w-64 mx-auto pt-4">
                 <p className="font-bold">Dr. João da Silva</p>
                 <p className="text-sm">CRM/SP 123456</p>
                 <p className="text-xs text-gray-600">Cardiologista</p>
