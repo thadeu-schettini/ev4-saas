@@ -362,39 +362,51 @@ export default function Configuracoes() {
 
             {/* Configuration Cards Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {configSections.filter(s => s.id !== "recursos").map((section, index) => (
-                <Card
-                  key={section.id}
-                  className="group relative border-border/50 backdrop-blur-sm bg-card/95 hover:shadow-2xl transition-all duration-500 cursor-pointer overflow-hidden animate-fade-in hover:scale-105"
-                  style={{ animationDelay: `${index * 100}ms` }}
-                  onClick={() => changeSection(section.id)}
-                >
-                  {/* Gradient Background */}
-                  <div
-                    className={`absolute inset-0 bg-gradient-to-br ${section.color} opacity-0 group-hover:opacity-10 transition-opacity duration-500`}
-                  />
+              {configSections.filter(s => s.id !== "recursos").map((section, index) => {
+                const isInactive = section.requiresActivation && !resources[section.id as keyof typeof resources];
+                
+                return (
+                  <Card
+                    key={section.id}
+                    className={`group relative border-border/50 backdrop-blur-sm hover:shadow-2xl transition-all duration-500 cursor-pointer overflow-hidden animate-fade-in hover:scale-105 ${
+                      isInactive 
+                        ? 'bg-muted/30 border-2 border-dashed border-muted-foreground/30 opacity-60 hover:opacity-80' 
+                        : 'bg-card/95'
+                    }`}
+                    style={{ animationDelay: `${index * 100}ms` }}
+                    onClick={() => changeSection(section.id)}
+                  >
+                    {/* Inactive Overlay */}
+                    {isInactive && (
+                      <div className="absolute inset-0 bg-gradient-to-br from-muted/10 to-muted/5 pointer-events-none" />
+                    )}
 
-                  {/* Completion Ring */}
-                  <div className="absolute top-4 right-4 flex items-center gap-2">
-                    {section.badge && (
-                      <Badge variant="outline" className="text-xs">
-                        {section.badge}
-                      </Badge>
-                    )}
-                    {section.requiresActivation && !resources[section.id as keyof typeof resources] && (
-                      <Tooltip>
-                        <TooltipTrigger>
-                          <Badge variant="secondary" className="text-xs gap-1">
-                            <AlertCircle className="h-3 w-3" />
-                            Inativo
-                          </Badge>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>Ative este módulo em Recursos</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    )}
-                    <div className="relative w-12 h-12">
+                    {/* Gradient Background */}
+                    <div
+                      className={`absolute inset-0 bg-gradient-to-br ${section.color} opacity-0 group-hover:opacity-10 transition-opacity duration-500`}
+                    />
+
+                    {/* Completion Ring */}
+                    <div className="absolute top-4 right-4 flex items-center gap-2">
+                      {section.badge && (
+                        <Badge variant="outline" className="text-xs">
+                          {section.badge}
+                        </Badge>
+                      )}
+                      {isInactive && (
+                        <Tooltip>
+                          <TooltipTrigger>
+                            <Badge variant="destructive" className="text-sm gap-1.5 px-3 py-1 shadow-md animate-pulse">
+                              <AlertCircle className="h-4 w-4" />
+                              Inativo
+                            </Badge>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>Ative este módulo em Recursos para configurar</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      )}
+                      <div className="relative w-12 h-12">
                       <svg className="w-12 h-12 transform -rotate-90">
                         <circle
                           cx="24"
@@ -427,12 +439,16 @@ export default function Configuracoes() {
                   </div>
 
                   <CardHeader className="space-y-4">
-                    <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${section.color} p-4 shadow-lg group-hover:shadow-xl transition-shadow duration-300`}>
+                    <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${section.color} p-4 shadow-lg group-hover:shadow-xl transition-all duration-300 ${
+                      isInactive ? 'grayscale opacity-50' : ''
+                    }`}>
                       <section.icon className="h-full w-full text-white" />
                     </div>
 
                     <div className="space-y-2">
-                      <CardTitle className="text-xl group-hover:text-primary transition-colors">
+                      <CardTitle className={`text-xl transition-colors ${
+                        isInactive ? 'text-muted-foreground' : 'group-hover:text-primary'
+                      }`}>
                         {section.title}
                       </CardTitle>
                       <CardDescription className="text-sm line-clamp-2">
@@ -462,15 +478,21 @@ export default function Configuracoes() {
                     </div>
 
                     <Button
-                      className="w-full mt-6 group-hover:shadow-lg transition-shadow"
+                      className={`w-full mt-6 transition-all ${
+                        isInactive 
+                          ? 'opacity-50 cursor-not-allowed' 
+                          : 'group-hover:shadow-lg'
+                      }`}
                       variant="outline"
+                      disabled={isInactive}
                     >
-                      Configurar
+                      {isInactive ? 'Ative em Recursos' : 'Configurar'}
                       <ArrowLeft className="h-4 w-4 ml-2 rotate-180 group-hover:translate-x-1 transition-transform" />
                     </Button>
                   </CardContent>
                 </Card>
-              ))}
+              );
+              })}
             </div>
 
             {/* Quick Actions */}
