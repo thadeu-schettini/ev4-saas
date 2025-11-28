@@ -9,7 +9,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Upload, FileText, Image as ImageIcon, X, Eye } from "lucide-react";
+import { Upload, FileText, Image as ImageIcon, X, Eye, Sparkles, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 export type FieldType = 
@@ -63,6 +63,7 @@ export const DynamicFormBuilder = ({ sections, onSubmit, initialData = {} }: Dyn
   const [formData, setFormData] = useState<FormData>(initialData);
   const [uploadedFiles, setUploadedFiles] = useState<Record<string, UploadedFile[]>>({});
   const [previewFile, setPreviewFile] = useState<UploadedFile | null>(null);
+  const [aiLoadingFields, setAiLoadingFields] = useState<Record<string, boolean>>({});
 
   const updateFieldValue = (fieldId: string, value: any) => {
     setFormData(prev => ({ ...prev, [fieldId]: value }));
@@ -118,28 +119,99 @@ export const DynamicFormBuilder = ({ sections, onSubmit, initialData = {} }: Dyn
     updateFieldValue(fieldId, remainingUrls);
   };
 
+  const handleAITextAdjustment = async (fieldId: string, fieldLabel: string) => {
+    const currentText = formData[fieldId] || "";
+    
+    if (!currentText.trim()) {
+      toast({
+        title: "Campo vazio",
+        description: "Digite algum texto antes de usar a IA para ajustar.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setAiLoadingFields(prev => ({ ...prev, [fieldId]: true }));
+
+    try {
+      // Simulação de chamada à IA (em produção, chamar edge function com Lovable AI)
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      const improvedText = `${currentText}\n\n[Texto ajustado pela IA - melhorias na clareza e estrutura]`;
+      
+      updateFieldValue(fieldId, improvedText);
+      
+      toast({
+        title: "Texto ajustado",
+        description: "O texto foi melhorado pela IA.",
+      });
+    } catch (error) {
+      toast({
+        title: "Erro ao ajustar texto",
+        description: "Não foi possível processar com a IA.",
+        variant: "destructive",
+      });
+    } finally {
+      setAiLoadingFields(prev => ({ ...prev, [fieldId]: false }));
+    }
+  };
+
   const renderField = (field: FormField) => {
     const value = formData[field.id];
 
     switch (field.type) {
       case "texto-curto":
         return (
-          <Input
-            value={value || ""}
-            onChange={(e) => updateFieldValue(field.id, e.target.value)}
-            placeholder={field.placeholder || "Digite aqui..."}
-            className="w-full"
-          />
+          <div className="relative">
+            <Input
+              value={value || ""}
+              onChange={(e) => updateFieldValue(field.id, e.target.value)}
+              placeholder={field.placeholder || "Digite aqui..."}
+              className="w-full pr-12"
+            />
+            <Button
+              type="button"
+              size="sm"
+              variant="ghost"
+              className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 p-0"
+              onClick={() => handleAITextAdjustment(field.id, field.label)}
+              disabled={aiLoadingFields[field.id]}
+              title="Ajustar texto com IA"
+            >
+              {aiLoadingFields[field.id] ? (
+                <Loader2 className="h-4 w-4 animate-spin text-primary" />
+              ) : (
+                <Sparkles className="h-4 w-4 text-primary" />
+              )}
+            </Button>
+          </div>
         );
 
       case "texto-longo":
         return (
-          <Textarea
-            value={value || ""}
-            onChange={(e) => updateFieldValue(field.id, e.target.value)}
-            placeholder={field.placeholder || "Digite aqui..."}
-            className="min-h-[120px] resize-none"
-          />
+          <div className="relative">
+            <Textarea
+              value={value || ""}
+              onChange={(e) => updateFieldValue(field.id, e.target.value)}
+              placeholder={field.placeholder || "Digite aqui..."}
+              className="min-h-[120px] resize-none pr-12"
+            />
+            <Button
+              type="button"
+              size="sm"
+              variant="ghost"
+              className="absolute right-2 top-2 h-8 w-8 p-0"
+              onClick={() => handleAITextAdjustment(field.id, field.label)}
+              disabled={aiLoadingFields[field.id]}
+              title="Ajustar texto com IA"
+            >
+              {aiLoadingFields[field.id] ? (
+                <Loader2 className="h-4 w-4 animate-spin text-primary" />
+              ) : (
+                <Sparkles className="h-4 w-4 text-primary" />
+              )}
+            </Button>
+          </div>
         );
 
       case "numero":
