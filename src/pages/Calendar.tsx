@@ -1,10 +1,9 @@
 import { CalendarFilters } from "@/components/CalendarFilters";
 import { AppointmentListItem } from "@/components/AppointmentListItem";
-import { StatusHistoryItem } from "@/components/StatusHistoryItem";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Calendar as CalendarIcon, History, Sparkles, ChevronLeft, ChevronRight, TrendingUp, Users, Clock } from "lucide-react";
+import { Calendar as CalendarIcon, Sparkles, ChevronLeft, ChevronRight, TrendingUp, Users, Clock } from "lucide-react";
 
 const Calendar = () => {
   const appointments = [
@@ -20,43 +19,6 @@ const Calendar = () => {
     { label: "Pendentes", value: "4", icon: Clock, color: "text-warning" },
   ];
 
-  const statusHistory = [
-    {
-      status: "rescheduled" as const,
-      patientName: "Paciente 36 Sanford",
-      serviceName: "Consulta Ortopedia",
-      timestamp: "27/11/2025 08:57",
-      userName: "Demo EV4"
-    },
-    {
-      status: "confirmed" as const,
-      patientName: "Paciente 36 Sanford",
-      serviceName: "Consulta Ortopedia",
-      timestamp: "27/11/2025 08:57",
-      userName: "Demo EV4"
-    },
-    {
-      status: "no_show" as const,
-      patientName: "Paciente 36 Sanford",
-      serviceName: "Consulta Ortopedia",
-      timestamp: "27/11/2025 08:57",
-      userName: "Demo EV4"
-    },
-    {
-      status: "completed" as const,
-      patientName: "Paciente 36 Sanford",
-      serviceName: "Consulta Ortopedia",
-      timestamp: "27/11/2025 08:57",
-      userName: "Demo EV4"
-    },
-    {
-      status: "confirmed" as const,
-      patientName: "Paciente 36 Sanford",
-      serviceName: "Consulta Ortopedia",
-      timestamp: "27/11/2025 08:57",
-      userName: "Demo EV4"
-    },
-  ];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
@@ -155,9 +117,9 @@ const Calendar = () => {
       {/* Main Content */}
       <div className="flex h-[calc(100vh-250px)]">
         {/* Left Sidebar - Optimized */}
-        <div className="w-[380px] border-r border-border/50 bg-card/50 backdrop-blur-sm flex flex-col shadow-lg">
+        <div className="w-[380px] border-r border-border/50 bg-card/50 backdrop-blur-sm shadow-lg">
           {/* Appointments List */}
-          <div className="flex-1 overflow-hidden flex flex-col">
+          <div className="h-full overflow-hidden flex flex-col">
             <div className="px-4 py-3 bg-gradient-to-r from-muted/40 to-transparent border-b border-border/30 flex-shrink-0">
               <div className="flex items-center justify-between">
                 <h3 className="font-bold text-foreground flex items-center gap-2 text-sm">
@@ -179,37 +141,6 @@ const Calendar = () => {
                     time={apt.time}
                     patientName={apt.patientName}
                     status={apt.status}
-                  />
-                ))}
-              </div>
-            </ScrollArea>
-          </div>
-
-          {/* Status History - Compact */}
-          <div className="border-t border-border/50 bg-gradient-to-b from-muted/20 to-muted/40 flex-shrink-0">
-            <div className="px-4 py-3 flex items-center justify-between bg-gradient-to-r from-muted/60 to-transparent">
-              <div className="flex items-center gap-2">
-                <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                  <History className="h-4 w-4 text-primary" />
-                </div>
-                <h3 className="font-bold text-foreground text-sm">
-                  Histórico de Status
-                </h3>
-              </div>
-              <Badge variant="secondary" className="text-xs font-semibold bg-background/80 border-0">
-                {statusHistory.length} recentes
-              </Badge>
-            </div>
-            <ScrollArea className="h-[280px]">
-              <div className="pb-2">
-                {statusHistory.map((item, index) => (
-                  <StatusHistoryItem
-                    key={index}
-                    status={item.status}
-                    patientName={item.patientName}
-                    serviceName={item.serviceName}
-                    timestamp={item.timestamp}
-                    userName={item.userName}
                   />
                 ))}
               </div>
