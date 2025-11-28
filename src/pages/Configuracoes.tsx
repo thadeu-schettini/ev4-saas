@@ -1252,9 +1252,18 @@ export default function Configuracoes() {
                         <Badge variant="outline">BETA</Badge>
                       </CardTitle>
                     </div>
-                    <Badge variant="secondary">
-                      {Object.values(autopilotConfig).filter(Boolean).length}/4 ativas
-                    </Badge>
+                    <div className="flex items-center gap-3">
+                      <span className="text-sm text-muted-foreground">
+                        {resources.autopilot ? "Módulo Ativo" : "Módulo Desativado"}
+                      </span>
+                      <Switch
+                        checked={resources.autopilot}
+                        onCheckedChange={(checked) => {
+                          setResources({ ...resources, autopilot: checked });
+                          toast.success(checked ? "Autopilot ativado!" : "Autopilot desativado");
+                        }}
+                      />
+                    </div>
                   </div>
                   <CardDescription>
                     Configure automações inteligentes para otimizar o fluxo de trabalho
@@ -1272,25 +1281,62 @@ export default function Configuracoes() {
                           Ative o módulo Autopilot para configurar automações inteligentes e IA
                         </p>
                       </div>
-                      <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                        <div className="flex items-center gap-3 p-4 rounded-lg border-2 border-primary/50 bg-primary/5">
-                          <span className="text-sm font-medium">Ativar Autopilot</span>
-                          <Switch
-                            checked={false}
-                            onCheckedChange={(checked) => {
-                              setResources({ ...resources, autopilot: checked });
-                              toast.success("Autopilot ativado! Configure as opções abaixo.");
-                            }}
-                          />
+                      
+                      {/* Recursos Disponíveis */}
+                      <div className="max-w-2xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
+                        <div className="p-4 rounded-lg border border-violet-500/20 bg-violet-500/5">
+                          <div className="flex items-center gap-2 mb-2">
+                            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-500 to-purple-500 flex items-center justify-center">
+                              <Bot className="h-4 w-4 text-white" />
+                            </div>
+                            <h4 className="font-semibold text-sm">Resposta Automática</h4>
+                          </div>
+                          <p className="text-xs text-muted-foreground">
+                            Respostas inteligentes em tempo real
+                          </p>
+                        </div>
+                        <div className="p-4 rounded-lg border border-violet-500/20 bg-violet-500/5">
+                          <div className="flex items-center gap-2 mb-2">
+                            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-500 to-purple-500 flex items-center justify-center">
+                              <Clock className="h-4 w-4 text-white" />
+                            </div>
+                            <h4 className="font-semibold text-sm">Lembretes Automáticos</h4>
+                          </div>
+                          <p className="text-xs text-muted-foreground">
+                            Confirmações e follow-ups inteligentes
+                          </p>
+                        </div>
+                        <div className="p-4 rounded-lg border border-violet-500/20 bg-violet-500/5">
+                          <div className="flex items-center gap-2 mb-2">
+                            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-500 to-purple-500 flex items-center justify-center">
+                              <Users className="h-4 w-4 text-white" />
+                            </div>
+                            <h4 className="font-semibold text-sm">Follow-up de Pacientes</h4>
+                          </div>
+                          <p className="text-xs text-muted-foreground">
+                            Acompanhamento pós-consulta automatizado
+                          </p>
+                        </div>
+                        <div className="p-4 rounded-lg border border-violet-500/20 bg-violet-500/5">
+                          <div className="flex items-center gap-2 mb-2">
+                            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-500 to-purple-500 flex items-center justify-center">
+                              <Sparkles className="h-4 w-4 text-white" />
+                            </div>
+                            <h4 className="font-semibold text-sm">Agendamento Inteligente</h4>
+                          </div>
+                          <p className="text-xs text-muted-foreground">
+                            Otimização automática da agenda
+                          </p>
                         </div>
                       </div>
+
                       <Button onClick={() => changeSection("home")} variant="outline" className="gap-2">
                         <ArrowLeft className="h-4 w-4" />
                         Voltar para Início
                       </Button>
                     </div>
                   ) : (
-                  <div className="space-y-6">
+                  <div className="space-y-6 animate-fade-in">
                     {/* Resposta Automática */}
                     <div className="flex items-start justify-between p-4 rounded-lg border-2 border-border hover:border-primary/50 transition-all">
                       <div className="flex items-start gap-4">
@@ -1516,17 +1562,23 @@ export default function Configuracoes() {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <Video className="h-5 w-5 text-primary" />
-                      <CardTitle>Configurações de Telemedicina</CardTitle>
+                      <CardTitle>Telemedicina</CardTitle>
                     </div>
-                    {!resources.telemedicina && (
-                      <Badge variant="secondary" className="gap-1">
-                        <AlertCircle className="h-3 w-3" />
-                        Módulo desativado
-                      </Badge>
-                    )}
+                    <div className="flex items-center gap-3">
+                      <span className="text-sm text-muted-foreground">
+                        {resources.telemedicina ? "Módulo Ativo" : "Módulo Desativado"}
+                      </span>
+                      <Switch
+                        checked={resources.telemedicina}
+                        onCheckedChange={(checked) => {
+                          setResources({ ...resources, telemedicina: checked });
+                          toast.success(checked ? "Telemedicina ativado!" : "Telemedicina desativado");
+                        }}
+                      />
+                    </div>
                   </div>
                   <CardDescription>
-                    Configure a experiência de atendimento online e videochamadas
+                    Configure atendimentos online e salas de videochamada
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -1541,25 +1593,62 @@ export default function Configuracoes() {
                           Ative o módulo de Telemedicina para configurar atendimentos online e salas de videochamada
                         </p>
                       </div>
-                      <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                        <div className="flex items-center gap-3 p-4 rounded-lg border-2 border-primary/50 bg-primary/5">
-                          <span className="text-sm font-medium">Ativar Telemedicina</span>
-                          <Switch
-                            checked={false}
-                            onCheckedChange={(checked) => {
-                              setResources({ ...resources, telemedicina: checked });
-                              toast.success("Telemedicina ativado! Configure as opções abaixo.");
-                            }}
-                          />
+                      
+                      {/* Recursos Disponíveis */}
+                      <div className="max-w-2xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
+                        <div className="p-4 rounded-lg border border-cyan-500/20 bg-cyan-500/5">
+                          <div className="flex items-center gap-2 mb-2">
+                            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-500 flex items-center justify-center">
+                              <Video className="h-4 w-4 text-white" />
+                            </div>
+                            <h4 className="font-semibold text-sm">Salas Virtuais</h4>
+                          </div>
+                          <p className="text-xs text-muted-foreground">
+                            Videochamadas profissionais com branding
+                          </p>
+                        </div>
+                        <div className="p-4 rounded-lg border border-cyan-500/20 bg-cyan-500/5">
+                          <div className="flex items-center gap-2 mb-2">
+                            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-500 flex items-center justify-center">
+                              <Settings className="h-4 w-4 text-white" />
+                            </div>
+                            <h4 className="font-semibold text-sm">Gravação de Consultas</h4>
+                          </div>
+                          <p className="text-xs text-muted-foreground">
+                            Grave e armazene atendimentos online
+                          </p>
+                        </div>
+                        <div className="p-4 rounded-lg border border-cyan-500/20 bg-cyan-500/5">
+                          <div className="flex items-center gap-2 mb-2">
+                            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-500 flex items-center justify-center">
+                              <Clock className="h-4 w-4 text-white" />
+                            </div>
+                            <h4 className="font-semibold text-sm">Sala de Espera</h4>
+                          </div>
+                          <p className="text-xs text-muted-foreground">
+                            Gerencie entrada de pacientes virtuais
+                          </p>
+                        </div>
+                        <div className="p-4 rounded-lg border border-cyan-500/20 bg-cyan-500/5">
+                          <div className="flex items-center gap-2 mb-2">
+                            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-500 flex items-center justify-center">
+                              <Palette className="h-4 w-4 text-white" />
+                            </div>
+                            <h4 className="font-semibold text-sm">Personalização Visual</h4>
+                          </div>
+                          <p className="text-xs text-muted-foreground">
+                            Customize cores e tema da sala
+                          </p>
                         </div>
                       </div>
+
                       <Button onClick={() => changeSection("home")} variant="outline" className="gap-2">
                         <ArrowLeft className="h-4 w-4" />
                         Voltar para Início
                       </Button>
                     </div>
                   ) : (
-                    <div className="space-y-6">
+                    <div className="space-y-6 animate-fade-in">
                       {/* Tema da Sala */}
                       <div className="space-y-4">
                         <div className="flex items-center justify-between">
@@ -1757,17 +1846,23 @@ export default function Configuracoes() {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <FileText className="h-5 w-5 text-primary" />
-                      <CardTitle>Configurações Fiscais</CardTitle>
+                      <CardTitle>Fiscal (Notas / NF-e)</CardTitle>
                     </div>
-                    {!resources.fiscal && (
-                      <Badge variant="secondary" className="gap-1">
-                        <AlertCircle className="h-3 w-3" />
-                        Módulo desativado
-                      </Badge>
-                    )}
+                    <div className="flex items-center gap-3">
+                      <span className="text-sm text-muted-foreground">
+                        {resources.fiscal ? "Módulo Ativo" : "Módulo Desativado"}
+                      </span>
+                      <Switch
+                        checked={resources.fiscal}
+                        onCheckedChange={(checked) => {
+                          setResources({ ...resources, fiscal: checked });
+                          toast.success(checked ? "Fiscal ativado!" : "Fiscal desativado");
+                        }}
+                      />
+                    </div>
                   </div>
                   <CardDescription>
-                    Configure a emissão de notas fiscais e documentos fiscais
+                    Configure emissão de notas fiscais e documentos
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -1782,25 +1877,62 @@ export default function Configuracoes() {
                           Ative o módulo Fiscal para configurar emissão de notas fiscais e documentos
                         </p>
                       </div>
-                      <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                        <div className="flex items-center gap-3 p-4 rounded-lg border-2 border-primary/50 bg-primary/5">
-                          <span className="text-sm font-medium">Ativar Fiscal</span>
-                          <Switch
-                            checked={false}
-                            onCheckedChange={(checked) => {
-                              setResources({ ...resources, fiscal: checked });
-                              toast.success("Fiscal ativado! Configure as opções abaixo.");
-                            }}
-                          />
+                      
+                      {/* Recursos Disponíveis */}
+                      <div className="max-w-2xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
+                        <div className="p-4 rounded-lg border border-amber-500/20 bg-amber-500/5">
+                          <div className="flex items-center gap-2 mb-2">
+                            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center">
+                              <FileText className="h-4 w-4 text-white" />
+                            </div>
+                            <h4 className="font-semibold text-sm">Emissão de NF-e</h4>
+                          </div>
+                          <p className="text-xs text-muted-foreground">
+                            Emita notas fiscais eletrônicas automaticamente
+                          </p>
+                        </div>
+                        <div className="p-4 rounded-lg border border-amber-500/20 bg-amber-500/5">
+                          <div className="flex items-center gap-2 mb-2">
+                            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center">
+                              <Zap className="h-4 w-4 text-white" />
+                            </div>
+                            <h4 className="font-semibold text-sm">Emissão Automática</h4>
+                          </div>
+                          <p className="text-xs text-muted-foreground">
+                            Configure emissão automática após consulta
+                          </p>
+                        </div>
+                        <div className="p-4 rounded-lg border border-amber-500/20 bg-amber-500/5">
+                          <div className="flex items-center gap-2 mb-2">
+                            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center">
+                              <Settings className="h-4 w-4 text-white" />
+                            </div>
+                            <h4 className="font-semibold text-sm">Múltiplos Provedores</h4>
+                          </div>
+                          <p className="text-xs text-muted-foreground">
+                            Suporte para NFe.io, eNotas e outros
+                          </p>
+                        </div>
+                        <div className="p-4 rounded-lg border border-amber-500/20 bg-amber-500/5">
+                          <div className="flex items-center gap-2 mb-2">
+                            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center">
+                              <Shield className="h-4 w-4 text-white" />
+                            </div>
+                            <h4 className="font-semibold text-sm">Ambiente Seguro</h4>
+                          </div>
+                          <p className="text-xs text-muted-foreground">
+                            Homologação e produção separados
+                          </p>
                         </div>
                       </div>
+
                       <Button onClick={() => changeSection("home")} variant="outline" className="gap-2">
                         <ArrowLeft className="h-4 w-4" />
                         Voltar para Início
                       </Button>
                     </div>
                   ) : (
-                    <div className="space-y-6">
+                    <div className="space-y-6 animate-fade-in">
                       {/* Provedor de NF-e */}
                       <div className="space-y-4">
                         <Label>Provedor de Nota Fiscal</Label>
