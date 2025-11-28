@@ -3,9 +3,12 @@ import { Link } from "react-router-dom";
 import { AppointmentCard } from "@/components/AppointmentCard";
 import { Button } from "@/components/ui/button";
 import { Calendar, Users } from "lucide-react";
+import WelcomeSetupModal from "@/components/WelcomeSetupModal";
+import SetupChecklist from "@/components/SetupChecklist";
 
 const Index = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showWelcomeModal, setShowWelcomeModal] = useState(true);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-primary/3 p-2 sm:p-4 md:p-8 relative overflow-hidden">
@@ -47,6 +50,10 @@ const Index = () => {
 
         <AppointmentCard open={isModalOpen} onOpenChange={setIsModalOpen} />
       </div>
+
+      {/* Setup components */}
+      <WelcomeSetupModal open={showWelcomeModal} onOpenChange={setShowWelcomeModal} />
+      <SetupChecklist />
     </div>
   );
 };
