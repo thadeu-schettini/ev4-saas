@@ -334,7 +334,7 @@ export default function Configuracoes() {
                     />
 
                     {/* Completion Ring */}
-                    <div className="absolute top-4 right-4 flex items-center gap-2">
+                    <div className="absolute top-4 right-4 flex items-center gap-2 z-10">
                       {section.badge && (
                         <Badge variant="outline" className="text-xs">
                           {section.badge}
@@ -353,7 +353,7 @@ export default function Configuracoes() {
                           </TooltipContent>
                         </Tooltip>
                       )}
-                      <div className="relative w-12 h-12">
+                      <div className="relative w-12 h-12 z-10">
                       <svg className="w-12 h-12 transform -rotate-90">
                         <circle
                           cx="24"
@@ -401,7 +401,7 @@ export default function Configuracoes() {
                                 e.stopPropagation();
                                 e.preventDefault();
                               }}
-                              className="relative z-50"
+                              className="relative z-20"
                             >
                               <Switch
                                 checked={resources[section.id as keyof typeof resources] || false}
