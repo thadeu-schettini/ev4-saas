@@ -33,11 +33,19 @@ import {
   Gift,
   Download,
   Receipt,
+  ArrowRightLeft,
 } from "lucide-react";
+import { UpgradeCelebrationModal } from "@/components/UpgradeCelebrationModal";
+import { useToast } from "@/hooks/use-toast";
 
 const Billing = () => {
+  const { toast } = useToast();
   const [selectedPlan, setSelectedPlan] = useState("starter");
   const [billingCycle, setBillingCycle] = useState<"monthly" | "annual">("monthly");
+  const [showCelebration, setShowCelebration] = useState(false);
+  const [upgradedPlan, setUpgradedPlan] = useState<any>(null);
+  const [showComparison, setShowComparison] = useState(false);
+  const [comparisonPlans, setComparisonPlans] = useState<string[]>(["starter", "professional"]);
 
   const currentPlan = {
     name: "Starter",
@@ -127,8 +135,66 @@ const Billing = () => {
     return { savings, percentage };
   };
 
+  const handleUpgrade = (plan: any) => {
+    // Simulate upgrade process
+    toast({
+      title: "Processando upgrade...",
+      description: "Aguarde enquanto processamos seu upgrade.",
+    });
+
+    setTimeout(() => {
+      const currentFeatures = plans.find((p) => p.id === "starter")?.features || [];
+      const newFeatures = plan.features;
+
+      const upgradedFeatures = newFeatures.map((feature: any) => ({
+        name: feature.name,
+        isNew: !currentFeatures.find((cf) => cf.name === feature.name)?.included && feature.included,
+      }));
+
+      setUpgradedPlan({ ...plan, upgradedFeatures });
+      setShowCelebration(true);
+    }, 1500);
+  };
+
+  const lockedFeatures = [
+    {
+      title: "Telemedicina Integrada",
+      description: "Realize consultas online com sala virtual integrada",
+      requiredPlan: "Professional",
+      icon: Shield,
+    },
+    {
+      title: "IA Ilimitada",
+      description: "Assistente de IA sem limites de uso mensal",
+      requiredPlan: "Enterprise",
+      icon: Sparkles,
+    },
+    {
+      title: "Relatórios Avançados",
+      description: "Analytics completo com insights de negócio",
+      requiredPlan: "Professional",
+      icon: TrendingUp,
+    },
+    {
+      title: "Gestor de Conta Dedicado",
+      description: "Suporte personalizado com gestor exclusivo",
+      requiredPlan: "Enterprise",
+      icon: Crown,
+    },
+  ];
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
+      {/* Celebration Modal */}
+      {upgradedPlan && (
+        <UpgradeCelebrationModal
+          open={showCelebration}
+          onOpenChange={setShowCelebration}
+          planName={upgradedPlan.name}
+          features={upgradedPlan.upgradedFeatures}
+          icon={upgradedPlan.icon}
+        />
+      )}
       {/* Header */}
       <div className="border-b bg-background/50 backdrop-blur-sm sticky top-0 z-10">
         <div className="container mx-auto px-4 py-4">
@@ -213,6 +279,72 @@ const Billing = () => {
           </CardContent>
         </Card>
 
+        {/* Locked Features Section */}
+        <Card className="border-2 border-amber-500/30 bg-gradient-to-br from-amber-500/5 via-background to-orange-500/5 animate-fade-in">
+          <CardHeader>
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 rounded-full bg-amber-500/20 flex items-center justify-center">
+                <Lock className="h-5 w-5 text-amber-500" />
+              </div>
+              <div>
+                <CardTitle className="text-xl">Recursos Premium Bloqueados</CardTitle>
+                <CardDescription>Faça upgrade para desbloquear funcionalidades avançadas</CardDescription>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {lockedFeatures.map((feature, idx) => {
+                const FeatureIcon = feature.icon;
+                return (
+                  <div
+                    key={idx}
+                    className="relative overflow-hidden rounded-lg border-2 border-dashed border-muted-foreground/30 p-4 bg-muted/20 hover:bg-muted/40 transition-all group"
+                  >
+                    <div className="absolute top-2 right-2">
+                      <div className="h-8 w-8 rounded-full bg-amber-500/20 flex items-center justify-center">
+                        <Lock className="h-4 w-4 text-amber-500" />
+                      </div>
+                    </div>
+                    <div className="space-y-3">
+                      <div className="flex items-start gap-3">
+                        <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 opacity-50">
+                          <FeatureIcon className="h-5 w-5" />
+                        </div>
+                        <div className="flex-1">
+                          <h4 className="font-semibold text-foreground/70">{feature.title}</h4>
+                          <p className="text-sm text-muted-foreground mt-1">{feature.description}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center justify-between pt-2 border-t">
+                        <Badge variant="outline" className="gap-1">
+                          <Crown className="h-3 w-3" />
+                          {feature.requiredPlan}
+                        </Badge>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          className="gap-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                          onClick={() => {
+                            const plan = plans.find((p) => p.name === feature.requiredPlan);
+                            if (plan) {
+                              setSelectedPlan(plan.id);
+                              document.getElementById("upgrade-dialog-trigger")?.click();
+                            }
+                          }}
+                        >
+                          <Unlock className="h-3 w-3" />
+                          Desbloquear
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </CardContent>
+        </Card>
+
         {/* Unlock More Section */}
         <Card className="border-2 border-primary/50 bg-gradient-to-r from-primary/5 to-purple-500/5 animate-fade-in">
           <CardContent className="p-6">
@@ -228,9 +360,19 @@ const Billing = () => {
                   </p>
                 </div>
               </div>
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className="gap-2"
+                  onClick={() => setShowComparison(true)}
+                >
+                  <ArrowRightLeft className="h-4 w-4" />
+                  Comparar Planos
+                </Button>
               <Dialog>
                 <DialogTrigger asChild>
-                  <Button size="lg" className="gap-2">
+                  <Button id="upgrade-dialog-trigger" size="lg" className="gap-2">
                     <Sparkles className="h-4 w-4" />
                     Ver Planos
                   </Button>
@@ -325,6 +467,12 @@ const Billing = () => {
                             <Button
                               className="w-full"
                               variant={selectedPlan === plan.id ? "default" : "outline"}
+                              onClick={() => {
+                                if (plan.id !== "starter") {
+                                  handleUpgrade(plan);
+                                }
+                              }}
+                              disabled={plan.id === "starter"}
                             >
                               {plan.id === "starter" ? "Plano Atual" : "Fazer Upgrade"}
                             </Button>
@@ -335,6 +483,7 @@ const Billing = () => {
                   </div>
                 </DialogContent>
               </Dialog>
+              </div>
             </div>
           </CardContent>
         </Card>
