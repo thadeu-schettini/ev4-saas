@@ -3,6 +3,9 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { CelebrationConfetti } from "@/components/CelebrationConfetti";
+import { LevelUpModal } from "@/components/LevelUpModal";
+import { MissionCompleteModal } from "@/components/MissionCompleteModal";
 import { 
   Share2, 
   Copy, 
@@ -23,6 +26,10 @@ import { toast } from "@/hooks/use-toast";
 
 const Indicacoes = () => {
   const [copiedLink, setCopiedLink] = useState(false);
+  const [showConfetti, setShowConfetti] = useState(false);
+  const [showLevelUp, setShowLevelUp] = useState(false);
+  const [showMissionComplete, setShowMissionComplete] = useState(false);
+  const [completedMission, setCompletedMission] = useState({ title: "", reward: "" });
   const referralLink = "https://clinica.com/ref/DemoEV4";
 
   const currentLevel = {
@@ -35,7 +42,7 @@ const Indicacoes = () => {
     progress: 70.8
   };
 
-  const weeklyMissions = [
+  const [weeklyMissions, setWeeklyMissions] = useState([
     { 
       id: 1, 
       title: "Indique 1 nova conta", 
@@ -60,7 +67,7 @@ const Indicacoes = () => {
       total: 3,
       completed: false 
     }
-  ];
+  ]);
 
   const rewards = [
     { id: 1, name: "R$50 em assinatura", points: "R$ 50,00", discount: "Abate R$50 na mensalidade", level: "Bronze" },
@@ -90,8 +97,56 @@ const Indicacoes = () => {
     window.open(`https://wa.me/?text=${message}`, '_blank');
   };
 
+  const handleCompleteMission = (missionId: number) => {
+    const mission = weeklyMissions.find(m => m.id === missionId);
+    if (mission && !mission.completed) {
+      setWeeklyMissions(prev => 
+        prev.map(m => 
+          m.id === missionId 
+            ? { ...m, progress: m.total, completed: true } 
+            : m
+        )
+      );
+      setCompletedMission({ title: mission.title, reward: mission.reward });
+      setShowMissionComplete(true);
+      setShowConfetti(true);
+      toast({
+        title: "Missão Completa! 🎉",
+        description: `Você ganhou: ${mission.reward}`,
+      });
+    }
+  };
+
+  const handleLevelUp = () => {
+    setShowLevelUp(true);
+    setShowConfetti(true);
+    toast({
+      title: "Parabéns! 🎊",
+      description: "Você subiu de nível!",
+    });
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
+      {/* Celebration Effects */}
+      <CelebrationConfetti trigger={showConfetti} onComplete={() => setShowConfetti(false)} />
+      <LevelUpModal 
+        isOpen={showLevelUp}
+        onClose={() => setShowLevelUp(false)}
+        oldLevel="SILVER"
+        newLevel="GOLD"
+        rewards={[
+          "Acesso a recompensas exclusivas GOLD",
+          "Bônus de 50% em todas as indicações",
+          "Prioridade no suporte técnico"
+        ]}
+      />
+      <MissionCompleteModal
+        isOpen={showMissionComplete}
+        onClose={() => setShowMissionComplete(false)}
+        missionTitle={completedMission.title}
+        reward={completedMission.reward}
+      />
       {/* Animated Background */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-20 right-20 w-96 h-96 bg-primary/5 rounded-full blur-3xl animate-pulse" />
@@ -104,6 +159,19 @@ const Indicacoes = () => {
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-4">
             <Sparkles className="h-4 w-4 text-primary animate-pulse" />
             <span className="text-sm font-semibold text-primary">Programa de Indicações</span>
+          </div>
+          
+          {/* Demo Buttons - Remove in production */}
+          <div className="flex gap-2 justify-center mb-4">
+            <Button onClick={() => handleCompleteMission(1)} variant="outline" size="sm">
+              Simular Missão 1
+            </Button>
+            <Button onClick={() => handleCompleteMission(2)} variant="outline" size="sm">
+              Simular Missão 2
+            </Button>
+            <Button onClick={handleLevelUp} variant="outline" size="sm">
+              Simular Level Up
+            </Button>
           </div>
           <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
             Compartilhe e Ganhe Recompensas
@@ -236,9 +304,9 @@ const Indicacoes = () => {
                 {weeklyMissions.map((mission) => (
                   <Card 
                     key={mission.id} 
-                    className={`p-4 transition-all hover:shadow-md ${
+                    className={`p-4 transition-all duration-500 hover:shadow-md hover:scale-[1.02] ${
                       mission.completed 
-                        ? 'bg-green-500/10 border-green-500/30' 
+                        ? 'bg-green-500/10 border-green-500/30 animate-pulse-slow' 
                         : 'bg-muted/30 border-border/50'
                     }`}
                   >
@@ -251,10 +319,20 @@ const Indicacoes = () => {
                         </div>
                       </div>
                       {mission.completed && (
-                        <Badge className="bg-green-600 text-white border-0">
+                        <Badge className="bg-green-600 text-white border-0 animate-scale-in">
                           <Check className="h-3 w-3 mr-1" />
                           Completa
                         </Badge>
+                      )}
+                      {!mission.completed && mission.progress < mission.total && (
+                        <Button 
+                          size="sm" 
+                          variant="ghost"
+                          onClick={() => handleCompleteMission(mission.id)}
+                          className="text-xs"
+                        >
+                          Testar
+                        </Button>
                       )}
                     </div>
                     <div>
