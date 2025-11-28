@@ -109,6 +109,58 @@ export default function Configuracoes() {
     environment: "homologacao",
   });
 
+  const [accessControl, setAccessControl] = useState({
+    users: [
+      { id: '1', name: 'Dr. Carlos Silva', email: 'carlos@clinica.com', role: 'admin', status: 'active', avatar: '' },
+      { id: '2', name: 'Dra. Ana Costa', email: 'ana@clinica.com', role: 'medico', status: 'active', avatar: '' },
+      { id: '3', name: 'Maria Santos', email: 'maria@clinica.com', role: 'recepcao', status: 'active', avatar: '' },
+      { id: '4', name: 'João Oliveira', email: 'joao@clinica.com', role: 'medico', status: 'pending', avatar: '' },
+    ],
+    roles: [
+      { 
+        id: 'admin', 
+        name: 'Administrador', 
+        description: 'Acesso total ao sistema',
+        color: 'from-purple-500 to-pink-500',
+        permissions: ['all']
+      },
+      { 
+        id: 'medico', 
+        name: 'Médico', 
+        description: 'Acesso a prontuários e agenda',
+        color: 'from-blue-500 to-cyan-500',
+        permissions: ['prontuario.view', 'prontuario.edit', 'agenda.view', 'agenda.edit', 'pacientes.view']
+      },
+      { 
+        id: 'recepcao', 
+        name: 'Recepção', 
+        description: 'Gestão de agenda e pacientes',
+        color: 'from-green-500 to-emerald-500',
+        permissions: ['agenda.view', 'agenda.edit', 'pacientes.view', 'pacientes.edit', 'financeiro.view']
+      },
+      { 
+        id: 'financeiro', 
+        name: 'Financeiro', 
+        description: 'Acesso a cobranças e relatórios',
+        color: 'from-amber-500 to-orange-500',
+        permissions: ['financeiro.view', 'financeiro.edit', 'relatorios.view']
+      },
+    ],
+    permissions: {
+      'prontuario.view': { label: 'Visualizar Prontuários', category: 'Prontuários' },
+      'prontuario.edit': { label: 'Editar Prontuários', category: 'Prontuários' },
+      'agenda.view': { label: 'Visualizar Agenda', category: 'Agenda' },
+      'agenda.edit': { label: 'Gerenciar Agenda', category: 'Agenda' },
+      'pacientes.view': { label: 'Visualizar Pacientes', category: 'Pacientes' },
+      'pacientes.edit': { label: 'Editar Pacientes', category: 'Pacientes' },
+      'financeiro.view': { label: 'Visualizar Financeiro', category: 'Financeiro' },
+      'financeiro.edit': { label: 'Gerenciar Financeiro', category: 'Financeiro' },
+      'relatorios.view': { label: 'Visualizar Relatórios', category: 'Relatórios' },
+      'configuracoes.edit': { label: 'Editar Configurações', category: 'Sistema' },
+      'usuarios.manage': { label: 'Gerenciar Usuários', category: 'Sistema' },
+    }
+  });
+
   const handleSave = () => {
     toast.success("Configurações salvas com sucesso!");
   };
@@ -2181,6 +2233,324 @@ export default function Configuracoes() {
                   </CardContent>
                 </Card>
               )}
+            </div>
+          )}
+
+          {/* Acessos Section */}
+          {activeSection === "acessos" && (
+            <div className="space-y-6 section-content animate-fade-in">
+              {/* Header */}
+              <div className="flex items-center justify-between">
+                <Button
+                  variant="ghost"
+                  onClick={() => changeSection("home")}
+                  className="gap-2 mb-4"
+                >
+                  <ArrowLeft className="h-4 w-4" />
+                  Voltar
+                </Button>
+              </div>
+
+              <div className="flex items-start gap-4 p-6 rounded-2xl bg-gradient-to-br from-red-500/10 to-pink-500/10 border border-red-500/20">
+                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-red-500 to-pink-500 p-4 shadow-lg flex-shrink-0">
+                  <Shield className="h-full w-full text-white" />
+                </div>
+                <div>
+                  <h2 className="text-3xl font-bold mb-2">Acessos e Permissões</h2>
+                  <p className="text-muted-foreground">
+                    Gerencie usuários, perfis de acesso e permissões granulares do sistema
+                  </p>
+                </div>
+              </div>
+
+              {/* Estatísticas Rápidas */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <Card className="border-border/50 backdrop-blur-sm bg-card/95">
+                  <CardContent className="pt-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm text-muted-foreground">Usuários Ativos</p>
+                        <p className="text-3xl font-bold mt-1">{accessControl.users.filter(u => u.status === 'active').length}</p>
+                      </div>
+                      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500/20 to-emerald-500/20 flex items-center justify-center">
+                        <CheckCircle2 className="h-6 w-6 text-green-500" />
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="border-border/50 backdrop-blur-sm bg-card/95">
+                  <CardContent className="pt-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm text-muted-foreground">Convites Pendentes</p>
+                        <p className="text-3xl font-bold mt-1">{accessControl.users.filter(u => u.status === 'pending').length}</p>
+                      </div>
+                      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500/20 to-orange-500/20 flex items-center justify-center">
+                        <Clock className="h-6 w-6 text-amber-500" />
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="border-border/50 backdrop-blur-sm bg-card/95">
+                  <CardContent className="pt-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm text-muted-foreground">Perfis Configurados</p>
+                        <p className="text-3xl font-bold mt-1">{accessControl.roles.length}</p>
+                      </div>
+                      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500/20 to-cyan-500/20 flex items-center justify-center">
+                        <Shield className="h-6 w-6 text-blue-500" />
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="border-border/50 backdrop-blur-sm bg-card/95">
+                  <CardContent className="pt-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm text-muted-foreground">Permissões</p>
+                        <p className="text-3xl font-bold mt-1">{Object.keys(accessControl.permissions).length}</p>
+                      </div>
+                      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center">
+                        <Settings className="h-6 w-6 text-purple-500" />
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Gestão de Usuários */}
+              <Card className="border-border/50 backdrop-blur-sm bg-card/95 shadow-lg">
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <CardTitle>Usuários do Sistema</CardTitle>
+                      <CardDescription>
+                        Gerencie os usuários com acesso ao sistema
+                      </CardDescription>
+                    </div>
+                    <Button className="gap-2">
+                      <Plus className="h-4 w-4" />
+                      Convidar Usuário
+                    </Button>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    {accessControl.users.map((user) => {
+                      const role = accessControl.roles.find(r => r.id === user.role);
+                      return (
+                        <Card key={user.id} className="border border-border hover:shadow-md transition-shadow">
+                          <CardContent className="py-4">
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-4">
+                                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center text-primary-foreground font-semibold text-lg">
+                                  {user.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
+                                </div>
+                                <div>
+                                  <div className="flex items-center gap-2">
+                                    <p className="font-semibold">{user.name}</p>
+                                    {user.status === 'pending' && (
+                                      <Badge variant="secondary" className="gap-1">
+                                        <Clock className="h-3 w-3" />
+                                        Pendente
+                                      </Badge>
+                                    )}
+                                  </div>
+                                  <p className="text-sm text-muted-foreground">{user.email}</p>
+                                </div>
+                              </div>
+                              <div className="flex items-center gap-3">
+                                {role && (
+                                  <Badge 
+                                    variant="outline" 
+                                    className={`bg-gradient-to-r ${role.color} text-white border-0`}
+                                  >
+                                    {role.name}
+                                  </Badge>
+                                )}
+                                <Button variant="ghost" size="sm">
+                                  <Settings className="h-4 w-4" />
+                                </Button>
+                                <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive">
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      );
+                    })}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Perfis de Acesso */}
+              <Card className="border-border/50 backdrop-blur-sm bg-card/95 shadow-lg">
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <CardTitle>Perfis de Acesso</CardTitle>
+                      <CardDescription>
+                        Configure os perfis e suas permissões
+                      </CardDescription>
+                    </div>
+                    <Button variant="outline" className="gap-2">
+                      <Plus className="h-4 w-4" />
+                      Novo Perfil
+                    </Button>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {accessControl.roles.map((role) => (
+                      <Card 
+                        key={role.id} 
+                        className="border-2 border-border hover:border-primary/50 hover:shadow-lg transition-all cursor-pointer group"
+                      >
+                        <CardContent className="pt-6">
+                          <div className="space-y-4">
+                            <div className="flex items-start justify-between">
+                              <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${role.color} p-3 shadow-lg group-hover:shadow-xl transition-shadow`}>
+                                <Shield className="h-full w-full text-white" />
+                              </div>
+                              <Button variant="ghost" size="sm">
+                                <Settings className="h-4 w-4" />
+                              </Button>
+                            </div>
+                            
+                            <div>
+                              <h3 className="font-bold text-lg">{role.name}</h3>
+                              <p className="text-sm text-muted-foreground mt-1">
+                                {role.description}
+                              </p>
+                            </div>
+
+                            <div className="space-y-2">
+                              <p className="text-xs font-medium text-muted-foreground">PERMISSÕES</p>
+                              <div className="flex flex-wrap gap-1">
+                                {role.permissions.slice(0, 3).map((perm) => (
+                                  <Badge key={perm} variant="secondary" className="text-xs">
+                                    {accessControl.permissions[perm]?.label || perm}
+                                  </Badge>
+                                ))}
+                                {role.permissions.length > 3 && (
+                                  <Badge variant="secondary" className="text-xs">
+                                    +{role.permissions.length - 3}
+                                  </Badge>
+                                )}
+                              </div>
+                            </div>
+
+                            <div className="flex items-center justify-between pt-2 border-t">
+                              <p className="text-xs text-muted-foreground">
+                                {accessControl.users.filter(u => u.role === role.id).length} usuários
+                              </p>
+                              <Button variant="ghost" size="sm" className="text-xs gap-1">
+                                Ver detalhes
+                                <ArrowLeft className="h-3 w-3 rotate-180" />
+                              </Button>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Permissões Granulares */}
+              <Card className="border-border/50 backdrop-blur-sm bg-card/95 shadow-lg">
+                <CardHeader>
+                  <CardTitle>Permissões Granulares</CardTitle>
+                  <CardDescription>
+                    Todas as permissões disponíveis no sistema organizadas por categoria
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-6">
+                    {Object.entries(
+                      Object.entries(accessControl.permissions).reduce((acc, [key, perm]) => {
+                        const category = perm.category;
+                        if (!acc[category]) acc[category] = [];
+                        acc[category].push({ key, ...perm });
+                        return acc;
+                      }, {} as Record<string, Array<{ key: string; label: string; category: string }>>)
+                    ).map(([category, perms]) => (
+                      <div key={category} className="space-y-3">
+                        <div className="flex items-center gap-2">
+                          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center">
+                            <Shield className="h-4 w-4 text-primary" />
+                          </div>
+                          <h4 className="font-semibold">{category}</h4>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 ml-10">
+                          {perms.map((perm) => (
+                            <Card 
+                              key={perm.key} 
+                              className="border border-border hover:border-primary/50 hover:shadow-sm transition-all cursor-pointer"
+                            >
+                              <CardContent className="py-3 px-4">
+                                <div className="flex items-center justify-between">
+                                  <p className="text-sm font-medium">{perm.label}</p>
+                                  <CheckCircle2 className="h-4 w-4 text-muted-foreground" />
+                                </div>
+                                <p className="text-xs text-muted-foreground mt-1 font-mono">
+                                  {perm.key}
+                                </p>
+                              </CardContent>
+                            </Card>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Logs de Auditoria */}
+              <Card className="border-border/50 backdrop-blur-sm bg-card/95 shadow-lg">
+                <CardHeader>
+                  <CardTitle>Logs de Auditoria</CardTitle>
+                  <CardDescription>
+                    Histórico de alterações em acessos e permissões
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    {[
+                      { action: 'Usuário adicionado', user: 'Admin', target: 'João Oliveira', time: 'Há 2 horas', type: 'add' },
+                      { action: 'Perfil modificado', user: 'Admin', target: 'Médico', time: 'Há 5 horas', type: 'edit' },
+                      { action: 'Permissão revogada', user: 'Admin', target: 'Maria Santos', time: 'Há 1 dia', type: 'remove' },
+                    ].map((log, index) => (
+                      <div 
+                        key={index} 
+                        className="flex items-center gap-4 p-3 rounded-lg border border-border hover:bg-muted/50 transition-colors"
+                      >
+                        <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                          log.type === 'add' ? 'bg-green-500/20' :
+                          log.type === 'edit' ? 'bg-blue-500/20' :
+                          'bg-red-500/20'
+                        }`}>
+                          {log.type === 'add' ? <Plus className="h-5 w-5 text-green-500" /> :
+                           log.type === 'edit' ? <Settings className="h-5 w-5 text-blue-500" /> :
+                           <X className="h-5 w-5 text-red-500" />}
+                        </div>
+                        <div className="flex-1">
+                          <p className="font-medium text-sm">{log.action}</p>
+                          <p className="text-xs text-muted-foreground">
+                            {log.user} • {log.target}
+                          </p>
+                        </div>
+                        <p className="text-xs text-muted-foreground">{log.time}</p>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
             </div>
           )}
         </div>
