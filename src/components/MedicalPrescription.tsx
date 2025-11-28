@@ -42,6 +42,10 @@ export const MedicalPrescription = () => {
   const [activeMedicationId, setActiveMedicationId] = useState<string>("1");
   const [diagnosis, setDiagnosis] = useState("");
   const [patientInstructions, setPatientInstructions] = useState("");
+  const [postConsultationInstructions, setPostConsultationInstructions] = useState("");
+  const [isGeneratingInstructions, setIsGeneratingInstructions] = useState(false);
+  const [instructionsGeneratedByAI, setInstructionsGeneratedByAI] = useState(false);
+  const [instructionsValidatedByDoctor, setInstructionsValidatedByDoctor] = useState(false);
   const [prescriptionType, setPrescriptionType] = useState("");
   const [allowedRefills, setAllowedRefills] = useState("");
   const [validity, setValidity] = useState("");
@@ -95,17 +99,85 @@ export const MedicalPrescription = () => {
       return;
     }
 
+    // Validate AI-generated content has been validated by doctor
+    if (instructionsGeneratedByAI && !instructionsValidatedByDoctor) {
+      toast({
+        title: "Validação Necessária",
+        description: "Você deve validar as instruções geradas por IA antes de salvar.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     toast({
       title: "Prescrição Salva",
       description: "A prescrição foi salva com sucesso.",
     });
   };
 
-  const handlePostConsultationInstructions = () => {
-    toast({
-      title: "Instruções Geradas",
-      description: "Instruções pós-consulta foram preparadas.",
-    });
+  const handleGenerateInstructions = async () => {
+    setIsGeneratingInstructions(true);
+    
+    try {
+      // Simula chamada de IA (substituir por chamada real)
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      const generatedText = `INSTRUÇÕES PÓS-CONSULTA:
+
+1. REPOUSO E ATIVIDADES:
+   - Repouso relativo nas primeiras 48 horas
+   - Evitar atividades físicas intensas por 7 dias
+   - Retomar atividades gradualmente
+
+2. MEDICAÇÃO:
+   - Seguir rigorosamente os horários prescritos
+   - Não interromper o tratamento sem orientação médica
+   - Tomar os medicamentos com água, preferencialmente após refeições
+
+3. SINAIS DE ALERTA - RETORNAR IMEDIATAMENTE SE:
+   - Febre persistente acima de 38°C
+   - Dor intensa não controlada com medicação
+   - Sangramento ou secreções anormais
+   - Dificuldade para respirar
+   - Reações alérgicas (coceira, inchaço, falta de ar)
+
+4. CUIDADOS GERAIS:
+   - Manter boa hidratação (mínimo 2 litros de água/dia)
+   - Alimentação leve e balanceada
+   - Higiene adequada das mãos
+
+5. RETORNO:
+   - Agendar consulta de retorno em 7-10 dias
+   - Trazer todos os exames realizados
+   - Anotar dúvidas para discutir na próxima consulta
+
+Em caso de dúvidas ou emergências, entre em contato com a clínica.`;
+
+      setPostConsultationInstructions(generatedText);
+      setInstructionsGeneratedByAI(true);
+      setInstructionsValidatedByDoctor(false);
+      
+      toast({
+        title: "Instruções Geradas com IA",
+        description: "Revise e valide o conteúdo antes de salvar.",
+      });
+    } catch (error) {
+      toast({
+        title: "Erro ao gerar instruções",
+        description: "Tente novamente ou escreva manualmente.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsGeneratingInstructions(false);
+    }
+  };
+
+  const handleInstructionsChange = (value: string) => {
+    setPostConsultationInstructions(value);
+    // Se o médico editar o texto gerado por IA, considerar que está validando
+    if (instructionsGeneratedByAI && value !== postConsultationInstructions) {
+      setInstructionsValidatedByDoctor(true);
+    }
   };
 
   return (
@@ -113,17 +185,6 @@ export const MedicalPrescription = () => {
       {/* Header Actions */}
       <div className="flex items-center justify-between flex-wrap gap-3">
         <h2 className="text-2xl font-semibold text-foreground">Prescrição</h2>
-        <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            className="gap-2"
-            onClick={handlePostConsultationInstructions}
-          >
-            <FileText className="h-4 w-4" />
-            Instruções pós-consulta
-          </Button>
-        </div>
       </div>
 
       {/* Medications */}
@@ -374,6 +435,75 @@ export const MedicalPrescription = () => {
           />
         </div>
       </div>
+
+      {/* Post-Consultation Instructions */}
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-base">Instruções Pós-Consulta</CardTitle>
+            <Button
+              variant="outline"
+              size="sm"
+              className="gap-2"
+              onClick={handleGenerateInstructions}
+              disabled={isGeneratingInstructions}
+            >
+              {isGeneratingInstructions ? (
+                <>
+                  <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+                  Gerando...
+                </>
+              ) : (
+                <>
+                  <FileText className="h-4 w-4" />
+                  Gerar com IA
+                </>
+              )}
+            </Button>
+          </div>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <Textarea
+            id="post-consultation-instructions"
+            value={postConsultationInstructions}
+            onChange={(e) => handleInstructionsChange(e.target.value)}
+            placeholder="Escreva as instruções pós-consulta ou gere com IA..."
+            className="min-h-[200px] resize-none"
+          />
+          
+          {instructionsGeneratedByAI && (
+            <div className="space-y-3 p-4 rounded-lg border border-amber-500/50 bg-amber-50 dark:bg-amber-950/20">
+              <div className="flex items-start gap-2">
+                <div className="h-5 w-5 rounded-full bg-amber-500 flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <span className="text-white text-xs font-bold">!</span>
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-amber-900 dark:text-amber-100">
+                    Conteúdo gerado por Inteligência Artificial
+                  </p>
+                  <p className="text-xs text-amber-700 dark:text-amber-200 mt-1">
+                    Este conteúdo foi gerado automaticamente por IA e requer validação médica obrigatória antes de ser usado.
+                  </p>
+                </div>
+              </div>
+              
+              <div className="flex items-start space-x-3 pt-2 border-t border-amber-500/30">
+                <Switch
+                  id="instructions-validated"
+                  checked={instructionsValidatedByDoctor}
+                  onCheckedChange={setInstructionsValidatedByDoctor}
+                />
+                <Label 
+                  htmlFor="instructions-validated" 
+                  className="cursor-pointer text-sm text-amber-900 dark:text-amber-100 leading-tight"
+                >
+                  Confirmo que revisei, validei e assumo total responsabilidade pelo conteúdo gerado pela IA
+                </Label>
+              </div>
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
       {/* Prescription Details */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

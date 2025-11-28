@@ -10,6 +10,7 @@ import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Upload, FileText, Image as ImageIcon, X, Eye, Sparkles, Loader2 } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 
 export type FieldType = 
@@ -64,9 +65,16 @@ export const DynamicFormBuilder = ({ sections, onSubmit, initialData = {} }: Dyn
   const [uploadedFiles, setUploadedFiles] = useState<Record<string, UploadedFile[]>>({});
   const [previewFile, setPreviewFile] = useState<UploadedFile | null>(null);
   const [aiLoadingFields, setAiLoadingFields] = useState<Record<string, boolean>>({});
+  const [aiModifiedFields, setAiModifiedFields] = useState<Record<string, boolean>>({});
+  const [aiValidatedFields, setAiValidatedFields] = useState<Record<string, boolean>>({});
 
   const updateFieldValue = (fieldId: string, value: any) => {
     setFormData(prev => ({ ...prev, [fieldId]: value }));
+    
+    // Se o campo foi modificado por IA e o usuário editou manualmente, considerar validado
+    if (aiModifiedFields[fieldId]) {
+      setAiValidatedFields(prev => ({ ...prev, [fieldId]: true }));
+    }
   };
 
   const handleFileUpload = async (fieldId: string, files: FileList | null) => {
@@ -139,11 +147,13 @@ export const DynamicFormBuilder = ({ sections, onSubmit, initialData = {} }: Dyn
       
       const improvedText = `${currentText}\n\n[Texto ajustado pela IA - melhorias na clareza e estrutura]`;
       
-      updateFieldValue(fieldId, improvedText);
+      setFormData(prev => ({ ...prev, [fieldId]: improvedText }));
+      setAiModifiedFields(prev => ({ ...prev, [fieldId]: true }));
+      setAiValidatedFields(prev => ({ ...prev, [fieldId]: false }));
       
       toast({
-        title: "Texto ajustado",
-        description: "O texto foi melhorado pela IA.",
+        title: "Texto ajustado pela IA",
+        description: "Revise e valide o conteúdo antes de prosseguir.",
       });
     } catch (error) {
       toast({
@@ -162,55 +172,95 @@ export const DynamicFormBuilder = ({ sections, onSubmit, initialData = {} }: Dyn
     switch (field.type) {
       case "texto-curto":
         return (
-          <div className="relative">
-            <Input
-              value={value || ""}
-              onChange={(e) => updateFieldValue(field.id, e.target.value)}
-              placeholder={field.placeholder || "Digite aqui..."}
-              className="w-full pr-12"
-            />
-            <Button
-              type="button"
-              size="sm"
-              variant="ghost"
-              className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 p-0"
-              onClick={() => handleAITextAdjustment(field.id, field.label)}
-              disabled={aiLoadingFields[field.id]}
-              title="Ajustar texto com IA"
-            >
-              {aiLoadingFields[field.id] ? (
-                <Loader2 className="h-4 w-4 animate-spin text-primary" />
-              ) : (
-                <Sparkles className="h-4 w-4 text-primary" />
-              )}
-            </Button>
+          <div className="space-y-2">
+            <div className="relative">
+              <Input
+                value={value || ""}
+                onChange={(e) => updateFieldValue(field.id, e.target.value)}
+                placeholder={field.placeholder || "Digite aqui..."}
+                className="w-full pr-12"
+              />
+              <Button
+                type="button"
+                size="sm"
+                variant="ghost"
+                className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 p-0"
+                onClick={() => handleAITextAdjustment(field.id, field.label)}
+                disabled={aiLoadingFields[field.id]}
+                title="Ajustar texto com IA"
+              >
+                {aiLoadingFields[field.id] ? (
+                  <Loader2 className="h-4 w-4 animate-spin text-primary" />
+                ) : (
+                  <Sparkles className="h-4 w-4 text-primary" />
+                )}
+              </Button>
+            </div>
+            {aiModifiedFields[field.id] && !aiValidatedFields[field.id] && (
+              <div className="flex items-center gap-2 p-2 rounded bg-amber-50 dark:bg-amber-950/20 border border-amber-500/50">
+                <Switch
+                  id={`validate-${field.id}`}
+                  checked={aiValidatedFields[field.id]}
+                  onCheckedChange={(checked) => 
+                    setAiValidatedFields(prev => ({ ...prev, [field.id]: checked }))
+                  }
+                  className="scale-75"
+                />
+                <Label 
+                  htmlFor={`validate-${field.id}`} 
+                  className="text-xs text-amber-900 dark:text-amber-100 cursor-pointer"
+                >
+                  Conteúdo ajustado por IA - validar antes de prosseguir
+                </Label>
+              </div>
+            )}
           </div>
         );
 
       case "texto-longo":
         return (
-          <div className="relative">
-            <Textarea
-              value={value || ""}
-              onChange={(e) => updateFieldValue(field.id, e.target.value)}
-              placeholder={field.placeholder || "Digite aqui..."}
-              className="min-h-[120px] resize-none pr-12"
-            />
-            <Button
-              type="button"
-              size="sm"
-              variant="ghost"
-              className="absolute right-2 top-2 h-8 w-8 p-0"
-              onClick={() => handleAITextAdjustment(field.id, field.label)}
-              disabled={aiLoadingFields[field.id]}
-              title="Ajustar texto com IA"
-            >
-              {aiLoadingFields[field.id] ? (
-                <Loader2 className="h-4 w-4 animate-spin text-primary" />
-              ) : (
-                <Sparkles className="h-4 w-4 text-primary" />
-              )}
-            </Button>
+          <div className="space-y-2">
+            <div className="relative">
+              <Textarea
+                value={value || ""}
+                onChange={(e) => updateFieldValue(field.id, e.target.value)}
+                placeholder={field.placeholder || "Digite aqui..."}
+                className="min-h-[120px] resize-none pr-12"
+              />
+              <Button
+                type="button"
+                size="sm"
+                variant="ghost"
+                className="absolute right-2 top-2 h-8 w-8 p-0"
+                onClick={() => handleAITextAdjustment(field.id, field.label)}
+                disabled={aiLoadingFields[field.id]}
+                title="Ajustar texto com IA"
+              >
+                {aiLoadingFields[field.id] ? (
+                  <Loader2 className="h-4 w-4 animate-spin text-primary" />
+                ) : (
+                  <Sparkles className="h-4 w-4 text-primary" />
+                )}
+              </Button>
+            </div>
+            {aiModifiedFields[field.id] && !aiValidatedFields[field.id] && (
+              <div className="flex items-center gap-2 p-2 rounded bg-amber-50 dark:bg-amber-950/20 border border-amber-500/50">
+                <Switch
+                  id={`validate-${field.id}`}
+                  checked={aiValidatedFields[field.id]}
+                  onCheckedChange={(checked) => 
+                    setAiValidatedFields(prev => ({ ...prev, [field.id]: checked }))
+                  }
+                  className="scale-75"
+                />
+                <Label 
+                  htmlFor={`validate-${field.id}`} 
+                  className="text-xs text-amber-900 dark:text-amber-100 cursor-pointer"
+                >
+                  Conteúdo ajustado por IA - validar antes de prosseguir
+                </Label>
+              </div>
+            )}
           </div>
         );
 
