@@ -159,11 +159,42 @@ export const MedicalPrescription = () => {
                                 {medication.name || `Medicamento ${index + 1}`}
                               </CardTitle>
                               {hasContent && (
-                                <p className="text-sm text-muted-foreground truncate">
-                                  {[medication.dosage, medication.frequency, medication.route]
+                                <div className="space-y-0.5">
+                                  {[
+                                    medication.dosage,
+                                    medication.frequency,
+                                    medication.route,
+                                    medication.duration && `${medication.duration} dias`,
+                                  ]
                                     .filter(Boolean)
-                                    .join(" • ")}
-                                </p>
+                                    .join(" • ") && (
+                                    <p className="text-sm text-muted-foreground">
+                                      {[
+                                        medication.dosage,
+                                        medication.frequency,
+                                        medication.route,
+                                        medication.duration && `${medication.duration} dias`,
+                                      ]
+                                        .filter(Boolean)
+                                        .join(" • ")}
+                                    </p>
+                                  )}
+                                  {medication.totalQuantity && (
+                                    <p className="text-xs text-muted-foreground">
+                                      Quantidade: {medication.totalQuantity}
+                                    </p>
+                                  )}
+                                  {medication.observations && (
+                                    <p className="text-xs text-muted-foreground truncate">
+                                      Obs: {medication.observations}
+                                    </p>
+                                  )}
+                                  {medication.continuousUse && (
+                                    <p className="text-xs text-primary font-medium">
+                                      Uso contínuo
+                                    </p>
+                                  )}
+                                </div>
                               )}
                             </div>
                           )}
