@@ -10,6 +10,7 @@ import { Printer, FileText, Pill, Download } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { useToast } from "@/hooks/use-toast";
+import { getStoredSignature } from "@/components/SignaturePad";
 
 type PrintSection = {
   id: string;
@@ -47,6 +48,7 @@ export const PrintPreview = ({ type, triggerLabel }: PrintPreviewProps) => {
     sections.filter(s => s.defaultChecked).map(s => s.id)
   );
   const [template, setTemplate] = useState<"complete" | "simple">("complete");
+  const savedSignature = getStoredSignature();
 
   const toggleSection = (sectionId: string) => {
     setSelectedSections(prev =>
@@ -154,7 +156,16 @@ export const PrintPreview = ({ type, triggerLabel }: PrintPreviewProps) => {
         {/* Signature */}
         {selectedSections.includes("signature") && (
           <div className="pt-12 mt-8 border-t">
-            <div className="text-center space-y-2">
+            <div className="text-center space-y-4">
+              {savedSignature && (
+                <div className="flex justify-center mb-2">
+                  <img 
+                    src={savedSignature} 
+                    alt="Assinatura do médico" 
+                    className="h-16 object-contain"
+                  />
+                </div>
+              )}
               <div className="w-64 mx-auto border-t-2 border-gray-800 pt-2">
                 <p className="font-bold">Dr. João da Silva</p>
                 <p className="text-sm">CRM/SP 123456</p>

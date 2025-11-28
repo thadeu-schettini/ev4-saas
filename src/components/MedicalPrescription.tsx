@@ -8,6 +8,7 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Trash2, Plus, FileText, Calendar } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { SignaturePad } from "@/components/SignaturePad";
 
 type Medication = {
   id: string;
@@ -322,6 +323,16 @@ export const MedicalPrescription = () => {
           />
         </div>
       </div>
+
+      {/* Signature Section */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base">Assinatura do Profissional</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <SignaturePad />
+        </CardContent>
+      </Card>
 
       {/* Save Button */}
       <div className="flex justify-end">
