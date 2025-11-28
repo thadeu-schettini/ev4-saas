@@ -77,13 +77,36 @@ export default function Configuracoes() {
     autopilot: true,
     convenios: true,
     cupons: true,
+    telemedicina: false,
+  });
+
+  const [integrations, setIntegrations] = useState({
+    googleCalendar: false,
+    whatsapp: false,
+    twilio: false,
+    stripe: false,
+  });
+
+  const [autopilotConfig, setAutopilotConfig] = useState({
+    autoResponder: true,
+    confirmationReminders: true,
+    patientFollowUp: false,
+    smartScheduling: true,
   });
 
   const [telemedicine, setTelemedicine] = useState({
-    active: false,
-    roomTheme: "Padrão do sistema",
-    highlightColor: "#3b82f6",
-    retentionDays: "30",
+    roomTheme: "professional",
+    brandColor: "#3b82f6",
+    recordingEnabled: true,
+    waitingRoom: true,
+    screenShare: true,
+  });
+
+  const [fiscalConfig, setFiscalConfig] = useState({
+    provider: "nfe-io",
+    autoEmit: false,
+    defaultService: "Consulta Médica",
+    environment: "homologacao",
   });
 
   const handleSave = () => {
@@ -109,7 +132,7 @@ export default function Configuracoes() {
       icon: Package,
       color: "from-purple-500 to-pink-500",
       completion: 100,
-      items: ["Fiscal", "Autopilot", "Convênios", "Cupons"],
+      items: ["Fiscal", "Autopilot", "Convênios", "Cupons", "Telemedicina"],
       badge: "IMPORTANTE",
     },
     {
@@ -268,7 +291,7 @@ export default function Configuracoes() {
                       <div className="flex items-center gap-4 pt-2">
                         <div className="flex items-center gap-2 text-sm">
                           <CheckCircle2 className="h-4 w-4 text-green-500" />
-                          <span className="text-muted-foreground">4 módulos ativos</span>
+                          <span className="text-muted-foreground">{Object.values(resources).filter(Boolean).length} módulos ativos</span>
                         </div>
                         <div className="flex items-center gap-2 text-sm">
                           <AlertCircle className="h-4 w-4 text-amber-500" />
@@ -501,7 +524,7 @@ export default function Configuracoes() {
                     </div>
                     <Badge variant="secondary" className="gap-1">
                       <CheckCircle2 className="h-3 w-3" />
-                      {Object.values(resources).filter(Boolean).length}/4 ativos
+                      {Object.values(resources).filter(Boolean).length}/5 ativos
                     </Badge>
                   </div>
                 </CardHeader>
@@ -701,6 +724,62 @@ export default function Configuracoes() {
                             )}
                           </div>
                         </div>
+                      </CardContent>
+                    </Card>
+
+                    {/* Telemedicina */}
+                    <Card
+                      className={`border-2 transition-all cursor-pointer ${
+                        resources.telemedicina
+                          ? "border-cyan-500 bg-cyan-500/5"
+                          : "border-border hover:border-primary/50"
+                      }`}
+                      onClick={() => setResources({ ...resources, telemedicina: !resources.telemedicina })}
+                    >
+                      <CardContent className="pt-6">
+                        <div className="flex items-start justify-between mb-4">
+                          <div className="flex items-start gap-3">
+                            <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+                              resources.telemedicina
+                                ? "bg-gradient-to-br from-cyan-500 to-blue-500"
+                                : "bg-muted"
+                            }`}>
+                              <Video className={`h-6 w-6 ${
+                                resources.telemedicina ? "text-white" : "text-muted-foreground"
+                              }`} />
+                            </div>
+                            <div className="flex-1">
+                              <h3 className="font-semibold text-lg">Telemedicina</h3>
+                              <p className="text-sm text-muted-foreground mt-1">
+                                Habilita atendimentos online e salas de videochamada
+                              </p>
+                            </div>
+                          </div>
+                          <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                            resources.telemedicina ? "bg-cyan-500" : "bg-muted"
+                          }`}>
+                            {resources.telemedicina ? (
+                              <Check className="h-5 w-5 text-white" />
+                            ) : (
+                              <X className="h-5 w-5 text-muted-foreground" />
+                            )}
+                          </div>
+                        </div>
+                        {resources.telemedicina && (
+                          <div className="pt-3 border-t">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="w-full"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                changeSection("telemedicina");
+                              }}
+                            >
+                              Configurar Telemedicina
+                            </Button>
+                          </div>
+                        )}
                       </CardContent>
                     </Card>
                   </div>
@@ -1103,28 +1182,1006 @@ export default function Configuracoes() {
             </div>
           )}
 
-          {/* Placeholder for other sections */}
-          {currentSection && activeSection !== "recursos" && activeSection !== "organizacao" && activeSection !== "agenda" && (
-            <Card className="border-border/50 backdrop-blur-sm bg-card/95 shadow-lg">
-              <CardContent className="py-16 text-center">
-                <div className="flex flex-col items-center gap-4">
-                  {currentSection?.icon && (
-                    <div className={`w-20 h-20 rounded-2xl bg-gradient-to-br ${currentSection.color} p-5 shadow-xl`}>
-                      <currentSection.icon className="h-full w-full text-white" />
+          {/* Integrações Section */}
+          {activeSection === "integracoes" && (
+            <div className="space-y-6">
+              <Card className="border-border/50 backdrop-blur-sm bg-card/95 shadow-lg">
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Plug className="h-5 w-5 text-primary" />
+                      <CardTitle>Integrações Externas</CardTitle>
+                    </div>
+                    <Badge variant="secondary">
+                      {Object.values(integrations).filter(Boolean).length}/4 conectadas
+                    </Badge>
+                  </div>
+                  <CardDescription>
+                    Conecte sua clínica com serviços externos e APIs para expandir funcionalidades
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Google Calendar */}
+                    <Card
+                      className={`border-2 transition-all ${
+                        integrations.googleCalendar
+                          ? "border-blue-500 bg-blue-500/5"
+                          : "border-border hover:border-primary/50"
+                      }`}
+                    >
+                      <CardContent className="pt-6">
+                        <div className="flex items-start justify-between mb-4">
+                          <div className="flex items-start gap-3">
+                            <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+                              integrations.googleCalendar
+                                ? "bg-gradient-to-br from-blue-500 to-cyan-500"
+                                : "bg-muted"
+                            }`}>
+                              <Calendar className={`h-6 w-6 ${
+                                integrations.googleCalendar ? "text-white" : "text-muted-foreground"
+                              }`} />
+                            </div>
+                            <div className="flex-1">
+                              <h3 className="font-semibold text-lg">Google Calendar</h3>
+                              <p className="text-sm text-muted-foreground mt-1">
+                                Sincronize agendamentos com Google Calendar
+                              </p>
+                            </div>
+                          </div>
+                          <Switch
+                            checked={integrations.googleCalendar}
+                            onCheckedChange={(checked) =>
+                              setIntegrations({ ...integrations, googleCalendar: checked })
+                            }
+                          />
+                        </div>
+                        {integrations.googleCalendar && (
+                          <div className="pt-3 border-t space-y-3">
+                            <div className="space-y-2">
+                              <Label className="text-xs">Conta conectada</Label>
+                              <Input
+                                placeholder="seu-email@gmail.com"
+                                className="h-9"
+                                disabled
+                              />
+                            </div>
+                            <Button size="sm" variant="outline" className="w-full">
+                              Reconectar
+                            </Button>
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
+
+                    {/* WhatsApp */}
+                    <Card
+                      className={`border-2 transition-all ${
+                        integrations.whatsapp
+                          ? "border-green-500 bg-green-500/5"
+                          : "border-border hover:border-primary/50"
+                      }`}
+                    >
+                      <CardContent className="pt-6">
+                        <div className="flex items-start justify-between mb-4">
+                          <div className="flex items-start gap-3">
+                            <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+                              integrations.whatsapp
+                                ? "bg-gradient-to-br from-green-500 to-emerald-500"
+                                : "bg-muted"
+                            }`}>
+                              <Phone className={`h-6 w-6 ${
+                                integrations.whatsapp ? "text-white" : "text-muted-foreground"
+                              }`} />
+                            </div>
+                            <div className="flex-1">
+                              <h3 className="font-semibold text-lg">WhatsApp Business</h3>
+                              <p className="text-sm text-muted-foreground mt-1">
+                                Envie lembretes e confirmações via WhatsApp
+                              </p>
+                            </div>
+                          </div>
+                          <Switch
+                            checked={integrations.whatsapp}
+                            onCheckedChange={(checked) =>
+                              setIntegrations({ ...integrations, whatsapp: checked })
+                            }
+                          />
+                        </div>
+                        {integrations.whatsapp && (
+                          <div className="pt-3 border-t space-y-3">
+                            <div className="space-y-2">
+                              <Label className="text-xs">Número conectado</Label>
+                              <Input
+                                placeholder="+55 (11) 99999-9999"
+                                className="h-9"
+                              />
+                            </div>
+                            <Button size="sm" variant="outline" className="w-full gap-2">
+                              <Phone className="h-3 w-3" />
+                              Testar Conexão
+                            </Button>
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
+
+                    {/* Twilio */}
+                    <Card
+                      className={`border-2 transition-all ${
+                        integrations.twilio
+                          ? "border-red-500 bg-red-500/5"
+                          : "border-border hover:border-primary/50"
+                      }`}
+                    >
+                      <CardContent className="pt-6">
+                        <div className="flex items-start justify-between mb-4">
+                          <div className="flex items-start gap-3">
+                            <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+                              integrations.twilio
+                                ? "bg-gradient-to-br from-red-500 to-orange-500"
+                                : "bg-muted"
+                            }`}>
+                              <Mail className={`h-6 w-6 ${
+                                integrations.twilio ? "text-white" : "text-muted-foreground"
+                              }`} />
+                            </div>
+                            <div className="flex-1">
+                              <h3 className="font-semibold text-lg">Twilio</h3>
+                              <p className="text-sm text-muted-foreground mt-1">
+                                Envie SMS e notificações por email
+                              </p>
+                            </div>
+                          </div>
+                          <Switch
+                            checked={integrations.twilio}
+                            onCheckedChange={(checked) =>
+                              setIntegrations({ ...integrations, twilio: checked })
+                            }
+                          />
+                        </div>
+                        {integrations.twilio && (
+                          <div className="pt-3 border-t space-y-3">
+                            <div className="space-y-2">
+                              <Label className="text-xs">Account SID</Label>
+                              <Input
+                                placeholder="ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+                                className="h-9 font-mono text-xs"
+                              />
+                            </div>
+                            <div className="space-y-2">
+                              <Label className="text-xs">Auth Token</Label>
+                              <Input
+                                type="password"
+                                placeholder="••••••••••••••••"
+                                className="h-9"
+                              />
+                            </div>
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
+
+                    {/* Stripe */}
+                    <Card
+                      className={`border-2 transition-all ${
+                        integrations.stripe
+                          ? "border-purple-500 bg-purple-500/5"
+                          : "border-border hover:border-primary/50"
+                      }`}
+                    >
+                      <CardContent className="pt-6">
+                        <div className="flex items-start justify-between mb-4">
+                          <div className="flex items-start gap-3">
+                            <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+                              integrations.stripe
+                                ? "bg-gradient-to-br from-purple-500 to-pink-500"
+                                : "bg-muted"
+                            }`}>
+                              <Sparkles className={`h-6 w-6 ${
+                                integrations.stripe ? "text-white" : "text-muted-foreground"
+                              }`} />
+                            </div>
+                            <div className="flex-1">
+                              <h3 className="font-semibold text-lg">Stripe</h3>
+                              <p className="text-sm text-muted-foreground mt-1">
+                                Aceite pagamentos online com cartão de crédito
+                              </p>
+                            </div>
+                          </div>
+                          <Switch
+                            checked={integrations.stripe}
+                            onCheckedChange={(checked) =>
+                              setIntegrations({ ...integrations, stripe: checked })
+                            }
+                          />
+                        </div>
+                        {integrations.stripe && (
+                          <div className="pt-3 border-t space-y-3">
+                            <div className="space-y-2">
+                              <Label className="text-xs">Publishable Key</Label>
+                              <Input
+                                placeholder="pk_test_..."
+                                className="h-9 font-mono text-xs"
+                              />
+                            </div>
+                            <div className="space-y-2">
+                              <Label className="text-xs">Secret Key</Label>
+                              <Input
+                                type="password"
+                                placeholder="sk_test_..."
+                                className="h-9 font-mono text-xs"
+                              />
+                            </div>
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
+                  </div>
+
+                  <Button onClick={handleSave} className="w-full md:w-auto gap-2 mt-6">
+                    <Save className="h-4 w-4" />
+                    Salvar Integrações
+                  </Button>
+                </CardContent>
+              </Card>
+
+              {/* Webhooks */}
+              <Card className="border-border/50 backdrop-blur-sm bg-card/95 shadow-lg">
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <CardTitle>Webhooks</CardTitle>
+                      <CardDescription>
+                        Configure endpoints para receber notificações de eventos
+                      </CardDescription>
+                    </div>
+                    <Button size="sm" className="gap-2">
+                      <Plus className="h-4 w-4" />
+                      Novo Webhook
+                    </Button>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    {[
+                      { event: "appointment.created", url: "https://api.example.com/webhook", status: "active" },
+                      { event: "appointment.cancelled", url: "https://api.example.com/webhook", status: "active" },
+                      { event: "patient.created", url: "https://api.example.com/webhook", status: "inactive" },
+                    ].map((webhook, index) => (
+                      <Card key={index} className="border border-border">
+                        <CardContent className="py-4">
+                          <div className="flex items-center justify-between">
+                            <div className="space-y-1">
+                              <div className="flex items-center gap-2">
+                                <p className="font-mono text-sm font-medium">{webhook.event}</p>
+                                <Badge variant={webhook.status === "active" ? "default" : "secondary"}>
+                                  {webhook.status === "active" ? "Ativo" : "Inativo"}
+                                </Badge>
+                              </div>
+                              <p className="text-xs text-muted-foreground font-mono">{webhook.url}</p>
+                            </div>
+                            <div className="flex gap-2">
+                              <Button variant="ghost" size="sm">Editar</Button>
+                              <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive">
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          )}
+
+          {/* Autopilot Section */}
+          {activeSection === "autopilot" && (
+            <div className="space-y-6">
+              <Card className="border-border/50 backdrop-blur-sm bg-card/95 shadow-lg">
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Bot className="h-5 w-5 text-primary" />
+                      <CardTitle className="flex items-center gap-2">
+                        Autopilot AI
+                        <Badge variant="outline">BETA</Badge>
+                      </CardTitle>
+                    </div>
+                    <Badge variant="secondary">
+                      {Object.values(autopilotConfig).filter(Boolean).length}/4 ativas
+                    </Badge>
+                  </div>
+                  <CardDescription>
+                    Configure automações inteligentes para otimizar o fluxo de trabalho
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-6">
+                    {/* Resposta Automática */}
+                    <div className="flex items-start justify-between p-4 rounded-lg border-2 border-border hover:border-primary/50 transition-all">
+                      <div className="flex items-start gap-4">
+                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+                          autopilotConfig.autoResponder
+                            ? "bg-gradient-to-br from-violet-500 to-purple-500"
+                            : "bg-muted"
+                        }`}>
+                          <Bot className={`h-6 w-6 ${
+                            autopilotConfig.autoResponder ? "text-white" : "text-muted-foreground"
+                          }`} />
+                        </div>
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2">
+                            <h3 className="font-semibold">Resposta Automática</h3>
+                            <Tooltip>
+                              <TooltipTrigger>
+                                <span className="text-xs text-muted-foreground cursor-help">(?)</span>
+                              </TooltipTrigger>
+                              <TooltipContent className="max-w-xs">
+                                <p>
+                                  IA responde automaticamente perguntas frequentes de pacientes via chat ou WhatsApp
+                                </p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </div>
+                          <p className="text-sm text-muted-foreground mt-1">
+                            IA responde dúvidas comuns dos pacientes automaticamente
+                          </p>
+                          {autopilotConfig.autoResponder && (
+                            <div className="mt-3 space-y-2">
+                              <Label className="text-xs">Horário de operação</Label>
+                              <div className="flex gap-2">
+                                <Input placeholder="08:00" className="h-9" />
+                                <span className="text-muted-foreground">até</span>
+                                <Input placeholder="18:00" className="h-9" />
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      <Switch
+                        checked={autopilotConfig.autoResponder}
+                        onCheckedChange={(checked) =>
+                          setAutopilotConfig({ ...autopilotConfig, autoResponder: checked })
+                        }
+                      />
+                    </div>
+
+                    {/* Lembretes de Confirmação */}
+                    <div className="flex items-start justify-between p-4 rounded-lg border-2 border-border hover:border-primary/50 transition-all">
+                      <div className="flex items-start gap-4">
+                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+                          autopilotConfig.confirmationReminders
+                            ? "bg-gradient-to-br from-blue-500 to-cyan-500"
+                            : "bg-muted"
+                        }`}>
+                          <Clock className={`h-6 w-6 ${
+                            autopilotConfig.confirmationReminders ? "text-white" : "text-muted-foreground"
+                          }`} />
+                        </div>
+                        <div className="flex-1">
+                          <h3 className="font-semibold">Lembretes de Confirmação</h3>
+                          <p className="text-sm text-muted-foreground mt-1">
+                            Envia lembretes automáticos e coleta confirmações de presença
+                          </p>
+                          {autopilotConfig.confirmationReminders && (
+                            <div className="mt-3 space-y-2">
+                              <Label className="text-xs">Enviar lembrete</Label>
+                              <Select defaultValue="24">
+                                <SelectTrigger className="h-9">
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="2">2 horas antes</SelectItem>
+                                  <SelectItem value="6">6 horas antes</SelectItem>
+                                  <SelectItem value="24">24 horas antes</SelectItem>
+                                  <SelectItem value="48">48 horas antes</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      <Switch
+                        checked={autopilotConfig.confirmationReminders}
+                        onCheckedChange={(checked) =>
+                          setAutopilotConfig({ ...autopilotConfig, confirmationReminders: checked })
+                        }
+                      />
+                    </div>
+
+                    {/* Follow-up de Pacientes */}
+                    <div className="flex items-start justify-between p-4 rounded-lg border-2 border-border hover:border-primary/50 transition-all">
+                      <div className="flex items-start gap-4">
+                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+                          autopilotConfig.patientFollowUp
+                            ? "bg-gradient-to-br from-green-500 to-emerald-500"
+                            : "bg-muted"
+                        }`}>
+                          <Users className={`h-6 w-6 ${
+                            autopilotConfig.patientFollowUp ? "text-white" : "text-muted-foreground"
+                          }`} />
+                        </div>
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2">
+                            <h3 className="font-semibold">Follow-up de Pacientes</h3>
+                            <Badge variant="outline" className="text-xs">Premium</Badge>
+                          </div>
+                          <p className="text-sm text-muted-foreground mt-1">
+                            IA identifica pacientes que precisam de retorno e sugere agendamento
+                          </p>
+                        </div>
+                      </div>
+                      <Switch
+                        checked={autopilotConfig.patientFollowUp}
+                        onCheckedChange={(checked) =>
+                          setAutopilotConfig({ ...autopilotConfig, patientFollowUp: checked })
+                        }
+                      />
+                    </div>
+
+                    {/* Agendamento Inteligente */}
+                    <div className="flex items-start justify-between p-4 rounded-lg border-2 border-border hover:border-primary/50 transition-all">
+                      <div className="flex items-start gap-4">
+                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+                          autopilotConfig.smartScheduling
+                            ? "bg-gradient-to-br from-orange-500 to-red-500"
+                            : "bg-muted"
+                        }`}>
+                          <Zap className={`h-6 w-6 ${
+                            autopilotConfig.smartScheduling ? "text-white" : "text-muted-foreground"
+                          }`} />
+                        </div>
+                        <div className="flex-1">
+                          <h3 className="font-semibold">Agendamento Inteligente</h3>
+                          <p className="text-sm text-muted-foreground mt-1">
+                            Otimiza horários automaticamente com base em padrões e histórico
+                          </p>
+                          {autopilotConfig.smartScheduling && (
+                            <div className="mt-3 flex items-center gap-2 text-xs text-muted-foreground">
+                              <CheckCircle2 className="h-3 w-3 text-green-500" />
+                              <span>Otimização ativa - economia média de 2 horas/dia</span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      <Switch
+                        checked={autopilotConfig.smartScheduling}
+                        onCheckedChange={(checked) =>
+                          setAutopilotConfig({ ...autopilotConfig, smartScheduling: checked })
+                        }
+                      />
+                    </div>
+                  </div>
+
+                  <Button onClick={handleSave} className="w-full md:w-auto gap-2 mt-6">
+                    <Save className="h-4 w-4" />
+                    Salvar Configurações
+                  </Button>
+                </CardContent>
+              </Card>
+
+              {/* Base de Conhecimento */}
+              <Card className="border-border/50 backdrop-blur-sm bg-card/95 shadow-lg">
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <CardTitle>Base de Conhecimento</CardTitle>
+                      <CardDescription>
+                        Adicione informações para treinar o Autopilot sobre sua clínica
+                      </CardDescription>
+                    </div>
+                    <Button size="sm" className="gap-2">
+                      <Plus className="h-4 w-4" />
+                      Adicionar Documento
+                    </Button>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    {[
+                      { title: "Perguntas Frequentes", items: 24, lastUpdate: "Há 2 dias" },
+                      { title: "Políticas da Clínica", items: 8, lastUpdate: "Há 1 semana" },
+                      { title: "Informações sobre Convênios", items: 12, lastUpdate: "Há 3 dias" },
+                    ].map((doc, index) => (
+                      <Card key={index} className="border border-border hover:border-primary/50 hover:shadow-md transition-all">
+                        <CardContent className="py-4">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                              <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-violet-500 to-purple-500 p-2">
+                                <FileText className="h-full w-full text-white" />
+                              </div>
+                              <div>
+                                <p className="font-semibold">{doc.title}</p>
+                                <p className="text-xs text-muted-foreground mt-0.5">
+                                  {doc.items} itens • {doc.lastUpdate}
+                                </p>
+                              </div>
+                            </div>
+                            <div className="flex gap-2">
+                              <Button variant="ghost" size="sm">Editar</Button>
+                              <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive">
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          )}
+
+          {/* Telemedicina Section */}
+          {activeSection === "telemedicina" && (
+            <div className="space-y-6">
+              <Card className="border-border/50 backdrop-blur-sm bg-card/95 shadow-lg">
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Video className="h-5 w-5 text-primary" />
+                      <CardTitle>Configurações de Telemedicina</CardTitle>
+                    </div>
+                    {!resources.telemedicina && (
+                      <Badge variant="secondary" className="gap-1">
+                        <AlertCircle className="h-3 w-3" />
+                        Módulo desativado
+                      </Badge>
+                    )}
+                  </div>
+                  <CardDescription>
+                    Configure a experiência de atendimento online e videochamadas
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {!resources.telemedicina ? (
+                    <div className="py-12 text-center space-y-4">
+                      <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-500 p-4 mx-auto">
+                        <Video className="h-full w-full text-white" />
+                      </div>
+                      <div>
+                        <p className="font-semibold text-lg">Módulo Telemedicina Desativado</p>
+                        <p className="text-sm text-muted-foreground mt-1">
+                          Ative o módulo de Telemedicina na página de Recursos para configurar
+                        </p>
+                      </div>
+                      <Button onClick={() => changeSection("recursos")} className="gap-2">
+                        <Package className="h-4 w-4" />
+                        Ir para Recursos
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="space-y-6">
+                      {/* Tema da Sala */}
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <Label>Tema da Sala Virtual</Label>
+                          <Badge variant="outline" className="gap-1">
+                            <Sparkles className="h-3 w-3" />
+                            Preview ao vivo
+                          </Badge>
+                        </div>
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                          {[
+                            { id: "professional", name: "Profissional", desc: "Tema limpo e corporativo" },
+                            { id: "warm", name: "Acolhedor", desc: "Tons quentes e convidativos" },
+                            { id: "modern", name: "Moderno", desc: "Design contemporâneo" },
+                          ].map((theme) => (
+                            <Card
+                              key={theme.id}
+                              className={`cursor-pointer border-2 transition-all ${
+                                telemedicine.roomTheme === theme.id
+                                  ? "border-primary bg-primary/5"
+                                  : "border-border hover:border-primary/50"
+                              }`}
+                              onClick={() =>
+                                setTelemedicine({ ...telemedicine, roomTheme: theme.id })
+                              }
+                            >
+                              <CardContent className="pt-6">
+                                <div className="space-y-3">
+                                  <div className="h-24 rounded-lg bg-gradient-to-br from-cyan-500/20 to-blue-500/20 flex items-center justify-center">
+                                    <Video className="h-10 w-10 text-primary" />
+                                  </div>
+                                  <div>
+                                    <p className="font-semibold">{theme.name}</p>
+                                    <p className="text-xs text-muted-foreground mt-1">
+                                      {theme.desc}
+                                    </p>
+                                  </div>
+                                  {telemedicine.roomTheme === theme.id && (
+                                    <Badge variant="default" className="gap-1 w-full justify-center">
+                                      <CheckCircle2 className="h-3 w-3" />
+                                      Selecionado
+                                    </Badge>
+                                  )}
+                                </div>
+                              </CardContent>
+                            </Card>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Cor de Destaque */}
+                      <div className="space-y-4">
+                        <Label>Cor de Destaque</Label>
+                        <div className="grid grid-cols-4 md:grid-cols-8 gap-3">
+                          {[
+                            "#3b82f6", "#8b5cf6", "#ec4899", "#ef4444",
+                            "#f97316", "#eab308", "#22c55e", "#06b6d4"
+                          ].map((color) => (
+                            <button
+                              key={color}
+                              className={`w-12 h-12 rounded-lg transition-all hover:scale-110 ${
+                                telemedicine.brandColor === color
+                                  ? "ring-2 ring-primary ring-offset-2"
+                                  : ""
+                              }`}
+                              style={{ background: color }}
+                              onClick={() =>
+                                setTelemedicine({ ...telemedicine, brandColor: color })
+                              }
+                            >
+                              {telemedicine.brandColor === color && (
+                                <Check className="h-6 w-6 text-white mx-auto" />
+                              )}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Funcionalidades */}
+                      <div className="space-y-4">
+                        <Label>Funcionalidades da Sala</Label>
+                        <div className="space-y-3">
+                          <div className="flex items-center justify-between p-3 rounded-lg border">
+                            <div className="flex items-center gap-3">
+                              <Circle className="h-4 w-4 text-red-500 fill-red-500" />
+                              <div>
+                                <p className="font-medium text-sm">Gravação de Consultas</p>
+                                <p className="text-xs text-muted-foreground">
+                                  Armazena vídeos por 30 dias
+                                </p>
+                              </div>
+                            </div>
+                            <Switch
+                              checked={telemedicine.recordingEnabled}
+                              onCheckedChange={(checked) =>
+                                setTelemedicine({ ...telemedicine, recordingEnabled: checked })
+                              }
+                            />
+                          </div>
+
+                          <div className="flex items-center justify-between p-3 rounded-lg border">
+                            <div className="flex items-center gap-3">
+                              <Clock className="h-4 w-4 text-primary" />
+                              <div>
+                                <p className="font-medium text-sm">Sala de Espera Virtual</p>
+                                <p className="text-xs text-muted-foreground">
+                                  Pacientes aguardam aprovação
+                                </p>
+                              </div>
+                            </div>
+                            <Switch
+                              checked={telemedicine.waitingRoom}
+                              onCheckedChange={(checked) =>
+                                setTelemedicine({ ...telemedicine, waitingRoom: checked })
+                              }
+                            />
+                          </div>
+
+                          <div className="flex items-center justify-between p-3 rounded-lg border">
+                            <div className="flex items-center gap-3">
+                              <Globe className="h-4 w-4 text-primary" />
+                              <div>
+                                <p className="font-medium text-sm">Compartilhamento de Tela</p>
+                                <p className="text-xs text-muted-foreground">
+                                  Permite mostrar documentos
+                                </p>
+                              </div>
+                            </div>
+                            <Switch
+                              checked={telemedicine.screenShare}
+                              onCheckedChange={(checked) =>
+                                setTelemedicine({ ...telemedicine, screenShare: checked })
+                              }
+                            />
+                          </div>
+                        </div>
+                      </div>
+
+                      <Button onClick={handleSave} className="w-full md:w-auto gap-2">
+                        <Save className="h-4 w-4" />
+                        Salvar Configurações
+                      </Button>
                     </div>
                   )}
-                  <div className="space-y-2">
-                    <h3 className="text-xl font-semibold">{currentSection?.title}</h3>
-                    <p className="text-muted-foreground max-w-md">
-                      Esta seção está em desenvolvimento. Em breve você poderá configurar todos os aspectos de {currentSection?.title.toLowerCase()}.
-                    </p>
+                </CardContent>
+              </Card>
+
+              {/* Preview da Sala */}
+              {resources.telemedicina && (
+                <Card className="border-border/50 backdrop-blur-sm bg-card/95 shadow-lg">
+                  <CardHeader>
+                    <div className="flex items-center gap-2">
+                      <Sparkles className="h-5 w-5 text-primary" />
+                      <CardTitle>Preview da Sala Virtual</CardTitle>
+                    </div>
+                    <CardDescription>
+                      Visualização em tempo real de como ficará a sala de telemedicina
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div
+                      className="rounded-xl overflow-hidden border-2 border-border bg-gradient-to-br from-background to-muted/20 p-8"
+                      style={{ borderColor: telemedicine.brandColor }}
+                    >
+                      <div className="aspect-video rounded-lg bg-muted/50 flex items-center justify-center">
+                        <div className="text-center space-y-3">
+                          <div
+                            className="w-20 h-20 rounded-full mx-auto flex items-center justify-center"
+                            style={{ background: telemedicine.brandColor }}
+                          >
+                            <Video className="h-10 w-10 text-white" />
+                          </div>
+                          <div>
+                            <p className="font-semibold text-lg">Sala Virtual</p>
+                            <p className="text-sm text-muted-foreground">
+                              Tema: {telemedicine.roomTheme === "professional" ? "Profissional" : 
+                                     telemedicine.roomTheme === "warm" ? "Acolhedor" : "Moderno"}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+            </div>
+          )}
+
+          {/* Fiscal Section */}
+          {activeSection === "fiscal" && (
+            <div className="space-y-6">
+              <Card className="border-border/50 backdrop-blur-sm bg-card/95 shadow-lg">
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <FileText className="h-5 w-5 text-primary" />
+                      <CardTitle>Configurações Fiscais</CardTitle>
+                    </div>
+                    {!resources.fiscal && (
+                      <Badge variant="secondary" className="gap-1">
+                        <AlertCircle className="h-3 w-3" />
+                        Módulo desativado
+                      </Badge>
+                    )}
                   </div>
-                  <Badge variant="outline" className="mt-4">
-                    Em desenvolvimento
-                  </Badge>
-                </div>
-              </CardContent>
-            </Card>
+                  <CardDescription>
+                    Configure a emissão de notas fiscais e documentos fiscais
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {!resources.fiscal ? (
+                    <div className="py-12 text-center space-y-4">
+                      <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-500 p-4 mx-auto">
+                        <FileText className="h-full w-full text-white" />
+                      </div>
+                      <div>
+                        <p className="font-semibold text-lg">Módulo Fiscal Desativado</p>
+                        <p className="text-sm text-muted-foreground mt-1">
+                          Ative o módulo Fiscal na página de Recursos para configurar
+                        </p>
+                      </div>
+                      <Button onClick={() => changeSection("recursos")} className="gap-2">
+                        <Package className="h-4 w-4" />
+                        Ir para Recursos
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="space-y-6">
+                      {/* Provedor de NF-e */}
+                      <div className="space-y-4">
+                        <Label>Provedor de Nota Fiscal</Label>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                          {[
+                            { id: "nfe-io", name: "NFe.io", desc: "Integração simplificada" },
+                            { id: "nfse", name: "NFSe.gov", desc: "Oficial do município" },
+                            { id: "focusnfe", name: "Focus NFe", desc: "Completo e robusto" },
+                          ].map((provider) => (
+                            <Card
+                              key={provider.id}
+                              className={`cursor-pointer border-2 transition-all ${
+                                fiscalConfig.provider === provider.id
+                                  ? "border-primary bg-primary/5"
+                                  : "border-border hover:border-primary/50"
+                              }`}
+                              onClick={() =>
+                                setFiscalConfig({ ...fiscalConfig, provider: provider.id })
+                              }
+                            >
+                              <CardContent className="pt-6">
+                                <div className="space-y-3">
+                                  <div className="h-16 rounded-lg bg-gradient-to-br from-amber-500/20 to-orange-500/20 flex items-center justify-center">
+                                    <FileText className="h-8 w-8 text-primary" />
+                                  </div>
+                                  <div>
+                                    <p className="font-semibold">{provider.name}</p>
+                                    <p className="text-xs text-muted-foreground mt-1">
+                                      {provider.desc}
+                                    </p>
+                                  </div>
+                                  {fiscalConfig.provider === provider.id && (
+                                    <Badge variant="default" className="gap-1 w-full justify-center">
+                                      <CheckCircle2 className="h-3 w-3" />
+                                      Selecionado
+                                    </Badge>
+                                  )}
+                                </div>
+                              </CardContent>
+                            </Card>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Credenciais */}
+                      <div className="space-y-4">
+                        <Label>Credenciais de Acesso</Label>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div className="space-y-2">
+                            <Label htmlFor="apiKey" className="text-xs">API Key</Label>
+                            <Input
+                              id="apiKey"
+                              type="password"
+                              placeholder="••••••••••••••••"
+                              className="font-mono"
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="apiSecret" className="text-xs">API Secret</Label>
+                            <Input
+                              id="apiSecret"
+                              type="password"
+                              placeholder="••••••••••••••••"
+                              className="font-mono"
+                            />
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Configurações de Emissão */}
+                      <div className="space-y-4">
+                        <Label>Configurações de Emissão</Label>
+                        
+                        <div className="flex items-center justify-between p-3 rounded-lg border">
+                          <div className="flex items-center gap-3">
+                            <Zap className="h-4 w-4 text-primary" />
+                            <div>
+                              <p className="font-medium text-sm">Emissão Automática</p>
+                              <p className="text-xs text-muted-foreground">
+                                Emite NF-e automaticamente após pagamento confirmado
+                              </p>
+                            </div>
+                          </div>
+                          <Switch
+                            checked={fiscalConfig.autoEmit}
+                            onCheckedChange={(checked) =>
+                              setFiscalConfig({ ...fiscalConfig, autoEmit: checked })
+                            }
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label htmlFor="defaultService" className="text-xs">
+                            Serviço Padrão
+                            <Tooltip>
+                              <TooltipTrigger>
+                                <span className="text-xs text-muted-foreground cursor-help ml-1">(?)</span>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p className="max-w-xs">
+                                  Descrição que aparecerá por padrão nas notas fiscais
+                                </p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </Label>
+                          <Input
+                            id="defaultService"
+                            value={fiscalConfig.defaultService}
+                            onChange={(e) =>
+                              setFiscalConfig({ ...fiscalConfig, defaultService: e.target.value })
+                            }
+                            placeholder="Ex: Consulta Médica"
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label htmlFor="environment" className="text-xs">Ambiente</Label>
+                          <Select
+                            value={fiscalConfig.environment}
+                            onValueChange={(value) =>
+                              setFiscalConfig({ ...fiscalConfig, environment: value })
+                            }
+                          >
+                            <SelectTrigger id="environment">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="homologacao">Homologação (Testes)</SelectItem>
+                              <SelectItem value="producao">Produção</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+
+                      <Button onClick={handleSave} className="w-full md:w-auto gap-2">
+                        <Save className="h-4 w-4" />
+                        Salvar Configurações
+                      </Button>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+
+              {/* Certificados Digitais */}
+              {resources.fiscal && (
+                <Card className="border-border/50 backdrop-blur-sm bg-card/95 shadow-lg">
+                  <CardHeader>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <CardTitle>Certificados Digitais</CardTitle>
+                        <CardDescription>
+                          Gerencie certificados digitais para assinatura de documentos
+                        </CardDescription>
+                      </div>
+                      <Button size="sm" className="gap-2">
+                        <Plus className="h-4 w-4" />
+                        Upload Certificado
+                      </Button>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-3">
+                      {[
+                        { name: "Certificado A1 - Clínica", expiry: "31/12/2025", status: "active" },
+                        { name: "Certificado A3 - Backup", expiry: "15/06/2025", status: "active" },
+                      ].map((cert, index) => (
+                        <Card key={index} className="border border-border">
+                          <CardContent className="py-4">
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-amber-500 to-orange-500 p-2">
+                                  <Shield className="h-full w-full text-white" />
+                                </div>
+                                <div>
+                                  <p className="font-semibold">{cert.name}</p>
+                                  <p className="text-xs text-muted-foreground mt-0.5">
+                                    Válido até {cert.expiry}
+                                  </p>
+                                </div>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <Badge variant={cert.status === "active" ? "default" : "secondary"}>
+                                  {cert.status === "active" ? "Ativo" : "Inativo"}
+                                </Badge>
+                                <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive">
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+            </div>
           )}
         </div>
       </div>
