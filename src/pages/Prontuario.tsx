@@ -62,9 +62,14 @@ const Prontuario = () => {
     diagnosis: '',
     treatment: ''
   });
+  const [transcriptionText, setTranscriptionText] = useState('');
+  const [organizedTranscription, setOrganizedTranscription] = useState('');
+  const [isOrganizing, setIsOrganizing] = useState(false);
+  const [showTranscriptionPanel, setShowTranscriptionPanel] = useState(false);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
   const aiScrollRef = useRef<HTMLDivElement>(null);
+  const transcriptionScrollRef = useRef<HTMLDivElement>(null);
 
   // Timer effect
   useEffect(() => {
@@ -121,6 +126,10 @@ const Prontuario = () => {
       const mediaRecorder = new MediaRecorder(stream);
       mediaRecorderRef.current = mediaRecorder;
       audioChunksRef.current = [];
+      
+      setTranscriptionText('');
+      setOrganizedTranscription('');
+      setShowTranscriptionPanel(true);
 
       mediaRecorder.ondataavailable = (event) => {
         if (event.data.size > 0) {
@@ -162,21 +171,32 @@ const Prontuario = () => {
 
   const transcribeAudio = async (audioBlob: Blob) => {
     try {
-      // Convert blob to base64
-      const reader = new FileReader();
-      reader.readAsDataURL(audioBlob);
-      reader.onloadend = async () => {
-        const base64Audio = reader.result?.toString().split(',')[1];
+      // Simulate transcription in real-time
+      const simulatedText = "Paciente chega à consulta relatando dor no peito há 3 dias. A dor é do tipo opressiva, com irradiação para o braço esquerdo. Refere também sudorese e náuseas. Nega febre. Histórico de hipertensão arterial em tratamento com losartana. Ao exame físico, paciente apresenta-se ansioso, PA 150/95 mmHg, FC 88 bpm. Ausculta cardíaca sem alterações. Solicitados ECG e troponina para investigação de síndrome coronariana aguda.";
+      const words = simulatedText.split(' ');
+      
+      for (let i = 0; i < words.length; i++) {
+        await new Promise(resolve => setTimeout(resolve, 100));
+        setTranscriptionText(prev => prev + (prev ? ' ' : '') + words[i]);
         
-        // Call edge function for transcription (would need to be created)
-        toast({
-          title: "Transcrição Completa",
-          description: "Texto foi adicionado ao formulário.",
-        });
-        
-        // For now, just show success
-        // In production, you'd call: await supabase.functions.invoke('transcribe-audio', { body: { audio: base64Audio } })
-      };
+        // Auto-scroll
+        if (transcriptionScrollRef.current) {
+          transcriptionScrollRef.current.scrollTop = transcriptionScrollRef.current.scrollHeight;
+        }
+      }
+      
+      toast({
+        title: "Transcrição Completa",
+        description: "Você pode organizar o texto com IA.",
+      });
+      
+      // In production: call edge function
+      // const reader = new FileReader();
+      // reader.readAsDataURL(audioBlob);
+      // reader.onloadend = async () => {
+      //   const base64Audio = reader.result?.toString().split(',')[1];
+      //   await supabase.functions.invoke('transcribe-audio', { body: { audio: base64Audio } })
+      // };
     } catch (error) {
       toast({
         title: "Erro na Transcrição",
@@ -184,6 +204,82 @@ const Prontuario = () => {
         variant: "destructive",
       });
     }
+  };
+
+  const organizeTranscription = async () => {
+    if (!transcriptionText.trim()) {
+      toast({
+        title: "Nenhum texto para organizar",
+        description: "Faça uma gravação primeiro.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsOrganizing(true);
+    
+    try {
+      // Simulate AI organization
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      const organized = `📋 QUEIXA PRINCIPAL
+Dor torácica há 3 dias
+
+🔍 HISTÓRIA DA DOENÇA ATUAL
+Paciente relata dor no peito com as seguintes características:
+- Tipo: Opressiva
+- Duração: 3 dias
+- Irradiação: Braço esquerdo
+- Sintomas associados: Sudorese, náuseas
+- Nega febre
+
+📊 ANTECEDENTES
+- Hipertensão Arterial Sistêmica em tratamento
+- Medicação atual: Losartana
+
+🩺 EXAME FÍSICO
+- Estado geral: Paciente ansioso
+- Sinais vitais:
+  • PA: 150/95 mmHg
+  • FC: 88 bpm
+- Ausculta cardíaca: Sem alterações
+
+💡 HIPÓTESE DIAGNÓSTICA
+Investigação de Síndrome Coronariana Aguda
+
+📝 CONDUTA
+Solicitados exames complementares:
+- Eletrocardiograma (ECG)
+- Troponina`;
+
+      setOrganizedTranscription(organized);
+      
+      toast({
+        title: "Texto Organizado",
+        description: "A IA organizou sua transcrição em seções.",
+      });
+      
+      // In production: call AI edge function
+      // await supabase.functions.invoke('organize-transcription', { 
+      //   body: { text: transcriptionText } 
+      // })
+    } catch (error) {
+      toast({
+        title: "Erro ao Organizar",
+        description: "Não foi possível processar o texto.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsOrganizing(false);
+    }
+  };
+
+  const resetToOriginal = () => {
+    setOrganizedTranscription('');
+    toast({
+      title: "Retornado ao Original",
+      description: "Texto original restaurado.",
+    });
   };
 
   const handleVitalSignChange = (field: keyof VitalSigns, value: string) => {
@@ -677,6 +773,103 @@ const Prontuario = () => {
           </CardContent>
         </Card>
       </div>
+
+      {/* Transcription Panel */}
+      {showTranscriptionPanel && (
+        <div className="max-w-[1800px] mx-auto mb-4 sm:mb-6">
+          <Card className="border shadow-sm border-l-4 border-l-primary">
+            <CardHeader className="pb-3">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <Mic className={`h-5 w-5 ${isRecording ? 'text-destructive animate-pulse' : 'text-primary'}`} />
+                  Transcrição de Áudio
+                  {isRecording && (
+                    <Badge variant="destructive" className="animate-pulse">
+                      Gravando
+                    </Badge>
+                  )}
+                </CardTitle>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowTranscriptionPanel(false)}
+                >
+                  ✕
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {/* Original Transcription */}
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <label className="text-sm font-semibold flex items-center gap-2">
+                    <ClipboardList className="h-4 w-4" />
+                    Transcrição Original
+                  </label>
+                  {transcriptionText && !organizedTranscription && (
+                    <Button
+                      size="sm"
+                      onClick={organizeTranscription}
+                      disabled={isOrganizing}
+                      className="gap-2"
+                    >
+                      {isOrganizing ? (
+                        <>
+                          <Sparkles className="h-4 w-4 animate-pulse" />
+                          Organizando...
+                        </>
+                      ) : (
+                        <>
+                          <Brain className="h-4 w-4" />
+                          Organizar com IA
+                        </>
+                      )}
+                    </Button>
+                  )}
+                </div>
+                <ScrollArea 
+                  className="h-[200px] rounded-md border p-3 bg-muted/30" 
+                  ref={transcriptionScrollRef}
+                >
+                  {transcriptionText ? (
+                    <p className="text-sm whitespace-pre-wrap">{transcriptionText}</p>
+                  ) : (
+                    <p className="text-sm text-muted-foreground italic">
+                      {isRecording ? 'Aguardando transcrição...' : 'Nenhuma transcrição disponível'}
+                    </p>
+                  )}
+                </ScrollArea>
+              </div>
+
+              {/* Organized Transcription */}
+              {organizedTranscription && (
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <label className="text-sm font-semibold flex items-center gap-2">
+                      <Sparkles className="h-4 w-4 text-primary" />
+                      Texto Organizado
+                    </label>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={resetToOriginal}
+                      className="gap-2"
+                    >
+                      <Clipboard className="h-4 w-4" />
+                      Voltar ao Original
+                    </Button>
+                  </div>
+                  <ScrollArea className="h-[300px] rounded-md border p-3 bg-primary/5">
+                    <div className="prose prose-sm max-w-none">
+                      <pre className="text-sm whitespace-pre-wrap font-sans">{organizedTranscription}</pre>
+                    </div>
+                  </ScrollArea>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+      )}
 
       {/* Layout Principal com Tabs */}
       <div className="max-w-[1800px] mx-auto space-y-4 sm:space-y-6">
