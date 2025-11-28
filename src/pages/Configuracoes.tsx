@@ -1261,6 +1261,35 @@ export default function Configuracoes() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
+                  {!resources.autopilot ? (
+                    <div className="py-12 text-center space-y-6">
+                      <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-violet-500 to-purple-500 p-5 mx-auto opacity-50">
+                        <Bot className="h-full w-full text-white" />
+                      </div>
+                      <div className="space-y-2">
+                        <p className="font-semibold text-xl">Módulo Autopilot Desativado</p>
+                        <p className="text-sm text-muted-foreground max-w-md mx-auto">
+                          Ative o módulo Autopilot para configurar automações inteligentes e IA
+                        </p>
+                      </div>
+                      <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                        <div className="flex items-center gap-3 p-4 rounded-lg border-2 border-primary/50 bg-primary/5">
+                          <span className="text-sm font-medium">Ativar Autopilot</span>
+                          <Switch
+                            checked={false}
+                            onCheckedChange={(checked) => {
+                              setResources({ ...resources, autopilot: checked });
+                              toast.success("Autopilot ativado! Configure as opções abaixo.");
+                            }}
+                          />
+                        </div>
+                      </div>
+                      <Button onClick={() => changeSection("home")} variant="outline" className="gap-2">
+                        <ArrowLeft className="h-4 w-4" />
+                        Voltar para Início
+                      </Button>
+                    </div>
+                  ) : (
                   <div className="space-y-6">
                     {/* Resposta Automática */}
                     <div className="flex items-start justify-between p-4 rounded-lg border-2 border-border hover:border-primary/50 transition-all">
@@ -1417,6 +1446,7 @@ export default function Configuracoes() {
                       />
                     </div>
                   </div>
+                  )}
 
                   <Button onClick={handleSave} className="w-full md:w-auto gap-2 mt-6">
                     <Save className="h-4 w-4" />
@@ -1501,18 +1531,30 @@ export default function Configuracoes() {
                 </CardHeader>
                 <CardContent>
                   {!resources.telemedicina ? (
-                    <div className="py-12 text-center space-y-4">
-                      <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-500 p-4 mx-auto">
+                    <div className="py-12 text-center space-y-6">
+                      <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-500 p-5 mx-auto opacity-50">
                         <Video className="h-full w-full text-white" />
                       </div>
-                      <div>
-                        <p className="font-semibold text-lg">Módulo Telemedicina Desativado</p>
-                        <p className="text-sm text-muted-foreground mt-1">
-                          Ative o switch de Telemedicina no card acima para configurar
+                      <div className="space-y-2">
+                        <p className="font-semibold text-xl">Módulo Telemedicina Desativado</p>
+                        <p className="text-sm text-muted-foreground max-w-md mx-auto">
+                          Ative o módulo de Telemedicina para configurar atendimentos online e salas de videochamada
                         </p>
                       </div>
-                      <Button onClick={() => changeSection("home")} className="gap-2">
-                        <Package className="h-4 w-4" />
+                      <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                        <div className="flex items-center gap-3 p-4 rounded-lg border-2 border-primary/50 bg-primary/5">
+                          <span className="text-sm font-medium">Ativar Telemedicina</span>
+                          <Switch
+                            checked={false}
+                            onCheckedChange={(checked) => {
+                              setResources({ ...resources, telemedicina: checked });
+                              toast.success("Telemedicina ativado! Configure as opções abaixo.");
+                            }}
+                          />
+                        </div>
+                      </div>
+                      <Button onClick={() => changeSection("home")} variant="outline" className="gap-2">
+                        <ArrowLeft className="h-4 w-4" />
                         Voltar para Início
                       </Button>
                     </div>
@@ -1730,18 +1772,30 @@ export default function Configuracoes() {
                 </CardHeader>
                 <CardContent>
                   {!resources.fiscal ? (
-                    <div className="py-12 text-center space-y-4">
-                      <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-500 p-4 mx-auto">
+                    <div className="py-12 text-center space-y-6">
+                      <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-500 p-5 mx-auto opacity-50">
                         <FileText className="h-full w-full text-white" />
                       </div>
-                      <div>
-                        <p className="font-semibold text-lg">Módulo Fiscal Desativado</p>
-                        <p className="text-sm text-muted-foreground mt-1">
-                          Ative o switch de Fiscal no card acima para configurar
+                      <div className="space-y-2">
+                        <p className="font-semibold text-xl">Módulo Fiscal Desativado</p>
+                        <p className="text-sm text-muted-foreground max-w-md mx-auto">
+                          Ative o módulo Fiscal para configurar emissão de notas fiscais e documentos
                         </p>
                       </div>
-                      <Button onClick={() => changeSection("home")} className="gap-2">
-                        <Package className="h-4 w-4" />
+                      <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                        <div className="flex items-center gap-3 p-4 rounded-lg border-2 border-primary/50 bg-primary/5">
+                          <span className="text-sm font-medium">Ativar Fiscal</span>
+                          <Switch
+                            checked={false}
+                            onCheckedChange={(checked) => {
+                              setResources({ ...resources, fiscal: checked });
+                              toast.success("Fiscal ativado! Configure as opções abaixo.");
+                            }}
+                          />
+                        </div>
+                      </div>
+                      <Button onClick={() => changeSection("home")} variant="outline" className="gap-2">
+                        <ArrowLeft className="h-4 w-4" />
                         Voltar para Início
                       </Button>
                     </div>
