@@ -182,7 +182,7 @@ export default function Configuracoes() {
       title: "Recursos do Sistema",
       description: "Ative ou desative módulos e funcionalidades",
       icon: Package,
-      color: "from-primary/80 to-primary/60",
+      color: "from-purple-500 to-pink-500",
       completion: 100,
       items: ["Fiscal", "Autopilot", "Convênios", "Cupons", "Telemedicina"],
       badge: "IMPORTANTE",
@@ -192,7 +192,7 @@ export default function Configuracoes() {
       title: "Organização",
       description: "Dados da clínica, identidade visual e branding",
       icon: Building2,
-      color: "from-primary/70 to-primary/50",
+      color: "from-blue-500 to-cyan-500",
       completion: 85,
       items: ["Nome e documentos", "Logo e favicon", "Cores e tema"],
     },
@@ -201,7 +201,7 @@ export default function Configuracoes() {
       title: "Agenda",
       description: "Tipos de atendimento e configurações de agendamento",
       icon: Calendar,
-      color: "from-primary/60 to-primary/40",
+      color: "from-orange-500 to-red-500",
       completion: 60,
       items: ["Modos de atendimento", "Tipos de consulta", "Horários"],
     },
@@ -210,7 +210,7 @@ export default function Configuracoes() {
       title: "Integrações",
       description: "Conecte com serviços externos e APIs",
       icon: Plug,
-      color: "from-secondary/80 to-secondary/60",
+      color: "from-green-500 to-emerald-500",
       completion: 40,
       items: ["Google Calendar", "WhatsApp", "Twilio"],
     },
@@ -219,7 +219,7 @@ export default function Configuracoes() {
       title: "Autopilot",
       description: "Assistente inteligente e automações com IA",
       icon: Bot,
-      color: "from-primary/70 to-secondary/70",
+      color: "from-violet-500 to-purple-500",
       completion: 70,
       items: ["Políticas", "Ferramentas", "Base de conhecimento"],
       badge: "BETA",
@@ -230,7 +230,7 @@ export default function Configuracoes() {
       title: "Telemedicina",
       description: "Configurações de atendimento online e videochamadas",
       icon: Video,
-      color: "from-primary/60 to-secondary/60",
+      color: "from-cyan-500 to-blue-500",
       completion: 50,
       items: ["Tema da sala", "Gravações", "Compatibilidade"],
       requiresActivation: true,
@@ -240,7 +240,7 @@ export default function Configuracoes() {
       title: "Fiscal",
       description: "Emissão de notas fiscais e documentos",
       icon: FileText,
-      color: "from-accent/80 to-accent/60",
+      color: "from-amber-500 to-orange-500",
       completion: 30,
       items: ["Provedor", "Credenciais", "Certificados"],
       requiresActivation: true,
@@ -250,7 +250,7 @@ export default function Configuracoes() {
       title: "Acessos",
       description: "Controle de permissões e usuários",
       icon: Shield,
-      color: "from-secondary/70 to-accent/70",
+      color: "from-red-500 to-pink-500",
       completion: 0,
       items: ["Usuários", "Perfis", "Permissões"],
     },
@@ -320,14 +320,14 @@ export default function Configuracoes() {
 
             {/* Recursos em Destaque */}
             <Card
-              className="border-2 border-primary/30 backdrop-blur-sm bg-gradient-to-br from-primary/5 to-primary/[0.02] shadow-xl animate-fade-in cursor-pointer hover:shadow-2xl hover:scale-[1.02] transition-all duration-300"
+              className="border-2 border-primary/50 backdrop-blur-sm bg-gradient-to-br from-primary/10 to-primary/5 shadow-xl animate-fade-in cursor-pointer hover:shadow-2xl hover:scale-[1.02] transition-all duration-300"
               onClick={() => changeSection("recursos")}
             >
               <CardContent className="pt-6">
                 <div className="flex items-start justify-between">
                   <div className="flex items-start gap-4">
-                    <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary/80 to-primary/60 p-4 shadow-lg">
-                      <Package className="h-full w-full text-primary-foreground" />
+                    <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 p-4 shadow-lg">
+                      <Package className="h-full w-full text-white" />
                     </div>
                     <div className="space-y-2">
                       <div className="flex items-center gap-2">
@@ -586,7 +586,7 @@ export default function Configuracoes() {
                     <Card
                       className={`border-2 transition-all cursor-pointer ${
                         resources.fiscal
-                          ? "border-primary/40 bg-primary/5"
+                          ? "border-green-500 bg-green-500/5"
                           : "border-border hover:border-primary/50"
                       }`}
                       onClick={() => setResources({ ...resources, fiscal: !resources.fiscal })}
@@ -596,11 +596,11 @@ export default function Configuracoes() {
                           <div className="flex items-start gap-3">
                             <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
                               resources.fiscal
-                                ? "bg-gradient-to-br from-accent/70 to-accent/50"
+                                ? "bg-gradient-to-br from-amber-500 to-orange-500"
                                 : "bg-muted"
                             }`}>
                               <FileText className={`h-6 w-6 ${
-                                resources.fiscal ? "text-accent-foreground" : "text-muted-foreground"
+                                resources.fiscal ? "text-white" : "text-muted-foreground"
                               }`} />
                             </div>
                             <div className="flex-1">
@@ -611,10 +611,10 @@ export default function Configuracoes() {
                             </div>
                           </div>
                           <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                            resources.fiscal ? "bg-primary" : "bg-muted"
+                            resources.fiscal ? "bg-green-500" : "bg-muted"
                           }`}>
                             {resources.fiscal ? (
-                              <Check className="h-5 w-5 text-primary-foreground" />
+                              <Check className="h-5 w-5 text-white" />
                             ) : (
                               <X className="h-5 w-5 text-muted-foreground" />
                             )}
@@ -642,7 +642,7 @@ export default function Configuracoes() {
                     <Card
                       className={`border-2 transition-all cursor-pointer ${
                         resources.autopilot
-                          ? "border-primary/40 bg-primary/5"
+                          ? "border-violet-500 bg-violet-500/5"
                           : "border-border hover:border-primary/50"
                       }`}
                       onClick={() => setResources({ ...resources, autopilot: !resources.autopilot })}
@@ -652,11 +652,11 @@ export default function Configuracoes() {
                           <div className="flex items-start gap-3">
                             <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
                               resources.autopilot
-                                ? "bg-gradient-to-br from-primary/70 to-secondary/70"
+                                ? "bg-gradient-to-br from-violet-500 to-purple-500"
                                 : "bg-muted"
                             }`}>
                               <Bot className={`h-6 w-6 ${
-                                resources.autopilot ? "text-primary-foreground" : "text-muted-foreground"
+                                resources.autopilot ? "text-white" : "text-muted-foreground"
                               }`} />
                             </div>
                             <div className="flex-1">
@@ -670,10 +670,10 @@ export default function Configuracoes() {
                             </div>
                           </div>
                           <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                            resources.autopilot ? "bg-primary" : "bg-muted"
+                            resources.autopilot ? "bg-violet-500" : "bg-muted"
                           }`}>
                             {resources.autopilot ? (
-                              <Check className="h-5 w-5 text-primary-foreground" />
+                              <Check className="h-5 w-5 text-white" />
                             ) : (
                               <X className="h-5 w-5 text-muted-foreground" />
                             )}
@@ -701,7 +701,7 @@ export default function Configuracoes() {
                     <Card
                       className={`border-2 transition-all cursor-pointer ${
                         resources.convenios
-                          ? "border-primary/40 bg-primary/5"
+                          ? "border-blue-500 bg-blue-500/5"
                           : "border-border hover:border-primary/50"
                       }`}
                       onClick={() => setResources({ ...resources, convenios: !resources.convenios })}
@@ -711,11 +711,11 @@ export default function Configuracoes() {
                           <div className="flex items-start gap-3">
                             <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
                               resources.convenios
-                                ? "bg-gradient-to-br from-secondary/70 to-secondary/50"
+                                ? "bg-gradient-to-br from-blue-500 to-cyan-500"
                                 : "bg-muted"
                             }`}>
                               <Shield className={`h-6 w-6 ${
-                                resources.convenios ? "text-secondary-foreground" : "text-muted-foreground"
+                                resources.convenios ? "text-white" : "text-muted-foreground"
                               }`} />
                             </div>
                             <div className="flex-1">
@@ -726,10 +726,10 @@ export default function Configuracoes() {
                             </div>
                           </div>
                           <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                            resources.convenios ? "bg-primary" : "bg-muted"
+                            resources.convenios ? "bg-blue-500" : "bg-muted"
                           }`}>
                             {resources.convenios ? (
-                              <Check className="h-5 w-5 text-primary-foreground" />
+                              <Check className="h-5 w-5 text-white" />
                             ) : (
                               <X className="h-5 w-5 text-muted-foreground" />
                             )}
@@ -742,7 +742,7 @@ export default function Configuracoes() {
                     <Card
                       className={`border-2 transition-all cursor-pointer ${
                         resources.cupons
-                          ? "border-primary/40 bg-primary/5"
+                          ? "border-pink-500 bg-pink-500/5"
                           : "border-border hover:border-primary/50"
                       }`}
                       onClick={() => setResources({ ...resources, cupons: !resources.cupons })}
@@ -752,11 +752,11 @@ export default function Configuracoes() {
                           <div className="flex items-start gap-3">
                             <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
                               resources.cupons
-                                ? "bg-gradient-to-br from-accent/70 to-accent/50"
+                                ? "bg-gradient-to-br from-pink-500 to-red-500"
                                 : "bg-muted"
                             }`}>
                               <Sparkles className={`h-6 w-6 ${
-                                resources.cupons ? "text-accent-foreground" : "text-muted-foreground"
+                                resources.cupons ? "text-white" : "text-muted-foreground"
                               }`} />
                             </div>
                             <div className="flex-1">
@@ -767,10 +767,10 @@ export default function Configuracoes() {
                             </div>
                           </div>
                           <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                            resources.cupons ? "bg-primary" : "bg-muted"
+                            resources.cupons ? "bg-pink-500" : "bg-muted"
                           }`}>
                             {resources.cupons ? (
-                              <Check className="h-5 w-5 text-primary-foreground" />
+                              <Check className="h-5 w-5 text-white" />
                             ) : (
                               <X className="h-5 w-5 text-muted-foreground" />
                             )}
@@ -783,7 +783,7 @@ export default function Configuracoes() {
                     <Card
                       className={`border-2 transition-all cursor-pointer ${
                         resources.telemedicina
-                          ? "border-primary/40 bg-primary/5"
+                          ? "border-cyan-500 bg-cyan-500/5"
                           : "border-border hover:border-primary/50"
                       }`}
                       onClick={() => setResources({ ...resources, telemedicina: !resources.telemedicina })}
@@ -793,11 +793,11 @@ export default function Configuracoes() {
                           <div className="flex items-start gap-3">
                             <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
                               resources.telemedicina
-                                ? "bg-gradient-to-br from-primary/60 to-secondary/60"
+                                ? "bg-gradient-to-br from-cyan-500 to-blue-500"
                                 : "bg-muted"
                             }`}>
                               <Video className={`h-6 w-6 ${
-                                resources.telemedicina ? "text-primary-foreground" : "text-muted-foreground"
+                                resources.telemedicina ? "text-white" : "text-muted-foreground"
                               }`} />
                             </div>
                             <div className="flex-1">
@@ -808,10 +808,10 @@ export default function Configuracoes() {
                             </div>
                           </div>
                           <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                            resources.telemedicina ? "bg-primary" : "bg-muted"
+                            resources.telemedicina ? "bg-cyan-500" : "bg-muted"
                           }`}>
                             {resources.telemedicina ? (
-                              <Check className="h-5 w-5 text-primary-foreground" />
+                              <Check className="h-5 w-5 text-white" />
                             ) : (
                               <X className="h-5 w-5 text-muted-foreground" />
                             )}
