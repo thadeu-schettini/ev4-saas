@@ -34,6 +34,9 @@ import {
   Settings,
   Zap,
   Clock,
+  X,
+  Check,
+  AlertCircle,
 } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -45,9 +48,9 @@ import {
 
 type ConfigSection = 
   | "home" 
+  | "recursos"
   | "organizacao" 
   | "agenda" 
-  | "recursos" 
   | "integracoes" 
   | "autopilot" 
   | "telemedicina" 
@@ -97,7 +100,18 @@ export default function Configuracoes() {
     completion: number;
     items: string[];
     badge?: string;
+    requiresActivation?: boolean;
   }> = [
+    {
+      id: "recursos",
+      title: "Recursos do Sistema",
+      description: "Ative ou desative módulos e funcionalidades",
+      icon: Package,
+      color: "from-purple-500 to-pink-500",
+      completion: 100,
+      items: ["Fiscal", "Autopilot", "Convênios", "Cupons"],
+      badge: "IMPORTANTE",
+    },
     {
       id: "organizacao",
       title: "Organização",
@@ -112,18 +126,9 @@ export default function Configuracoes() {
       title: "Agenda",
       description: "Tipos de atendimento e configurações de agendamento",
       icon: Calendar,
-      color: "from-purple-500 to-pink-500",
+      color: "from-orange-500 to-red-500",
       completion: 60,
       items: ["Modos de atendimento", "Tipos de consulta", "Horários"],
-    },
-    {
-      id: "recursos",
-      title: "Recursos",
-      description: "Ativação de módulos e funcionalidades do sistema",
-      icon: Package,
-      color: "from-orange-500 to-red-500",
-      completion: 100,
-      items: ["Fiscal", "Autopilot", "Convênios", "Cupons"],
     },
     {
       id: "integracoes",
@@ -143,6 +148,7 @@ export default function Configuracoes() {
       completion: 70,
       items: ["Políticas", "Ferramentas", "Base de conhecimento"],
       badge: "BETA",
+      requiresActivation: true,
     },
     {
       id: "telemedicina",
@@ -152,6 +158,7 @@ export default function Configuracoes() {
       color: "from-cyan-500 to-blue-500",
       completion: 50,
       items: ["Tema da sala", "Gravações", "Compatibilidade"],
+      requiresActivation: true,
     },
     {
       id: "fiscal",
@@ -161,6 +168,7 @@ export default function Configuracoes() {
       color: "from-amber-500 to-orange-500",
       completion: 30,
       items: ["Provedor", "Credenciais", "Certificados"],
+      requiresActivation: true,
     },
     {
       id: "acessos",
@@ -173,11 +181,25 @@ export default function Configuracoes() {
     },
   ];
 
+  const changeSection = (section: ConfigSection) => {
+    // Add exit animation class before changing
+    const content = document.querySelector('.section-content');
+    if (content) {
+      content.classList.add('animate-fade-out');
+      setTimeout(() => {
+        setActiveSection(section);
+        content.classList.remove('animate-fade-out');
+      }, 200);
+    } else {
+      setActiveSection(section);
+    }
+  };
+
   if (activeSection === "home") {
     return (
       <TooltipProvider>
         <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20 p-4 md:p-8">
-          <div className="max-w-7xl mx-auto space-y-8">
+          <div className="max-w-7xl mx-auto space-y-8 section-content">
             {/* Header */}
             <div className="space-y-3 animate-fade-in">
               <div className="flex items-center gap-3">
@@ -204,16 +226,16 @@ export default function Configuracoes() {
                       <p className="text-sm font-medium text-muted-foreground">
                         Progresso geral das configurações
                       </p>
-                      <p className="text-3xl font-bold mt-1">58%</p>
+                      <p className="text-3xl font-bold mt-1">62%</p>
                     </div>
                     <div className="flex items-center gap-2">
                       <Badge variant="secondary" className="gap-1">
                         <CheckCircle2 className="h-3 w-3" />
-                        4/8 completas
+                        5/8 completas
                       </Badge>
                     </div>
                   </div>
-                  <Progress value={58} className="h-2" />
+                  <Progress value={62} className="h-2" />
                   <p className="text-xs text-muted-foreground">
                     Complete todas as seções para ter uma experiência completa do sistema
                   </p>
@@ -221,14 +243,56 @@ export default function Configuracoes() {
               </CardContent>
             </Card>
 
+            {/* Recursos em Destaque */}
+            <Card
+              className="border-2 border-primary/50 backdrop-blur-sm bg-gradient-to-br from-primary/10 to-primary/5 shadow-xl animate-fade-in cursor-pointer hover:shadow-2xl hover:scale-[1.02] transition-all duration-300"
+              onClick={() => changeSection("recursos")}
+            >
+              <CardContent className="pt-6">
+                <div className="flex items-start justify-between">
+                  <div className="flex items-start gap-4">
+                    <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 p-4 shadow-lg">
+                      <Package className="h-full w-full text-white" />
+                    </div>
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2">
+                        <h3 className="text-2xl font-bold">Recursos do Sistema</h3>
+                        <Badge variant="default" className="gap-1">
+                          <Sparkles className="h-3 w-3" />
+                          IMPORTANTE
+                        </Badge>
+                      </div>
+                      <p className="text-muted-foreground">
+                        Ative ou desative módulos e funcionalidades do sistema. Configure quais recursos sua clínica irá utilizar.
+                      </p>
+                      <div className="flex items-center gap-4 pt-2">
+                        <div className="flex items-center gap-2 text-sm">
+                          <CheckCircle2 className="h-4 w-4 text-green-500" />
+                          <span className="text-muted-foreground">4 módulos ativos</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-sm">
+                          <AlertCircle className="h-4 w-4 text-amber-500" />
+                          <span className="text-muted-foreground">Configure antes de usar</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <Button size="lg" className="gap-2">
+                    Configurar Recursos
+                    <ArrowLeft className="h-4 w-4 rotate-180" />
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
             {/* Configuration Cards Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {configSections.map((section, index) => (
+              {configSections.filter(s => s.id !== "recursos").map((section, index) => (
                 <Card
                   key={section.id}
                   className="group relative border-border/50 backdrop-blur-sm bg-card/95 hover:shadow-2xl transition-all duration-500 cursor-pointer overflow-hidden animate-fade-in hover:scale-105"
                   style={{ animationDelay: `${index * 100}ms` }}
-                  onClick={() => setActiveSection(section.id)}
+                  onClick={() => changeSection(section.id)}
                 >
                   {/* Gradient Background */}
                   <div
@@ -241,6 +305,19 @@ export default function Configuracoes() {
                       <Badge variant="outline" className="text-xs">
                         {section.badge}
                       </Badge>
+                    )}
+                    {section.requiresActivation && !resources[section.id as keyof typeof resources] && (
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <Badge variant="secondary" className="text-xs gap-1">
+                            <AlertCircle className="h-3 w-3" />
+                            Inativo
+                          </Badge>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Ative este módulo em Recursos</p>
+                        </TooltipContent>
+                      </Tooltip>
                     )}
                     <div className="relative w-12 h-12">
                       <svg className="w-12 h-12 transform -rotate-90">
@@ -334,7 +411,7 @@ export default function Configuracoes() {
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <Button variant="outline" className="h-auto p-4 justify-start">
+                  <Button variant="outline" className="h-auto p-4 justify-start hover:border-primary transition-colors" onClick={() => changeSection("organizacao")}>
                     <Upload className="h-5 w-5 mr-3 text-primary" />
                     <div className="text-left">
                       <p className="font-medium">Upload de Logo</p>
@@ -344,7 +421,7 @@ export default function Configuracoes() {
                     </div>
                   </Button>
 
-                  <Button variant="outline" className="h-auto p-4 justify-start">
+                  <Button variant="outline" className="h-auto p-4 justify-start hover:border-primary transition-colors" onClick={() => changeSection("agenda")}>
                     <Plus className="h-5 w-5 mr-3 text-primary" />
                     <div className="text-left">
                       <p className="font-medium">Novo Tipo de Atendimento</p>
@@ -354,7 +431,7 @@ export default function Configuracoes() {
                     </div>
                   </Button>
 
-                  <Button variant="outline" className="h-auto p-4 justify-start">
+                  <Button variant="outline" className="h-auto p-4 justify-start hover:border-primary transition-colors" onClick={() => changeSection("integracoes")}>
                     <Plug className="h-5 w-5 mr-3 text-primary" />
                     <div className="text-left">
                       <p className="font-medium">Conectar Integrações</p>
@@ -378,14 +455,14 @@ export default function Configuracoes() {
   return (
     <TooltipProvider>
       <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20 p-4 md:p-8">
-        <div className="max-w-6xl mx-auto space-y-6">
+        <div className="max-w-6xl mx-auto space-y-6 section-content animate-fade-in">
           {/* Back Navigation */}
-          <div className="flex items-center gap-4 animate-fade-in">
+          <div className="flex items-center gap-4">
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => setActiveSection("home")}
-              className="gap-2"
+              onClick={() => changeSection("home")}
+              className="gap-2 hover:bg-muted"
             >
               <ArrowLeft className="h-4 w-4" />
               Voltar
@@ -407,9 +484,239 @@ export default function Configuracoes() {
             </div>
           </div>
 
-          {/* Section Content */}
+          {/* Recursos Section */}
+          {activeSection === "recursos" && (
+            <div className="space-y-6">
+              <Card className="border-border/50 backdrop-blur-sm bg-card/95 shadow-lg">
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <CardTitle className="flex items-center gap-2">
+                        <Package className="h-5 w-5 text-primary" />
+                        Módulos do Sistema
+                      </CardTitle>
+                      <CardDescription className="mt-2">
+                        Ative ou desative módulos conforme a necessidade da sua clínica
+                      </CardDescription>
+                    </div>
+                    <Badge variant="secondary" className="gap-1">
+                      <CheckCircle2 className="h-3 w-3" />
+                      {Object.values(resources).filter(Boolean).length}/4 ativos
+                    </Badge>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Fiscal */}
+                    <Card
+                      className={`border-2 transition-all cursor-pointer ${
+                        resources.fiscal
+                          ? "border-green-500 bg-green-500/5"
+                          : "border-border hover:border-primary/50"
+                      }`}
+                      onClick={() => setResources({ ...resources, fiscal: !resources.fiscal })}
+                    >
+                      <CardContent className="pt-6">
+                        <div className="flex items-start justify-between mb-4">
+                          <div className="flex items-start gap-3">
+                            <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+                              resources.fiscal
+                                ? "bg-gradient-to-br from-amber-500 to-orange-500"
+                                : "bg-muted"
+                            }`}>
+                              <FileText className={`h-6 w-6 ${
+                                resources.fiscal ? "text-white" : "text-muted-foreground"
+                              }`} />
+                            </div>
+                            <div className="flex-1">
+                              <h3 className="font-semibold text-lg">Fiscal (Notas / NF-e)</h3>
+                              <p className="text-sm text-muted-foreground mt-1">
+                                Ativa configurações e telas relacionadas à emissão fiscal
+                              </p>
+                            </div>
+                          </div>
+                          <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                            resources.fiscal ? "bg-green-500" : "bg-muted"
+                          }`}>
+                            {resources.fiscal ? (
+                              <Check className="h-5 w-5 text-white" />
+                            ) : (
+                              <X className="h-5 w-5 text-muted-foreground" />
+                            )}
+                          </div>
+                        </div>
+                        {resources.fiscal && (
+                          <div className="pt-3 border-t">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="w-full"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                changeSection("fiscal");
+                              }}
+                            >
+                              Configurar Fiscal
+                            </Button>
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
+
+                    {/* Autopilot */}
+                    <Card
+                      className={`border-2 transition-all cursor-pointer ${
+                        resources.autopilot
+                          ? "border-violet-500 bg-violet-500/5"
+                          : "border-border hover:border-primary/50"
+                      }`}
+                      onClick={() => setResources({ ...resources, autopilot: !resources.autopilot })}
+                    >
+                      <CardContent className="pt-6">
+                        <div className="flex items-start justify-between mb-4">
+                          <div className="flex items-start gap-3">
+                            <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+                              resources.autopilot
+                                ? "bg-gradient-to-br from-violet-500 to-purple-500"
+                                : "bg-muted"
+                            }`}>
+                              <Bot className={`h-6 w-6 ${
+                                resources.autopilot ? "text-white" : "text-muted-foreground"
+                              }`} />
+                            </div>
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2">
+                                <h3 className="font-semibold text-lg">Autopilot</h3>
+                                <Badge variant="outline" className="text-xs">BETA</Badge>
+                              </div>
+                              <p className="text-sm text-muted-foreground mt-1">
+                                Controle de acesso ao módulo de automações inteligentes
+                              </p>
+                            </div>
+                          </div>
+                          <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                            resources.autopilot ? "bg-violet-500" : "bg-muted"
+                          }`}>
+                            {resources.autopilot ? (
+                              <Check className="h-5 w-5 text-white" />
+                            ) : (
+                              <X className="h-5 w-5 text-muted-foreground" />
+                            )}
+                          </div>
+                        </div>
+                        {resources.autopilot && (
+                          <div className="pt-3 border-t">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="w-full"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                changeSection("autopilot");
+                              }}
+                            >
+                              Configurar Autopilot
+                            </Button>
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
+
+                    {/* Convênios */}
+                    <Card
+                      className={`border-2 transition-all cursor-pointer ${
+                        resources.convenios
+                          ? "border-blue-500 bg-blue-500/5"
+                          : "border-border hover:border-primary/50"
+                      }`}
+                      onClick={() => setResources({ ...resources, convenios: !resources.convenios })}
+                    >
+                      <CardContent className="pt-6">
+                        <div className="flex items-start justify-between mb-4">
+                          <div className="flex items-start gap-3">
+                            <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+                              resources.convenios
+                                ? "bg-gradient-to-br from-blue-500 to-cyan-500"
+                                : "bg-muted"
+                            }`}>
+                              <Shield className={`h-6 w-6 ${
+                                resources.convenios ? "text-white" : "text-muted-foreground"
+                              }`} />
+                            </div>
+                            <div className="flex-1">
+                              <h3 className="font-semibold text-lg">Convênios</h3>
+                              <p className="text-sm text-muted-foreground mt-1">
+                                Quando desativado, telas e campos de convênios são ocultos
+                              </p>
+                            </div>
+                          </div>
+                          <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                            resources.convenios ? "bg-blue-500" : "bg-muted"
+                          }`}>
+                            {resources.convenios ? (
+                              <Check className="h-5 w-5 text-white" />
+                            ) : (
+                              <X className="h-5 w-5 text-muted-foreground" />
+                            )}
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    {/* Cupons */}
+                    <Card
+                      className={`border-2 transition-all cursor-pointer ${
+                        resources.cupons
+                          ? "border-pink-500 bg-pink-500/5"
+                          : "border-border hover:border-primary/50"
+                      }`}
+                      onClick={() => setResources({ ...resources, cupons: !resources.cupons })}
+                    >
+                      <CardContent className="pt-6">
+                        <div className="flex items-start justify-between mb-4">
+                          <div className="flex items-start gap-3">
+                            <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+                              resources.cupons
+                                ? "bg-gradient-to-br from-pink-500 to-red-500"
+                                : "bg-muted"
+                            }`}>
+                              <Sparkles className={`h-6 w-6 ${
+                                resources.cupons ? "text-white" : "text-muted-foreground"
+                              }`} />
+                            </div>
+                            <div className="flex-1">
+                              <h3 className="font-semibold text-lg">Cupons e Promoções</h3>
+                              <p className="text-sm text-muted-foreground mt-1">
+                                Controla o acesso ao módulo de cupons e campanhas promocionais
+                              </p>
+                            </div>
+                          </div>
+                          <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                            resources.cupons ? "bg-pink-500" : "bg-muted"
+                          }`}>
+                            {resources.cupons ? (
+                              <Check className="h-5 w-5 text-white" />
+                            ) : (
+                              <X className="h-5 w-5 text-muted-foreground" />
+                            )}
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+
+                  <Button onClick={handleSave} className="w-full md:w-auto gap-2 mt-6">
+                    <Save className="h-4 w-4" />
+                    Salvar Configurações
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
+          )}
+
+          {/* Section Content - Keep existing sections */}
           {activeSection === "organizacao" && (
-            <div className="space-y-6 animate-fade-in">
+            <div className="space-y-6">
               {/* Dados da Organização */}
               <Card className="border-border/50 backdrop-blur-sm bg-card/95 shadow-lg">
                 <CardHeader>
@@ -597,7 +904,7 @@ export default function Configuracoes() {
           )}
 
           {activeSection === "agenda" && (
-            <div className="space-y-6 animate-fade-in">
+            <div className="space-y-6">
               {/* Modos de Atendimento */}
               <Card className="border-border/50 backdrop-blur-sm bg-card/95 shadow-lg">
                 <CardHeader>
@@ -797,8 +1104,8 @@ export default function Configuracoes() {
           )}
 
           {/* Placeholder for other sections */}
-          {currentSection && activeSection !== "organizacao" && activeSection !== "agenda" && (
-            <Card className="border-border/50 backdrop-blur-sm bg-card/95 shadow-lg animate-fade-in">
+          {currentSection && activeSection !== "recursos" && activeSection !== "organizacao" && activeSection !== "agenda" && (
+            <Card className="border-border/50 backdrop-blur-sm bg-card/95 shadow-lg">
               <CardContent className="py-16 text-center">
                 <div className="flex flex-col items-center gap-4">
                   {currentSection?.icon && (
