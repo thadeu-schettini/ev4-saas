@@ -185,7 +185,7 @@ export const FeaturePreviewModal = ({
 
         <div className="space-y-6 mt-6">
           {/* Preview Area */}
-          <Card className="bg-gradient-to-br from-primary/5 to-purple-500/5 border-2 p-8 min-h-[300px] flex items-center justify-center">
+          <Card className="bg-gradient-to-br from-primary/5 to-accent/5 border-2 p-8 min-h-[300px] flex items-center justify-center">
             <div className="text-center space-y-4 max-w-2xl animate-fade-in" key={currentStep}>
               <div className="inline-flex h-16 w-16 rounded-full bg-primary/20 items-center justify-center mb-4">
                 <DemoIcon className="h-8 w-8 text-primary" />
@@ -275,10 +275,10 @@ export const FeaturePreviewModal = ({
           </div>
 
           {/* Benefit Banner */}
-          <Card className="bg-gradient-to-r from-green-500/10 to-emerald-500/10 border-2 border-green-500/30 p-6">
+          <Card className="bg-gradient-to-r from-success/10 to-success-light/10 border-2 border-success/30 p-6">
             <div className="flex items-start gap-4">
-              <div className="h-10 w-10 rounded-full bg-green-500/20 flex items-center justify-center shrink-0">
-                <TrendingUp className="h-5 w-5 text-green-600" />
+              <div className="h-10 w-10 rounded-full bg-success/20 flex items-center justify-center shrink-0">
+                <TrendingUp className="h-5 w-5 text-success" />
               </div>
               <div className="flex-1">
                 <h4 className="font-semibold text-lg mb-1">Impacto no seu negócio</h4>

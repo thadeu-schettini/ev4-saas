@@ -28,18 +28,18 @@ export const UpgradeCelebrationModal = ({
     <>
       <CelebrationConfetti trigger={open} />
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="max-w-2xl border-2 border-primary/50 bg-gradient-to-br from-primary/10 via-background to-purple-500/10">
+        <DialogContent className="max-w-2xl border-2 border-primary/50 bg-gradient-to-br from-primary/10 via-background to-accent/10">
           <div className="text-center space-y-6 py-6">
             {/* Icon and Title */}
             <div className="flex flex-col items-center gap-4">
               <div className="relative">
                 <div className="absolute inset-0 bg-primary/20 blur-2xl rounded-full animate-pulse" />
-                <div className="relative h-24 w-24 rounded-full bg-gradient-to-br from-primary to-purple-500 flex items-center justify-center animate-scale-in">
+                <div className="relative h-24 w-24 rounded-full bg-gradient-to-br from-primary to-primary-glow flex items-center justify-center animate-scale-in">
                   <Icon className="h-12 w-12 text-primary-foreground" />
                 </div>
               </div>
               <div className="space-y-2">
-                <h2 className="text-4xl font-bold bg-gradient-to-r from-primary to-purple-500 bg-clip-text text-transparent">
+                <h2 className="text-4xl font-bold bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
                   Parabéns! 🎉
                 </h2>
                 <p className="text-xl text-muted-foreground">

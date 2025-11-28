@@ -105,8 +105,8 @@ const Billing = () => {
       icon: Zap,
       monthlyPrice: 99,
       annualPrice: 950,
-      color: "from-blue-500/20 to-cyan-500/20",
-      borderColor: "border-blue-500/50",
+      color: "from-primary/10 to-primary/5",
+      borderColor: "border-primary/50",
       badge: null,
       recommended: false,
       features: [
@@ -126,8 +126,8 @@ const Billing = () => {
       icon: Crown,
       monthlyPrice: 249,
       annualPrice: 2390,
-      color: "from-purple-500/20 to-pink-500/20",
-      borderColor: "border-purple-500/50",
+      color: "from-primary/15 to-accent/10",
+      borderColor: "border-primary",
       badge: "Mais Popular",
       recommended: true,
       features: [
@@ -147,8 +147,8 @@ const Billing = () => {
       icon: Sparkles,
       monthlyPrice: 499,
       annualPrice: 4790,
-      color: "from-orange-500/20 to-red-500/20",
-      borderColor: "border-orange-500/50",
+      color: "from-primary/20 to-primary-glow/15",
+      borderColor: "border-primary-glow/50",
       badge: "Melhor Valor",
       recommended: false,
       features: [
@@ -282,12 +282,12 @@ const Billing = () => {
       <div className="container mx-auto px-4 py-8 space-y-8">
         {/* Trial Banner */}
         {trialActive && (
-          <Card className="border-2 border-purple-500/50 bg-gradient-to-r from-purple-500/10 to-pink-500/10 animate-fade-in">
+          <Card className="border-2 border-primary/50 bg-gradient-to-r from-primary/10 to-accent/5 animate-fade-in">
             <CardContent className="p-6">
               <div className="flex items-center justify-between flex-wrap gap-4">
                 <div className="flex items-center gap-4">
-                  <div className="h-12 w-12 rounded-full bg-purple-500/20 flex items-center justify-center">
-                    <Clock className="h-6 w-6 text-purple-500 animate-pulse" />
+                  <div className="h-12 w-12 rounded-full bg-primary/20 flex items-center justify-center">
+                    <Clock className="h-6 w-6 text-primary animate-pulse" />
                   </div>
                   <div>
                     <h3 className="font-semibold text-lg">Test Drive Premium Ativo</h3>
@@ -368,11 +368,11 @@ const Billing = () => {
         </Card>
 
         {/* Locked Features Section */}
-        <Card className="border-2 border-amber-500/30 bg-gradient-to-br from-amber-500/5 via-background to-orange-500/5 animate-fade-in">
+        <Card className="border-2 border-warning/30 bg-gradient-to-br from-warning/5 via-background to-warning/10 animate-fade-in">
           <CardHeader>
             <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-full bg-amber-500/20 flex items-center justify-center">
-                <Lock className="h-5 w-5 text-amber-500" />
+              <div className="h-10 w-10 rounded-full bg-warning/20 flex items-center justify-center">
+                <Lock className="h-5 w-5 text-warning" />
               </div>
               <div>
                 <CardTitle className="text-xl">Recursos Premium Bloqueados</CardTitle>
@@ -390,8 +390,8 @@ const Billing = () => {
                     className="relative overflow-hidden rounded-lg border-2 border-dashed border-muted-foreground/30 p-4 bg-muted/20 hover:bg-muted/40 transition-all group"
                   >
                     <div className="absolute top-2 right-2">
-                      <div className="h-8 w-8 rounded-full bg-amber-500/20 flex items-center justify-center">
-                        <Lock className="h-4 w-4 text-amber-500" />
+                      <div className="h-8 w-8 rounded-full bg-warning/20 flex items-center justify-center">
+                        <Lock className="h-4 w-4 text-warning" />
                       </div>
                     </div>
                     <div className="space-y-3">
@@ -449,7 +449,7 @@ const Billing = () => {
         </Card>
 
         {/* Unlock More Section */}
-        <Card className="border-2 border-primary/50 bg-gradient-to-r from-primary/5 to-purple-500/5 animate-fade-in">
+        <Card className="border-2 border-primary/50 bg-gradient-to-r from-primary/5 to-accent/5 animate-fade-in">
           <CardContent className="p-6">
             <div className="flex items-center justify-between flex-wrap gap-4">
               <div className="flex items-center gap-4">
@@ -520,40 +520,42 @@ const Billing = () => {
                       return (
                         <Card
                           key={plan.id}
-                          className={`relative overflow-hidden transition-all hover:scale-105 cursor-pointer ${
+                          className={`relative transition-all hover:scale-[1.02] cursor-pointer ${
                             selectedPlan === plan.id ? "ring-2 ring-primary" : ""
-                          } ${plan.recommended ? "border-2 border-purple-500/50" : ""}`}
+                          } ${plan.recommended ? "border-2 border-primary" : ""}`}
                           onClick={() => setSelectedPlan(plan.id)}
                         >
-                          <div className={`absolute inset-0 bg-gradient-to-br ${plan.color} opacity-50`} />
-                          {plan.recommended && (
-                            <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-10">
-                              <Badge className="gap-1 bg-gradient-to-r from-purple-500 to-pink-500 text-white border-0 shadow-lg px-4 py-1">
+                          <div className={`absolute inset-0 bg-gradient-to-br ${plan.color} opacity-30`} />
+                          
+                          <CardHeader className="relative space-y-4">
+                            {/* Badge Section */}
+                            {plan.recommended && (
+                              <Badge className="gap-1 bg-primary text-primary-foreground border-0 shadow-sm w-fit">
                                 <Sparkles className="h-3 w-3" />
                                 Recomendado para você
                               </Badge>
-                            </div>
-                          )}
-                          {plan.badge && !plan.recommended && (
-                            <div className="absolute top-4 right-4">
-                              <Badge className="gap-1">
+                            )}
+                            {plan.badge && !plan.recommended && (
+                              <Badge variant="outline" className="gap-1 w-fit">
                                 <Crown className="h-3 w-3" />
                                 {plan.badge}
                               </Badge>
-                            </div>
-                          )}
-                          <CardHeader className="relative">
-                            <div className="flex items-center gap-2 mb-2">
-                              <PlanIcon className="h-6 w-6 text-primary" />
-                              <CardTitle className="text-2xl">{plan.name}</CardTitle>
-                            </div>
-                            <div className="space-y-1">
-                              <div className="text-4xl font-bold">R$ {priceDisplay}</div>
-                              {billingCycle === "annual" && (
-                                <p className="text-sm text-muted-foreground">
-                                  Economize R$ {savings.savings} ({savings.percentage}%)
-                                </p>
-                              )}
+                            )}
+                            
+                            {/* Plan Info */}
+                            <div className="space-y-3">
+                              <div className="flex items-center gap-2">
+                                <PlanIcon className="h-6 w-6 text-primary" />
+                                <CardTitle className="text-2xl">{plan.name}</CardTitle>
+                              </div>
+                              <div className="space-y-1">
+                                <div className="text-4xl font-bold">R$ {priceDisplay}</div>
+                                {billingCycle === "annual" && (
+                                  <p className="text-sm text-muted-foreground">
+                                    Economize R$ {savings.savings} ({savings.percentage}%)
+                                  </p>
+                                )}
+                              </div>
                             </div>
                           </CardHeader>
                           <CardContent className="relative space-y-4">
@@ -561,7 +563,7 @@ const Billing = () => {
                               {plan.features.map((feature, idx) => (
                                 <div key={idx} className="flex items-center gap-2">
                                   {feature.included ? (
-                                    <Check className="h-4 w-4 text-green-500 shrink-0" />
+                                    <Check className="h-4 w-4 text-success shrink-0" />
                                   ) : (
                                     <X className="h-4 w-4 text-muted-foreground shrink-0" />
                                   )}
@@ -694,7 +696,7 @@ const Billing = () => {
                         <div className="pt-3 border-t">
                           <div className="text-sm text-muted-foreground">Anual</div>
                           <div className="text-2xl font-bold">R$ {plan.annualPrice}/ano</div>
-                          <p className="text-sm text-green-500 mt-1">
+                          <p className="text-sm text-success mt-1">
                             Economize R$ {savings.savings} ({savings.percentage}%)
                           </p>
                         </div>
@@ -706,11 +708,11 @@ const Billing = () => {
                           <div
                             key={idx}
                             className={`flex items-center gap-2 p-2 rounded ${
-                              feature.included ? "bg-green-500/10" : "bg-muted/50"
+                              feature.included ? "bg-success/10" : "bg-muted/50"
                             }`}
                           >
                             {feature.included ? (
-                              <Check className="h-4 w-4 text-green-500 shrink-0" />
+                              <Check className="h-4 w-4 text-success shrink-0" />
                             ) : (
                               <X className="h-4 w-4 text-muted-foreground shrink-0" />
                             )}
@@ -830,8 +832,8 @@ const Billing = () => {
                         className="flex items-center justify-between p-4 border rounded-lg hover:bg-accent/50 transition-colors"
                       >
                         <div className="flex items-center gap-4">
-                          <div className="h-10 w-10 rounded-full bg-green-500/20 flex items-center justify-center">
-                            <Check className="h-5 w-5 text-green-500" />
+                          <div className="h-10 w-10 rounded-full bg-success/20 flex items-center justify-center">
+                            <Check className="h-5 w-5 text-success" />
                           </div>
                           <div>
                             <p className="font-medium">{payment.invoice}</p>
