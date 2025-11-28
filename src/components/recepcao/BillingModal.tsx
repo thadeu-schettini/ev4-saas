@@ -76,7 +76,7 @@ export const BillingModal = ({ open, onOpenChange, appointment }: BillingModalPr
   const [loading, setLoading] = useState(false);
   const [observations, setObservations] = useState("");
   const [installments, setInstallments] = useState(1);
-  const [installmentInterval, setInstallmentInterval] = useState(30); // dias entre parcelas
+  const installmentInterval = 30; // Padrão mensal
 
   const paymentMethods = [
     { id: "pix", label: "PIX", icon: Smartphone, color: "text-teal-500" },
@@ -406,52 +406,28 @@ export const BillingModal = ({ open, onOpenChange, appointment }: BillingModalPr
                     <div className="space-y-3">
                       <Label className="text-sm font-semibold flex items-center gap-2">
                         <CalendarDays className="h-4 w-4 text-primary" />
-                        Parcelamento
+                        Parcelamento Mensal
                       </Label>
                       
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <div>
-                          <Label htmlFor="installments" className="text-xs text-muted-foreground mb-2">
-                            Número de Parcelas
-                          </Label>
-                          <Select 
-                            value={installments.toString()} 
-                            onValueChange={(value) => setInstallments(Number(value))}
-                          >
-                            <SelectTrigger id="installments" className="h-11">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((num) => (
-                                <SelectItem key={num} value={num.toString()}>
-                                  {num === 1 ? "À vista" : `${num}x de R$ ${(totals.total / num).toFixed(2)}`}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        </div>
-
-                        {installments > 1 && (
-                          <div>
-                            <Label htmlFor="interval" className="text-xs text-muted-foreground mb-2">
-                              Intervalo
-                            </Label>
-                            <Select 
-                              value={installmentInterval.toString()} 
-                              onValueChange={(value) => setInstallmentInterval(Number(value))}
-                            >
-                              <SelectTrigger id="interval" className="h-11">
-                                <SelectValue />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="7">Semanal</SelectItem>
-                                <SelectItem value="15">Quinzenal</SelectItem>
-                                <SelectItem value="30">Mensal</SelectItem>
-                                <SelectItem value="60">Bimestral</SelectItem>
-                              </SelectContent>
-                            </Select>
-                          </div>
-                        )}
+                      <div>
+                        <Label htmlFor="installments" className="text-xs text-muted-foreground mb-2">
+                          Número de Parcelas
+                        </Label>
+                        <Select 
+                          value={installments.toString()} 
+                          onValueChange={(value) => setInstallments(Number(value))}
+                        >
+                          <SelectTrigger id="installments" className="h-11">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((num) => (
+                              <SelectItem key={num} value={num.toString()}>
+                                {num === 1 ? "À vista" : `${num}x de R$ ${(totals.total / num).toFixed(2)}`}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                       </div>
 
                       {installments > 1 && (
@@ -768,15 +744,6 @@ export const BillingModal = ({ open, onOpenChange, appointment }: BillingModalPr
                                 </p>
                               </div>
                             </div>
-
-                            {installmentInterval !== 30 && (
-                              <div className="p-2.5 bg-blue-500/10 rounded-lg border border-blue-500/20">
-                                <p className="text-xs text-blue-600 dark:text-blue-400 flex items-center gap-1.5">
-                                  <Clock className="h-3.5 w-3.5" />
-                                  Intervalo de {installmentInterval} dias entre parcelas
-                                </p>
-                              </div>
-                            )}
                           </div>
                         </div>
                       </>
