@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -34,8 +34,11 @@ import {
   Download,
   Receipt,
   ArrowRightLeft,
+  Clock,
+  Play,
 } from "lucide-react";
 import { UpgradeCelebrationModal } from "@/components/UpgradeCelebrationModal";
+import { FeaturePreviewModal } from "@/components/FeaturePreviewModal";
 import { useToast } from "@/hooks/use-toast";
 
 const Billing = () => {
@@ -46,6 +49,29 @@ const Billing = () => {
   const [upgradedPlan, setUpgradedPlan] = useState<any>(null);
   const [showComparison, setShowComparison] = useState(false);
   const [comparisonPlans, setComparisonPlans] = useState<string[]>(["starter", "professional"]);
+  const [showFeaturePreview, setShowFeaturePreview] = useState(false);
+  const [previewFeature, setPreviewFeature] = useState<string>("");
+  const [previewRequiredPlan, setPreviewRequiredPlan] = useState<string>("");
+  const [trialActive, setTrialActive] = useState(false);
+  const [trialEndDate, setTrialEndDate] = useState<Date | null>(null);
+  const [trialDaysLeft, setTrialDaysLeft] = useState(0);
+
+  // Calculate trial days remaining
+  useEffect(() => {
+    if (trialActive && trialEndDate) {
+      const calculateDaysLeft = () => {
+        const now = new Date();
+        const diff = trialEndDate.getTime() - now.getTime();
+        const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
+        setTrialDaysLeft(Math.max(0, days));
+      };
+
+      calculateDaysLeft();
+      const interval = setInterval(calculateDaysLeft, 1000 * 60 * 60); // Update every hour
+
+      return () => clearInterval(interval);
+    }
+  }, [trialActive, trialEndDate]);
 
   const currentPlan = {
     name: "Starter",
@@ -59,6 +85,19 @@ const Billing = () => {
     nextBilling: "2025-01-15",
   };
 
+  const handleStartTrial = (plan: any) => {
+    const endDate = new Date();
+    endDate.setDate(endDate.getDate() + 14); // 14 days trial
+    setTrialEndDate(endDate);
+    setTrialActive(true);
+    setSelectedPlan(plan.id);
+
+    toast({
+      title: "Test Drive Ativado! 🎉",
+      description: `Você tem 14 dias para explorar todos os recursos do plano ${plan.name}.`,
+    });
+  };
+
   const plans = [
     {
       id: "starter",
@@ -68,6 +107,8 @@ const Billing = () => {
       annualPrice: 950,
       color: "from-blue-500/20 to-cyan-500/20",
       borderColor: "border-blue-500/50",
+      badge: null,
+      recommended: false,
       features: [
         { name: "Até 3 usuários", included: true },
         { name: "100GB armazenamento", included: true },
@@ -88,6 +129,7 @@ const Billing = () => {
       color: "from-purple-500/20 to-pink-500/20",
       borderColor: "border-purple-500/50",
       badge: "Mais Popular",
+      recommended: true,
       features: [
         { name: "Até 10 usuários", included: true },
         { name: "500GB armazenamento", included: true },
@@ -107,7 +149,8 @@ const Billing = () => {
       annualPrice: 4790,
       color: "from-orange-500/20 to-red-500/20",
       borderColor: "border-orange-500/50",
-      badge: "Completo",
+      badge: "Melhor Valor",
+      recommended: false,
       features: [
         { name: "Usuários ilimitados", included: true },
         { name: "2TB armazenamento", included: true },
@@ -162,24 +205,28 @@ const Billing = () => {
       description: "Realize consultas online com sala virtual integrada",
       requiredPlan: "Professional",
       icon: Shield,
+      previewId: "telemedicina",
     },
     {
       title: "IA Ilimitada",
       description: "Assistente de IA sem limites de uso mensal",
       requiredPlan: "Enterprise",
       icon: Sparkles,
+      previewId: "ia-ilimitada",
     },
     {
       title: "Relatórios Avançados",
       description: "Analytics completo com insights de negócio",
       requiredPlan: "Professional",
       icon: TrendingUp,
+      previewId: "relatorios-avancados",
     },
     {
       title: "Gestor de Conta Dedicado",
       description: "Suporte personalizado com gestor exclusivo",
       requiredPlan: "Enterprise",
       icon: Crown,
+      previewId: "gestor-dedicado",
     },
   ];
 
@@ -195,6 +242,22 @@ const Billing = () => {
           icon={upgradedPlan.icon}
         />
       )}
+
+      {/* Feature Preview Modal */}
+      <FeaturePreviewModal
+        open={showFeaturePreview}
+        onOpenChange={setShowFeaturePreview}
+        feature={previewFeature}
+        requiredPlan={previewRequiredPlan}
+        onUpgrade={() => {
+          setShowFeaturePreview(false);
+          const plan = plans.find((p) => p.name === previewRequiredPlan);
+          if (plan) {
+            setSelectedPlan(plan.id);
+            document.getElementById("upgrade-dialog-trigger")?.click();
+          }
+        }}
+      />
       {/* Header */}
       <div className="border-b bg-background/50 backdrop-blur-sm sticky top-0 z-10">
         <div className="container mx-auto px-4 py-4">
@@ -217,6 +280,31 @@ const Billing = () => {
       </div>
 
       <div className="container mx-auto px-4 py-8 space-y-8">
+        {/* Trial Banner */}
+        {trialActive && (
+          <Card className="border-2 border-purple-500/50 bg-gradient-to-r from-purple-500/10 to-pink-500/10 animate-fade-in">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between flex-wrap gap-4">
+                <div className="flex items-center gap-4">
+                  <div className="h-12 w-12 rounded-full bg-purple-500/20 flex items-center justify-center">
+                    <Clock className="h-6 w-6 text-purple-500 animate-pulse" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-lg">Test Drive Premium Ativo</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Você tem <span className="font-bold text-foreground">{trialDaysLeft} dias</span> restantes para explorar todos os recursos premium
+                    </p>
+                  </div>
+                </div>
+                <Button size="lg" className="gap-2">
+                  <Crown className="h-4 w-4" />
+                  Converter em Plano Pago
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         {/* Current Plan Card */}
         <Card className="border-2 bg-gradient-to-br from-primary/10 via-background to-primary/5 animate-fade-in">
           <CardHeader>
@@ -316,26 +404,41 @@ const Billing = () => {
                           <p className="text-sm text-muted-foreground mt-1">{feature.description}</p>
                         </div>
                       </div>
-                      <div className="flex items-center justify-between pt-2 border-t">
+                      <div className="flex items-center justify-between pt-2 border-t gap-2">
                         <Badge variant="outline" className="gap-1">
                           <Crown className="h-3 w-3" />
                           {feature.requiredPlan}
                         </Badge>
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          className="gap-1 opacity-0 group-hover:opacity-100 transition-opacity"
-                          onClick={() => {
-                            const plan = plans.find((p) => p.name === feature.requiredPlan);
-                            if (plan) {
-                              setSelectedPlan(plan.id);
-                              document.getElementById("upgrade-dialog-trigger")?.click();
-                            }
-                          }}
-                        >
-                          <Unlock className="h-3 w-3" />
-                          Desbloquear
-                        </Button>
+                        <div className="flex gap-1">
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            className="gap-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                            onClick={() => {
+                              setPreviewFeature(feature.previewId);
+                              setPreviewRequiredPlan(feature.requiredPlan);
+                              setShowFeaturePreview(true);
+                            }}
+                          >
+                            <Play className="h-3 w-3" />
+                            Preview
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            className="gap-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                            onClick={() => {
+                              const plan = plans.find((p) => p.name === feature.requiredPlan);
+                              if (plan) {
+                                setSelectedPlan(plan.id);
+                                document.getElementById("upgrade-dialog-trigger")?.click();
+                              }
+                            }}
+                          >
+                            <Unlock className="h-3 w-3" />
+                            Desbloquear
+                          </Button>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -419,11 +522,19 @@ const Billing = () => {
                           key={plan.id}
                           className={`relative overflow-hidden transition-all hover:scale-105 cursor-pointer ${
                             selectedPlan === plan.id ? "ring-2 ring-primary" : ""
-                          }`}
+                          } ${plan.recommended ? "border-2 border-purple-500/50" : ""}`}
                           onClick={() => setSelectedPlan(plan.id)}
                         >
                           <div className={`absolute inset-0 bg-gradient-to-br ${plan.color} opacity-50`} />
-                          {plan.badge && (
+                          {plan.recommended && (
+                            <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-10">
+                              <Badge className="gap-1 bg-gradient-to-r from-purple-500 to-pink-500 text-white border-0 shadow-lg px-4 py-1">
+                                <Sparkles className="h-3 w-3" />
+                                Recomendado para você
+                              </Badge>
+                            </div>
+                          )}
+                          {plan.badge && !plan.recommended && (
                             <div className="absolute top-4 right-4">
                               <Badge className="gap-1">
                                 <Crown className="h-3 w-3" />
@@ -464,18 +575,34 @@ const Billing = () => {
                                 </div>
                               ))}
                             </div>
-                            <Button
-                              className="w-full"
-                              variant={selectedPlan === plan.id ? "default" : "outline"}
-                              onClick={() => {
-                                if (plan.id !== "starter") {
-                                  handleUpgrade(plan);
-                                }
-                              }}
-                              disabled={plan.id === "starter"}
-                            >
-                              {plan.id === "starter" ? "Plano Atual" : "Fazer Upgrade"}
-                            </Button>
+                            <div className="space-y-2">
+                              <Button
+                                className="w-full"
+                                variant={selectedPlan === plan.id ? "default" : "outline"}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  if (plan.id !== "starter") {
+                                    handleUpgrade(plan);
+                                  }
+                                }}
+                                disabled={plan.id === "starter"}
+                              >
+                                {plan.id === "starter" ? "Plano Atual" : "Fazer Upgrade"}
+                              </Button>
+                              {plan.id !== "starter" && !trialActive && (
+                                <Button
+                                  className="w-full gap-2"
+                                  variant="ghost"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleStartTrial(plan);
+                                  }}
+                                >
+                                  <Clock className="h-4 w-4" />
+                                  Testar por 14 dias
+                                </Button>
+                              )}
+                            </div>
                           </CardContent>
                         </Card>
                       );
@@ -487,6 +614,136 @@ const Billing = () => {
             </div>
           </CardContent>
         </Card>
+
+        {/* Plan Comparison Dialog */}
+        <Dialog open={showComparison} onOpenChange={setShowComparison}>
+          <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="text-3xl">Comparador de Planos</DialogTitle>
+              <DialogDescription className="text-base">
+                Compare planos lado a lado para escolher o melhor para você
+              </DialogDescription>
+            </DialogHeader>
+
+            {/* Plan Selectors */}
+            <div className="grid grid-cols-2 gap-4 mt-6">
+              <div className="space-y-2">
+                <Label>Plano 1</Label>
+                <select
+                  className="w-full px-3 py-2 border rounded-lg bg-background"
+                  value={comparisonPlans[0]}
+                  onChange={(e) => setComparisonPlans([e.target.value, comparisonPlans[1]])}
+                >
+                  {plans.map((plan) => (
+                    <option key={plan.id} value={plan.id}>
+                      {plan.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="space-y-2">
+                <Label>Plano 2</Label>
+                <select
+                  className="w-full px-3 py-2 border rounded-lg bg-background"
+                  value={comparisonPlans[1]}
+                  onChange={(e) => setComparisonPlans([comparisonPlans[0], e.target.value])}
+                >
+                  {plans.map((plan) => (
+                    <option key={plan.id} value={plan.id}>
+                      {plan.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            {/* Comparison Table */}
+            <div className="grid grid-cols-2 gap-6 mt-6">
+              {comparisonPlans.map((planId) => {
+                const plan = plans.find((p) => p.id === planId);
+                if (!plan) return null;
+
+                const PlanIcon = plan.icon;
+                const savings = calculateSavings(plan.monthlyPrice, plan.annualPrice);
+
+                return (
+                  <Card key={plan.id} className="relative overflow-hidden">
+                    <div className={`absolute inset-0 bg-gradient-to-br ${plan.color} opacity-30`} />
+                    {plan.badge && (
+                      <div className="absolute top-4 right-4 z-10">
+                        <Badge className="gap-1">
+                          <Crown className="h-3 w-3" />
+                          {plan.badge}
+                        </Badge>
+                      </div>
+                    )}
+                    <CardHeader className="relative">
+                      <div className="flex items-center gap-2 mb-4">
+                        <div className="h-12 w-12 rounded-lg bg-primary/20 flex items-center justify-center">
+                          <PlanIcon className="h-6 w-6 text-primary" />
+                        </div>
+                        <div>
+                          <CardTitle className="text-2xl">{plan.name}</CardTitle>
+                        </div>
+                      </div>
+                      <div className="space-y-3">
+                        <div>
+                          <div className="text-sm text-muted-foreground">Mensal</div>
+                          <div className="text-2xl font-bold">R$ {plan.monthlyPrice}/mês</div>
+                        </div>
+                        <div className="pt-3 border-t">
+                          <div className="text-sm text-muted-foreground">Anual</div>
+                          <div className="text-2xl font-bold">R$ {plan.annualPrice}/ano</div>
+                          <p className="text-sm text-green-500 mt-1">
+                            Economize R$ {savings.savings} ({savings.percentage}%)
+                          </p>
+                        </div>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="relative space-y-4">
+                      <div className="space-y-3">
+                        {plan.features.map((feature, idx) => (
+                          <div
+                            key={idx}
+                            className={`flex items-center gap-2 p-2 rounded ${
+                              feature.included ? "bg-green-500/10" : "bg-muted/50"
+                            }`}
+                          >
+                            {feature.included ? (
+                              <Check className="h-4 w-4 text-green-500 shrink-0" />
+                            ) : (
+                              <X className="h-4 w-4 text-muted-foreground shrink-0" />
+                            )}
+                            <span
+                              className={`text-sm ${
+                                !feature.included ? "text-muted-foreground line-through" : ""
+                              }`}
+                            >
+                              {feature.name}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                      <Button
+                        className="w-full"
+                        variant={plan.id === "starter" ? "outline" : "default"}
+                        onClick={() => {
+                          if (plan.id !== "starter") {
+                            setShowComparison(false);
+                            handleUpgrade(plan);
+                          }
+                        }}
+                        disabled={plan.id === "starter"}
+                      >
+                        {plan.id === "starter" ? "Plano Atual" : "Escolher este plano"}
+                      </Button>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
+          </DialogContent>
+        </Dialog>
 
         {/* Tabs Section */}
         <Tabs defaultValue="payment" className="space-y-6">
