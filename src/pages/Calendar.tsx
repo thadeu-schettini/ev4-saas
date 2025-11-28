@@ -197,10 +197,10 @@ const Calendar = () => {
                 </h3>
               </div>
               <Badge variant="secondary" className="text-xs font-semibold bg-background/80 border-0">
-                5 recentes
+                {statusHistory.length} recentes
               </Badge>
             </div>
-            <ScrollArea className="h-[320px]">
+            <ScrollArea className="h-[280px]">
               <div className="pb-2">
                 {statusHistory.map((item, index) => (
                   <StatusHistoryItem
