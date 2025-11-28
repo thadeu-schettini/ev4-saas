@@ -1,11 +1,9 @@
-import { CalendarFiltersSidebar } from "@/components/CalendarFiltersSidebar";
+import { CalendarFilters } from "@/components/CalendarFilters";
 import { AppointmentListItem } from "@/components/AppointmentListItem";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Calendar as CalendarIcon, Sparkles, ChevronLeft, ChevronRight, TrendingUp, Users, Clock, Sliders } from "lucide-react";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { Calendar as CalendarIcon, Sparkles, ChevronLeft, ChevronRight, TrendingUp, Users, Clock } from "lucide-react";
 
 const Calendar = () => {
   const appointments = [
@@ -23,130 +21,101 @@ const Calendar = () => {
 
 
   return (
-    <SidebarProvider>
-      <div className="min-h-screen flex w-full bg-gradient-to-br from-background via-background to-muted/20">
-        {/* Filters Sidebar */}
-        <CalendarFiltersSidebar />
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
+      {/* Enhanced Header */}
+      <div className="relative border-b border-border/50 bg-gradient-to-r from-card via-card to-muted/20 backdrop-blur-sm overflow-hidden">
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS1vcGFjaXR5PSIwLjAzIiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-50" />
+        
+        <div className="relative px-6 py-4">
+          <div className="flex items-center justify-between mb-4">
+            {/* Title Section */}
+            <div className="flex items-center gap-3">
+              <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-primary to-primary-glow flex items-center justify-center shadow-lg hover:scale-110 transition-transform duration-300">
+                <CalendarIcon className="h-6 w-6 text-white" />
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
+                  Agenda
+                  <Sparkles className="h-4 w-4 text-primary animate-pulse" />
+                </h1>
+                <p className="text-xs text-muted-foreground font-medium">Gerencie seus agendamentos</p>
+              </div>
+            </div>
 
-        {/* Main Content Area */}
-        <div className="flex-1 flex flex-col">
-          {/* Enhanced Header */}
-          <div className="relative border-b border-border/50 bg-gradient-to-r from-card via-card to-muted/20 backdrop-blur-sm overflow-hidden">
-            <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS1vcGFjaXR5PSIwLjAzIiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-50" />
-            
-            <div className="relative px-6 py-4">
-              <div className="flex items-center justify-between mb-4">
-                {/* Title Section with Sidebar Trigger */}
-                <div className="flex items-center gap-3">
-                  <SidebarTrigger className="lg:hidden" />
-                  <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-primary to-primary-glow flex items-center justify-center shadow-lg hover:scale-110 transition-transform duration-300">
-                    <CalendarIcon className="h-6 w-6 text-white" />
-                  </div>
-                  <div>
-                    <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
-                      Agenda
-                      <Sparkles className="h-4 w-4 text-primary animate-pulse" />
-                    </h1>
-                    <p className="text-xs text-muted-foreground font-medium">Gerencie seus agendamentos</p>
-                  </div>
-                </div>
-
-                {/* Stats Cards */}
-                <div className="hidden lg:flex items-center gap-3">
-                  {stats.map((stat, index) => {
-                    const Icon = stat.icon;
-                    return (
-                      <div 
-                        key={index}
-                        className="group px-4 py-2 rounded-xl bg-gradient-to-br from-card to-muted/30 border border-border/50 hover:border-primary/30 hover:shadow-md transition-all duration-300 cursor-pointer"
-                      >
-                        <div className="flex items-center gap-3">
-                          <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                            <Icon className={`h-5 w-5 ${stat.color}`} />
-                          </div>
-                          <div>
-                            <div className="text-2xl font-bold text-foreground group-hover:text-primary transition-colors">
-                              {stat.value}
-                            </div>
-                            <div className="text-xs text-muted-foreground font-medium">
-                              {stat.label}
-                            </div>
-                          </div>
+            {/* Stats Cards */}
+            <div className="hidden lg:flex items-center gap-3">
+              {stats.map((stat, index) => {
+                const Icon = stat.icon;
+                return (
+                  <div 
+                    key={index}
+                    className="group px-4 py-2 rounded-xl bg-gradient-to-br from-card to-muted/30 border border-border/50 hover:border-primary/30 hover:shadow-md transition-all duration-300 cursor-pointer"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                        <Icon className={`h-5 w-5 ${stat.color}`} />
+                      </div>
+                      <div>
+                        <div className="text-2xl font-bold text-foreground group-hover:text-primary transition-colors">
+                          {stat.value}
+                        </div>
+                        <div className="text-xs text-muted-foreground font-medium">
+                          {stat.label}
                         </div>
                       </div>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* Date Navigation & Professional Filter */}
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-                <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto">
-                  <Button 
-                    variant="outline" 
-                    size="icon"
-                    className="h-9 w-9 flex-shrink-0 hover:bg-primary/10 hover:border-primary/30 hover:text-primary transition-all duration-300"
-                  >
-                    <ChevronLeft className="h-4 w-4" />
-                  </Button>
-                  
-                  <div className="px-3 sm:px-6 py-2 rounded-lg bg-gradient-to-r from-primary/10 to-primary/5 border border-primary/20 flex-1 sm:flex-none min-w-0">
-                    <div className="flex items-center gap-2 justify-center">
-                      <CalendarIcon className="h-4 w-4 text-primary flex-shrink-0" />
-                      <span className="text-xs sm:text-sm font-bold text-foreground truncate">27 de Novembro, 2025</span>
-                      <Badge variant="secondary" className="bg-primary/10 text-primary border-0 text-xs flex-shrink-0">
-                        Hoje
-                      </Badge>
                     </div>
                   </div>
-
-                  <Button 
-                    variant="outline" 
-                    size="icon"
-                    className="h-9 w-9 flex-shrink-0 hover:bg-primary/10 hover:border-primary/30 hover:text-primary transition-all duration-300"
-                  >
-                    <ChevronRight className="h-4 w-4" />
-                  </Button>
-                </div>
-
-                <div className="flex items-center gap-2 w-full sm:w-auto">
-                  {/* Professional Filter - Most Used */}
-                  <div className="flex items-center gap-2 flex-1 sm:flex-none">
-                    <span className="text-xs text-muted-foreground font-semibold uppercase tracking-wide hidden sm:inline">
-                      Profissional
-                    </span>
-                    <Select defaultValue="todos">
-                      <SelectTrigger className="h-9 w-full sm:w-[180px] hover:bg-primary/10 hover:border-primary/30 hover:text-primary transition-all duration-300">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="todos">Todos</SelectItem>
-                        <SelectItem value="prof1">Dr. João Silva</SelectItem>
-                        <SelectItem value="prof2">Dra. Maria Santos</SelectItem>
-                        <SelectItem value="prof3">Dr. Pedro Costa</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    className="h-9 px-4 hover:bg-primary/10 hover:border-primary/30 hover:text-primary transition-all duration-300 font-semibold hidden sm:flex"
-                  >
-                    Ir para Hoje
-                  </Button>
-
-                  {/* Mobile Filter Toggle */}
-                  <SidebarTrigger className="lg:hidden h-9 w-9 flex items-center justify-center border border-border/50 rounded-lg hover:bg-primary/10 hover:border-primary/30 hover:text-primary transition-all duration-300">
-                    <Sliders className="h-4 w-4" />
-                  </SidebarTrigger>
-                </div>
-              </div>
+                );
+              })}
             </div>
           </div>
 
-          {/* Main Content */}
-          <div className="flex flex-col lg:flex-row h-auto lg:h-[calc(100vh-180px)]">
+          {/* Date Navigation */}
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto">
+              <Button 
+                variant="outline" 
+                size="icon"
+                className="h-9 w-9 flex-shrink-0 hover:bg-primary/10 hover:border-primary/30 hover:text-primary transition-all duration-300"
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </Button>
+              
+              <div className="px-3 sm:px-6 py-2 rounded-lg bg-gradient-to-r from-primary/10 to-primary/5 border border-primary/20 flex-1 sm:flex-none min-w-0">
+                <div className="flex items-center gap-2 justify-center">
+                  <CalendarIcon className="h-4 w-4 text-primary flex-shrink-0" />
+                  <span className="text-xs sm:text-sm font-bold text-foreground truncate">27 de Novembro, 2025</span>
+                  <Badge variant="secondary" className="bg-primary/10 text-primary border-0 text-xs flex-shrink-0">
+                    Hoje
+                  </Badge>
+                </div>
+              </div>
+
+              <Button 
+                variant="outline" 
+                size="icon"
+                className="h-9 w-9 flex-shrink-0 hover:bg-primary/10 hover:border-primary/30 hover:text-primary transition-all duration-300"
+              >
+                <ChevronRight className="h-4 w-4" />
+              </Button>
+            </div>
+
+            <Button 
+              variant="outline" 
+              size="sm"
+              className="h-9 px-4 w-full sm:w-auto hover:bg-primary/10 hover:border-primary/30 hover:text-primary transition-all duration-300 font-semibold"
+            >
+              Ir para Hoje
+            </Button>
+          </div>
+        </div>
+      </div>
+
+      {/* Filters */}
+      <CalendarFilters />
+
+      {/* Main Content */}
+      <div className="flex flex-col lg:flex-row h-auto lg:h-[calc(100vh-250px)]">
         {/* Left Sidebar - Optimized */}
         <div className="w-full lg:w-[380px] border-r border-border/50 bg-card/50 backdrop-blur-sm shadow-lg">
           {/* Appointments List */}
@@ -220,10 +189,8 @@ const Calendar = () => {
             </div>
           </div>
         </div>
-          </div>
-        </div>
       </div>
-    </SidebarProvider>
+    </div>
   );
 };
 
