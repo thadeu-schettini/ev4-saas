@@ -69,11 +69,25 @@ const Indicacoes = () => {
     }
   ]);
 
+  const allLevels = [
+    { name: "BRONZE", color: "from-amber-600 to-amber-800", points: 0, nextPoints: 500 },
+    { name: "SILVER", color: "from-slate-400 to-slate-600", points: 500, nextPoints: 1200 },
+    { name: "GOLD", color: "from-yellow-500 to-yellow-700", points: 1200, nextPoints: 2500 },
+    { name: "PLATINUM", color: "from-purple-500 to-purple-700", points: 2500, nextPoints: 5000 },
+    { name: "DIAMOND", color: "from-blue-400 to-blue-600", points: 5000, nextPoints: null }
+  ];
+
   const rewards = [
     { id: 1, name: "R$50 em assinatura", points: "R$ 50,00", discount: "Abate R$50 na mensalidade", level: "Bronze" },
     { id: 2, name: "R$100 em assinatura", points: "R$ 100,00", discount: "Abate R$100 na mensalidade", level: "Silver" },
     { id: 3, name: "R$200 em assinatura", points: "R$ 200,00", discount: "Abate R$200 na mensalidade", level: "Gold" },
     { id: 4, name: "Consultoria Premium", points: "R$ 500,00", discount: "1 hora de consultoria personalizada", level: "Platinum" }
+  ];
+
+  const redeemHistory = [
+    { id: 1, reward: "R$50 em assinatura", date: "15/11/2024", points: "R$ 50,00", status: "Aplicado" },
+    { id: 2, reward: "R$100 em assinatura", date: "01/11/2024", points: "R$ 100,00", status: "Aplicado" },
+    { id: 3, reward: "R$50 em assinatura", date: "20/10/2024", points: "R$ 50,00", status: "Aplicado" }
   ];
 
   const recentReferrals = [
@@ -219,9 +233,9 @@ const Indicacoes = () => {
               <div>
                 <h3 className="text-lg font-bold mb-1 flex items-center gap-2">
                   <Trophy className="h-5 w-5 text-primary" />
-                  Nível e Progresso
+                  Progresso dos Níveis
                 </h3>
-                <p className="text-sm text-muted-foreground">Continue indicando para subir de nível</p>
+                <p className="text-sm text-muted-foreground">Acompanhe sua evolução em cada nível</p>
               </div>
               <Badge className={`bg-gradient-to-r ${currentLevel.color} text-white border-0 px-4 py-2 text-sm font-bold shadow-lg`}>
                 <Crown className="h-4 w-4 mr-1" />
@@ -229,36 +243,67 @@ const Indicacoes = () => {
               </Badge>
             </div>
 
-            <div className="space-y-4">
-              <div>
-                <div className="flex justify-between items-center mb-2">
-                  <span className="text-2xl font-bold text-foreground">{currentLevel.currentPoints} pts</span>
-                  <span className="text-sm text-muted-foreground">
-                    Rumo ao <span className="font-semibold text-foreground">{currentLevel.nextLevel}</span> ({currentLevel.pointsToNext} pts)
-                  </span>
-                </div>
-                <Progress value={currentLevel.progress} className="h-3 bg-muted" />
-                <div className="flex justify-between mt-2 text-xs text-muted-foreground">
-                  <span>{currentLevel.currentPoints} pontos totais</span>
-                  <span>{currentLevel.pointsToNext - currentLevel.currentPoints} pontos restantes</span>
-                </div>
-              </div>
+            <ScrollArea className="h-[320px]">
+              <div className="space-y-4 pr-4">
+                {allLevels.map((level, index) => {
+                  const isCurrentLevel = level.name === currentLevel.name;
+                  const isPastLevel = currentLevel.currentPoints > level.nextPoints;
+                  const isFutureLevel = currentLevel.currentPoints < level.points;
+                  
+                  let levelProgress = 0;
+                  if (isPastLevel) {
+                    levelProgress = 100;
+                  } else if (isCurrentLevel) {
+                    const pointsInLevel = currentLevel.currentPoints - level.points;
+                    const levelRange = level.nextPoints ? level.nextPoints - level.points : 1;
+                    levelProgress = (pointsInLevel / levelRange) * 100;
+                  }
 
-              <Card className="p-4 bg-gradient-to-r from-primary/5 to-primary/10 border-primary/20">
-                <div className="flex items-start gap-3">
-                  <div className="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
-                    <Zap className="h-5 w-5 text-primary" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold mb-1 text-sm">Dicas rápidas</h4>
-                    <p className="text-sm text-muted-foreground leading-relaxed">
-                      Convide de 1 a 3 contas na semana para garantir os bônus em dobro. 
-                      Ajude o indicado a completar o onboarding para validar a recompensa.
-                    </p>
-                  </div>
-                </div>
-              </Card>
-            </div>
+                  return (
+                    <Card 
+                      key={level.name}
+                      className={`p-4 transition-all ${
+                        isCurrentLevel 
+                          ? 'bg-gradient-to-r from-primary/10 to-primary/5 border-primary/30 shadow-md' 
+                          : isPastLevel
+                          ? 'bg-green-500/10 border-green-500/20'
+                          : 'bg-muted/30 border-border/50 opacity-60'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-3">
+                          <div className={`h-10 w-10 rounded-full bg-gradient-to-r ${level.color} flex items-center justify-center`}>
+                            {isPastLevel ? (
+                              <Check className="h-5 w-5 text-white" />
+                            ) : (
+                              <Crown className="h-5 w-5 text-white" />
+                            )}
+                          </div>
+                          <div>
+                            <h4 className="font-bold text-sm">{level.name}</h4>
+                            <p className="text-xs text-muted-foreground">
+                              {level.points} - {level.nextPoints ? `${level.nextPoints} pts` : '∞'}
+                            </p>
+                          </div>
+                        </div>
+                        {isCurrentLevel && (
+                          <Badge variant="secondary" className="text-xs">
+                            Nível Atual
+                          </Badge>
+                        )}
+                      </div>
+                      <div>
+                        <div className="flex justify-between text-xs mb-1">
+                          <span className="text-muted-foreground">Progresso</span>
+                          <span className="font-semibold">{levelProgress.toFixed(0)}%</span>
+                        </div>
+                        <Progress value={levelProgress} className="h-2" />
+                      </div>
+                    </Card>
+                  );
+                })}
+              </div>
+            </ScrollArea>
           </Card>
 
           {/* Stats Cards */}
@@ -386,48 +431,88 @@ const Indicacoes = () => {
           </Card>
         </div>
 
-        {/* Recent Referrals */}
-        <Card className="p-6 bg-card/50 backdrop-blur-sm border-border/50 shadow-lg">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h3 className="text-lg font-bold flex items-center gap-2">
-                <Users className="h-5 w-5 text-primary" />
-                Últimas Indicações
-              </h3>
-              <p className="text-sm text-muted-foreground mt-1">Acompanhe suas indicações recentes</p>
+        <div className="grid md:grid-cols-2 gap-8">
+          {/* Recent Referrals */}
+          <Card className="p-6 bg-card/50 backdrop-blur-sm border-border/50 shadow-lg">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h3 className="text-lg font-bold flex items-center gap-2">
+                  <Users className="h-5 w-5 text-primary" />
+                  Últimas Indicações
+                </h3>
+                <p className="text-sm text-muted-foreground mt-1">Acompanhe suas indicações recentes</p>
+              </div>
             </div>
-          </div>
 
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-border/50">
-                  <th className="text-left py-3 px-4 text-sm font-semibold text-muted-foreground">Convidado</th>
-                  <th className="text-left py-3 px-4 text-sm font-semibold text-muted-foreground">Status</th>
-                  <th className="text-left py-3 px-4 text-sm font-semibold text-muted-foreground">Data</th>
-                  <th className="text-left py-3 px-4 text-sm font-semibold text-muted-foreground">Recompensa</th>
-                </tr>
-              </thead>
-              <tbody>
-                {recentReferrals.map((referral, index) => (
-                  <tr key={index} className="border-b border-border/30 hover:bg-muted/30 transition-colors">
-                    <td className="py-4 px-4 font-medium">{referral.name}</td>
-                    <td className="py-4 px-4">
-                      <Badge 
-                        variant={referral.status === "Ativa" ? "default" : "secondary"}
-                        className={referral.status === "Ativa" ? "bg-green-600 border-0" : ""}
-                      >
-                        {referral.status}
+            <ScrollArea className="h-[300px]">
+              <div className="overflow-x-auto pr-4">
+                <table className="w-full">
+                  <thead>
+                    <tr className="border-b border-border/50">
+                      <th className="text-left py-3 px-4 text-sm font-semibold text-muted-foreground">Convidado</th>
+                      <th className="text-left py-3 px-4 text-sm font-semibold text-muted-foreground">Status</th>
+                      <th className="text-left py-3 px-4 text-sm font-semibold text-muted-foreground">Data</th>
+                      <th className="text-left py-3 px-4 text-sm font-semibold text-muted-foreground">Recompensa</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {recentReferrals.map((referral, index) => (
+                      <tr key={index} className="border-b border-border/30 hover:bg-muted/30 transition-colors">
+                        <td className="py-4 px-4 font-medium">{referral.name}</td>
+                        <td className="py-4 px-4">
+                          <Badge 
+                            variant={referral.status === "Ativa" ? "default" : "secondary"}
+                            className={referral.status === "Ativa" ? "bg-green-600 border-0" : ""}
+                          >
+                            {referral.status}
+                          </Badge>
+                        </td>
+                        <td className="py-4 px-4 text-sm text-muted-foreground">{referral.date}</td>
+                        <td className="py-4 px-4 font-semibold text-green-600">{referral.reward}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </ScrollArea>
+          </Card>
+
+          {/* Redeem History */}
+          <Card className="p-6 bg-card/50 backdrop-blur-sm border-border/50 shadow-lg">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h3 className="text-lg font-bold flex items-center gap-2">
+                  <Gift className="h-5 w-5 text-primary" />
+                  Histórico de Resgates
+                </h3>
+                <p className="text-sm text-muted-foreground mt-1">Suas recompensas resgatadas</p>
+              </div>
+            </div>
+
+            <ScrollArea className="h-[300px]">
+              <div className="space-y-3 pr-4">
+                {redeemHistory.map((item) => (
+                  <Card key={item.id} className="p-4 bg-muted/30 border-border/50 hover:border-primary/20 transition-all">
+                    <div className="flex items-start justify-between mb-2">
+                      <div className="flex-1">
+                        <h4 className="font-semibold text-sm mb-1">{item.reward}</h4>
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                          <span>{item.date}</span>
+                          <span>•</span>
+                          <span className="font-semibold text-primary">{item.points}</span>
+                        </div>
+                      </div>
+                      <Badge className="bg-green-600 text-white border-0">
+                        <Check className="h-3 w-3 mr-1" />
+                        {item.status}
                       </Badge>
-                    </td>
-                    <td className="py-4 px-4 text-sm text-muted-foreground">{referral.date}</td>
-                    <td className="py-4 px-4 font-semibold text-green-600">{referral.reward}</td>
-                  </tr>
+                    </div>
+                  </Card>
                 ))}
-              </tbody>
-            </table>
-          </div>
-        </Card>
+              </div>
+            </ScrollArea>
+          </Card>
+        </div>
       </div>
     </div>
   );
