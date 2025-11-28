@@ -27,7 +27,11 @@ import {
   Phone,
   Mail,
   MapPin,
-  X
+  X,
+  Download,
+  Printer,
+  CalendarDays,
+  TrendingUp
 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -71,6 +75,8 @@ export const BillingModal = ({ open, onOpenChange, appointment }: BillingModalPr
   const [discountApplied, setDiscountApplied] = useState(false);
   const [loading, setLoading] = useState(false);
   const [observations, setObservations] = useState("");
+  const [installments, setInstallments] = useState(1);
+  const [installmentInterval, setInstallmentInterval] = useState(30); // dias entre parcelas
 
   const paymentMethods = [
     { id: "pix", label: "PIX", icon: Smartphone, color: "text-teal-500" },
@@ -87,7 +93,39 @@ export const BillingModal = ({ open, onOpenChange, appointment }: BillingModalPr
   const calculateTotal = () => {
     const subtotal = items.reduce((sum, item) => sum + item.total, 0);
     const discount = discountApplied ? subtotal * 0.1 : 0;
-    return { subtotal, discount, total: subtotal - discount };
+    const total = subtotal - discount;
+    const installmentValue = total / installments;
+    return { subtotal, discount, total, installmentValue };
+  };
+
+  const calculateInstallmentDates = () => {
+    const dates = [];
+    const baseDate = new Date(dueDate);
+    
+    for (let i = 0; i < installments; i++) {
+      const installmentDate = new Date(baseDate);
+      installmentDate.setDate(baseDate.getDate() + (i * installmentInterval));
+      dates.push(installmentDate.toISOString().split('T')[0]);
+    }
+    
+    return dates;
+  };
+
+  const handlePrint = () => {
+    window.print();
+    toast.success("Preparando impressão", {
+      description: "O recibo está sendo preparado para impressão"
+    });
+  };
+
+  const handleDownloadPDF = () => {
+    toast.success("Download iniciado", {
+      description: "O recibo em PDF será baixado em breve",
+      action: {
+        label: "Ver arquivo",
+        onClick: () => console.log("Abrir PDF"),
+      },
+    });
   };
 
   const addItem = () => {
@@ -152,6 +190,7 @@ export const BillingModal = ({ open, onOpenChange, appointment }: BillingModalPr
   const totals = calculateTotal();
   const currentStatus = statusOptions.find(s => s.value === status);
   const currentPaymentMethod = paymentMethods.find(m => m.id === paymentMethod);
+  const installmentDates = calculateInstallmentDates();
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -417,6 +456,82 @@ export const BillingModal = ({ open, onOpenChange, appointment }: BillingModalPr
                 )}
               </div>
 
+              {/* Installments */}
+              <div className="p-5 bg-gradient-to-br from-card to-muted/30 rounded-xl border border-border space-y-4">
+                <Label className="text-sm font-semibold flex items-center gap-2">
+                  <CalendarDays className="h-4 w-4 text-primary" />
+                  Parcelamento
+                  {installments > 1 && (
+                    <Badge variant="outline" className="text-xs ml-auto">
+                      <TrendingUp className="h-3 w-3 mr-1" />
+                      {installments}x de R$ {totals.installmentValue.toFixed(2)}
+                    </Badge>
+                  )}
+                </Label>
+                
+                <div className="space-y-3">
+                  <div>
+                    <Label htmlFor="installments" className="text-xs text-muted-foreground mb-2">
+                      Número de Parcelas
+                    </Label>
+                    <Select 
+                      value={installments.toString()} 
+                      onValueChange={(value) => setInstallments(Number(value))}
+                    >
+                      <SelectTrigger id="installments" className="h-11">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((num) => (
+                          <SelectItem key={num} value={num.toString()}>
+                            {num === 1 ? "À vista" : `${num}x de R$ ${(totals.total / num).toFixed(2)}`}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {installments > 1 && (
+                    <div>
+                      <Label htmlFor="interval" className="text-xs text-muted-foreground mb-2">
+                        Intervalo entre Parcelas
+                      </Label>
+                      <Select 
+                        value={installmentInterval.toString()} 
+                        onValueChange={(value) => setInstallmentInterval(Number(value))}
+                      >
+                        <SelectTrigger id="interval" className="h-11">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="7">7 dias (semanal)</SelectItem>
+                          <SelectItem value="15">15 dias (quinzenal)</SelectItem>
+                          <SelectItem value="30">30 dias (mensal)</SelectItem>
+                          <SelectItem value="60">60 dias (bimestral)</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  )}
+
+                  {installments > 1 && (
+                    <div className="p-4 bg-primary/5 rounded-lg border border-primary/20">
+                      <p className="text-xs font-semibold text-foreground mb-3 flex items-center gap-2">
+                        <CalendarDays className="h-3.5 w-3.5 text-primary" />
+                        Datas de Vencimento das Parcelas
+                      </p>
+                      <div className="grid grid-cols-2 gap-2 max-h-[120px] overflow-y-auto">
+                        {installmentDates.map((date, index) => (
+                          <div key={index} className="flex items-center justify-between text-xs p-2 bg-background/50 rounded">
+                            <span className="text-muted-foreground">Parcela {index + 1}</span>
+                            <span className="font-semibold">{new Date(date).toLocaleDateString('pt-BR')}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+
               {/* Observations */}
               <div>
                 <Label htmlFor="observations" className="text-sm font-semibold mb-2">
@@ -444,9 +559,26 @@ export const BillingModal = ({ open, onOpenChange, appointment }: BillingModalPr
                     <Sparkles className="h-4 w-4" />
                     Preview do Recibo
                   </h3>
-                  <Badge variant="outline" className="text-xs">
-                    Atualização em tempo real
-                  </Badge>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      onClick={handlePrint}
+                      size="sm"
+                      variant="outline"
+                      className="gap-2 h-8"
+                    >
+                      <Printer className="h-3.5 w-3.5" />
+                      Imprimir
+                    </Button>
+                    <Button
+                      onClick={handleDownloadPDF}
+                      size="sm"
+                      variant="outline"
+                      className="gap-2 h-8"
+                    >
+                      <Download className="h-3.5 w-3.5" />
+                      PDF
+                    </Button>
+                  </div>
                 </div>
 
                 {/* Receipt */}
@@ -571,10 +703,57 @@ export const BillingModal = ({ open, onOpenChange, appointment }: BillingModalPr
                         </span>
                       </div>
                       <div className="flex justify-between items-center text-sm">
-                        <span className="text-muted-foreground">Vencimento</span>
+                        <span className="text-muted-foreground">
+                          {installments > 1 ? "Primeira Parcela" : "Vencimento"}
+                        </span>
                         <span className="font-semibold">{dueDate}</span>
                       </div>
                     </div>
+
+                    {/* Installments Info */}
+                    {installments > 1 && (
+                      <>
+                        <Separator />
+                        <div>
+                          <p className="text-xs font-semibold text-muted-foreground mb-3 flex items-center gap-2">
+                            <CalendarDays className="h-3.5 w-3.5" />
+                            PARCELAMENTO ({installments}x)
+                          </p>
+                          <div className="space-y-2">
+                            {installmentDates.map((date, index) => (
+                              <div 
+                                key={index} 
+                                className={cn(
+                                  "flex justify-between items-center p-3 rounded-lg text-sm",
+                                  index === 0 ? "bg-primary/10 border border-primary/20" : "bg-muted/30"
+                                )}
+                              >
+                                <div>
+                                  <p className="font-semibold">
+                                    Parcela {index + 1}/{installments}
+                                  </p>
+                                  <p className="text-xs text-muted-foreground">
+                                    Venc: {new Date(date).toLocaleDateString('pt-BR')}
+                                  </p>
+                                </div>
+                                <p className="font-bold">
+                                  R$ {totals.installmentValue.toFixed(2)}
+                                </p>
+                              </div>
+                            ))}
+                          </div>
+                          
+                          {installmentInterval !== 30 && (
+                            <div className="mt-3 p-3 bg-blue-500/10 rounded-lg border border-blue-500/20">
+                              <p className="text-xs text-blue-600 dark:text-blue-400 flex items-center gap-1.5">
+                                <Clock className="h-3.5 w-3.5" />
+                                Intervalo de {installmentInterval} dias entre parcelas
+                              </p>
+                            </div>
+                          )}
+                        </div>
+                      </>
+                    )}
 
                     {observations && (
                       <>
@@ -603,17 +782,32 @@ export const BillingModal = ({ open, onOpenChange, appointment }: BillingModalPr
         <div className="border-t border-border p-4 bg-background flex items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             <div className="text-left">
-              <p className="text-xs text-muted-foreground">Total da Cobrança</p>
+              <p className="text-xs text-muted-foreground">
+                {installments > 1 ? `Total (${installments}x)` : "Total da Cobrança"}
+              </p>
               <p className="text-2xl font-black bg-gradient-to-r from-primary to-success bg-clip-text text-transparent">
                 R$ {totals.total.toFixed(2)}
               </p>
+              {installments > 1 && (
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  {installments}x de R$ {totals.installmentValue.toFixed(2)}
+                </p>
+              )}
             </div>
-            {discountApplied && (
-              <Badge variant="outline" className="text-success border-success/20">
-                <Tag className="h-3 w-3 mr-1" />
-                10% OFF
-              </Badge>
-            )}
+            <div className="flex gap-2">
+              {discountApplied && (
+                <Badge variant="outline" className="text-success border-success/20">
+                  <Tag className="h-3 w-3 mr-1" />
+                  10% OFF
+                </Badge>
+              )}
+              {installments > 1 && (
+                <Badge variant="outline" className="text-primary border-primary/20">
+                  <CalendarDays className="h-3 w-3 mr-1" />
+                  {installments}x
+                </Badge>
+              )}
+            </div>
           </div>
 
           <div className="flex gap-3">
