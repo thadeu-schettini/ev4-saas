@@ -369,19 +369,19 @@ const Billing = () => {
 
         {/* Locked Features Section */}
         <Card className="border-2 border-warning/30 bg-gradient-to-br from-warning/5 via-background to-warning/10 animate-fade-in">
-          <CardHeader>
-            <div className="flex items-center gap-3">
+          <CardHeader className="p-4 sm:p-6">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
               <div className="h-10 w-10 rounded-full bg-warning/20 flex items-center justify-center">
                 <Lock className="h-5 w-5 text-warning" />
               </div>
               <div>
-                <CardTitle className="text-xl">Recursos Premium Bloqueados</CardTitle>
-                <CardDescription>Faça upgrade para desbloquear funcionalidades avançadas</CardDescription>
+                <CardTitle className="text-lg sm:text-xl">Recursos Premium Bloqueados</CardTitle>
+                <CardDescription className="text-sm">Faça upgrade para desbloquear funcionalidades avançadas</CardDescription>
               </div>
             </div>
           </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <CardContent className="p-4 sm:p-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               {lockedFeatures.map((feature, idx) => {
                 const FeatureIcon = feature.icon;
                 return (
@@ -450,8 +450,8 @@ const Billing = () => {
 
         {/* Unlock More Section */}
         <Card className="border-2 border-primary/50 bg-gradient-to-r from-primary/5 to-accent/5 animate-fade-in">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between flex-wrap gap-4">
+          <CardContent className="p-4 sm:p-6">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div className="flex items-center gap-4">
                 <div className="h-12 w-12 rounded-full bg-primary/20 flex items-center justify-center">
                   <TrendingUp className="h-6 w-6 text-primary" />
@@ -463,7 +463,7 @@ const Billing = () => {
                   </p>
                 </div>
               </div>
-              <div className="flex gap-2">
+              <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
                 <Button
                   variant="outline"
                   size="lg"
@@ -628,11 +628,11 @@ const Billing = () => {
             </DialogHeader>
 
             {/* Plan Selectors */}
-            <div className="grid grid-cols-2 gap-4 mt-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
               <div className="space-y-2">
                 <Label>Plano 1</Label>
                 <select
-                  className="w-full px-3 py-2 border rounded-lg bg-background"
+                  className="w-full px-3 py-2 border rounded-lg bg-background text-sm"
                   value={comparisonPlans[0]}
                   onChange={(e) => setComparisonPlans([e.target.value, comparisonPlans[1]])}
                 >
@@ -646,7 +646,7 @@ const Billing = () => {
               <div className="space-y-2">
                 <Label>Plano 2</Label>
                 <select
-                  className="w-full px-3 py-2 border rounded-lg bg-background"
+                  className="w-full px-3 py-2 border rounded-lg bg-background text-sm"
                   value={comparisonPlans[1]}
                   onChange={(e) => setComparisonPlans([comparisonPlans[0], e.target.value])}
                 >
@@ -660,7 +660,7 @@ const Billing = () => {
             </div>
 
             {/* Comparison Table */}
-            <div className="grid grid-cols-2 gap-6 mt-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
               {comparisonPlans.map((planId) => {
                 const plan = plans.find((p) => p.id === planId);
                 if (!plan) return null;

@@ -196,18 +196,18 @@ const Indicacoes = () => {
         </div>
 
         {/* Share Section */}
-        <Card className="mb-8 p-8 border-2 border-primary/20 bg-gradient-to-br from-card to-card/50 backdrop-blur-sm shadow-xl animate-scale-in">
-          <div className="flex flex-col md:flex-row items-center gap-6">
+        <Card className="mb-8 p-4 sm:p-8 border-2 border-primary/20 bg-gradient-to-br from-card to-card/50 backdrop-blur-sm shadow-xl animate-scale-in">
+          <div className="flex flex-col gap-4 sm:gap-6">
             <div className="flex-1 w-full">
               <label className="text-sm font-semibold text-muted-foreground mb-2 block flex items-center gap-2">
                 <Share2 className="h-4 w-4" />
                 Seu link de convite
               </label>
-              <div className="flex gap-2">
-                <div className="flex-1 px-4 py-3 bg-muted/50 rounded-lg border border-border font-mono text-sm truncate">
+              <div className="flex flex-col sm:flex-row gap-2">
+                <div className="flex-1 px-3 sm:px-4 py-2 sm:py-3 bg-muted/50 rounded-lg border border-border font-mono text-xs sm:text-sm truncate min-w-0">
                   {referralLink}
                 </div>
-                <Button onClick={handleCopyLink} variant="outline" className="gap-2">
+                <Button onClick={handleCopyLink} variant="outline" className="gap-2 w-full sm:w-auto">
                   {copiedLink ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
                   {copiedLink ? "Copiado!" : "Copiar"}
                 </Button>
@@ -216,7 +216,7 @@ const Indicacoes = () => {
             <Button 
               onClick={handleWhatsAppShare}
               size="lg"
-              className="gap-2 bg-gradient-to-r from-green-600 to-green-500 hover:from-green-700 hover:to-green-600 text-white shadow-lg"
+              className="gap-2 bg-gradient-to-r from-green-600 to-green-500 hover:from-green-700 hover:to-green-600 text-white shadow-lg w-full sm:w-auto"
             >
               <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
@@ -226,9 +226,9 @@ const Indicacoes = () => {
           </div>
         </Card>
 
-        <div className="grid md:grid-cols-3 gap-8 mb-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-8 mb-8">
           {/* Level Progress */}
-          <Card className="md:col-span-2 p-6 bg-gradient-to-br from-card to-muted/20 border-border/50 shadow-lg">
+          <Card className="lg:col-span-2 p-4 sm:p-6 bg-gradient-to-br from-card to-muted/20 border-border/50 shadow-lg">
             <div className="flex items-start justify-between mb-6">
               <div>
                 <h3 className="text-lg font-bold mb-1 flex items-center gap-2">
@@ -276,8 +276,8 @@ const Indicacoes = () => {
           </Card>
 
           {/* Stats Cards */}
-          <div className="space-y-4">
-            <Card className="p-6 bg-gradient-to-br from-primary/10 to-primary/5 border-primary/20 shadow-lg">
+          <div className="grid grid-cols-2 lg:grid-cols-1 gap-4">
+            <Card className="p-4 sm:p-6 bg-gradient-to-br from-primary/10 to-primary/5 border-primary/20 shadow-lg">
               <div className="flex items-center justify-between mb-2">
                 <Users className="h-8 w-8 text-primary" />
                 <TrendingUp className="h-5 w-5 text-green-500" />
@@ -286,10 +286,10 @@ const Indicacoes = () => {
               <div className="text-sm text-muted-foreground">Indicações ativas</div>
             </Card>
 
-            <Card className="p-6 bg-gradient-to-br from-green-500/10 to-green-500/5 border-green-500/20 shadow-lg">
+            <Card className="p-4 sm:p-6 bg-gradient-to-br from-success/10 to-success/5 border-success/20 shadow-lg">
               <div className="flex items-center justify-between mb-2">
-                <Gift className="h-8 w-8 text-green-600" />
-                <Star className="h-5 w-5 text-yellow-500" />
+                <Gift className="h-8 w-8 text-success" />
+                <Star className="h-5 w-5 text-warning" />
               </div>
               <div className="text-3xl font-bold mb-1">R$ 180,00</div>
               <div className="text-sm text-muted-foreground">Ganhos este mês</div>
@@ -297,9 +297,9 @@ const Indicacoes = () => {
           </div>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-8 mb-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-8 mb-8">
           {/* Weekly Missions */}
-          <Card className="p-6 bg-card/50 backdrop-blur-sm border-border/50 shadow-lg">
+          <Card className="p-4 sm:p-6 bg-card/50 backdrop-blur-sm border-border/50 shadow-lg">
             <div className="flex items-center justify-between mb-6">
               <div>
                 <h3 className="text-lg font-bold flex items-center gap-2">
@@ -363,7 +363,7 @@ const Indicacoes = () => {
           </Card>
 
           {/* Rewards Catalog */}
-          <Card className="p-6 bg-card/50 backdrop-blur-sm border-border/50 shadow-lg">
+          <Card className="p-4 sm:p-6 bg-card/50 backdrop-blur-sm border-border/50 shadow-lg">
             <div className="flex items-center justify-between mb-6">
               <div>
                 <h3 className="text-lg font-bold flex items-center gap-2">

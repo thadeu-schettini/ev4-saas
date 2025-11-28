@@ -560,26 +560,26 @@ const Prontuario = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background p-4 md:p-6">
+    <div className="min-h-screen bg-background p-2 sm:p-4 md:p-6">
       {/* Header with Timer */}
-      <div className="max-w-[1800px] mx-auto mb-6">
+      <div className="max-w-[1800px] mx-auto mb-4 sm:mb-6">
         <Card className="border shadow-sm">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between flex-wrap gap-4">
+          <CardContent className="p-3 sm:p-4 md:p-6">
+            <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
               {/* Left: Patient Info */}
-              <div className="flex items-center gap-4">
-                <div className="relative">
-                  <Avatar className="h-16 w-16 ring-2 ring-primary/20">
+              <div className="flex items-center gap-3 sm:gap-4 w-full lg:w-auto">
+                <div className="relative flex-shrink-0">
+                  <Avatar className="h-12 w-12 sm:h-16 sm:w-16 ring-2 ring-primary/20">
                     <AvatarImage src="" alt="Paciente" />
-                    <AvatarFallback className="text-2xl font-bold bg-primary text-primary-foreground">
+                    <AvatarFallback className="text-lg sm:text-2xl font-bold bg-primary text-primary-foreground">
                       PE
                     </AvatarFallback>
                   </Avatar>
-                  <div className="absolute -bottom-1 -right-1 h-5 w-5 bg-green-500 rounded-full border-2 border-background" />
+                  <div className="absolute -bottom-1 -right-1 h-4 w-4 sm:h-5 sm:w-5 bg-green-500 rounded-full border-2 border-background" />
                 </div>
-                <div>
-                  <h2 className="text-2xl font-bold">Paciente 13 Ebert-Lynch</h2>
-                  <div className="flex items-center gap-2 mt-1">
+                <div className="flex-1 min-w-0">
+                  <h2 className="text-lg sm:text-xl md:text-2xl font-bold truncate">Paciente 13 Ebert-Lynch</h2>
+                  <div className="flex items-center gap-2 mt-1 flex-wrap">
                     <Badge variant="outline" className="text-xs">28 anos</Badge>
                     <Badge variant="outline" className="text-xs">Cardiologia</Badge>
                   </div>
@@ -587,43 +587,43 @@ const Prontuario = () => {
               </div>
 
               {/* Center: Timer */}
-              <div className="flex items-center gap-3">
-                <div className="bg-muted/50 px-6 py-4 rounded-lg border">
+              <div className="flex items-center gap-2 sm:gap-3 w-full lg:w-auto">
+                <div className="bg-muted/50 px-4 sm:px-6 py-3 sm:py-4 rounded-lg border flex-1 sm:flex-initial">
                   <div className="text-center">
                     <p className="text-xs text-muted-foreground mb-1 font-semibold">Duração da Consulta</p>
-                    <p className="text-3xl font-mono font-bold text-primary">{formatTime(elapsedTime)}</p>
+                    <p className="text-2xl sm:text-3xl font-mono font-bold text-primary">{formatTime(elapsedTime)}</p>
                   </div>
                 </div>
                 
                 <div className="flex flex-col gap-2">
                   {!timerRunning && elapsedTime === 0 && (
-                    <Button onClick={handleStartConsultation} className="gap-2">
+                    <Button onClick={handleStartConsultation} className="gap-2" size="sm">
                       <PlayCircle className="h-4 w-4" />
-                      Iniciar
+                      <span className="hidden sm:inline">Iniciar</span>
                     </Button>
                   )}
                   {timerRunning && (
-                    <Button onClick={handlePauseConsultation} variant="outline" className="gap-2">
+                    <Button onClick={handlePauseConsultation} variant="outline" className="gap-2" size="sm">
                       <PauseCircle className="h-4 w-4" />
-                      Pausar
+                      <span className="hidden sm:inline">Pausar</span>
                     </Button>
                   )}
                   {elapsedTime > 0 && (
                     <Button onClick={handleFinishConsultation} variant="destructive" className="gap-2" size="sm">
                       <StopCircle className="h-4 w-4" />
-                      Finalizar
+                      <span className="hidden sm:inline">Finalizar</span>
                     </Button>
                   )}
                 </div>
               </div>
 
               {/* Right: Actions */}
-              <div className="flex items-center gap-2 flex-wrap">
+              <div className="flex items-center gap-2 flex-wrap w-full lg:w-auto">
                 <ConsultationHistory />
                 <ConsultationComparison />
-                <Button size="sm" className="gap-2">
+                <Button size="sm" className="gap-2 flex-1 sm:flex-initial">
                   <Save className="h-4 w-4" />
-                  Salvar
+                  <span className="sm:inline">Salvar</span>
                 </Button>
               </div>
             </div>
@@ -632,17 +632,17 @@ const Prontuario = () => {
       </div>
 
       {/* Form Type Selector and Recording */}
-      <div className="max-w-[1800px] mx-auto mb-6">
+      <div className="max-w-[1800px] mx-auto mb-4 sm:mb-6">
         <Card className="border shadow-sm">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between flex-wrap gap-4">
-              <div className="flex items-center gap-4 flex-1">
+          <CardContent className="p-3 sm:p-4">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 flex-1 w-full">
                 <div className="flex items-center gap-2">
-                  <FileText className="h-5 w-5 text-primary" />
+                  <FileText className="h-5 w-5 text-primary flex-shrink-0" />
                   <span className="text-sm font-semibold">Tipo de Formulário:</span>
                 </div>
                 <Select value={formType} onValueChange={setFormType}>
-                  <SelectTrigger className="w-[240px]">
+                  <SelectTrigger className="w-full sm:w-[240px]">
                     <SelectValue placeholder="Selecione o tipo" />
                   </SelectTrigger>
                   <SelectContent>
@@ -655,18 +655,21 @@ const Prontuario = () => {
 
               <Button
                 variant={isRecording ? "destructive" : "default"}
-                className="gap-2"
+                className="gap-2 w-full sm:w-auto"
+                size="sm"
                 onClick={isRecording ? stopRecording : startRecording}
               >
                 {isRecording ? (
                   <>
                     <MicOff className="h-4 w-4" />
-                    Parar Gravação
+                    <span className="hidden sm:inline">Parar Gravação</span>
+                    <span className="sm:hidden">Parar</span>
                   </>
                 ) : (
                   <>
                     <Mic className="h-4 w-4" />
-                    Gravar Transcrição
+                    <span className="hidden sm:inline">Gravar Transcrição</span>
+                    <span className="sm:hidden">Gravar</span>
                   </>
                 )}
               </Button>
@@ -676,19 +679,21 @@ const Prontuario = () => {
       </div>
 
       {/* Layout Principal com Tabs */}
-      <div className="max-w-[1800px] mx-auto space-y-6">
+      <div className="max-w-[1800px] mx-auto space-y-4 sm:space-y-6">
         <Card className="border shadow-sm">
-          <CardContent className="p-6">
+          <CardContent className="p-3 sm:p-4 md:p-6">
             <Tabs value={activeTab} onValueChange={setActiveTab}>
-              <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
-                <TabsList className="grid w-full max-w-md grid-cols-2">
-                  <TabsTrigger value="prontuario" className="gap-2">
-                    <FileText className="h-4 w-4" />
-                    Prontuário
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 sm:mb-6 gap-3 sm:gap-4">
+                <TabsList className="grid w-full sm:w-auto sm:max-w-md grid-cols-2">
+                  <TabsTrigger value="prontuario" className="gap-1 sm:gap-2 text-xs sm:text-sm">
+                    <FileText className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                    <span className="hidden sm:inline">Prontuário</span>
+                    <span className="sm:hidden">Form.</span>
                   </TabsTrigger>
-                  <TabsTrigger value="prescricao" className="gap-2">
-                    <Pill className="h-4 w-4" />
-                    Prescrição
+                  <TabsTrigger value="prescricao" className="gap-1 sm:gap-2 text-xs sm:text-sm">
+                    <Pill className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                    <span className="hidden sm:inline">Prescrição</span>
+                    <span className="sm:hidden">Presc.</span>
                   </TabsTrigger>
                 </TabsList>
                 
@@ -696,14 +701,14 @@ const Prontuario = () => {
               </div>
 
               <TabsContent value="prontuario" className="mt-0">
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-6">
         {/* Main Panel - Dynamic Form */}
-        <div className="lg:col-span-2 space-y-6">
+        <div className="xl:col-span-2 space-y-4 sm:space-y-6">
           {renderFormFields()}
         </div>
 
         {/* Sidebar - Patient Info & AI Tools */}
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
           {/* Vital Signs */}
           <Card className="border shadow-sm">
             <CardHeader className="pb-3">

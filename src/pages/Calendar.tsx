@@ -43,7 +43,7 @@ const Calendar = () => {
             </div>
 
             {/* Stats Cards */}
-            <div className="flex items-center gap-3">
+            <div className="hidden lg:flex items-center gap-3">
               {stats.map((stat, index) => {
                 const Icon = stat.icon;
                 return (
@@ -71,21 +71,21 @@ const Calendar = () => {
           </div>
 
           {/* Date Navigation */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto">
               <Button 
                 variant="outline" 
                 size="icon"
-                className="h-9 w-9 hover:bg-primary/10 hover:border-primary/30 hover:text-primary transition-all duration-300"
+                className="h-9 w-9 flex-shrink-0 hover:bg-primary/10 hover:border-primary/30 hover:text-primary transition-all duration-300"
               >
                 <ChevronLeft className="h-4 w-4" />
               </Button>
               
-              <div className="px-6 py-2 rounded-lg bg-gradient-to-r from-primary/10 to-primary/5 border border-primary/20">
-                <div className="flex items-center gap-2">
-                  <CalendarIcon className="h-4 w-4 text-primary" />
-                  <span className="text-sm font-bold text-foreground">27 de Novembro, 2025</span>
-                  <Badge variant="secondary" className="ml-2 bg-primary/10 text-primary border-0 text-xs">
+              <div className="px-3 sm:px-6 py-2 rounded-lg bg-gradient-to-r from-primary/10 to-primary/5 border border-primary/20 flex-1 sm:flex-none min-w-0">
+                <div className="flex items-center gap-2 justify-center">
+                  <CalendarIcon className="h-4 w-4 text-primary flex-shrink-0" />
+                  <span className="text-xs sm:text-sm font-bold text-foreground truncate">27 de Novembro, 2025</span>
+                  <Badge variant="secondary" className="bg-primary/10 text-primary border-0 text-xs flex-shrink-0">
                     Hoje
                   </Badge>
                 </div>
@@ -94,7 +94,7 @@ const Calendar = () => {
               <Button 
                 variant="outline" 
                 size="icon"
-                className="h-9 w-9 hover:bg-primary/10 hover:border-primary/30 hover:text-primary transition-all duration-300"
+                className="h-9 w-9 flex-shrink-0 hover:bg-primary/10 hover:border-primary/30 hover:text-primary transition-all duration-300"
               >
                 <ChevronRight className="h-4 w-4" />
               </Button>
@@ -103,7 +103,7 @@ const Calendar = () => {
             <Button 
               variant="outline" 
               size="sm"
-              className="h-9 px-4 hover:bg-primary/10 hover:border-primary/30 hover:text-primary transition-all duration-300 font-semibold"
+              className="h-9 px-4 w-full sm:w-auto hover:bg-primary/10 hover:border-primary/30 hover:text-primary transition-all duration-300 font-semibold"
             >
               Ir para Hoje
             </Button>
@@ -115,11 +115,11 @@ const Calendar = () => {
       <CalendarFilters />
 
       {/* Main Content */}
-      <div className="flex h-[calc(100vh-250px)]">
+      <div className="flex flex-col lg:flex-row h-auto lg:h-[calc(100vh-250px)]">
         {/* Left Sidebar - Optimized */}
-        <div className="w-[380px] border-r border-border/50 bg-card/50 backdrop-blur-sm shadow-lg">
+        <div className="w-full lg:w-[380px] border-r border-border/50 bg-card/50 backdrop-blur-sm shadow-lg">
           {/* Appointments List */}
-          <div className="h-full overflow-hidden flex flex-col">
+          <div className="h-auto lg:h-full overflow-hidden flex flex-col">
             <div className="px-4 py-3 bg-gradient-to-r from-muted/40 to-transparent border-b border-border/30 flex-shrink-0">
               <div className="flex items-center justify-between">
                 <h3 className="font-bold text-foreground flex items-center gap-2 text-sm">
@@ -133,7 +133,7 @@ const Calendar = () => {
                 </Badge>
               </div>
             </div>
-            <ScrollArea className="flex-1">
+            <ScrollArea className="flex-1 max-h-96 lg:max-h-none">
               <div className="py-3">
                 {appointments.map((apt, index) => (
                   <AppointmentListItem

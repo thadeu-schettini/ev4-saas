@@ -14,58 +14,62 @@ export const CalendarFilters = () => {
   return (
     <div className="bg-gradient-to-r from-card to-muted/20 border-b border-border/50 animate-fade-in backdrop-blur-sm">
       {/* Main Filters Row */}
-      <div className="flex items-center gap-3 p-4 flex-wrap">
+      <div className="flex items-start sm:items-center gap-3 p-4 flex-wrap">
         {/* Quick action button */}
         <Button 
           variant="outline" 
           size="sm"
-          className="h-9 px-4 text-sm font-semibold hover:bg-primary/10 hover:text-primary hover:border-primary/30 transition-all duration-300 group"
+          className="h-9 px-3 sm:px-4 text-xs sm:text-sm font-semibold hover:bg-primary/10 hover:text-primary hover:border-primary/30 transition-all duration-300 group"
         >
           <Filter className="h-3.5 w-3.5 mr-2 group-hover:rotate-12 transition-transform duration-300" />
-          Ocultar próximos
+          <span className="hidden sm:inline">Ocultar próximos</span>
+          <span className="sm:hidden">Ocultar</span>
         </Button>
 
-        <div className="h-6 w-px bg-border/50" />
+        <div className="hidden sm:block h-6 w-px bg-border/50" />
 
         {/* Filter dropdowns with modern design */}
         <div className="flex items-center gap-2 group">
-          <span className="text-xs text-muted-foreground font-semibold uppercase tracking-wide">Serviço</span>
+          <span className="text-xs text-muted-foreground font-semibold uppercase tracking-wide hidden sm:inline">Serviço</span>
           <Button 
             variant="outline" 
             size="sm"
-            className="h-9 px-4 text-sm font-medium hover:bg-primary/10 hover:text-primary hover:border-primary/30 transition-all duration-300 hover:scale-105"
+            className="h-9 px-3 sm:px-4 text-xs sm:text-sm font-medium hover:bg-primary/10 hover:text-primary hover:border-primary/30 transition-all duration-300 hover:scale-105"
           >
-            Todos
-            <ChevronDown className="ml-2 h-3.5 w-3.5 group-hover:translate-y-0.5 transition-transform duration-300" />
+            <span className="sm:hidden">Serv.</span>
+            <span className="hidden sm:inline">Todos</span>
+            <ChevronDown className="ml-1 sm:ml-2 h-3 sm:h-3.5 w-3 sm:w-3.5 group-hover:translate-y-0.5 transition-transform duration-300" />
           </Button>
         </div>
 
         <div className="flex items-center gap-2 group">
-          <span className="text-xs text-muted-foreground font-semibold uppercase tracking-wide">Profissional</span>
+          <span className="text-xs text-muted-foreground font-semibold uppercase tracking-wide hidden sm:inline">Profissional</span>
           <Button 
             variant="outline" 
             size="sm"
-            className="h-9 px-4 text-sm font-medium hover:bg-primary/10 hover:text-primary hover:border-primary/30 transition-all duration-300 hover:scale-105"
+            className="h-9 px-3 sm:px-4 text-xs sm:text-sm font-medium hover:bg-primary/10 hover:text-primary hover:border-primary/30 transition-all duration-300 hover:scale-105"
           >
-            Todos
-            <ChevronDown className="ml-2 h-3.5 w-3.5 group-hover:translate-y-0.5 transition-transform duration-300" />
+            <span className="sm:hidden">Prof.</span>
+            <span className="hidden sm:inline">Todos</span>
+            <ChevronDown className="ml-1 sm:ml-2 h-3 sm:h-3.5 w-3 sm:w-3.5 group-hover:translate-y-0.5 transition-transform duration-300" />
           </Button>
         </div>
 
         <div className="flex items-center gap-2 group">
-          <span className="text-xs text-muted-foreground font-semibold uppercase tracking-wide">Status</span>
+          <span className="text-xs text-muted-foreground font-semibold uppercase tracking-wide hidden sm:inline">Status</span>
           <Button 
             variant="outline" 
             size="sm"
-            className="h-9 px-4 text-sm font-medium hover:bg-primary/10 hover:text-primary hover:border-primary/30 transition-all duration-300 hover:scale-105"
+            className="h-9 px-3 sm:px-4 text-xs sm:text-sm font-medium hover:bg-primary/10 hover:text-primary hover:border-primary/30 transition-all duration-300 hover:scale-105"
           >
-            Todos
-            <ChevronDown className="ml-2 h-3.5 w-3.5 group-hover:translate-y-0.5 transition-transform duration-300" />
+            <span className="sm:hidden">Stat.</span>
+            <span className="hidden sm:inline">Todos</span>
+            <ChevronDown className="ml-1 sm:ml-2 h-3 sm:h-3.5 w-3 sm:w-3.5 group-hover:translate-y-0.5 transition-transform duration-300" />
           </Button>
         </div>
 
         {/* Switches with modern styling */}
-        <div className="flex items-center gap-6 ml-auto">
+        <div className="hidden lg:flex items-center gap-6 ml-auto">
           <div className="flex items-center gap-3 px-3 py-1.5 rounded-lg hover:bg-muted/40 transition-all duration-300 cursor-pointer group">
             <Switch id="show-external" className="data-[state=checked]:bg-primary" />
             <label 
