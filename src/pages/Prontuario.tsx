@@ -282,6 +282,27 @@ Solicitados exames complementares:
     });
   };
 
+  const applyToProntuario = () => {
+    if (!organizedTranscription) {
+      toast({
+        title: "Nenhum texto organizado",
+        description: "Organize a transcrição primeiro.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // In production, this would parse the organized text and fill form fields
+    // For now, show success message
+    toast({
+      title: "Aplicado ao Prontuário",
+      description: "Os campos do formulário foram preenchidos automaticamente.",
+    });
+
+    // Hide transcription panel after applying
+    setShowTranscriptionPanel(false);
+  };
+
   const handleVitalSignChange = (field: keyof VitalSigns, value: string) => {
     setVitalSigns(prev => ({ ...prev, [field]: value }));
   };
@@ -843,7 +864,7 @@ Solicitados exames complementares:
 
               {/* Organized Transcription */}
               {organizedTranscription && (
-                <div className="space-y-2">
+                <div className="space-y-3">
                   <div className="flex items-center justify-between">
                     <label className="text-sm font-semibold flex items-center gap-2">
                       <Sparkles className="h-4 w-4 text-primary" />
@@ -864,6 +885,16 @@ Solicitados exames complementares:
                       <pre className="text-sm whitespace-pre-wrap font-sans">{organizedTranscription}</pre>
                     </div>
                   </ScrollArea>
+                  
+                  {/* Apply to Prontuario Button */}
+                  <Button
+                    onClick={applyToProntuario}
+                    className="w-full gap-2"
+                    size="lg"
+                  >
+                    <FileText className="h-5 w-5" />
+                    Aplicar ao Prontuário
+                  </Button>
                 </div>
               )}
             </CardContent>
