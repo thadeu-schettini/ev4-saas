@@ -29,6 +29,7 @@ import {
   Clock,
   MapPin,
   Sparkles,
+  Users,
 } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -675,11 +676,11 @@ export default function Configuracoes() {
                     <div>
                       <div className="flex items-center gap-2">
                         <Bot className="h-5 w-5 text-primary" />
-                        <CardTitle>Autopilot com IA</CardTitle>
+                        <CardTitle>EV4 Autopilot</CardTitle>
                         <Badge variant="outline">BETA</Badge>
                       </div>
                       <CardDescription className="mt-2">
-                        Ative e configure o assistente inteligente para automação
+                        Ative o Autopilot para configurar modelos e políticas
                       </CardDescription>
                     </div>
                     <div className="flex items-center gap-3">
@@ -691,111 +692,603 @@ export default function Configuracoes() {
                   </div>
                 </CardHeader>
                 <CardContent className="space-y-6">
+                  {/* Assistente com IA Section */}
                   <div className="space-y-4">
-                    <div>
-                      <Label htmlFor="aiModel">Modelo OpenAI</Label>
-                      <Select defaultValue="gpt-4o-mini">
-                        <SelectTrigger id="aiModel">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="gpt-4o-mini">gpt-4o-mini</SelectItem>
-                          <SelectItem value="gpt-4o">gpt-4o</SelectItem>
-                          <SelectItem value="gpt-4-turbo">gpt-4-turbo</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <p className="text-xs text-muted-foreground mt-1">
-                        Uso mensal de mensagens: 0 / 1000
-                      </p>
-                    </div>
+                    <h3 className="font-semibold text-lg">Assistente com IA</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Defina o modelo padrão e mensagens auxiliares do copiloto com IA.
+                    </p>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      <Card className="bg-muted/30">
-                        <CardContent className="pt-6">
-                          <p className="text-sm font-medium text-muted-foreground mb-1">
-                            MODO PADRÃO
-                          </p>
-                          <p className="text-lg font-semibold">Indisponível</p>
-                          <p className="text-xs text-muted-foreground mt-1">
-                            Comportamento padrão de automação
-                          </p>
-                        </CardContent>
-                      </Card>
-
-                      <Card className="bg-muted/30">
-                        <CardContent className="pt-6">
-                          <p className="text-sm font-medium text-muted-foreground mb-1">
-                            CONVERSAS PAUSADAS
-                          </p>
-                          <p className="text-lg font-semibold">Indisponível</p>
-                          <p className="text-xs text-muted-foreground mt-1">
-                            Handoffs em andamento e pausas
-                          </p>
-                        </CardContent>
-                      </Card>
-
-                      <Card className="bg-muted/30">
-                        <CardContent className="pt-6">
-                          <p className="text-sm font-medium text-muted-foreground mb-1">
-                            ÚLTIMA ATUALIZAÇÃO DA BASE
-                          </p>
-                          <p className="text-lg font-semibold">Indisponível</p>
-                          <p className="text-xs text-muted-foreground mt-1">
-                            Sincronize artigos quando necessário
-                          </p>
-                        </CardContent>
-                      </Card>
-                    </div>
-                  </div>
-
-                  <div className="space-y-4">
-                    <h3 className="font-semibold flex items-center gap-2">
-                      <Globe className="h-4 w-4 text-primary" />
-                      Linguagem & Persona
-                    </h3>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label>Idioma principal</Label>
-                        <Select defaultValue="pt-BR">
-                          <SelectTrigger>
+                    <div className="space-y-4">
+                      <div>
+                        <Label htmlFor="aiModel">MODELO OPENAI</Label>
+                        <Select defaultValue="gpt-4o-mini">
+                          <SelectTrigger id="aiModel">
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="pt-BR">Português (Brasil)</SelectItem>
-                            <SelectItem value="en-US">English (US)</SelectItem>
-                            <SelectItem value="es-ES">Español</SelectItem>
+                            <SelectItem value="gpt-4o-mini">gpt-4o-mini</SelectItem>
+                            <SelectItem value="gpt-4o">gpt-4o</SelectItem>
+                            <SelectItem value="gpt-4-turbo">gpt-4-turbo</SelectItem>
                           </SelectContent>
                         </Select>
+                        <div className="flex justify-between text-xs text-muted-foreground mt-2">
+                          <span>Uso mensal de mensagens: 0 / 1000</span>
+                          <span>Uso mensal de tokens: 0 / 50000</span>
+                        </div>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          Período: 31 de out. — 30 de nov.
+                        </p>
                       </div>
 
-                      <div className="space-y-2">
-                        <Label>Tom de voz</Label>
-                        <Input placeholder="Empático + objetivo + acolhedor" />
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <Card className="bg-muted/30">
+                          <CardContent className="pt-6">
+                            <p className="text-sm font-medium text-muted-foreground mb-1">
+                              MODO PADRÃO
+                            </p>
+                            <p className="text-lg font-semibold">Indisponível</p>
+                            <p className="text-xs text-muted-foreground mt-1">
+                              Comportamento padrão de automação
+                            </p>
+                          </CardContent>
+                        </Card>
+
+                        <Card className="bg-muted/30">
+                          <CardContent className="pt-6">
+                            <p className="text-sm font-medium text-muted-foreground mb-1">
+                              CONVERSAS PAUSADAS
+                            </p>
+                            <p className="text-lg font-semibold">Indisponível</p>
+                            <p className="text-xs text-muted-foreground mt-1">
+                              Handoffs em andamento e pausas
+                            </p>
+                          </CardContent>
+                        </Card>
+
+                        <Card className="bg-muted/30">
+                          <CardContent className="pt-6">
+                            <p className="text-sm font-medium text-muted-foreground mb-1">
+                              ÚLTIMA ATUALIZAÇÃO DA BASE
+                            </p>
+                            <p className="text-lg font-semibold">Indisponível</p>
+                            <p className="text-xs text-muted-foreground mt-1">
+                              Sincronize artigos quando necessário
+                            </p>
+                          </CardContent>
+                        </Card>
                       </div>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label>Mensagem de boas-vindas</Label>
-                      <Textarea
-                        placeholder="Olá, sou o assistente virtual da clínica. Como posso ajudar?"
-                        rows={3}
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label>Template de confirmação</Label>
-                      <Textarea
-                        placeholder="Confirma consulta com Dr(a). {professionalName} em {date} às {time}? Responda 1 para confirmar, 2 para outro horário ou 3 para cancelar."
-                        rows={3}
-                      />
                     </div>
                   </div>
 
-                  <Button onClick={handleSave} className="w-full gap-2">
-                    <Save className="h-4 w-4" />
-                    Salvar configurações
-                  </Button>
+                  {/* Sub-tabs for Autopilot configuration */}
+                  <Tabs defaultValue="politicas" className="space-y-6">
+                    <TabsList className="inline-flex flex-wrap gap-2 bg-muted/30 h-auto p-2">
+                      <TabsTrigger value="politicas">Políticas</TabsTrigger>
+                      <TabsTrigger value="ferramentas">Ferramentas</TabsTrigger>
+                      <TabsTrigger value="linguagem">Linguagem & Persona</TabsTrigger>
+                      <TabsTrigger value="conhecimento">Base de conhecimento</TabsTrigger>
+                      <TabsTrigger value="analytics" disabled>
+                        Analytics <Badge variant="outline" className="ml-1 text-xs">EM BREVE</Badge>
+                      </TabsTrigger>
+                      <TabsTrigger value="handoff">Fila de Handoff</TabsTrigger>
+                    </TabsList>
+
+                    {/* Políticas Tab */}
+                    <TabsContent value="politicas" className="space-y-6">
+                      <Card className="bg-muted/20 border-border/50">
+                        <CardHeader>
+                          <CardTitle className="text-lg">Política global</CardTitle>
+                          <CardDescription>
+                            Aplica-se a todos os canais por padrão
+                          </CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-6">
+                          <div className="space-y-4">
+                            <div>
+                              <Label>MODO</Label>
+                              <Select defaultValue="assistido">
+                                <SelectTrigger>
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="assistido">Assistido</SelectItem>
+                                  <SelectItem value="automatico">Automático</SelectItem>
+                                  <SelectItem value="manual">Manual</SelectItem>
+                                </SelectContent>
+                              </Select>
+                              <p className="text-xs text-muted-foreground mt-1">
+                                O agente prepara rascunhos e exige confirmação humana para ações críticas.
+                              </p>
+                            </div>
+
+                            <div className="space-y-3">
+                              <Label>MÁX. AÇÕES POR SESSÃO</Label>
+                              <Input placeholder="Padrão" />
+                              <p className="text-xs text-muted-foreground">
+                                Defina um teto de ações do agente por conversa automatizada.
+                              </p>
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                              <div className="space-y-3">
+                                <div className="flex items-center justify-between">
+                                  <Label>Permitir remarcação</Label>
+                                  <div className="flex items-center gap-2">
+                                    <input type="radio" name="remark" value="yes" defaultChecked />
+                                    <Label className="text-sm font-normal">Sim</Label>
+                                  </div>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <input type="checkbox" defaultChecked />
+                                  <Label className="text-sm font-normal">Exigir sinal</Label>
+                                </div>
+                              </div>
+
+                              <div className="space-y-3">
+                                <div className="flex items-center justify-between">
+                                  <Label>Permitir cancelamento</Label>
+                                  <div className="flex items-center gap-2">
+                                    <input type="radio" name="cancel" value="yes" defaultChecked />
+                                    <Label className="text-sm font-normal">Sim</Label>
+                                  </div>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <input type="checkbox" />
+                                  <Label className="text-sm font-normal">Cobrar automaticamente no no-show</Label>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className="space-y-3">
+                              <Label>IDIOMA</Label>
+                              <Input placeholder="pt-BR" />
+                            </div>
+
+                            <div className="space-y-3">
+                              <Label>TOM</Label>
+                              <Input placeholder="Acolhedor, objetivo" />
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                              <div className="space-y-3">
+                                <Label>TAXA FIXA DE NO-SHOW (CENTAVOS)</Label>
+                                <Input placeholder="ex.: 5000 para R$ 50,00" />
+                              </div>
+
+                              <div className="space-y-3">
+                                <Label>PERCENTUAL DE NO-SHOW (%)</Label>
+                                <Input placeholder="ex.: 50 para 50%" />
+                              </div>
+                            </div>
+                          </div>
+
+                          <Button onClick={handleSave} className="w-full">
+                            <Save className="h-4 w-4 mr-2" />
+                            Salvar política
+                          </Button>
+                        </CardContent>
+                      </Card>
+
+                      {/* Políticas por profissional */}
+                      <Card className="bg-muted/20 border-border/50">
+                        <CardHeader>
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <CardTitle className="text-lg">Políticas por profissional</CardTitle>
+                              <CardDescription>
+                                Ainda não há políticas por profissional. Use o botão acima para personalizar por médico.
+                              </CardDescription>
+                            </div>
+                            <Button size="sm" variant="outline">
+                              Adicionar política de profissional
+                            </Button>
+                          </div>
+                        </CardHeader>
+                      </Card>
+
+                      {/* Políticas por paciente */}
+                      <Card className="bg-muted/20 border-border/50">
+                        <CardHeader>
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <CardTitle className="text-lg">Políticas por paciente</CardTitle>
+                              <CardDescription>
+                                Políticas por paciente permitem desativar a automação para casos específicos ou aplicar limites mais rígidos.
+                              </CardDescription>
+                            </div>
+                            <Button size="sm" variant="outline">
+                              Adicionar política de paciente
+                            </Button>
+                          </div>
+                        </CardHeader>
+                      </Card>
+                    </TabsContent>
+
+                    {/* Ferramentas Tab */}
+                    <TabsContent value="ferramentas" className="space-y-6">
+                      <Card className="bg-muted/20 border-border/50">
+                        <CardHeader>
+                          <CardTitle className="text-lg">Ferramentas do agente</CardTitle>
+                          <CardDescription>
+                            Controle o que o Autopilot pode executar e quais limites.
+                          </CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-6">
+                          <div className="space-y-4">
+                            <div>
+                              <Label>Máximo de ações por sessão</Label>
+                              <Select defaultValue="sistema">
+                                <SelectTrigger>
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="sistema">Padrão do sistema</SelectItem>
+                                  <SelectItem value="5">5 ações</SelectItem>
+                                  <SelectItem value="10">10 ações</SelectItem>
+                                  <SelectItem value="unlimited">Sem limite</SelectItem>
+                                </SelectContent>
+                              </Select>
+                              <p className="text-xs text-muted-foreground mt-1">
+                                Defina um teto de ações que o Autopilot pode executar por conversa automatizada.
+                              </p>
+                            </div>
+
+                            <div className="space-y-4">
+                              <p className="text-sm font-medium">Remarcações de paciente / semana</p>
+                              <Select defaultValue="unlimited">
+                                <SelectTrigger>
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="unlimited">Sem limite</SelectItem>
+                                  <SelectItem value="1">1 remarcação</SelectItem>
+                                  <SelectItem value="2">2 remarcações</SelectItem>
+                                  <SelectItem value="3">3 remarcações</SelectItem>
+                                </SelectContent>
+                              </Select>
+                              <p className="text-xs text-muted-foreground">
+                                Deixe vazio para sem limite.
+                              </p>
+                            </div>
+                          </div>
+
+                          <div className="space-y-3">
+                            <h4 className="font-semibold">AGENDAS</h4>
+                            <div className="grid grid-cols-2 gap-3">
+                              {[
+                                { name: "Ativar 1ª", badge: "Ativar 1ª", enabled: true },
+                                { name: "Bloquear O", badge: "Bloquear O", enabled: false },
+                                { name: "Achar horário", badge: "Achar horário", enabled: true },
+                                { name: "Restaurar último", badge: "Restaurar último", enabled: false },
+                              ].map((tool) => (
+                                <div key={tool.name} className="flex items-center justify-between p-3 bg-background rounded-lg border border-border">
+                                  <div className="flex items-center gap-2">
+                                    <Badge variant={tool.enabled ? "default" : "secondary"} className="text-xs">
+                                      {tool.badge}
+                                    </Badge>
+                                  </div>
+                                  <Switch defaultChecked={tool.enabled} />
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+
+                          <div className="space-y-3">
+                            <h4 className="font-semibold">AGENDA</h4>
+                            <div className="space-y-2">
+                              {[
+                                { name: "Criar consultas", code: "appointment.create", enabled: true },
+                                { name: "Remarcar consultas", code: "appointment.reschedule", enabled: true },
+                                { name: "Cancelar consultas", code: "appointment.cancel", enabled: true },
+                                { name: "Cadastrar em lista de espera", code: "waitlist.add", enabled: true },
+                                { name: "Incluir pacientes na fila de espera para encaixe específico", enabled: true },
+                              ].map((tool, idx) => (
+                                <div key={idx} className="flex items-center justify-between p-3 bg-background rounded-lg border border-border">
+                                  <div className="flex-1">
+                                    <p className="font-medium text-sm">{tool.name}</p>
+                                    {tool.code && (
+                                      <p className="text-xs text-muted-foreground mt-1">{tool.code}</p>
+                                    )}
+                                  </div>
+                                  <Switch defaultChecked={tool.enabled} />
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+
+                          <div className="space-y-3">
+                            <h4 className="font-semibold">PACIENTES</h4>
+                            <div className="space-y-2">
+                              {[
+                                { name: "Consultar cadastro de paciente", code: "patient.lookup", enabled: true },
+                                { name: "Criar novo paciente", code: "patient.create", enabled: true },
+                              ].map((tool) => (
+                                <div key={tool.code} className="flex items-center justify-between p-3 bg-background rounded-lg border border-border">
+                                  <div className="flex-1">
+                                    <p className="font-medium text-sm">{tool.name}</p>
+                                    <p className="text-xs text-muted-foreground mt-1">{tool.code}</p>
+                                  </div>
+                                  <Switch defaultChecked={tool.enabled} />
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+
+                          <div className="space-y-3">
+                            <h4 className="font-semibold">FINANCEIRO</h4>
+                            <div className="space-y-2">
+                              <div className="flex items-center justify-between p-3 bg-background rounded-lg border border-border">
+                                <div className="flex-1">
+                                  <p className="font-medium text-sm">Gerar link de pagamento</p>
+                                  <p className="text-xs text-muted-foreground mt-1">payment.link</p>
+                                  <p className="text-xs text-muted-foreground mt-1">
+                                    Envia link seguro (PIX/Crédito) para garantir slot ou quitar pendências.
+                                  </p>
+                                </div>
+                                <Switch defaultChecked />
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="space-y-3">
+                            <h4 className="font-semibold">CONHECIMENTOS</h4>
+                            <div className="space-y-2">
+                              <div className="flex items-center justify-between p-3 bg-background rounded-lg border border-border">
+                                <div className="flex-1">
+                                  <p className="font-medium text-sm">Consultar base de conhecimento</p>
+                                  <p className="text-xs text-muted-foreground mt-1">kb.search</p>
+                                  <p className="text-xs text-muted-foreground mt-1">
+                                    Busca artigos adicionados para enriquecer as respostas com informações administrativas.
+                                  </p>
+                                </div>
+                                <Switch defaultChecked />
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="space-y-3">
+                            <h4 className="font-semibold">OPERAÇÃO</h4>
+                            <div className="space-y-2">
+                              {[
+                                { name: "Consultar políticas", code: "policy.check", desc: "Revisa políticas ativas para enriquecer tomada de decisão e aderência a limites." },
+                                { name: "Pausar automação / handoff", code: "handoff.create", desc: "Aciona pausas e redireciona conversa para equipe humana. Seleciona o responsável mais apto (1º livre ativa linha online)." },
+                                { name: "Retomar automação", code: "automation.resume", desc: "Remove a pausa e retoma a automação humana." },
+                              ].map((tool) => (
+                                <div key={tool.code} className="flex items-center justify-between p-3 bg-background rounded-lg border border-border">
+                                  <div className="flex-1">
+                                    <p className="font-medium text-sm">{tool.name}</p>
+                                    <p className="text-xs text-muted-foreground mt-1">{tool.code}</p>
+                                    <p className="text-xs text-muted-foreground mt-1">{tool.desc}</p>
+                                  </div>
+                                  <Switch defaultChecked />
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+
+                          <Button onClick={handleSave} className="w-full">
+                            <Save className="h-4 w-4 mr-2" />
+                            Salvar configurações
+                          </Button>
+                        </CardContent>
+                      </Card>
+                    </TabsContent>
+
+                    {/* Linguagem & Persona Tab */}
+                    <TabsContent value="linguagem" className="space-y-6">
+                      <Card className="bg-muted/20 border-border/50">
+                        <CardHeader>
+                          <CardTitle className="text-lg">Linguagem & Persona</CardTitle>
+                          <CardDescription>
+                            Defina idioma, tom de voz e mensagens padrão usadas pelo agente.
+                          </CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-6">
+                          <div className="space-y-4">
+                            <div className="flex items-center gap-4 p-3 bg-muted/30 rounded-lg">
+                              <Badge variant="outline">Idioma: pt-BR</Badge>
+                              <Badge variant="outline">Tom: Empático</Badge>
+                              <Badge variant="outline">Templates: 0</Badge>
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              <div className="space-y-2">
+                                <Label>Idioma principal</Label>
+                                <Select defaultValue="pt-BR">
+                                  <SelectTrigger>
+                                    <SelectValue />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="pt-BR">Português (Brasil)</SelectItem>
+                                    <SelectItem value="en-US">English (US)</SelectItem>
+                                    <SelectItem value="es-ES">Español</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              </div>
+
+                              <div className="space-y-2">
+                                <Label>Tom de voz</Label>
+                                <Input placeholder="Empático + objetivo + acolhedor" />
+                                <p className="text-xs text-muted-foreground">
+                                  Use vírgulas para múltiplos (ex.: Empático, Objetivo)
+                                </p>
+                              </div>
+                            </div>
+
+                            <div className="space-y-2">
+                              <Label>Mensagem de boas-vindas</Label>
+                              <Textarea
+                                placeholder="Olá, sou o assistente virtual da clínica. Como posso ajudar?"
+                                rows={3}
+                              />
+                            </div>
+
+                            <div className="space-y-2">
+                              <Label>Template de confirmação</Label>
+                              <Textarea
+                                placeholder="Confirma consulta com Dr(a). {professionalName} em {date} às {time}? Responda 1 para confirmar, 2 para outro horário ou 3 para cancelar."
+                                rows={3}
+                              />
+                            </div>
+
+                            <div className="space-y-2">
+                              <Label>Template de handoff</Label>
+                              <Textarea
+                                placeholder="Vou transferir esta conversa para nossa equipe humana para te apoiar melhor. Só um momento!"
+                                rows={3}
+                              />
+                            </div>
+
+                            <div className="space-y-2">
+                              <Label>Disclaimer administrativo</Label>
+                              <Textarea
+                                placeholder="Este canal automatizado trata apenas de logística (agendamentos, confirmações, políticas). Para dúvidas clínicas, aguarde o(a) profissional."
+                                rows={3}
+                              />
+                            </div>
+                          </div>
+
+                          <div className="flex gap-2">
+                            <Button variant="outline" className="flex-1">
+                              Restaurar valores salvos
+                            </Button>
+                            <Button onClick={handleSave} className="flex-1">
+                              <Save className="h-4 w-4 mr-2" />
+                              Salvar persona
+                            </Button>
+                          </div>
+                        </CardContent>
+                      </Card>
+
+                      {/* Mensagem de fallback */}
+                      <Card className="bg-muted/20 border-border/50">
+                        <CardHeader>
+                          <CardTitle className="text-lg">Mensagem de fallback</CardTitle>
+                          <CardDescription>
+                            Texto enviado quando não há modelo disponível ou quando o agente precisa direcionar imediatamente para um humano.
+                          </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                          <Textarea
+                            placeholder="Boa tarde! Tudo bem? Sou o assistente virtual da clínica. Posso ajudar a marcar, remarcar ou tirar dúvidas sobre horários disponíveis. Quer ver horários disponíveis?"
+                            rows={4}
+                          />
+                          <Button onClick={handleSave} className="w-full mt-4">
+                            <Save className="h-4 w-4 mr-2" />
+                            Salvar fallback
+                          </Button>
+                        </CardContent>
+                      </Card>
+                    </TabsContent>
+
+                    {/* Base de conhecimento Tab */}
+                    <TabsContent value="conhecimento" className="space-y-6">
+                      <Card className="bg-muted/20 border-border/50">
+                        <CardHeader>
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <CardTitle className="text-lg">Base de conhecimento</CardTitle>
+                              <CardDescription>
+                                Buscar título ou conteúdo
+                              </CardDescription>
+                            </div>
+                            <Button size="sm" className="gap-2">
+                              <Plus className="h-4 w-4" />
+                              Novo artigo
+                            </Button>
+                          </div>
+                        </CardHeader>
+                        <CardContent className="space-y-6">
+                          <div className="flex gap-2">
+                            <Input placeholder="Ex: preparo, endereço, estacionamento" className="flex-1" />
+                            <Select defaultValue="todos">
+                              <SelectTrigger className="w-40">
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="todos">Todos</SelectItem>
+                                <SelectItem value="interno">Interno</SelectItem>
+                                <SelectItem value="externo">Externo</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <Button>Filtrar</Button>
+                            <Button variant="outline">Limpar</Button>
+                          </div>
+
+                          <div className="space-y-3">
+                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                              <Badge variant="secondary">VISIBILIDADE</Badge>
+                              <span>Interno - apenas disponível para busca interna (copiloto)</span>
+                            </div>
+
+                            <div className="space-y-3">
+                              <Label>TAGS (SEPARAR POR VÍRGULA)</Label>
+                              <Input placeholder="pagamentos, preparo" />
+                            </div>
+
+                            <div className="space-y-3">
+                              <Label>PROFESSIONAL (OPCIONAL)</Label>
+                              <Input placeholder="UUID do profissional" />
+                            </div>
+
+                            <div className="space-y-3">
+                              <Label>ORGANIZAÇÃO (OPCIONAL)</Label>
+                              <Input placeholder="UUID da organização" />
+                            </div>
+
+                            <div className="space-y-3">
+                              <Label>CONTEÚDO (MARKDOWN)</Label>
+                              <Textarea
+                                placeholder="# Título\n\n**Texto** em markdown..."
+                                rows={8}
+                                className="font-mono text-sm"
+                              />
+                            </div>
+                          </div>
+
+                          <Button className="w-full">
+                            <Upload className="h-4 w-4 mr-2" />
+                            Importar Markdown
+                          </Button>
+
+                          {/* Empty state */}
+                          <div className="text-center py-12 border-2 border-dashed border-border rounded-lg">
+                            <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                            <p className="text-sm text-muted-foreground">
+                              Nenhum artigo cadastrado ainda.
+                            </p>
+                            <p className="text-xs text-muted-foreground mt-1">
+                              Mostrando 1 a 0 de 0 registros
+                            </p>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </TabsContent>
+
+                    {/* Fila de Handoff Tab */}
+                    <TabsContent value="handoff" className="space-y-6">
+                      <Card className="bg-muted/20 border-border/50">
+                        <CardHeader>
+                          <CardTitle className="text-lg">Fila de Handoff</CardTitle>
+                          <CardDescription>
+                            Conversas pausadas aguardando intervenção humana
+                          </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="text-center py-12 border-2 border-dashed border-border rounded-lg">
+                            <Users className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                            <p className="text-sm text-muted-foreground">
+                              Nenhuma conversa na fila de handoff no momento
+                            </p>
+                            <p className="text-xs text-muted-foreground mt-1">
+                              As conversas pausadas aparecerão aqui para atendimento manual
+                            </p>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </TabsContent>
+                  </Tabs>
                 </CardContent>
               </Card>
             </TabsContent>
