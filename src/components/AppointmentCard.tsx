@@ -165,7 +165,7 @@ export const AppointmentCard = ({ open, onOpenChange }: AppointmentCardProps) =>
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 w-full sm:w-auto">
+              <div className="flex items-center gap-2 w-full sm:w-auto relative z-10">
                 <Button
                   size="sm"
                   variant="ghost"
