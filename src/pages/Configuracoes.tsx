@@ -333,7 +333,7 @@ export default function Configuracoes() {
                       className={`absolute inset-0 bg-gradient-to-br ${section.color} opacity-0 group-hover:opacity-10 transition-opacity duration-500`}
                     />
 
-                    {/* Completion Ring */}
+                    {/* Completion Ring and Status */}
                     <div className="absolute top-4 right-4 flex items-center gap-3">
                       {section.badge && (
                         <Badge variant="outline" className="text-xs">
@@ -355,7 +355,8 @@ export default function Configuracoes() {
                           </TooltipContent>
                         </Tooltip>
                       )}
-                      <div className="relative w-12 h-12">
+                      {!section.requiresActivation && (
+                        <div className="relative w-12 h-12">
                       <svg className="w-12 h-12 transform -rotate-90">
                         <circle
                           cx="24"
@@ -381,11 +382,12 @@ export default function Configuracoes() {
                           }}
                         />
                       </svg>
-                      <span className="absolute inset-0 flex items-center justify-center text-xs font-bold">
-                        {section.completion}%
-                      </span>
+                          <span className="absolute inset-0 flex items-center justify-center text-xs font-bold">
+                            {section.completion}%
+                          </span>
+                        </div>
+                      )}
                     </div>
-                  </div>
 
                   <CardHeader className="space-y-4">
                     <div className="flex items-start justify-between">
