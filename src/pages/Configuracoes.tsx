@@ -351,81 +351,48 @@ export default function Configuracoes() {
                             </div>
                           </TooltipTrigger>
                           <TooltipContent side="left" className="z-50">
-                            <p>Ative este módulo em Recursos para configurar</p>
+                            <p>Ative este módulo dentro da configuração</p>
                           </TooltipContent>
                         </Tooltip>
                       )}
-                      {!section.requiresActivation && (
-                        <div className="relative w-12 h-12">
-                      <svg className="w-12 h-12 transform -rotate-90">
-                        <circle
-                          cx="24"
-                          cy="24"
-                          r="20"
-                          stroke="currentColor"
-                          strokeWidth="3"
-                          fill="none"
-                          className="text-muted"
-                        />
-                        <circle
-                          cx="24"
-                          cy="24"
-                          r="20"
-                          stroke="currentColor"
-                          strokeWidth="3"
-                          fill="none"
-                          strokeDasharray={`${2 * Math.PI * 20}`}
-                          strokeDashoffset={`${2 * Math.PI * 20 * (1 - section.completion / 100)}`}
-                          className={`text-transparent bg-gradient-to-r ${section.color} bg-clip-text transition-all duration-500`}
-                          style={{
-                            stroke: section.completion === 100 ? "hsl(var(--primary))" : "currentColor",
-                          }}
-                        />
-                      </svg>
-                          <span className="absolute inset-0 flex items-center justify-center text-xs font-bold">
-                            {section.completion}%
-                          </span>
-                        </div>
-                      )}
+                      <div className="relative w-12 h-12">
+                        <svg className="w-12 h-12 transform -rotate-90">
+                          <circle
+                            cx="24"
+                            cy="24"
+                            r="20"
+                            stroke="currentColor"
+                            strokeWidth="3"
+                            fill="none"
+                            className="text-muted"
+                          />
+                          <circle
+                            cx="24"
+                            cy="24"
+                            r="20"
+                            stroke="currentColor"
+                            strokeWidth="3"
+                            fill="none"
+                            strokeDasharray={`${2 * Math.PI * 20}`}
+                            strokeDashoffset={`${2 * Math.PI * 20 * (1 - section.completion / 100)}`}
+                            className={`text-transparent bg-gradient-to-r ${section.color} bg-clip-text transition-all duration-500`}
+                            style={{
+                              stroke: section.completion === 100 ? "hsl(var(--primary))" : "currentColor",
+                            }}
+                          />
+                        </svg>
+                        <span className="absolute inset-0 flex items-center justify-center text-xs font-bold">
+                          {section.completion}%
+                        </span>
+                      </div>
                     </div>
 
                   <CardHeader className="space-y-4">
                     <div className="flex items-start justify-between">
-                      <div className="space-y-3">
-                        <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${section.color} p-4 shadow-lg group-hover:shadow-xl transition-all duration-300 ${
-                          isInactive ? 'grayscale opacity-50' : ''
-                        }`}>
-                          <section.icon className="h-full w-full text-white" />
-                        </div>
-                        
-                        {section.requiresActivation && (
-                          <div className="flex items-center gap-2">
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <div 
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    e.preventDefault();
-                                  }}
-                                >
-                                  <Switch
-                                    checked={resources[section.id as keyof typeof resources] || false}
-                                    onCheckedChange={(checked) => {
-                                      setResources({ ...resources, [section.id]: checked });
-                                      toast.success(checked ? `${section.title} ativado` : `${section.title} desativado`);
-                                    }}
-                                  />
-                                </div>
-                              </TooltipTrigger>
-                              <TooltipContent side="right" className="z-50">
-                                <p>{isInactive ? 'Ativar módulo' : 'Desativar módulo'}</p>
-                              </TooltipContent>
-                            </Tooltip>
-                            <span className="text-xs text-muted-foreground">
-                              {isInactive ? 'Inativo' : 'Ativo'}
-                            </span>
-                          </div>
-                        )}
+                      <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${section.color} p-4 shadow-lg group-hover:shadow-xl transition-all duration-300 ${
+                        isInactive ? 'grayscale opacity-50' : ''
+                      }`}>
+                        <section.icon className="h-full w-full text-white" />
                       </div>
                     </div>
 
