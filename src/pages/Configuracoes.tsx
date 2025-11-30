@@ -391,37 +391,42 @@ export default function Configuracoes() {
 
                   <CardHeader className="space-y-4">
                     <div className="flex items-start justify-between">
-                      <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${section.color} p-4 shadow-lg group-hover:shadow-xl transition-all duration-300 ${
-                        isInactive ? 'grayscale opacity-50' : ''
-                      }`}>
-                        <section.icon className="h-full w-full text-white" />
-                      </div>
-                      
-                      {section.requiresActivation && (
-                        <div className="flex items-center gap-2">
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <div 
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  e.preventDefault();
-                                }}
-                              >
-                                <Switch
-                                  checked={resources[section.id as keyof typeof resources] || false}
-                                  onCheckedChange={(checked) => {
-                                    setResources({ ...resources, [section.id]: checked });
-                                    toast.success(checked ? `${section.title} ativado` : `${section.title} desativado`);
-                                  }}
-                                />
-                              </div>
-                            </TooltipTrigger>
-                            <TooltipContent side="left" className="z-50">
-                              <p>{isInactive ? 'Ativar módulo' : 'Desativar módulo'}</p>
-                            </TooltipContent>
-                          </Tooltip>
+                      <div className="space-y-3">
+                        <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${section.color} p-4 shadow-lg group-hover:shadow-xl transition-all duration-300 ${
+                          isInactive ? 'grayscale opacity-50' : ''
+                        }`}>
+                          <section.icon className="h-full w-full text-white" />
                         </div>
-                      )}
+                        
+                        {section.requiresActivation && (
+                          <div className="flex items-center gap-2">
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <div 
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    e.preventDefault();
+                                  }}
+                                >
+                                  <Switch
+                                    checked={resources[section.id as keyof typeof resources] || false}
+                                    onCheckedChange={(checked) => {
+                                      setResources({ ...resources, [section.id]: checked });
+                                      toast.success(checked ? `${section.title} ativado` : `${section.title} desativado`);
+                                    }}
+                                  />
+                                </div>
+                              </TooltipTrigger>
+                              <TooltipContent side="right" className="z-50">
+                                <p>{isInactive ? 'Ativar módulo' : 'Desativar módulo'}</p>
+                              </TooltipContent>
+                            </Tooltip>
+                            <span className="text-xs text-muted-foreground">
+                              {isInactive ? 'Inativo' : 'Ativo'}
+                            </span>
+                          </div>
+                        )}
+                      </div>
                     </div>
 
                     <div className="space-y-2">
