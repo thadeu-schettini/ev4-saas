@@ -315,7 +315,7 @@ export default function Configuracoes() {
                 return (
                   <Card
                     key={section.id}
-                    className={`group relative border-border/50 backdrop-blur-sm hover:shadow-2xl transition-all duration-500 cursor-pointer overflow-hidden animate-fade-in hover:scale-105 ${
+                    className={`group relative border-border/50 backdrop-blur-sm hover:shadow-2xl transition-all duration-500 cursor-pointer animate-fade-in hover:scale-105 ${
                       isInactive 
                         ? 'bg-muted/30 border-2 border-dashed border-muted-foreground/30 opacity-60 hover:opacity-80' 
                         : 'bg-card/95'
@@ -334,7 +334,7 @@ export default function Configuracoes() {
                     />
 
                     {/* Completion Ring */}
-                    <div className="absolute top-4 right-4 flex items-center gap-2 z-10">
+                    <div className="absolute top-4 right-4 flex items-center gap-3">
                       {section.badge && (
                         <Badge variant="outline" className="text-xs">
                           {section.badge}
@@ -342,18 +342,20 @@ export default function Configuracoes() {
                       )}
                       {isInactive && (
                         <Tooltip>
-                          <TooltipTrigger>
-                            <Badge variant="destructive" className="text-sm gap-1.5 px-3 py-1 shadow-md animate-pulse">
-                              <AlertCircle className="h-4 w-4" />
-                              Inativo
-                            </Badge>
+                          <TooltipTrigger asChild>
+                            <div>
+                              <Badge variant="destructive" className="text-sm gap-1.5 px-3 py-1 shadow-md animate-pulse">
+                                <AlertCircle className="h-4 w-4" />
+                                Inativo
+                              </Badge>
+                            </div>
                           </TooltipTrigger>
-                          <TooltipContent>
+                          <TooltipContent side="left" className="z-50">
                             <p>Ative este módulo em Recursos para configurar</p>
                           </TooltipContent>
                         </Tooltip>
                       )}
-                      <div className="relative w-12 h-12 z-10">
+                      <div className="relative w-12 h-12">
                       <svg className="w-12 h-12 transform -rotate-90">
                         <circle
                           cx="24"
@@ -394,28 +396,29 @@ export default function Configuracoes() {
                       </div>
                       
                       {section.requiresActivation && (
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <div 
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                e.preventDefault();
-                              }}
-                              className="relative z-20"
-                            >
-                              <Switch
-                                checked={resources[section.id as keyof typeof resources] || false}
-                                onCheckedChange={(checked) => {
-                                  setResources({ ...resources, [section.id]: checked });
-                                  toast.success(checked ? `${section.title} ativado` : `${section.title} desativado`);
+                        <div className="flex items-center gap-2">
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <div 
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  e.preventDefault();
                                 }}
-                              />
-                            </div>
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p>{isInactive ? 'Ativar módulo' : 'Desativar módulo'}</p>
-                          </TooltipContent>
-                        </Tooltip>
+                              >
+                                <Switch
+                                  checked={resources[section.id as keyof typeof resources] || false}
+                                  onCheckedChange={(checked) => {
+                                    setResources({ ...resources, [section.id]: checked });
+                                    toast.success(checked ? `${section.title} ativado` : `${section.title} desativado`);
+                                  }}
+                                />
+                              </div>
+                            </TooltipTrigger>
+                            <TooltipContent side="left" className="z-50">
+                              <p>{isInactive ? 'Ativar módulo' : 'Desativar módulo'}</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </div>
                       )}
                     </div>
 
