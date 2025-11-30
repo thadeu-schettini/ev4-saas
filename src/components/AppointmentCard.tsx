@@ -518,9 +518,15 @@ export const AppointmentCard = ({ open, onOpenChange }: AppointmentCardProps) =>
                       <p className="text-base sm:text-lg font-bold text-foreground break-words">{formData.service}</p>
                     </div>
                   </div>
-                  <div className="pt-3 border-t border-border/50">
-                    <p className="text-xs text-muted-foreground font-medium mb-1">Tipo de atendimento</p>
-                    <p className="text-sm font-semibold text-foreground">{formData.attendanceType}</p>
+                  <div className="pt-3 border-t border-border/50 space-y-2">
+                    <div>
+                      <p className="text-xs text-muted-foreground font-medium mb-1">Profissional</p>
+                      <p className="text-sm font-semibold text-foreground">{formData.professional}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-muted-foreground font-medium mb-1">Tipo de atendimento</p>
+                      <p className="text-sm font-semibold text-foreground">{formData.attendanceType}</p>
+                    </div>
                   </div>
                 </div>
 
