@@ -7,6 +7,7 @@ import {
   ChevronUp,
   Settings,
   AlertCircle,
+  X,
 } from "lucide-react";
 import {
   DndContext,
@@ -188,6 +189,8 @@ function SortableField({
   onRemove: () => void;
   validationErrors: { [key: string]: string };
 }) {
+  const [newOption, setNewOption] = useState("");
+  
   const {
     attributes,
     listeners,
@@ -203,94 +206,187 @@ function SortableField({
     opacity: isDragging ? 0.5 : 1,
   };
 
+  const addOption = () => {
+    if (newOption.trim()) {
+      const options = field.options || [];
+      onUpdate({ options: [...options, newOption.trim()] });
+      setNewOption("");
+    }
+  };
+
+  const removeOption = (index: number) => {
+    const options = field.options || [];
+    onUpdate({ options: options.filter((_, i) => i !== index) });
+  };
+
+  const needsOptions = field.type === "selecao-unica" || field.type === "selecao-multipla";
+  const needsCalculation = field.type === "calculo";
+
   return (
     <Card ref={setNodeRef} style={style} className="p-3 bg-muted/30">
-      <div className="flex items-start gap-3">
-        <div
-          {...attributes}
-          {...listeners}
-          className="cursor-grab active:cursor-grabbing mt-2"
-        >
-          <GripVertical className="h-4 w-4 text-muted-foreground" />
-        </div>
-
-        <div className="flex-1 grid grid-cols-2 gap-3">
-          <div className="relative">
-            <Input
-              placeholder="Label do campo"
-              value={field.label}
-              onChange={(e) => onUpdate({ label: e.target.value })}
-              className={
-                validationErrors[`field-${field.id}-label`]
-                  ? "border-destructive"
-                  : ""
-              }
-            />
-            {validationErrors[`field-${field.id}-label`] && (
-              <AlertCircle className="absolute right-2 top-1/2 -translate-y-1/2 h-4 w-4 text-destructive" />
-            )}
+      <div className="space-y-3">
+        <div className="flex items-start gap-3">
+          <div
+            {...attributes}
+            {...listeners}
+            className="cursor-grab active:cursor-grabbing mt-2"
+          >
+            <GripVertical className="h-4 w-4 text-muted-foreground" />
           </div>
 
-          <Select
-            value={field.type}
-            onValueChange={(value: any) => onUpdate({ type: value })}
-          >
-            <SelectTrigger>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {fieldTypes.map((type) => (
-                <SelectItem key={type.value} value={type.value}>
-                  {type.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-
-          <div className="col-span-2 flex items-center gap-4">
-            <div className="flex items-center gap-2">
-              <Switch
-                checked={field.required}
-                onCheckedChange={(checked) => onUpdate({ required: checked })}
+          <div className="flex-1 grid grid-cols-2 gap-3">
+            <div className="relative">
+              <Input
+                placeholder="Label do campo"
+                value={field.label}
+                onChange={(e) => onUpdate({ label: e.target.value })}
+                className={
+                  validationErrors[`field-${field.id}-label`]
+                    ? "border-destructive"
+                    : ""
+                }
               />
-              <Label className="text-xs">Obrigatório</Label>
+              {validationErrors[`field-${field.id}-label`] && (
+                <AlertCircle className="absolute right-2 top-1/2 -translate-y-1/2 h-4 w-4 text-destructive" />
+              )}
             </div>
 
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button variant="ghost" size="sm">
-                  <Settings className="h-3 w-3 mr-1" />
-                  Opções avançadas
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-80">
-                <div className="space-y-3">
-                  <div className="space-y-2">
-                    <Label className="text-xs">Chave especial</Label>
-                    <Input
-                      placeholder="Ex: peso, altura"
-                      value={field.specialKey || ""}
-                      onChange={(e) => onUpdate({ specialKey: e.target.value })}
-                    />
+            <Select
+              value={field.type}
+              onValueChange={(value: any) => onUpdate({ type: value })}
+            >
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {fieldTypes.map((type) => (
+                  <SelectItem key={type.value} value={type.value}>
+                    {type.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            <div className="col-span-2 flex items-center gap-4">
+              <div className="flex items-center gap-2">
+                <Switch
+                  checked={field.required}
+                  onCheckedChange={(checked) => onUpdate({ required: checked })}
+                />
+                <Label className="text-xs">Obrigatório</Label>
+              </div>
+
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="ghost" size="sm">
+                    <Settings className="h-3 w-3 mr-1" />
+                    Opções avançadas
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-80">
+                  <div className="space-y-3">
+                    <div className="space-y-2">
+                      <Label className="text-xs">Chave especial</Label>
+                      <Input
+                        placeholder="Ex: peso, altura"
+                        value={field.specialKey || ""}
+                        onChange={(e) => onUpdate({ specialKey: e.target.value })}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-xs">Texto de ajuda</Label>
+                      <Textarea
+                        placeholder="Dica para preenchimento"
+                        value={field.helpText || ""}
+                        onChange={(e) => onUpdate({ helpText: e.target.value })}
+                        rows={2}
+                      />
+                    </div>
                   </div>
-                  <div className="space-y-2">
-                    <Label className="text-xs">Texto de ajuda</Label>
-                    <Textarea
-                      placeholder="Dica para preenchimento"
-                      value={field.helpText || ""}
-                      onChange={(e) => onUpdate({ helpText: e.target.value })}
-                      rows={2}
-                    />
-                  </div>
-                </div>
-              </PopoverContent>
-            </Popover>
+                </PopoverContent>
+              </Popover>
+            </div>
           </div>
+
+          <Button variant="ghost" size="icon" onClick={onRemove}>
+            <Trash2 className="h-4 w-4 text-destructive" />
+          </Button>
         </div>
 
-        <Button variant="ghost" size="icon" onClick={onRemove}>
-          <Trash2 className="h-4 w-4 text-destructive" />
-        </Button>
+        {/* Options configuration for select fields */}
+        {needsOptions && (
+          <div className="pl-8 space-y-2">
+            <Label className="text-xs font-medium">Opções de seleção</Label>
+            <div className="space-y-2">
+              {field.options?.map((option, index) => (
+                <div key={index} className="flex items-center gap-2">
+                  <Input
+                    value={option}
+                    onChange={(e) => {
+                      const options = [...(field.options || [])];
+                      options[index] = e.target.value;
+                      onUpdate({ options });
+                    }}
+                    className="flex-1 h-8"
+                  />
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8"
+                    onClick={() => removeOption(index)}
+                  >
+                    <X className="h-3 w-3" />
+                  </Button>
+                </div>
+              ))}
+              <div className="flex gap-2">
+                <Input
+                  placeholder="Nova opção"
+                  value={newOption}
+                  onChange={(e) => setNewOption(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      addOption();
+                    }
+                  }}
+                  className="flex-1 h-8"
+                />
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={addOption}
+                  className="h-8"
+                >
+                  <Plus className="h-3 w-3 mr-1" />
+                  Adicionar
+                </Button>
+              </div>
+              {(!field.options || field.options.length === 0) && (
+                <p className="text-xs text-muted-foreground">
+                  Nenhuma opção adicionada ainda
+                </p>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Calculation configuration */}
+        {needsCalculation && (
+          <div className="pl-8 space-y-2">
+            <Label className="text-xs font-medium">Fórmula de cálculo</Label>
+            <Textarea
+              placeholder="Ex: [peso] / ([altura] * [altura])"
+              value={field.calculation || ""}
+              onChange={(e) => onUpdate({ calculation: e.target.value })}
+              rows={2}
+              className="text-xs font-mono"
+            />
+            <p className="text-xs text-muted-foreground">
+              Use [chave] para referenciar outros campos. Ex: [peso], [altura]
+            </p>
+          </div>
+        )}
       </div>
     </Card>
   );
