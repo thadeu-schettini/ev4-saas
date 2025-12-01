@@ -58,28 +58,36 @@ export function FormPreviewPanel({
       case "selecao-unica":
         return (
           <RadioGroup disabled>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="option1" id={`${field.id}-1`} />
-              <Label htmlFor={`${field.id}-1`}>Opção 1</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="option2" id={`${field.id}-2`} />
-              <Label htmlFor={`${field.id}-2`}>Opção 2</Label>
-            </div>
+            {field.options && field.options.length > 0 ? (
+              field.options.map((option: string, index: number) => (
+                <div key={index} className="flex items-center space-x-2">
+                  <RadioGroupItem value={option} id={`${field.id}-${index}`} />
+                  <Label htmlFor={`${field.id}-${index}`}>{option}</Label>
+                </div>
+              ))
+            ) : (
+              <div className="text-sm text-muted-foreground">
+                Nenhuma opção configurada
+              </div>
+            )}
           </RadioGroup>
         );
 
       case "selecao-multipla":
         return (
           <div className="space-y-2">
-            <div className="flex items-center space-x-2">
-              <Checkbox id={`${field.id}-1`} disabled />
-              <Label htmlFor={`${field.id}-1`}>Opção 1</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Checkbox id={`${field.id}-2`} disabled />
-              <Label htmlFor={`${field.id}-2`}>Opção 2</Label>
-            </div>
+            {field.options && field.options.length > 0 ? (
+              field.options.map((option: string, index: number) => (
+                <div key={index} className="flex items-center space-x-2">
+                  <Checkbox id={`${field.id}-${index}`} disabled />
+                  <Label htmlFor={`${field.id}-${index}`}>{option}</Label>
+                </div>
+              ))
+            ) : (
+              <div className="text-sm text-muted-foreground">
+                Nenhuma opção configurada
+              </div>
+            )}
           </div>
         );
 
@@ -120,9 +128,16 @@ export function FormPreviewPanel({
       case "calculo":
         return (
           <div className="p-3 bg-primary/5 border border-primary/20 rounded-md">
-            <p className="text-sm text-muted-foreground">
-              Cálculo automático (IMC, etc)
-            </p>
+            <p className="text-sm font-medium mb-1">Cálculo automático</p>
+            {field.calculation ? (
+              <p className="text-xs text-muted-foreground font-mono">
+                {field.calculation}
+              </p>
+            ) : (
+              <p className="text-xs text-muted-foreground">
+                Nenhuma fórmula configurada
+              </p>
+            )}
           </div>
         );
 
