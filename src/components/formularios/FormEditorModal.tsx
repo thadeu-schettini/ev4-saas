@@ -106,7 +106,7 @@ export function FormEditorModal({ open, onOpenChange, formData }: FormEditorModa
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-[95vw] h-[95vh] p-0 gap-0">
+      <DialogContent className="max-w-7xl w-[95vw] max-h-[95vh] h-[95vh] p-0 gap-0 overflow-hidden">
         {/* Header */}
         <div className="border-b bg-muted/30">
           <div className="flex items-center justify-between p-3 sm:p-4">

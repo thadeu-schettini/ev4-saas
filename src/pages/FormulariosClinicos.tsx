@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Search, Plus, FileText, LayoutGrid, Table as TableIcon } from "lucide-react";
+import { Search, Plus, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
@@ -14,8 +14,8 @@ import {
 import { CatalogModal } from "@/components/formularios/CatalogModal";
 import { FormEditorModal } from "@/components/formularios/FormEditorModal";
 import { FormHistoryModal } from "@/components/formularios/FormHistoryModal";
-import { FormTableView } from "@/components/formularios/FormTableView";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+
+
 
 interface ClinicalForm {
   id: string;
@@ -65,7 +65,6 @@ export default function FormulariosClinicos() {
   const [editorOpen, setEditorOpen] = useState(false);
   const [selectedForm, setSelectedForm] = useState<ClinicalForm | null>(null);
   const [historyFormId, setHistoryFormId] = useState<string | null>(null);
-  const [viewMode, setViewMode] = useState<"grid" | "table">("grid");
 
   const filteredForms = mockForms.filter((form) => {
     const matchesSearch = form.name.toLowerCase().includes(searchQuery.toLowerCase());
@@ -115,38 +114,20 @@ export default function FormulariosClinicos() {
             </p>
           </div>
 
-          {/* Actions & View Toggle */}
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
-            <div className="flex flex-col sm:flex-row gap-2">
-              <Button
-                variant="outline"
-                onClick={() => setCatalogOpen(true)}
-                className="w-full sm:w-auto"
-              >
-                <FileText className="mr-2 h-4 w-4" />
-                Usar Modelo Pronto
-              </Button>
-              <Button onClick={handleCreateNew} className="w-full sm:w-auto">
-                <Plus className="mr-2 h-4 w-4" />
-                Criar do Zero
-              </Button>
-            </div>
-
-            <ToggleGroup
-              type="single"
-              value={viewMode}
-              onValueChange={(value) => value && setViewMode(value as "grid" | "table")}
-              className="w-full sm:w-auto justify-stretch sm:justify-start"
+          {/* Actions */}
+          <div className="flex flex-col sm:flex-row gap-2">
+            <Button
+              variant="outline"
+              onClick={() => setCatalogOpen(true)}
+              className="w-full sm:w-auto"
             >
-              <ToggleGroupItem value="grid" aria-label="Visualização em grade" className="flex-1 sm:flex-none">
-                <LayoutGrid className="h-4 w-4 mr-2" />
-                <span className="text-xs sm:text-sm">Grade</span>
-              </ToggleGroupItem>
-              <ToggleGroupItem value="table" aria-label="Visualização em tabela" className="flex-1 sm:flex-none">
-                <TableIcon className="h-4 w-4 mr-2" />
-                <span className="text-xs sm:text-sm">Tabela</span>
-              </ToggleGroupItem>
-            </ToggleGroup>
+              <FileText className="mr-2 h-4 w-4" />
+              Usar Modelo Pronto
+            </Button>
+            <Button onClick={handleCreateNew} className="w-full sm:w-auto">
+              <Plus className="mr-2 h-4 w-4" />
+              Criar do Zero
+            </Button>
           </div>
 
           {/* Filters */}
@@ -211,53 +192,42 @@ export default function FormulariosClinicos() {
 
         {/* Forms Display */}
         {filteredForms.length > 0 && (
-          <>
-            {viewMode === "grid" ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
-                {filteredForms.map((form) => (
-                  <Card
-                    key={form.id}
-                    className="p-4 sm:p-6 hover:shadow-lg transition-all duration-300 cursor-pointer group"
-                    onClick={() => handleEditForm(form)}
-                  >
-                    <div className="space-y-3">
-                      <div className="flex items-start justify-between gap-2">
-                        <div className="flex-1 min-w-0">
-                          <h3 className="font-semibold text-sm sm:text-base group-hover:text-primary transition-colors line-clamp-2">
-                            {form.name}
-                          </h3>
-                          <p className="text-xs sm:text-sm text-muted-foreground mt-1 truncate">
-                            {form.specialty}
-                          </p>
-                        </div>
-                        <Badge
-                          variant={form.status === "publicado" ? "default" : "secondary"}
-                          className="text-xs shrink-0"
-                        >
-                          {form.status === "publicado" ? "Ativo" : "Rascunho"}
-                        </Badge>
-                      </div>
-
-                      <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                        <span>{form.sectionsCount} seções</span>
-                        <span>·</span>
-                        <span>{form.fieldsCount} campos</span>
-                      </div>
-
-                      <Badge variant="outline" className="text-xs">{form.type}</Badge>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+            {filteredForms.map((form) => (
+              <Card
+                key={form.id}
+                className="p-4 sm:p-6 hover:shadow-lg transition-all duration-300 cursor-pointer group"
+                onClick={() => handleEditForm(form)}
+              >
+                <div className="space-y-3">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-semibold text-sm sm:text-base group-hover:text-primary transition-colors line-clamp-2">
+                        {form.name}
+                      </h3>
+                      <p className="text-xs sm:text-sm text-muted-foreground mt-1 truncate">
+                        {form.specialty}
+                      </p>
                     </div>
-                  </Card>
-                ))}
-              </div>
-            ) : (
-              <FormTableView
-                forms={filteredForms}
-                onEdit={handleEditForm}
-                onDuplicate={handleDuplicateForm}
-                onViewHistory={handleViewHistory}
-              />
-            )}
-          </>
+                    <Badge
+                      variant={form.status === "publicado" ? "default" : "secondary"}
+                      className="text-xs shrink-0"
+                    >
+                      {form.status === "publicado" ? "Ativo" : "Rascunho"}
+                    </Badge>
+                  </div>
+
+                  <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                    <span>{form.sectionsCount} seções</span>
+                    <span>·</span>
+                    <span>{form.fieldsCount} campos</span>
+                  </div>
+
+                  <Badge variant="outline" className="text-xs">{form.type}</Badge>
+                </div>
+              </Card>
+            ))}
+          </div>
         )}
       </div>
 

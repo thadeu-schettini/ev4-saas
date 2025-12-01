@@ -216,7 +216,7 @@ export function CatalogModal({ open, onOpenChange }: CatalogModalProps) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-6xl h-[90vh] p-0 gap-0">
+      <DialogContent className="max-w-6xl w-[95vw] max-h-[90vh] h-[90vh] p-0 gap-0 overflow-hidden">
         {/* Header */}
         <div className="p-4 sm:p-6 border-b">
           <div className="flex items-start justify-between mb-4 gap-4">
