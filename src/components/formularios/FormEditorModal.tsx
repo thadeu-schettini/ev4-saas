@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Save, Eye, EyeOff } from "lucide-react";
+import { Save, Eye, EyeOff, X } from "lucide-react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { FormBuilderPanel } from "./FormBuilderPanel";
@@ -106,11 +106,11 @@ export function FormEditorModal({ open, onOpenChange, formData }: FormEditorModa
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-7xl w-[95vw] max-h-[95vh] h-[95vh] p-0 gap-0 overflow-hidden">
+      <DialogContent className="max-w-7xl w-[95vw] max-h-[95vh] h-[95vh] p-0 gap-0 overflow-hidden [&>button]:hidden">
         {/* Header */}
         <div className="border-b bg-muted/30">
-          <div className="flex items-center justify-between p-3 sm:p-4">
-            <div className="flex items-center gap-2 sm:gap-4 min-w-0">
+          <div className="flex items-center justify-between p-3 sm:p-4 gap-2">
+            <div className="flex items-center gap-2 sm:gap-4 min-w-0 flex-1">
               <h2 className="text-base sm:text-lg font-bold truncate">
                 {formData ? "Editar Formulário" : "Construtor de Formulários"}
               </h2>
@@ -145,6 +145,9 @@ export function FormEditorModal({ open, onOpenChange, formData }: FormEditorModa
               <Button size="sm" onClick={() => handleSave(true)} className="text-xs sm:text-sm">
                 <span className="hidden sm:inline">Publicar</span>
                 <span className="sm:hidden">OK</span>
+              </Button>
+              <Button variant="ghost" size="icon" onClick={() => onOpenChange(false)} className="h-8 w-8 shrink-0">
+                <X className="h-4 w-4" />
               </Button>
             </div>
           </div>
