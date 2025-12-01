@@ -120,15 +120,15 @@ export function FormHistoryModal({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-3xl h-[80vh] p-0 gap-0">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b bg-muted/30">
-          <div>
-            <h2 className="text-lg font-bold">Histórico de Versões</h2>
-            <p className="text-sm text-muted-foreground mt-1">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 sm:p-6 border-b bg-muted/30">
+          <div className="min-w-0">
+            <h2 className="text-base sm:text-lg font-bold">Histórico de Versões</h2>
+            <p className="text-xs sm:text-sm text-muted-foreground mt-1">
               Visualize, compare e restaure versões anteriores
             </p>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
             <Button
               variant={compareMode ? "default" : "outline"}
               size="sm"
@@ -136,19 +136,21 @@ export function FormHistoryModal({
                 setCompareMode(!compareMode);
                 setSelectedVersions([]);
               }}
+              className="flex-1 sm:flex-none"
             >
               <GitCompare className="mr-2 h-4 w-4" />
               {compareMode ? "Cancelar" : "Comparar"}
             </Button>
             {compareMode && selectedVersions.length === 2 && (
-              <Button size="sm" onClick={handleCompare}>
-                Visualizar Comparação
+              <Button size="sm" onClick={handleCompare} className="flex-1 sm:flex-none">
+                Visualizar
               </Button>
             )}
             <Button
               variant="ghost"
               size="icon"
               onClick={() => onOpenChange(false)}
+              className="shrink-0"
             >
               <X className="h-4 w-4" />
             </Button>
@@ -156,12 +158,12 @@ export function FormHistoryModal({
         </div>
 
         {/* Versions List */}
-        <ScrollArea className="flex-1 p-6">
+        <ScrollArea className="flex-1 p-3 sm:p-6">
           <div className="space-y-3">
             {mockVersions.map((version, idx) => (
               <Card
                 key={version.id}
-                className={`p-4 transition-all cursor-pointer ${
+                className={`p-3 sm:p-4 transition-all cursor-pointer ${
                   compareMode
                     ? selectedVersions.includes(version.id)
                       ? "border-primary bg-primary/5"
@@ -170,19 +172,19 @@ export function FormHistoryModal({
                 }`}
                 onClick={() => handleVersionSelect(version.id)}
               >
-                <div className="flex items-start gap-4">
+                <div className="flex items-start gap-3 sm:gap-4">
                   {compareMode && (
-                    <div className="flex items-center justify-center w-6 h-6 rounded-full border-2 border-primary bg-background">
+                    <div className="flex items-center justify-center w-6 h-6 rounded-full border-2 border-primary bg-background shrink-0">
                       {selectedVersions.includes(version.id) && (
                         <div className="w-3 h-3 rounded-full bg-primary" />
                       )}
                     </div>
                   )}
 
-                  <div className="flex-1">
-                    <div className="flex items-start justify-between mb-2">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 mb-2">
                       <div className="flex items-center gap-2">
-                        <h3 className="font-semibold">Versão {version.version}</h3>
+                        <h3 className="font-semibold text-sm sm:text-base">Versão {version.version}</h3>
                         {idx === 0 && (
                           <Badge variant="default" className="text-xs">
                             Atual
@@ -197,24 +199,25 @@ export function FormHistoryModal({
                             e.stopPropagation();
                             handleRestore(version);
                           }}
+                          className="h-8 text-xs shrink-0"
                         >
-                          <RotateCcw className="mr-2 h-3 w-3" />
+                          <RotateCcw className="mr-1 h-3 w-3" />
                           Restaurar
                         </Button>
                       )}
                     </div>
 
                     <div className="space-y-2">
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <Clock className="h-4 w-4" />
-                        <span>{formatDate(version.timestamp)}</span>
-                        <span>•</span>
-                        <span>{version.author}</span>
+                      <div className="flex flex-wrap items-center gap-1 sm:gap-2 text-xs sm:text-sm text-muted-foreground">
+                        <Clock className="h-3 sm:h-4 w-3 sm:w-4 shrink-0" />
+                        <span className="truncate">{formatDate(version.timestamp)}</span>
+                        <span className="hidden sm:inline">•</span>
+                        <span className="truncate">{version.author}</span>
                       </div>
 
-                      <p className="text-sm">{version.changes}</p>
+                      <p className="text-xs sm:text-sm">{version.changes}</p>
 
-                      <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                      <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs text-muted-foreground">
                         <span>{version.sectionsCount} seções</span>
                         <span>•</span>
                         <span>{version.fieldsCount} campos</span>
