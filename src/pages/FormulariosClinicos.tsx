@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Search, Plus, FileText, Filter } from "lucide-react";
+import { Search, Plus, FileText, Filter, Copy, History } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/select";
 import { CatalogModal } from "@/components/formularios/CatalogModal";
 import { FormEditorModal } from "@/components/formularios/FormEditorModal";
+import { FormHistoryModal } from "@/components/formularios/FormHistoryModal";
 
 interface ClinicalForm {
   id: string;
@@ -61,6 +62,7 @@ export default function FormulariosClinicos() {
   const [catalogOpen, setCatalogOpen] = useState(false);
   const [editorOpen, setEditorOpen] = useState(false);
   const [selectedForm, setSelectedForm] = useState<ClinicalForm | null>(null);
+  const [historyFormId, setHistoryFormId] = useState<string | null>(null);
 
   const filteredForms = mockForms.filter((form) => {
     const matchesSearch = form.name.toLowerCase().includes(searchQuery.toLowerCase());
@@ -77,6 +79,23 @@ export default function FormulariosClinicos() {
   const handleCreateNew = () => {
     setSelectedForm(null);
     setEditorOpen(true);
+  };
+
+  const handleDuplicateForm = (form: ClinicalForm, e: React.MouseEvent) => {
+    e.stopPropagation();
+    const duplicated = {
+      ...form,
+      id: Date.now().toString(),
+      name: `${form.name} (Cópia)`,
+      status: "rascunho" as const,
+    };
+    setSelectedForm(duplicated);
+    setEditorOpen(true);
+  };
+
+  const handleViewHistory = (formId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setHistoryFormId(formId);
   };
 
   return (
@@ -175,7 +194,7 @@ export default function FormulariosClinicos() {
             {filteredForms.map((form) => (
               <Card
                 key={form.id}
-                className="p-6 hover:shadow-lg transition-all duration-300 cursor-pointer group"
+                className="p-6 hover:shadow-lg transition-all duration-300 cursor-pointer group relative"
                 onClick={() => handleEditForm(form)}
               >
                 <div className="space-y-4">
@@ -213,6 +232,28 @@ export default function FormulariosClinicos() {
                   <div>
                     <Badge variant="outline">{form.type}</Badge>
                   </div>
+
+                  {/* Quick Actions */}
+                  <div className="flex gap-2 pt-2 border-t border-border/50">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={(e) => handleDuplicateForm(form, e)}
+                      className="flex-1 text-xs"
+                    >
+                      <Copy className="mr-1 h-3 w-3" />
+                      Duplicar
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={(e) => handleViewHistory(form.id, e)}
+                      className="flex-1 text-xs"
+                    >
+                      <History className="mr-1 h-3 w-3" />
+                      Histórico
+                    </Button>
+                  </div>
                 </div>
               </Card>
             ))}
@@ -226,6 +267,11 @@ export default function FormulariosClinicos() {
         open={editorOpen}
         onOpenChange={setEditorOpen}
         formData={selectedForm}
+      />
+      <FormHistoryModal
+        formId={historyFormId}
+        open={historyFormId !== null}
+        onOpenChange={(open) => !open && setHistoryFormId(null)}
       />
     </div>
   );

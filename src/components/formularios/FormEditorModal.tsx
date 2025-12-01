@@ -78,6 +78,26 @@ export function FormEditorModal({ open, onOpenChange, formData }: FormEditorModa
       return;
     }
 
+    // Validate sections and fields
+    const errors: string[] = [];
+    sections.forEach((section, idx) => {
+      if (!section.title.trim()) {
+        errors.push(`Seção ${idx + 1} precisa de um título`);
+      }
+      section.fields.forEach((field, fieldIdx) => {
+        if (!field.label.trim()) {
+          errors.push(
+            `Campo ${fieldIdx + 1} da seção "${section.title}" precisa de um label`
+          );
+        }
+      });
+    });
+
+    if (errors.length > 0) {
+      errors.forEach((error) => toast.error(error));
+      return;
+    }
+
     toast.success(
       publish ? "Formulário publicado com sucesso!" : "Rascunho salvo com sucesso!"
     );
