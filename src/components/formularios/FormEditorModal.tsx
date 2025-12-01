@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { X, Save, Eye, EyeOff } from "lucide-react";
+import { Save, Eye, EyeOff } from "lucide-react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { FormBuilderPanel } from "./FormBuilderPanel";
@@ -145,9 +145,6 @@ export function FormEditorModal({ open, onOpenChange, formData }: FormEditorModa
               <Button size="sm" onClick={() => handleSave(true)} className="text-xs sm:text-sm">
                 <span className="hidden sm:inline">Publicar</span>
                 <span className="sm:hidden">OK</span>
-              </Button>
-              <Button variant="ghost" size="icon" onClick={() => onOpenChange(false)} className="h-8 w-8 sm:h-10 sm:w-10">
-                <X className="h-4 w-4" />
               </Button>
             </div>
           </div>
