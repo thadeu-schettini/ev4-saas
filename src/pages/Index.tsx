@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { AppointmentCard } from "@/components/AppointmentCard";
 import { Button } from "@/components/ui/button";
-import { Calendar, Users, Settings, UserCog } from "lucide-react";
+import { Calendar, Users, Settings, UserCog, ClipboardList } from "lucide-react";
 import WelcomeSetupModal from "@/components/WelcomeSetupModal";
 import SetupChecklist from "@/components/SetupChecklist";
 
@@ -55,6 +55,17 @@ const Index = () => {
             >
               <UserCog className="h-5 w-5 mr-2" />
               Profissionais
+            </Button>
+          </Link>
+
+          <Link to="/formularios-clinicos" className="w-full sm:w-auto">
+            <Button 
+              size="lg"
+              variant="outline"
+              className="shadow-lg hover:shadow-xl transition-all duration-300 w-full"
+            >
+              <ClipboardList className="h-5 w-5 mr-2" />
+              Formulários Clínicos
             </Button>
           </Link>
 
