@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Save, Eye, EyeOff, X } from "lucide-react";
+import { Save, X } from "lucide-react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { FormBuilderPanel } from "./FormBuilderPanel";
@@ -48,7 +48,6 @@ export function FormEditorModal({ open, onOpenChange, formData }: FormEditorModa
   const [specialty, setSpecialty] = useState("");
   const [noteType, setNoteType] = useState("");
   const [sections, setSections] = useState<FormSection[]>([]);
-  const [showPreview, setShowPreview] = useState(true);
 
   useEffect(() => {
     if (formData) {
@@ -114,26 +113,6 @@ export function FormEditorModal({ open, onOpenChange, formData }: FormEditorModa
               <h2 className="text-base sm:text-lg font-bold truncate">
                 {formData ? "Editar Formulário" : "Construtor de Formulários"}
               </h2>
-              
-              {/* Mobile preview toggle */}
-              <Button
-                variant="ghost"
-                size="sm"
-                className="lg:hidden shrink-0"
-                onClick={() => setShowPreview(!showPreview)}
-              >
-                {showPreview ? (
-                  <>
-                    <EyeOff className="h-4 w-4 sm:mr-2" />
-                    <span className="hidden sm:inline">Editar</span>
-                  </>
-                ) : (
-                  <>
-                    <Eye className="h-4 w-4 sm:mr-2" />
-                    <span className="hidden sm:inline">Preview</span>
-                  </>
-                )}
-              </Button>
             </div>
 
             <div className="flex items-center gap-1 sm:gap-2 shrink-0">
@@ -158,7 +137,7 @@ export function FormEditorModal({ open, onOpenChange, formData }: FormEditorModa
               Configure à esquerda e veja o resultado em tempo real à direita
             </p>
             <p className="lg:hidden">
-              Alterne entre Editar e Preview para construir e visualizar seu formulário
+              Configure seu formulário abaixo
             </p>
           </div>
         </div>
@@ -166,11 +145,7 @@ export function FormEditorModal({ open, onOpenChange, formData }: FormEditorModa
         {/* Split Screen Content */}
         <div className="flex flex-1 overflow-hidden">
           {/* Left: Builder */}
-          <div
-            className={`${
-              showPreview ? "hidden lg:block" : "block"
-            } w-full lg:w-1/2 border-r`}
-          >
+          <div className="w-full lg:w-1/2 border-r">
             <FormBuilderPanel
               formName={formName}
               setFormName={setFormName}
@@ -184,11 +159,7 @@ export function FormEditorModal({ open, onOpenChange, formData }: FormEditorModa
           </div>
 
           {/* Right: Preview */}
-          <div
-            className={`${
-              showPreview ? "block" : "hidden lg:block"
-            } w-full lg:w-1/2 bg-muted/10`}
-          >
+          <div className="hidden lg:block w-full lg:w-1/2 bg-muted/10">
             <FormPreviewPanel
               formName={formName}
               specialty={specialty}
