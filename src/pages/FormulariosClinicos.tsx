@@ -99,15 +99,15 @@ export default function FormulariosClinicos() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20 p-4 md:p-8">
-      <div className="max-w-7xl mx-auto space-y-6">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20 p-4 sm:p-6 lg:p-8">
+      <div className="max-w-7xl mx-auto space-y-4 sm:space-y-6">
         {/* Header */}
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-3 sm:gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-foreground mb-2">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground mb-2">
               Formulários Clínicos
             </h1>
-            <p className="text-muted-foreground">
+            <p className="text-sm sm:text-base text-muted-foreground">
               Crie e personalize formulários clínicos por especialidade, com campos estruturados, imagens e cálculos automáticos.
             </p>
           </div>
@@ -167,20 +167,20 @@ export default function FormulariosClinicos() {
 
         {/* Empty State */}
         {filteredForms.length === 0 && (
-          <Card className="p-12 text-center">
-            <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-            <h3 className="text-lg font-semibold mb-2">
+          <Card className="p-8 sm:p-12 text-center">
+            <FileText className="h-10 sm:h-12 w-10 sm:w-12 text-muted-foreground mx-auto mb-4" />
+            <h3 className="text-base sm:text-lg font-semibold mb-2">
               Nenhum formulário clínico configurado
             </h3>
-            <p className="text-muted-foreground mb-6">
+            <p className="text-sm sm:text-base text-muted-foreground mb-4 sm:mb-6">
               Use o catálogo do sistema ou crie um novo para começar.
             </p>
-            <div className="flex gap-3 justify-center">
-              <Button variant="outline" onClick={() => setCatalogOpen(true)}>
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 justify-center">
+              <Button variant="outline" onClick={() => setCatalogOpen(true)} className="w-full sm:w-auto">
                 <FileText className="mr-2 h-4 w-4" />
                 Catálogo do Sistema
               </Button>
-              <Button onClick={handleCreateNew}>
+              <Button onClick={handleCreateNew} className="w-full sm:w-auto">
                 <Plus className="mr-2 h-4 w-4" />
                 Novo Modelo
               </Button>
@@ -190,47 +190,47 @@ export default function FormulariosClinicos() {
 
         {/* Forms Grid */}
         {filteredForms.length > 0 && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
             {filteredForms.map((form) => (
               <Card
                 key={form.id}
-                className="p-6 hover:shadow-lg transition-all duration-300 cursor-pointer group relative"
+                className="p-4 sm:p-6 hover:shadow-lg transition-all duration-300 cursor-pointer group relative"
                 onClick={() => handleEditForm(form)}
               >
-                <div className="space-y-4">
+                <div className="space-y-3 sm:space-y-4">
                   {/* Header */}
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-semibold text-sm sm:text-base text-foreground group-hover:text-primary transition-colors line-clamp-2">
                         {form.name}
                       </h3>
-                      <p className="text-sm text-muted-foreground mt-1">
+                      <p className="text-xs sm:text-sm text-muted-foreground mt-1 truncate">
                         {form.specialty}
                       </p>
                     </div>
                     <Badge
                       variant={form.status === "publicado" ? "default" : "secondary"}
-                      className="ml-2"
+                      className="ml-2 text-xs shrink-0"
                     >
                       {form.status === "publicado" ? "Publicado" : "Rascunho"}
                     </Badge>
                   </div>
 
                   {/* Meta */}
-                  <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                  <div className="flex items-center gap-3 sm:gap-4 text-xs sm:text-sm text-muted-foreground">
                     <div className="flex items-center gap-1">
-                      <FileText className="h-4 w-4" />
+                      <FileText className="h-3 sm:h-4 w-3 sm:w-4" />
                       <span>{form.sectionsCount} seções</span>
                     </div>
                     <div className="flex items-center gap-1">
-                      <Filter className="h-4 w-4" />
+                      <Filter className="h-3 sm:h-4 w-3 sm:w-4" />
                       <span>{form.fieldsCount} campos</span>
                     </div>
                   </div>
 
                   {/* Type Badge */}
                   <div>
-                    <Badge variant="outline">{form.type}</Badge>
+                    <Badge variant="outline" className="text-xs">{form.type}</Badge>
                   </div>
 
                   {/* Quick Actions */}
@@ -239,19 +239,21 @@ export default function FormulariosClinicos() {
                       variant="ghost"
                       size="sm"
                       onClick={(e) => handleDuplicateForm(form, e)}
-                      className="flex-1 text-xs"
+                      className="flex-1 text-xs h-8"
                     >
                       <Copy className="mr-1 h-3 w-3" />
-                      Duplicar
+                      <span className="hidden sm:inline">Duplicar</span>
+                      <span className="sm:hidden">Duplic.</span>
                     </Button>
                     <Button
                       variant="ghost"
                       size="sm"
                       onClick={(e) => handleViewHistory(form.id, e)}
-                      className="flex-1 text-xs"
+                      className="flex-1 text-xs h-8"
                     >
                       <History className="mr-1 h-3 w-3" />
-                      Histórico
+                      <span className="hidden sm:inline">Histórico</span>
+                      <span className="sm:hidden">Hist.</span>
                     </Button>
                   </div>
                 </div>

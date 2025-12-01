@@ -8,8 +8,10 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
-import { Upload } from "lucide-react";
+import { Upload, Monitor, Tablet, Smartphone } from "lucide-react";
 import { FormSection } from "./FormEditorModal";
+import { useState } from "react";
+import { cn } from "@/lib/utils";
 
 interface FormPreviewPanelProps {
   formName: string;
@@ -18,12 +20,22 @@ interface FormPreviewPanelProps {
   sections: FormSection[];
 }
 
+type DeviceType = "desktop" | "tablet" | "mobile";
+
 export function FormPreviewPanel({
   formName,
   specialty,
   noteType,
   sections,
 }: FormPreviewPanelProps) {
+  const [device, setDevice] = useState<DeviceType>("desktop");
+
+  const deviceSizes = {
+    desktop: "max-w-full",
+    tablet: "max-w-[768px]",
+    mobile: "max-w-[375px]",
+  };
+
   const renderField = (field: any) => {
     switch (field.type) {
       case "texto-curto":
@@ -149,78 +161,111 @@ export function FormPreviewPanel({
   return (
     <div className="h-full flex flex-col">
       {/* Preview Header */}
-      <div className="p-6 border-b bg-background">
-        <div className="flex items-center justify-between mb-2">
-          <h3 className="text-lg font-bold">Pré-visualização</h3>
+      <div className="p-4 sm:p-6 border-b bg-background">
+        <div className="flex items-center justify-between mb-3">
+          <div>
+            <h3 className="text-lg font-bold">Pré-visualização</h3>
+            <p className="text-xs sm:text-sm text-muted-foreground mt-1">
+              Visualização em tempo real
+            </p>
+          </div>
           <Badge variant="secondary">Ao vivo</Badge>
         </div>
-        <p className="text-sm text-muted-foreground">
-          Visualização em tempo real de como o formulário aparecerá no prontuário
-        </p>
+        
+        {/* Device Selector */}
+        <div className="flex items-center gap-2 mt-4">
+          <span className="text-xs text-muted-foreground mr-2">Dispositivo:</span>
+          <Button
+            variant={device === "desktop" ? "default" : "outline"}
+            size="sm"
+            onClick={() => setDevice("desktop")}
+            className="h-8 px-3"
+          >
+            <Monitor className="h-4 w-4" />
+          </Button>
+          <Button
+            variant={device === "tablet" ? "default" : "outline"}
+            size="sm"
+            onClick={() => setDevice("tablet")}
+            className="h-8 px-3"
+          >
+            <Tablet className="h-4 w-4" />
+          </Button>
+          <Button
+            variant={device === "mobile" ? "default" : "outline"}
+            size="sm"
+            onClick={() => setDevice("mobile")}
+            className="h-8 px-3"
+          >
+            <Smartphone className="h-4 w-4" />
+          </Button>
+        </div>
       </div>
 
       {/* Preview Content */}
       <ScrollArea className="flex-1">
-        <div className="p-6 space-y-6">
-          {/* Form Header Preview */}
-          {formName && (
-            <Card className="p-6 bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20">
-              <h2 className="text-2xl font-bold text-foreground mb-2">{formName}</h2>
-              <div className="flex flex-wrap gap-2">
-                {specialty && <Badge variant="outline">{specialty}</Badge>}
-                {noteType && <Badge variant="outline">{noteType}</Badge>}
-              </div>
-            </Card>
-          )}
-
-          {/* Sections Preview */}
-          {sections.length === 0 ? (
-            <Card className="p-12 text-center">
-              <p className="text-muted-foreground">
-                Adicione seções e campos para visualizar o formulário
-              </p>
-            </Card>
-          ) : (
-            sections.map((section) => (
-              <Card key={section.id} className="p-6">
-                <div className="mb-4">
-                  <h3 className="text-lg font-semibold text-foreground mb-1">
-                    {section.title}
-                  </h3>
-                  {section.description && (
-                    <p className="text-sm text-muted-foreground">
-                      {section.description}
-                    </p>
-                  )}
+        <div className="flex justify-center p-4 sm:p-6 bg-muted/20">
+          <div className={cn("w-full space-y-4 sm:space-y-6 transition-all duration-300", deviceSizes[device])}>
+            {/* Form Header Preview */}
+            {formName && (
+              <Card className="p-4 sm:p-6 bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20">
+                <h2 className="text-xl sm:text-2xl font-bold text-foreground mb-2">{formName}</h2>
+                <div className="flex flex-wrap gap-2">
+                  {specialty && <Badge variant="outline" className="text-xs">{specialty}</Badge>}
+                  {noteType && <Badge variant="outline" className="text-xs">{noteType}</Badge>}
                 </div>
-
-                {section.fields.length === 0 ? (
-                  <p className="text-sm text-muted-foreground italic">
-                    Nenhum campo nesta seção
-                  </p>
-                ) : (
-                  <div className="space-y-4">
-                    {section.fields.map((field) => (
-                      <div key={field.id} className="space-y-2">
-                        <Label className="flex items-center gap-2">
-                          {field.label}
-                          {field.required && (
-                            <span className="text-destructive">*</span>
-                          )}
-                        </Label>
-                        {field.helpText && (
-                          <p className="text-xs text-muted-foreground">
-                            {field.helpText}
-                          </p>
-                        )}
-                        {renderField(field)}
-                      </div>
-                    ))}
-                  </div>
-                )}
               </Card>
-            ))
-          )}
+            )}
+
+            {/* Sections Preview */}
+            {sections.length === 0 ? (
+              <Card className="p-8 sm:p-12 text-center">
+                <p className="text-sm sm:text-base text-muted-foreground">
+                  Adicione seções e campos para visualizar o formulário
+                </p>
+              </Card>
+            ) : (
+              sections.map((section) => (
+                <Card key={section.id} className="p-4 sm:p-6">
+                  <div className="mb-4">
+                    <h3 className="text-base sm:text-lg font-semibold text-foreground mb-1">
+                      {section.title}
+                    </h3>
+                    {section.description && (
+                      <p className="text-xs sm:text-sm text-muted-foreground">
+                        {section.description}
+                      </p>
+                    )}
+                  </div>
+
+                  {section.fields.length === 0 ? (
+                    <p className="text-xs sm:text-sm text-muted-foreground italic">
+                      Nenhum campo nesta seção
+                    </p>
+                  ) : (
+                    <div className="space-y-3 sm:space-y-4">
+                      {section.fields.map((field) => (
+                        <div key={field.id} className="space-y-2">
+                          <Label className="flex items-center gap-2 text-sm">
+                            {field.label}
+                            {field.required && (
+                              <span className="text-destructive">*</span>
+                            )}
+                          </Label>
+                          {field.helpText && (
+                            <p className="text-xs text-muted-foreground">
+                              {field.helpText}
+                            </p>
+                          )}
+                          {renderField(field)}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </Card>
+              ))
+            )}
+          </div>
         </div>
       </ScrollArea>
     </div>

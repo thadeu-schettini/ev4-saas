@@ -108,9 +108,9 @@ export function FormEditorModal({ open, onOpenChange, formData }: FormEditorModa
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-[95vw] h-[95vh] p-0 gap-0">
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b bg-muted/30">
-          <div className="flex items-center gap-4">
-            <h2 className="text-lg font-bold">
+        <div className="flex items-center justify-between p-3 sm:p-4 border-b bg-muted/30">
+          <div className="flex items-center gap-2 sm:gap-4 min-w-0">
+            <h2 className="text-base sm:text-lg font-bold truncate">
               {formData ? "Editar Formulário" : "Criar Novo Formulário"}
             </h2>
             
@@ -118,32 +118,34 @@ export function FormEditorModal({ open, onOpenChange, formData }: FormEditorModa
             <Button
               variant="ghost"
               size="sm"
-              className="lg:hidden"
+              className="lg:hidden shrink-0"
               onClick={() => setShowPreview(!showPreview)}
             >
               {showPreview ? (
                 <>
-                  <EyeOff className="mr-2 h-4 w-4" />
-                  Editar
+                  <EyeOff className="h-4 w-4 sm:mr-2" />
+                  <span className="hidden sm:inline">Editar</span>
                 </>
               ) : (
                 <>
-                  <Eye className="mr-2 h-4 w-4" />
-                  Preview
+                  <Eye className="h-4 w-4 sm:mr-2" />
+                  <span className="hidden sm:inline">Preview</span>
                 </>
               )}
             </Button>
           </div>
 
-          <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm" onClick={() => handleSave(false)}>
-              <Save className="mr-2 h-4 w-4" />
-              Salvar Rascunho
+          <div className="flex items-center gap-1 sm:gap-2 shrink-0">
+            <Button variant="outline" size="sm" onClick={() => handleSave(false)} className="text-xs sm:text-sm">
+              <Save className="h-3 sm:h-4 w-3 sm:w-4 sm:mr-2" />
+              <span className="hidden sm:inline">Salvar Rascunho</span>
+              <span className="sm:hidden">Salvar</span>
             </Button>
-            <Button size="sm" onClick={() => handleSave(true)}>
-              Publicar Modelo
+            <Button size="sm" onClick={() => handleSave(true)} className="text-xs sm:text-sm">
+              <span className="hidden sm:inline">Publicar Modelo</span>
+              <span className="sm:hidden">Publicar</span>
             </Button>
-            <Button variant="ghost" size="icon" onClick={() => onOpenChange(false)}>
+            <Button variant="ghost" size="icon" onClick={() => onOpenChange(false)} className="h-8 w-8 sm:h-10 sm:w-10">
               <X className="h-4 w-4" />
             </Button>
           </div>
