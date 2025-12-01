@@ -218,15 +218,15 @@ export function CatalogModal({ open, onOpenChange }: CatalogModalProps) {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-6xl h-[90vh] p-0 gap-0">
         {/* Header */}
-        <div className="p-6 border-b">
-          <div className="flex items-start justify-between mb-4">
-            <div>
-              <h2 className="text-2xl font-bold">Catálogo de formulários clínicos do sistema</h2>
-              <p className="text-sm text-muted-foreground mt-1">
+        <div className="p-4 sm:p-6 border-b">
+          <div className="flex items-start justify-between mb-4 gap-4">
+            <div className="min-w-0">
+              <h2 className="text-lg sm:text-2xl font-bold truncate">Catálogo de formulários clínicos do sistema</h2>
+              <p className="text-xs sm:text-sm text-muted-foreground mt-1">
                 Modelos disponíveis • {systemTemplates.length} modelos
               </p>
             </div>
-            <Button variant="ghost" size="icon" onClick={() => onOpenChange(false)}>
+            <Button variant="ghost" size="icon" onClick={() => onOpenChange(false)} className="shrink-0">
               <X className="h-4 w-4" />
             </Button>
           </div>
@@ -265,20 +265,20 @@ export function CatalogModal({ open, onOpenChange }: CatalogModalProps) {
           {/* Left: Templates List */}
           <div className="w-full lg:w-2/5 border-r">
             <ScrollArea className="h-full">
-              <div className="p-4 space-y-2">
+              <div className="p-3 sm:p-4 space-y-2">
                 {filteredTemplates.map((template) => (
                   <button
                     key={template.id}
                     onClick={() => setSelectedTemplate(template)}
-                    className={`w-full text-left p-4 rounded-lg border transition-all ${
+                    className={`w-full text-left p-3 sm:p-4 rounded-lg border transition-all ${
                       selectedTemplate?.id === template.id
                         ? "border-primary bg-primary/5"
                         : "border-border hover:border-primary/50 hover:bg-muted/50"
                     }`}
                   >
-                    <div className="flex items-start justify-between mb-2">
-                      <h3 className="font-semibold text-sm">{template.name}</h3>
-                      <Badge variant="secondary" className="text-xs">
+                    <div className="flex items-start justify-between mb-2 gap-2">
+                      <h3 className="font-semibold text-sm min-w-0 flex-1">{template.name}</h3>
+                      <Badge variant="secondary" className="text-xs shrink-0">
                         Sistema
                       </Badge>
                     </div>
@@ -297,11 +297,11 @@ export function CatalogModal({ open, onOpenChange }: CatalogModalProps) {
           <div className="hidden lg:flex flex-col flex-1">
             {selectedTemplate ? (
               <>
-                <div className="p-6 border-b">
-                  <div className="flex items-start justify-between mb-4">
-                    <div>
-                      <h3 className="text-xl font-bold mb-1">{selectedTemplate.name}</h3>
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <div className="p-4 sm:p-6 border-b">
+                  <div className="flex flex-col sm:flex-row items-start justify-between gap-4 mb-4">
+                    <div className="min-w-0">
+                      <h3 className="text-lg sm:text-xl font-bold mb-1">{selectedTemplate.name}</h3>
+                      <div className="flex flex-wrap items-center gap-2 text-xs sm:text-sm text-muted-foreground">
                         <span>{selectedTemplate.specialty}</span>
                         <span>•</span>
                         <span>{selectedTemplate.type}</span>
@@ -309,7 +309,7 @@ export function CatalogModal({ open, onOpenChange }: CatalogModalProps) {
                         <span>{selectedTemplate.version}</span>
                       </div>
                     </div>
-                    <Button onClick={handleAddToAccount}>
+                    <Button onClick={handleAddToAccount} className="w-full sm:w-auto shrink-0">
                       <Plus className="mr-2 h-4 w-4" />
                       Adicionar à conta
                     </Button>

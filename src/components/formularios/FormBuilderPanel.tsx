@@ -120,7 +120,7 @@ function SortableSection({
           </div>
 
           <div className="flex-1 space-y-3">
-            <div className="flex items-center gap-2">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
               <Input
                 value={section.title}
                 onChange={(e) => onUpdate({ title: e.target.value })}
@@ -131,9 +131,9 @@ function SortableSection({
                 }`}
               />
               {validationErrors[`section-${section.id}-title`] && (
-                <AlertCircle className="h-4 w-4 text-destructive" />
+                <AlertCircle className="h-4 w-4 text-destructive shrink-0" />
               )}
-              <span className="text-sm text-muted-foreground whitespace-nowrap">
+              <span className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap">
                 {section.fields.length} campos
               </span>
             </div>
@@ -234,8 +234,8 @@ function SortableField({
             <GripVertical className="h-4 w-4 text-muted-foreground" />
           </div>
 
-          <div className="flex-1 grid grid-cols-2 gap-3">
-            <div className="relative">
+          <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="relative sm:col-span-1">
               <Input
                 placeholder="Label do campo"
                 value={field.label}
@@ -267,7 +267,7 @@ function SortableField({
               </SelectContent>
             </Select>
 
-            <div className="col-span-2 flex items-center gap-4">
+            <div className="sm:col-span-2 flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
               <div className="flex items-center gap-2">
                 <Switch
                   checked={field.required}
@@ -278,12 +278,12 @@ function SortableField({
 
               <Popover>
                 <PopoverTrigger asChild>
-                  <Button variant="ghost" size="sm">
+                  <Button variant="ghost" size="sm" className="h-8">
                     <Settings className="h-3 w-3 mr-1" />
-                    Opções avançadas
+                    <span className="text-xs">Opções avançadas</span>
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-80">
+                <PopoverContent className="w-[calc(100vw-2rem)] sm:w-80">
                   <div className="space-y-3">
                     <div className="space-y-2">
                       <Label className="text-xs">Chave especial</Label>
@@ -315,7 +315,7 @@ function SortableField({
 
         {/* Options configuration for select fields */}
         {needsOptions && (
-          <div className="pl-8 space-y-2">
+          <div className="pl-4 sm:pl-8 space-y-2">
             <Label className="text-xs font-medium">Opções de seleção</Label>
             <div className="space-y-2">
               {field.options?.map((option, index) => (
@@ -327,19 +327,19 @@ function SortableField({
                       options[index] = e.target.value;
                       onUpdate({ options });
                     }}
-                    className="flex-1 h-8"
+                    className="flex-1 h-8 text-sm"
                   />
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="h-8 w-8"
+                    className="h-8 w-8 shrink-0"
                     onClick={() => removeOption(index)}
                   >
                     <X className="h-3 w-3" />
                   </Button>
                 </div>
               ))}
-              <div className="flex gap-2">
+              <div className="flex flex-col sm:flex-row gap-2">
                 <Input
                   placeholder="Nova opção"
                   value={newOption}
@@ -350,13 +350,13 @@ function SortableField({
                       addOption();
                     }
                   }}
-                  className="flex-1 h-8"
+                  className="flex-1 h-8 text-sm"
                 />
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={addOption}
-                  className="h-8"
+                  className="h-8 w-full sm:w-auto"
                 >
                   <Plus className="h-3 w-3 mr-1" />
                   Adicionar
@@ -373,13 +373,13 @@ function SortableField({
 
         {/* Calculation configuration */}
         {needsCalculation && (
-          <div className="pl-8 space-y-2">
+          <div className="pl-4 sm:pl-8 space-y-2">
             <Label className="text-xs font-medium">Fórmula de cálculo</Label>
             <Textarea
               placeholder="Ex: [peso] / ([altura] * [altura])"
               value={field.calculation || ""}
               onChange={(e) => onUpdate({ calculation: e.target.value })}
-              rows={2}
+              rows={3}
               className="text-xs font-mono"
             />
             <p className="text-xs text-muted-foreground">
