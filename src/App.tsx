@@ -12,6 +12,7 @@ import Billing from "./pages/Billing";
 import Configuracoes from "./pages/Configuracoes";
 import Profissionais from "./pages/Profissionais";
 import FormulariosClinicos from "./pages/FormulariosClinicos";
+import Pacientes from "./pages/Pacientes";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -32,6 +33,7 @@ const App = () => (
           <Route path="/configuracoes" element={<Configuracoes />} />
           <Route path="/profissionais" element={<Profissionais />} />
           <Route path="/formularios-clinicos" element={<FormulariosClinicos />} />
+          <Route path="/pacientes" element={<Pacientes />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
