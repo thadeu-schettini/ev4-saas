@@ -60,18 +60,14 @@ export function AppSidebar() {
 
   const renderNavItem = (item: typeof mainNavItems[0]) => (
     <SidebarMenuItem key={item.title}>
-      <SidebarMenuButton asChild>
-        <NavLink
-          to={item.url}
-          end
-          className={cn(
-            "flex items-center gap-3 rounded-lg px-3 py-2.5 text-muted-foreground transition-all hover:bg-accent hover:text-accent-foreground",
-            isActive(item.url) && "bg-primary/10 text-primary font-medium"
-          )}
-          activeClassName="bg-primary/10 text-primary font-medium"
-        >
-          <item.icon className={cn("h-5 w-5 shrink-0", collapsed && "mx-auto")} />
-          {!collapsed && <span>{item.title}</span>}
+      <SidebarMenuButton
+        asChild
+        isActive={isActive(item.url)}
+        tooltip={collapsed ? item.title : undefined}
+      >
+        <NavLink to={item.url} end>
+          <item.icon className="h-5 w-5 shrink-0" />
+          <span>{item.title}</span>
         </NavLink>
       </SidebarMenuButton>
     </SidebarMenuItem>
