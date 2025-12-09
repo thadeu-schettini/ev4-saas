@@ -17,6 +17,9 @@ import {
   User,
   Bell,
   HelpCircle,
+  Stethoscope,
+  Layers,
+  Video,
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import {
@@ -54,10 +57,14 @@ const mainNavItems = [
 
 const managementItems = [
   { title: "Profissionais", url: "/profissionais", icon: UserCog },
+  { title: "Serviços", url: "/servicos", icon: Stethoscope },
+  { title: "Planos", url: "/planos-atendimento", icon: Layers },
   { title: "Formulários", url: "/formularios-clinicos", icon: ClipboardList },
 ];
 
 const otherItems = [
+  { title: "Notificações", url: "/notificacoes", icon: Bell },
+  { title: "Telemedicina", url: "/telemedicina", icon: Video },
   { title: "Financeiro", url: "/financeiro", icon: DollarSign },
   { title: "Indicações", url: "/indicacoes", icon: Gift },
   { title: "Faturamento", url: "/billing", icon: CreditCard },

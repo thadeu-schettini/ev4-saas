@@ -17,6 +17,10 @@ import Configuracoes from "./pages/Configuracoes";
 import Profissionais from "./pages/Profissionais";
 import FormulariosClinicos from "./pages/FormulariosClinicos";
 import Pacientes from "./pages/Pacientes";
+import Notificacoes from "./pages/Notificacoes";
+import Servicos from "./pages/Servicos";
+import PlanosAtendimento from "./pages/PlanosAtendimento";
+import Telemedicina from "./pages/Telemedicina";
 import Auth from "./pages/Auth";
 import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
@@ -49,6 +53,10 @@ const App = () => (
               <Route path="/profissionais" element={<Profissionais />} />
               <Route path="/formularios-clinicos" element={<FormulariosClinicos />} />
               <Route path="/pacientes" element={<Pacientes />} />
+              <Route path="/notificacoes" element={<Notificacoes />} />
+              <Route path="/servicos" element={<Servicos />} />
+              <Route path="/planos-atendimento" element={<PlanosAtendimento />} />
+              <Route path="/telemedicina" element={<Telemedicina />} />
             </Route>
             
             {/* Catch-all route */}
