@@ -37,7 +37,7 @@ export function PageHeader({
 
   return (
     <header className={cn(
-      "border-b border-border/40 bg-background/80 backdrop-blur-md sticky top-0 z-40 relative overflow-hidden",
+      "border-b border-border/40 bg-background/80 backdrop-blur-md sticky top-14 lg:top-0 z-30 lg:z-40 relative overflow-hidden",
       className
     )}>
       {/* Subtle decorative gradient line */}
