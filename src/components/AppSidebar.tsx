@@ -145,7 +145,7 @@ export function AppSidebar() {
         </div>
       </SidebarHeader>
 
-      <SidebarContent className={cn("py-4", collapsed ? "px-2" : "px-3")}>
+      <SidebarContent className={cn("py-4 overflow-y-auto flex-1", collapsed ? "px-2" : "px-3")}>
         {/* Main Navigation */}
         <SidebarGroup>
           {!collapsed && (
@@ -161,7 +161,7 @@ export function AppSidebar() {
         </SidebarGroup>
 
         {/* Management */}
-        <SidebarGroup className="mt-6">
+        <SidebarGroup className="mt-4">
           {!collapsed && (
             <SidebarGroupLabel className="px-3 mb-2 text-xs font-medium uppercase tracking-wider text-muted-foreground/70">
               Gestão
@@ -175,7 +175,7 @@ export function AppSidebar() {
         </SidebarGroup>
 
         {/* Other */}
-        <SidebarGroup className="mt-6">
+        <SidebarGroup className="mt-4">
           {!collapsed && (
             <SidebarGroupLabel className="px-3 mb-2 text-xs font-medium uppercase tracking-wider text-muted-foreground/70">
               Outros
