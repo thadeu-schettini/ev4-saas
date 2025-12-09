@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
@@ -171,11 +171,12 @@ export const FullCalendarView = () => {
   const effectiveView = isMobile ? "timeGridDay" : currentView;
 
   // Sync calendar view when mobile state changes
-  useState(() => {
+  useEffect(() => {
     if (calendarRef.current) {
-      calendarRef.current.getApi().changeView(effectiveView);
+      const api = calendarRef.current.getApi();
+      api.changeView(effectiveView);
     }
-  });
+  }, [isMobile, effectiveView]);
 
   const viewOptions = [
     { value: "timeGridDay" as ViewType, label: "Dia", icon: List },
