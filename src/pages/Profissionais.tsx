@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -7,11 +6,11 @@ import { Card } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { PageContainer, PageContent } from "@/components/ui/page-container";
+import { PageHeader } from "@/components/ui/page-header";
 import { 
   Search, 
   UserPlus, 
-  Calendar as CalendarIcon,
-  ArrowLeft,
   Phone,
   Mail,
   MapPin,
@@ -21,7 +20,7 @@ import {
   Settings,
   TrendingUp,
   CheckCircle2,
-  Users
+  UserCog
 } from "lucide-react";
 import { ProfessionalGeneralTab } from "@/components/profissionais/ProfessionalGeneralTab";
 import { ProfessionalScheduleTab } from "@/components/profissionais/ProfessionalScheduleTab";
@@ -98,25 +97,25 @@ const mockProfessionals: Professional[] = [
   },
   {
     id: "5",
-    name: "Dr. Carlos Mendes",
+    name: "Dr. Lucas Mendes",
     specialty: "Neurologista",
     crm: "CRM/SP 567890",
-    status: "disponivel",
+    status: "em-consulta",
     phone: "(11) 98765-4325",
-    email: "carlos.mendes@clinica.com",
+    email: "lucas.mendes@clinica.com",
     address: "Consultório 105",
     appointmentsToday: 7,
-    nextAvailable: "16:00",
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=carlos"
+    nextAvailable: "16:30",
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=lucas"
   },
   {
     id: "6",
-    name: "Dra. Juliana Ferreira",
-    specialty: "Oftalmologista",
+    name: "Dra. Juliana Lima",
+    specialty: "Ginecologista",
     crm: "CRM/SP 234567",
-    status: "em-consulta",
+    status: "disponivel",
     phone: "(11) 98765-4326",
-    email: "juliana.ferreira@clinica.com",
+    email: "juliana.lima@clinica.com",
     address: "Consultório 106",
     appointmentsToday: 9,
     nextAvailable: "14:00",
@@ -159,201 +158,125 @@ const Profissionais = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-primary/3 p-4 md:p-8">
-      {/* Header */}
-      <div className="max-w-7xl mx-auto mb-8 animate-fade-in">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-          <div className="flex items-center gap-3">
-            <Link to="/">
-              <Button variant="ghost" size="icon" className="hover:bg-primary/10">
-                <ArrowLeft className="h-5 w-5" />
-              </Button>
-            </Link>
-            <div>
-              <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-primary to-primary-dark bg-clip-text text-transparent">
-                Profissionais
-              </h1>
-              <p className="text-muted-foreground mt-1">Gerencie sua equipe médica</p>
-            </div>
-          </div>
-          
-          <Button className="shadow-lg hover:shadow-xl transition-all">
-            <UserPlus className="h-4 w-4 mr-2" />
-            Adicionar Profissional
-          </Button>
+    <PageContainer>
+      <PageHeader
+        title="Profissionais"
+        description="Gerencie sua equipe médica"
+        icon={UserCog}
+        iconColor="from-indigo-500 to-blue-600"
+      >
+        <Button className="gap-2">
+          <UserPlus className="h-4 w-4" />
+          <span className="hidden sm:inline">Adicionar Profissional</span>
+        </Button>
+      </PageHeader>
+
+      <PageContent>
+        {/* Search */}
+        <div className="relative max-w-md">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="Buscar por nome, especialidade ou CRM..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pl-10"
+          />
         </div>
 
-        {/* Search and Filters */}
-        <div className="flex flex-col sm:flex-row gap-3">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Buscar por nome, especialidade ou CRM..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 shadow-sm"
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* Grid de Cards */}
-      <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+        {/* Grid de Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {filteredProfessionals.map((professional) => (
             <Card
               key={professional.id}
-              className="group cursor-pointer overflow-hidden border border-border/50 hover:border-primary/30 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 bg-card/50 backdrop-blur-sm"
+              className="p-4 cursor-pointer hover:shadow-md hover:border-primary/20 transition-all"
               onClick={() => handleCardClick(professional)}
             >
-              <div className="p-6">
-                {/* Status Badge */}
-                <div className="flex items-center justify-between mb-4">
-                  <Badge 
-                    variant="outline" 
-                    className={`${statusConfig[professional.status].color} border font-medium`}
-                  >
-                    <span className={`w-2 h-2 rounded-full ${statusConfig[professional.status].dotColor} mr-2 animate-pulse`} />
-                    {statusConfig[professional.status].label}
-                  </Badge>
-                </div>
-
-                {/* Avatar e Info Principal */}
-                <div className="flex items-start gap-4 mb-4">
-                  <Avatar className="h-16 w-16 border-2 border-primary/20 ring-2 ring-primary/10">
-                    <AvatarImage src={professional.avatar} />
+              <div className="flex items-start gap-4">
+                <div className="relative">
+                  <Avatar className="h-14 w-14">
+                    <AvatarImage src={professional.avatar} alt={professional.name} />
                     <AvatarFallback className="bg-primary/10 text-primary font-semibold">
                       {professional.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
                     </AvatarFallback>
                   </Avatar>
-                  
-                  <div className="flex-1 min-w-0">
-                    <h3 className="font-semibold text-lg text-foreground truncate group-hover:text-primary transition-colors">
-                      {professional.name}
-                    </h3>
-                    <p className="text-sm text-muted-foreground">{professional.specialty}</p>
-                    <p className="text-xs text-muted-foreground mt-1">{professional.crm}</p>
-                  </div>
+                  <div className={`absolute -bottom-0.5 -right-0.5 h-4 w-4 rounded-full border-2 border-background ${statusConfig[professional.status].dotColor}`} />
                 </div>
-
-                {/* Métricas Rápidas */}
-                <div className="grid grid-cols-2 gap-3 pt-4 border-t border-border/50">
-                  <div className="flex items-center gap-2">
-                    <div className="p-2 rounded-lg bg-primary/10">
-                      <Activity className="h-4 w-4 text-primary" />
-                    </div>
-                    <div>
-                      <p className="text-xs text-muted-foreground">Hoje</p>
-                      <p className="text-sm font-semibold">{professional.appointmentsToday} consultas</p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center gap-2">
-                    <div className="p-2 rounded-lg bg-primary/10">
-                      <Clock className="h-4 w-4 text-primary" />
-                    </div>
-                    <div>
-                      <p className="text-xs text-muted-foreground">Próximo</p>
-                      <p className="text-sm font-semibold">{professional.nextAvailable}</p>
-                    </div>
-                  </div>
+                
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-semibold text-foreground truncate">{professional.name}</h3>
+                  <p className="text-sm text-muted-foreground">{professional.specialty}</p>
+                  <p className="text-xs text-muted-foreground mt-1">{professional.crm}</p>
                 </div>
+              </div>
 
-                {/* Quick Action */}
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  className="w-full mt-4 group-hover:bg-primary group-hover:text-primary-foreground transition-colors"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    // Ação rápida de agendamento
-                  }}
-                >
-                  <CalendarIcon className="h-4 w-4 mr-2" />
-                  Agendar Consulta
-                </Button>
+              <div className="mt-4 flex items-center justify-between">
+                <Badge variant="outline" className={statusConfig[professional.status].color}>
+                  {statusConfig[professional.status].label}
+                </Badge>
+                <div className="text-xs text-muted-foreground">
+                  <span className="font-medium text-foreground">{professional.appointmentsToday}</span> hoje
+                </div>
+              </div>
+
+              <div className="mt-3 pt-3 border-t border-border/50 flex items-center gap-4 text-xs text-muted-foreground">
+                <div className="flex items-center gap-1">
+                  <Clock className="h-3 w-3" />
+                  <span>{professional.nextAvailable}</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <MapPin className="h-3 w-3" />
+                  <span>{professional.address}</span>
+                </div>
               </div>
             </Card>
           ))}
         </div>
+      </PageContent>
 
-        {filteredProfessionals.length === 0 && (
-          <div className="text-center py-12">
-            <Users className="h-12 w-12 text-muted-foreground mx-auto mb-4 opacity-50" />
-            <p className="text-muted-foreground">Nenhum profissional encontrado</p>
-          </div>
-        )}
-      </div>
-
-      {/* Sheet com Detalhes */}
+      {/* Professional Detail Sheet */}
       <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
         <SheetContent className="w-full sm:max-w-2xl overflow-y-auto">
           {selectedProfessional && (
             <>
-              <SheetHeader className="mb-6">
-                <div className="flex items-start gap-4">
-                  <Avatar className="h-20 w-20 border-2 border-primary/20">
-                    <AvatarImage src={selectedProfessional.avatar} />
-                    <AvatarFallback className="bg-primary/10 text-primary text-xl font-semibold">
+              <SheetHeader className="pb-4">
+                <div className="flex items-center gap-4">
+                  <Avatar className="h-16 w-16">
+                    <AvatarImage src={selectedProfessional.avatar} alt={selectedProfessional.name} />
+                    <AvatarFallback className="text-xl bg-primary/10 text-primary">
                       {selectedProfessional.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
                     </AvatarFallback>
                   </Avatar>
-                  
-                  <div className="flex-1">
-                    <SheetTitle className="text-2xl">{selectedProfessional.name}</SheetTitle>
-                    <p className="text-muted-foreground mt-1">{selectedProfessional.specialty}</p>
-                    <Badge 
-                      variant="outline" 
-                      className={`${statusConfig[selectedProfessional.status].color} border mt-2`}
-                    >
-                      <span className={`w-2 h-2 rounded-full ${statusConfig[selectedProfessional.status].dotColor} mr-2 animate-pulse`} />
+                  <div>
+                    <SheetTitle className="text-xl">{selectedProfessional.name}</SheetTitle>
+                    <p className="text-muted-foreground">{selectedProfessional.specialty}</p>
+                    <Badge variant="outline" className={`mt-2 ${statusConfig[selectedProfessional.status].color}`}>
                       {statusConfig[selectedProfessional.status].label}
                     </Badge>
                   </div>
                 </div>
               </SheetHeader>
 
-              <Tabs defaultValue="geral" className="w-full">
-                <TabsList className="grid w-full grid-cols-5 mb-6">
-                  <TabsTrigger value="geral" className="text-xs sm:text-sm">
-                    <FileText className="h-4 w-4 sm:mr-2" />
-                    <span className="hidden sm:inline">Geral</span>
-                  </TabsTrigger>
-                  <TabsTrigger value="agenda" className="text-xs sm:text-sm">
-                    <CalendarIcon className="h-4 w-4 sm:mr-2" />
-                    <span className="hidden sm:inline">Agenda</span>
-                  </TabsTrigger>
-                  <TabsTrigger value="documentos" className="text-xs sm:text-sm">
-                    <FileText className="h-4 w-4 sm:mr-2" />
-                    <span className="hidden sm:inline">Docs</span>
-                  </TabsTrigger>
-                  <TabsTrigger value="metricas" className="text-xs sm:text-sm">
-                    <TrendingUp className="h-4 w-4 sm:mr-2" />
-                    <span className="hidden sm:inline">Métricas</span>
-                  </TabsTrigger>
-                  <TabsTrigger value="config" className="text-xs sm:text-sm">
-                    <Settings className="h-4 w-4 sm:mr-2" />
-                    <span className="hidden sm:inline">Config</span>
-                  </TabsTrigger>
+              <Tabs defaultValue="geral" className="mt-4">
+                <TabsList className="grid grid-cols-5 w-full">
+                  <TabsTrigger value="geral" className="text-xs">Geral</TabsTrigger>
+                  <TabsTrigger value="agenda" className="text-xs">Agenda</TabsTrigger>
+                  <TabsTrigger value="docs" className="text-xs">Docs</TabsTrigger>
+                  <TabsTrigger value="metricas" className="text-xs">Métricas</TabsTrigger>
+                  <TabsTrigger value="config" className="text-xs">Config</TabsTrigger>
                 </TabsList>
-
-                <TabsContent value="geral" className="space-y-4">
+                <TabsContent value="geral" className="mt-4">
                   <ProfessionalGeneralTab professional={selectedProfessional} />
                 </TabsContent>
-
-                <TabsContent value="agenda" className="space-y-4">
+                <TabsContent value="agenda" className="mt-4">
                   <ProfessionalScheduleTab professional={selectedProfessional} />
                 </TabsContent>
-
-                <TabsContent value="documentos" className="space-y-4">
+                <TabsContent value="docs" className="mt-4">
                   <ProfessionalDocumentsTab professional={selectedProfessional} />
                 </TabsContent>
-
-                <TabsContent value="metricas" className="space-y-4">
+                <TabsContent value="metricas" className="mt-4">
                   <ProfessionalMetricsTab professional={selectedProfessional} />
                 </TabsContent>
-
-                <TabsContent value="config" className="space-y-4">
+                <TabsContent value="config" className="mt-4">
                   <ProfessionalSettingsTab professional={selectedProfessional} />
                 </TabsContent>
               </Tabs>
@@ -361,7 +284,7 @@ const Profissionais = () => {
           )}
         </SheetContent>
       </Sheet>
-    </div>
+    </PageContainer>
   );
 };
 

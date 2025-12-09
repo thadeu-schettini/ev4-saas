@@ -246,9 +246,9 @@ export default function Pacientes() {
         title="Pacientes"
         description={`${sortedPatients.length.toLocaleString()} de ${mockPatients.length.toLocaleString()} pacientes`}
         icon={Users}
-        iconGradient="from-blue-500 to-cyan-500"
+        iconColor="from-blue-500 to-cyan-500"
       >
-        <Button className="shrink-0 shadow-md hover:shadow-lg transition-all gap-2">
+        <Button className="shrink-0 gap-2">
           <UserPlus className="h-4 w-4" />
           <span className="hidden sm:inline">Novo Paciente</span>
         </Button>

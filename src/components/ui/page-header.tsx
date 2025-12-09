@@ -9,7 +9,7 @@ interface PageHeaderProps {
   title: string;
   description?: string;
   icon?: LucideIcon;
-  iconGradient?: string;
+  iconColor?: string;
   badge?: {
     text: string;
     variant?: "default" | "secondary" | "destructive" | "outline";
@@ -23,55 +23,63 @@ export function PageHeader({
   title,
   description,
   icon: Icon,
-  iconGradient = "from-primary to-primary/60",
+  iconColor = "from-primary to-primary/70",
   badge,
   backLink,
   children,
   className,
 }: PageHeaderProps) {
   return (
-    <div className={cn("border-b bg-background/50 backdrop-blur-sm sticky top-0 z-10", className)}>
-      <div className="container mx-auto px-4 py-4">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          <div className="flex items-center gap-4">
+    <header className={cn("border-b border-border/40 bg-background/80 backdrop-blur-md sticky top-0 z-40", className)}>
+      <div className="container mx-auto px-4 sm:px-6">
+        <div className="flex items-center justify-between h-16 md:h-[72px]">
+          {/* Left Section */}
+          <div className="flex items-center gap-3">
             {backLink && (
               <Link to={backLink}>
-                <Button variant="ghost" size="icon" className="shrink-0">
-                  <ArrowLeft className="h-5 w-5" />
+                <Button variant="ghost" size="icon" className="h-9 w-9 shrink-0 rounded-lg hover:bg-muted">
+                  <ArrowLeft className="h-4 w-4" />
                 </Button>
               </Link>
             )}
+            
             <div className="flex items-center gap-3">
               {Icon && (
                 <div className={cn(
-                  "p-2.5 rounded-xl bg-gradient-to-br shadow-lg shrink-0",
-                  iconGradient
+                  "h-10 w-10 rounded-xl bg-gradient-to-br flex items-center justify-center shadow-sm",
+                  iconColor
                 )}>
-                  <Icon className="h-6 w-6 text-primary-foreground" />
+                  <Icon className="h-5 w-5 text-white" />
                 </div>
               )}
-              <div>
+              <div className="flex flex-col">
                 <div className="flex items-center gap-2">
-                  <h1 className="text-2xl font-bold text-foreground">{title}</h1>
+                  <h1 className="text-xl font-semibold tracking-tight text-foreground">
+                    {title}
+                  </h1>
                   {badge && (
-                    <Badge variant={badge.variant || "secondary"} className="text-xs">
+                    <Badge variant={badge.variant || "secondary"} className="text-[10px] px-1.5 py-0 h-5 font-medium">
                       {badge.text}
                     </Badge>
                   )}
                 </div>
                 {description && (
-                  <p className="text-muted-foreground text-sm">{description}</p>
+                  <p className="text-sm text-muted-foreground leading-none mt-0.5">
+                    {description}
+                  </p>
                 )}
               </div>
             </div>
           </div>
+          
+          {/* Right Section - Actions */}
           {children && (
-            <div className="flex items-center gap-2 flex-wrap">
+            <div className="flex items-center gap-2">
               {children}
             </div>
           )}
         </div>
       </div>
-    </div>
+    </header>
   );
 }

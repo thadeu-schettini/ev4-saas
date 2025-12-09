@@ -142,7 +142,7 @@ export default function Financeiro() {
         title="Financeiro"
         description="Gerencie receitas, despesas e parcelamentos"
         icon={DollarSign}
-        iconGradient="from-emerald-500 to-emerald-600"
+        iconColor="from-emerald-500 to-emerald-600"
       >
         <Select value={periodFilter} onValueChange={setPeriodFilter}>
           <SelectTrigger className="w-[140px]">

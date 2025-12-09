@@ -9,7 +9,6 @@ import {
   CalendarCheck,
   AlertCircle,
   LayoutDashboard,
-  Sparkles,
 } from "lucide-react";
 import { MetricCard } from "@/components/dashboard/MetricCard";
 import { RevenueChart } from "@/components/dashboard/RevenueChart";
@@ -17,6 +16,7 @@ import { AppointmentsChart } from "@/components/dashboard/AppointmentsChart";
 import { UpcomingAppointments } from "@/components/dashboard/UpcomingAppointments";
 import { QuickActions } from "@/components/dashboard/QuickActions";
 import { PageContainer, PageContent } from "@/components/ui/page-container";
+import { PageHeader } from "@/components/ui/page-header";
 import { Badge } from "@/components/ui/badge";
 import WelcomeSetupModal from "@/components/WelcomeSetupModal";
 import SetupChecklist from "@/components/SetupChecklist";
@@ -29,41 +29,21 @@ const Index = () => {
 
   return (
     <PageContainer>
-      {/* Custom Dashboard Header */}
-      <div className="border-b bg-background/50 backdrop-blur-sm sticky top-0 z-10">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-            <div className="flex items-center gap-4">
-              <div className="p-2.5 rounded-xl bg-gradient-to-br from-primary to-primary/60 shadow-lg shrink-0">
-                <LayoutDashboard className="h-6 w-6 text-primary-foreground" />
-              </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <h1 className="text-2xl font-bold text-foreground">
-                    {greeting}, Dr. Ricardo
-                  </h1>
-                  <Badge variant="secondary" className="gap-1 text-xs">
-                    <Sparkles className="h-3 w-3" />
-                    Pro
-                  </Badge>
-                </div>
-                <p className="text-muted-foreground text-sm">
-                  Aqui está o resumo da sua clínica hoje,{" "}
-                  {new Date().toLocaleDateString("pt-BR", {
-                    weekday: "long",
-                    day: "numeric",
-                    month: "long",
-                  })}
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2 rounded-xl bg-warning/10 border border-warning/20 px-4 py-2 text-warning">
-              <AlertCircle className="h-5 w-5" />
-              <span className="text-sm font-medium">3 confirmações pendentes</span>
-            </div>
-          </div>
+      <PageHeader
+        title={`${greeting}, Dr. Ricardo`}
+        description={new Date().toLocaleDateString("pt-BR", {
+          weekday: "long",
+          day: "numeric",
+          month: "long",
+        })}
+        icon={LayoutDashboard}
+        iconColor="from-primary to-primary/70"
+      >
+        <div className="flex items-center gap-2 rounded-lg bg-amber-500/10 border border-amber-500/20 px-3 py-1.5 text-amber-600">
+          <AlertCircle className="h-4 w-4" />
+          <span className="text-sm font-medium">3 confirmações pendentes</span>
         </div>
-      </div>
+      </PageHeader>
 
       <PageContent>
         {/* Metrics Grid */}

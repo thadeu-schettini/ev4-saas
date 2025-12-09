@@ -1,9 +1,11 @@
 import { useState } from "react";
-import { Search, Plus, FileText, Archive, ArchiveRestore, History, Copy } from "lucide-react";
+import { Search, Plus, FileText, Archive, ArchiveRestore, History, Copy, ClipboardList } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { PageContainer, PageContent } from "@/components/ui/page-container";
+import { PageHeader } from "@/components/ui/page-header";
 import {
   Select,
   SelectContent,
@@ -14,8 +16,6 @@ import {
 import { CatalogModal } from "@/components/formularios/CatalogModal";
 import { FormEditorModal } from "@/components/formularios/FormEditorModal";
 import { FormHistoryModal } from "@/components/formularios/FormHistoryModal";
-
-
 
 interface ClinicalForm {
   id: string;
@@ -108,200 +108,144 @@ export default function FormulariosClinicos() {
 
   const handleArchiveForm = (formId: string, e?: React.MouseEvent) => {
     e?.stopPropagation();
-    // In real implementation, this would update the database
     console.log("Archive form:", formId);
   };
 
   const handleUnarchiveForm = (formId: string, e?: React.MouseEvent) => {
     e?.stopPropagation();
-    // In real implementation, this would update the database
     console.log("Unarchive form:", formId);
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20 p-4 sm:p-6 lg:p-8">
-      <div className="max-w-7xl mx-auto space-y-4 sm:space-y-6">
-        {/* Header */}
-        <div className="space-y-4">
-          <div>
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground mb-2">
-              Formulários Clínicos
-            </h1>
-            <p className="text-sm sm:text-base text-muted-foreground">
-              Crie formulários personalizados para suas consultas ou escolha modelos prontos do catálogo.
-            </p>
+    <PageContainer>
+      <PageHeader
+        title="Formulários Clínicos"
+        description="Crie formulários personalizados para suas consultas"
+        icon={ClipboardList}
+        iconColor="from-teal-500 to-cyan-600"
+      >
+        <Button variant="outline" onClick={() => setCatalogOpen(true)} className="gap-2">
+          <FileText className="h-4 w-4" />
+          <span className="hidden sm:inline">Usar Modelo</span>
+        </Button>
+        <Button onClick={handleCreateNew} className="gap-2">
+          <Plus className="h-4 w-4" />
+          <span className="hidden sm:inline">Criar do Zero</span>
+        </Button>
+      </PageHeader>
+
+      <PageContent>
+        {/* Filters */}
+        <div className="flex flex-col sm:flex-row gap-3">
+          <div className="relative flex-1 max-w-md">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Buscar por nome..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-9"
+            />
           </div>
 
-          {/* Actions */}
-          <div className="flex flex-col sm:flex-row gap-2">
-            <Button
-              variant="outline"
-              onClick={() => setCatalogOpen(true)}
-              className="w-full sm:w-auto"
-            >
-              <FileText className="mr-2 h-4 w-4" />
-              Usar Modelo Pronto
-            </Button>
-            <Button onClick={handleCreateNew} className="w-full sm:w-auto">
-              <Plus className="mr-2 h-4 w-4" />
-              Criar do Zero
-            </Button>
-          </div>
+          <Select value={specialtyFilter} onValueChange={setSpecialtyFilter}>
+            <SelectTrigger className="w-full sm:w-[180px]">
+              <SelectValue placeholder="Especialidade" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="todas">Todas</SelectItem>
+              <SelectItem value="Fisioterapia">Fisioterapia</SelectItem>
+              <SelectItem value="Odontologia">Odontologia</SelectItem>
+              <SelectItem value="Cardiologia">Cardiologia</SelectItem>
+            </SelectContent>
+          </Select>
 
-          {/* Filters */}
-          <div className="flex flex-col sm:flex-row gap-3">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Buscar por nome..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-9"
-              />
-            </div>
+          <Select value={statusFilter} onValueChange={setStatusFilter}>
+            <SelectTrigger className="w-full sm:w-[140px]">
+              <SelectValue placeholder="Status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="todos">Todos</SelectItem>
+              <SelectItem value="publicado">Publicado</SelectItem>
+              <SelectItem value="rascunho">Rascunho</SelectItem>
+            </SelectContent>
+          </Select>
 
-            <Select value={specialtyFilter} onValueChange={setSpecialtyFilter}>
-              <SelectTrigger className="w-full sm:w-[200px]">
-                <SelectValue placeholder="Especialidade" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="todas">Todas</SelectItem>
-                <SelectItem value="Fisioterapia">Fisioterapia</SelectItem>
-                <SelectItem value="Odontologia">Odontologia</SelectItem>
-                <SelectItem value="Cardiologia">Cardiologia</SelectItem>
-              </SelectContent>
-            </Select>
-
-            <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="w-full sm:w-[160px]">
-                <SelectValue placeholder="Status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="todos">Todos</SelectItem>
-                <SelectItem value="publicado">Publicado</SelectItem>
-                <SelectItem value="rascunho">Rascunho</SelectItem>
-              </SelectContent>
-            </Select>
-
-            <Button
-              variant={showArchived ? "default" : "outline"}
-              onClick={() => setShowArchived(!showArchived)}
-              className="w-full sm:w-auto"
-            >
-              <Archive className="h-4 w-4 sm:mr-2" />
-              <span className="hidden sm:inline">
-                {showArchived ? "Ocultar Arquivados" : "Ver Arquivados"}
-              </span>
-              <span className="sm:hidden">Arquivados</span>
-            </Button>
-          </div>
+          <Button
+            variant={showArchived ? "secondary" : "outline"}
+            onClick={() => setShowArchived(!showArchived)}
+            className="gap-2"
+          >
+            <Archive className="h-4 w-4" />
+            <span className="hidden sm:inline">Arquivados</span>
+          </Button>
         </div>
 
-        {/* Empty State */}
-        {filteredForms.length === 0 && (
-          <Card className="p-8 sm:p-12 text-center">
-            <FileText className="h-10 sm:h-12 w-10 sm:w-12 text-muted-foreground mx-auto mb-4" />
-            <h3 className="text-base sm:text-lg font-semibold mb-2">
-              Nenhum formulário encontrado
-            </h3>
-            <p className="text-sm sm:text-base text-muted-foreground mb-4 sm:mb-6">
-              Comece escolhendo um modelo pronto ou criando um personalizado.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 justify-center">
-              <Button variant="outline" onClick={() => setCatalogOpen(true)} className="w-full sm:w-auto">
-                <FileText className="mr-2 h-4 w-4" />
-                Ver Modelos
-              </Button>
-              <Button onClick={handleCreateNew} className="w-full sm:w-auto">
-                <Plus className="mr-2 h-4 w-4" />
-                Criar Novo
-              </Button>
-            </div>
-          </Card>
-        )}
+        {/* Forms Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {filteredForms.map((form) => (
+            <Card
+              key={form.id}
+              className="p-4 cursor-pointer hover:shadow-md hover:border-primary/20 transition-all group"
+              onClick={() => handleEditForm(form)}
+            >
+              <div className="flex items-start justify-between mb-3">
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-semibold text-foreground truncate group-hover:text-primary transition-colors">
+                    {form.name}
+                  </h3>
+                  <p className="text-sm text-muted-foreground">{form.specialty}</p>
+                </div>
+                <Badge variant={form.status === "publicado" ? "default" : "secondary"}>
+                  {form.status === "publicado" ? "Publicado" : "Rascunho"}
+                </Badge>
+              </div>
 
-        {/* Forms Display */}
-        {filteredForms.length > 0 && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
-            {filteredForms.map((form) => (
-              <Card
-                key={form.id}
-                className="p-4 sm:p-6 hover:shadow-lg transition-all duration-300 group relative"
-              >
-                <div 
-                  className="space-y-3 cursor-pointer"
-                  onClick={() => handleEditForm(form)}
+              <div className="flex items-center gap-4 text-xs text-muted-foreground mb-3">
+                <span>{form.sectionsCount} seções</span>
+                <span>{form.fieldsCount} campos</span>
+                <span>{form.type}</span>
+              </div>
+
+              <div className="flex items-center gap-1 pt-3 border-t border-border/50">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-8 px-2"
+                  onClick={(e) => handleDuplicateForm(form, e)}
                 >
-                  <div className="flex items-start justify-between gap-2">
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-semibold text-sm sm:text-base group-hover:text-primary transition-colors line-clamp-2">
-                        {form.name}
-                      </h3>
-                      <p className="text-xs sm:text-sm text-muted-foreground mt-1 truncate">
-                        {form.specialty}
-                      </p>
-                    </div>
-                    <Badge
-                      variant={form.status === "publicado" ? "default" : "secondary"}
-                      className="text-xs shrink-0"
-                    >
-                      {form.status === "publicado" ? "Ativo" : "Rascunho"}
-                    </Badge>
-                  </div>
+                  <Copy className="h-3.5 w-3.5" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-8 px-2"
+                  onClick={(e) => handleViewHistory(form.id, e)}
+                >
+                  <History className="h-3.5 w-3.5" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-8 px-2"
+                  onClick={(e) => form.archived ? handleUnarchiveForm(form.id, e) : handleArchiveForm(form.id, e)}
+                >
+                  {form.archived ? <ArchiveRestore className="h-3.5 w-3.5" /> : <Archive className="h-3.5 w-3.5" />}
+                </Button>
+              </div>
+            </Card>
+          ))}
+        </div>
 
-                  <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                    <span>{form.sectionsCount} seções</span>
-                    <span>·</span>
-                    <span>{form.fieldsCount} campos</span>
-                  </div>
-
-                  <Badge variant="outline" className="text-xs">{form.type}</Badge>
-                </div>
-
-                {/* Action Buttons */}
-                <div className="flex items-center gap-1 mt-4 pt-3 border-t">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={(e) => handleDuplicateForm(form, e)}
-                    className="flex-1 text-xs"
-                  >
-                    <Copy className="h-3 w-3 sm:mr-1" />
-                    <span className="hidden sm:inline">Duplicar</span>
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={(e) => handleViewHistory(form.id, e)}
-                    className="flex-1 text-xs"
-                  >
-                    <History className="h-3 w-3 sm:mr-1" />
-                    <span className="hidden sm:inline">Histórico</span>
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={(e) => form.archived ? handleUnarchiveForm(form.id, e) : handleArchiveForm(form.id, e)}
-                    className="flex-1 text-xs"
-                  >
-                    {form.archived ? (
-                      <>
-                        <ArchiveRestore className="h-3 w-3 sm:mr-1" />
-                        <span className="hidden sm:inline">Restaurar</span>
-                      </>
-                    ) : (
-                      <>
-                        <Archive className="h-3 w-3 sm:mr-1" />
-                        <span className="hidden sm:inline">Arquivar</span>
-                      </>
-                    )}
-                  </Button>
-                </div>
-              </Card>
-            ))}
+        {filteredForms.length === 0 && (
+          <div className="text-center py-12">
+            <ClipboardList className="h-12 w-12 text-muted-foreground/50 mx-auto mb-4" />
+            <h3 className="font-medium text-foreground mb-1">Nenhum formulário encontrado</h3>
+            <p className="text-sm text-muted-foreground">
+              Crie um novo formulário ou ajuste os filtros de busca.
+            </p>
           </div>
         )}
-      </div>
+      </PageContent>
 
       {/* Modals */}
       <CatalogModal open={catalogOpen} onOpenChange={setCatalogOpen} />
@@ -311,10 +255,15 @@ export default function FormulariosClinicos() {
         formData={selectedForm}
       />
       <FormHistoryModal
-        formId={historyFormId}
         open={historyFormId !== null}
-        onOpenChange={(open) => !open && setHistoryFormId(null)}
+        onOpenChange={() => setHistoryFormId(null)}
+        formId={historyFormId || ""}
       />
-    </div>
+      <FormHistoryModal
+        open={historyFormId !== null}
+        onOpenChange={() => setHistoryFormId(null)}
+        formId={historyFormId || ""}
+      />
+    </PageContainer>
   );
 }
