@@ -1,8 +1,9 @@
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
+import { Outlet } from "react-router-dom";
 
 interface MainLayoutProps {
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }
 
 export function MainLayout({ children }: MainLayoutProps) {
@@ -23,7 +24,7 @@ export function MainLayout({ children }: MainLayoutProps) {
           </div>
           {/* Page content with transition animation */}
           <div className="animate-fade-in">
-            {children}
+            {children || <Outlet />}
           </div>
         </main>
       </div>
