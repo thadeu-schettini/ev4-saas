@@ -235,3 +235,68 @@ All colors MUST be HSL.
     @apply bg-background text-foreground;
   }
 }
+
+/* Subtle Scrollbar Styles - System Wide */
+@layer utilities {
+  .scrollbar-subtle {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--muted-foreground) / 0.4) transparent;
+  }
+
+  .scrollbar-subtle::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+  }
+
+  .scrollbar-subtle::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scrollbar-subtle::-webkit-scrollbar-thumb {
+    background: hsl(var(--muted-foreground) / 0.4);
+    border-radius: 9999px;
+  }
+
+  .scrollbar-subtle::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground) / 0.6);
+  }
+
+  /* Apply subtle scrollbar globally to common scrollable elements */
+  .scrollbar-subtle-global,
+  .overflow-auto,
+  .overflow-y-auto,
+  .overflow-x-auto {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--muted-foreground) / 0.35) transparent;
+  }
+
+  .scrollbar-subtle-global::-webkit-scrollbar,
+  .overflow-auto::-webkit-scrollbar,
+  .overflow-y-auto::-webkit-scrollbar,
+  .overflow-x-auto::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+  }
+
+  .scrollbar-subtle-global::-webkit-scrollbar-track,
+  .overflow-auto::-webkit-scrollbar-track,
+  .overflow-y-auto::-webkit-scrollbar-track,
+  .overflow-x-auto::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scrollbar-subtle-global::-webkit-scrollbar-thumb,
+  .overflow-auto::-webkit-scrollbar-thumb,
+  .overflow-y-auto::-webkit-scrollbar-thumb,
+  .overflow-x-auto::-webkit-scrollbar-thumb {
+    background: hsl(var(--muted-foreground) / 0.35);
+    border-radius: 9999px;
+  }
+
+  .scrollbar-subtle-global::-webkit-scrollbar-thumb:hover,
+  .overflow-auto::-webkit-scrollbar-thumb:hover,
+  .overflow-y-auto::-webkit-scrollbar-thumb:hover,
+  .overflow-x-auto::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground) / 0.55);
+  }
+}
