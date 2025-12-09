@@ -73,19 +73,21 @@ export function AppSidebar() {
   const isActive = (path: string) => currentPath === path;
 
   const renderNavItem = (item: typeof mainNavItems[0]) => (
-    <SidebarMenuItem key={item.title}>
+    <SidebarMenuItem key={item.title} className={cn(collapsed && "flex justify-center")}>
       <SidebarMenuButton
         asChild
         isActive={isActive(item.url)}
         tooltip={collapsed ? item.title : undefined}
-        className={cn(collapsed && "justify-center px-0")}
+        className={cn(
+          collapsed && "w-10 h-10 p-0 flex items-center justify-center mx-auto"
+        )}
       >
         <NavLink 
           to={item.url} 
           end 
           className={cn(
             "flex items-center gap-3",
-            collapsed && "justify-center w-full px-0"
+            collapsed && "justify-center w-10 h-10 p-0"
           )}
         >
           <item.icon className="h-5 w-5 shrink-0" />
@@ -124,7 +126,7 @@ export function AppSidebar() {
         </div>
       </SidebarHeader>
 
-      <SidebarContent className={cn("py-4", collapsed ? "px-0" : "px-3")}>
+      <SidebarContent className={cn("py-4", collapsed ? "px-2" : "px-3")}>
         {/* Main Navigation */}
         <SidebarGroup>
           {!collapsed && (

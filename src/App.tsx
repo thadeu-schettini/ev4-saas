@@ -16,6 +16,7 @@ import Profissionais from "./pages/Profissionais";
 import FormulariosClinicos from "./pages/FormulariosClinicos";
 import Pacientes from "./pages/Pacientes";
 import Auth from "./pages/Auth";
+import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -27,8 +28,9 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
-          {/* Auth page without MainLayout */}
+          {/* Auth pages without MainLayout */}
           <Route path="/auth" element={<Auth />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
           
           {/* App routes with MainLayout */}
           <Route element={<MainLayout />}>

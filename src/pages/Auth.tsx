@@ -241,31 +241,33 @@ export default function Auth() {
             </div>
           </div>
 
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-3 mb-8 bg-muted/50 p-1">
+          <Tabs value={activeTab} onValueChange={(value) => {
+            setActiveTab(value);
+            if (value === "register") setStep(1);
+          }} className="w-full">
+            <TabsList className="grid w-full grid-cols-3 mb-8 bg-muted/50 p-1 h-12">
               <TabsTrigger 
                 value="login" 
-                className="data-[state=active]:bg-background data-[state=active]:shadow-sm transition-all"
+                className="data-[state=active]:bg-background data-[state=active]:shadow-sm transition-all duration-300 data-[state=active]:scale-[1.02]"
               >
                 Entrar
               </TabsTrigger>
               <TabsTrigger 
                 value="register"
-                onClick={() => setStep(1)}
-                className="data-[state=active]:bg-background data-[state=active]:shadow-sm transition-all"
+                className="data-[state=active]:bg-background data-[state=active]:shadow-sm transition-all duration-300 data-[state=active]:scale-[1.02]"
               >
                 Criar Conta
               </TabsTrigger>
               <TabsTrigger 
                 value="recovery"
-                className="data-[state=active]:bg-background data-[state=active]:shadow-sm transition-all"
+                className="data-[state=active]:bg-background data-[state=active]:shadow-sm transition-all duration-300 data-[state=active]:scale-[1.02]"
               >
                 Recuperar
               </TabsTrigger>
             </TabsList>
 
             {/* Login */}
-            <TabsContent value="login" className="mt-0">
+            <TabsContent value="login" className="mt-0 animate-fade-in" key="login">
               <Card className="border-0 shadow-none bg-transparent">
                 <CardHeader className="px-0 pt-0">
                   <CardTitle className="text-2xl font-bold">Bem-vindo de volta</CardTitle>
@@ -362,7 +364,7 @@ export default function Auth() {
             </TabsContent>
 
             {/* Register */}
-            <TabsContent value="register" className="mt-0">
+            <TabsContent value="register" className="mt-0 animate-fade-in" key={`register-${step}`}>
               <Card className="border-0 shadow-none bg-transparent">
                 <CardHeader className="px-0 pt-0">
                   <div className="flex items-center justify-between mb-2">
@@ -669,7 +671,7 @@ export default function Auth() {
             </TabsContent>
 
             {/* Password Recovery */}
-            <TabsContent value="recovery" className="mt-0">
+            <TabsContent value="recovery" className="mt-0 animate-fade-in" key="recovery">
               <Card className="border-0 shadow-none bg-transparent">
                 <CardHeader className="px-0 pt-0">
                   <CardTitle className="text-2xl font-bold">Recuperar senha</CardTitle>
