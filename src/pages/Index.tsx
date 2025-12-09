@@ -15,6 +15,9 @@ import { RevenueChart } from "@/components/dashboard/RevenueChart";
 import { AppointmentsChart } from "@/components/dashboard/AppointmentsChart";
 import { UpcomingAppointments } from "@/components/dashboard/UpcomingAppointments";
 import { QuickActions } from "@/components/dashboard/QuickActions";
+import { SlotHeatmap } from "@/components/dashboard/SlotHeatmap";
+import { PerformanceMetrics } from "@/components/dashboard/PerformanceMetrics";
+import { RealtimeStats } from "@/components/dashboard/RealtimeStats";
 import { PageContainer, PageContent } from "@/components/ui/page-container";
 import { PageHeader } from "@/components/ui/page-header";
 import WelcomeSetupModal from "@/components/WelcomeSetupModal";
@@ -41,7 +44,7 @@ const Index = () => {
         icon={LayoutDashboard}
         iconColor="from-primary to-primary/70"
       >
-        <div className="flex items-center gap-2 rounded-lg bg-amber-500/10 border border-amber-500/20 px-3 py-1.5 text-amber-600">
+        <div className="flex items-center gap-2 rounded-lg bg-warning/10 border border-warning/20 px-3 py-1.5 text-warning">
           <AlertCircle className="h-4 w-4" />
           <span className="text-sm font-medium">3 confirmações pendentes</span>
         </div>
@@ -52,48 +55,83 @@ const Index = () => {
           <DashboardSkeleton />
         ) : (
           <>
-            {/* Metrics Grid */}
-            <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
-              <MetricCard
-                title="Agendamentos Hoje"
-                value={24}
-                change="+12%"
-                changeType="positive"
-                icon={Calendar}
-                iconGradient="from-blue-500 to-cyan-500"
-                description="vs. semana passada"
-                index={0}
-              />
-              <MetricCard
-                title="Pacientes Ativos"
-                value="1.284"
-                change="+48"
-                changeType="positive"
-                icon={Users}
-                iconGradient="from-violet-500 to-purple-500"
-                description="este mês"
-                index={1}
-              />
-              <MetricCard
-                title="Receita Mensal"
-                value="R$ 67.5k"
-                change="+8.2%"
-                changeType="positive"
-                icon={DollarSign}
-                iconGradient="from-emerald-500 to-green-500"
-                description="vs. mês anterior"
-                index={2}
-              />
-              <MetricCard
-                title="Taxa de Ocupação"
-                value="87%"
-                change="-3%"
-                changeType="negative"
-                icon={TrendingUp}
-                iconGradient="from-amber-500 to-orange-500"
-                description="capacidade utilizada"
-                index={3}
-              />
+            {/* Top Row: Metrics + Realtime Stats */}
+            <div className="grid gap-4 grid-cols-1 lg:grid-cols-4">
+              <div className="lg:col-span-3 grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+                <MetricCard
+                  title="Agendamentos Hoje"
+                  value={24}
+                  change="+12%"
+                  changeType="positive"
+                  icon={Calendar}
+                  iconGradient="from-primary to-info"
+                  description="vs. semana passada"
+                  index={0}
+                />
+                <MetricCard
+                  title="Pacientes Ativos"
+                  value="1.284"
+                  change="+48"
+                  changeType="positive"
+                  icon={Users}
+                  iconGradient="from-violet-500 to-purple-500"
+                  description="este mês"
+                  index={1}
+                />
+                <MetricCard
+                  title="Receita Mensal"
+                  value="R$ 67.5k"
+                  change="+8.2%"
+                  changeType="positive"
+                  icon={DollarSign}
+                  iconGradient="from-success to-success"
+                  description="vs. mês anterior"
+                  index={2}
+                />
+                <MetricCard
+                  title="Taxa de Ocupação"
+                  value="87%"
+                  change="-3%"
+                  changeType="negative"
+                  icon={TrendingUp}
+                  iconGradient="from-warning to-warning"
+                  description="capacidade utilizada"
+                  index={3}
+                />
+                <MetricCard
+                  title="Tempo Médio Espera"
+                  value="12min"
+                  change="-2min"
+                  changeType="positive"
+                  icon={Clock}
+                  iconGradient="from-info to-primary"
+                  description="vs. média anterior"
+                  index={4}
+                />
+                <MetricCard
+                  title="Taxa Comparecimento"
+                  value="94%"
+                  change="+2%"
+                  changeType="positive"
+                  icon={UserCheck}
+                  iconGradient="from-success to-success"
+                  description="no-show reduzido"
+                  index={5}
+                />
+              </div>
+              <div className="lg:col-span-1">
+                <RealtimeStats />
+              </div>
+            </div>
+
+            {/* Heatmap Row */}
+            <div className="grid gap-6 grid-cols-1 lg:grid-cols-3">
+              <div className="lg:col-span-2">
+                <SlotHeatmap />
+              </div>
+              <div className="lg:col-span-1">
+                <PerformanceMetrics />
+              </div>
             </div>
 
             {/* Charts Row */}
@@ -110,42 +148,6 @@ const Index = () => {
               <div>
                 <QuickActions />
               </div>
-            </div>
-
-            {/* Additional Metrics */}
-            <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
-              <MetricCard
-                title="Tempo Médio de Espera"
-                value="12min"
-                change="-2min"
-                changeType="positive"
-                icon={Clock}
-                description="vs. média anterior"
-              />
-              <MetricCard
-                title="Taxa de Comparecimento"
-                value="94%"
-                change="+2%"
-                changeType="positive"
-                icon={UserCheck}
-                description="no-show reduzido"
-              />
-              <MetricCard
-                title="Consultas Realizadas"
-                value={156}
-                change="+18"
-                changeType="positive"
-                icon={CalendarCheck}
-                description="esta semana"
-              />
-              <MetricCard
-                title="Novos Pacientes"
-                value={23}
-                change="+5"
-                changeType="positive"
-                icon={Users}
-                description="esta semana"
-              />
             </div>
           </>
         )}

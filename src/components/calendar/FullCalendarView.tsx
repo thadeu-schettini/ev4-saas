@@ -273,26 +273,26 @@ export const FullCalendarView = () => {
 
     return (
       <div className={cn(
-        "w-full h-full p-2 rounded-lg border-l-4 transition-all duration-200 hover:shadow-md cursor-pointer",
+        "w-full h-full p-1 sm:p-2 rounded-md sm:rounded-lg border-l-2 sm:border-l-4 transition-all duration-200 hover:shadow-md cursor-pointer",
         colors.bg,
         colors.border
       )}
       style={{ overflow: 'hidden' }}
       >
         <div className="flex flex-col h-full min-w-0 overflow-hidden">
-          <div className="flex items-center gap-1.5 mb-1 min-w-0">
-            <span className={cn("w-2 h-2 rounded-full flex-shrink-0", colors.dot)} />
-            <span className={cn("text-xs font-bold", colors.text)}>
+          <div className="flex items-center gap-1 sm:gap-1.5 mb-0.5 sm:mb-1 min-w-0">
+            <span className={cn("w-1.5 sm:w-2 h-1.5 sm:h-2 rounded-full flex-shrink-0", colors.dot)} />
+            <span className={cn("text-[10px] sm:text-xs font-bold", colors.text)}>
               {eventInfo.timeText}
             </span>
           </div>
-          <p className="text-sm font-semibold text-foreground truncate min-w-0">
+          <p className="text-[11px] sm:text-sm font-semibold text-foreground truncate min-w-0 leading-tight">
             {eventInfo.event.extendedProps.patient}
           </p>
-          <p className="text-xs text-muted-foreground truncate min-w-0">
+          <p className="text-[9px] sm:text-xs text-muted-foreground truncate min-w-0 hidden sm:block">
             {eventInfo.event.extendedProps.service}
           </p>
-          {eventInfo.event.extendedProps.room && (
+          {eventInfo.event.extendedProps.room && !isMobile && (
             <div className="flex items-center gap-1 mt-auto pt-1 min-w-0">
               <MapPin className="w-3 h-3 text-muted-foreground flex-shrink-0" />
               <span className="text-xs text-muted-foreground truncate">
