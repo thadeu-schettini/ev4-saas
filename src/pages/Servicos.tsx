@@ -19,7 +19,11 @@ import {
   List,
   ChevronDown,
   Settings2,
-  ArrowUpRight
+  ArrowUpRight,
+  Heart,
+  TestTube,
+  Scissors,
+  LucideIcon
 } from "lucide-react";
 import { PageHeader } from "@/components/ui/page-header";
 import { PageContainer, PageContent } from "@/components/ui/page-container";
@@ -57,6 +61,18 @@ const categoryBgColors = {
   consulta: "bg-blue-500/10",
   exame: "bg-emerald-500/10",
   procedimento: "bg-violet-500/10",
+};
+
+// Ícones por categoria
+const categoryIcons: Record<string, LucideIcon> = {
+  consulta: Heart,
+  exame: TestTube,
+  procedimento: Scissors,
+};
+
+// Helper para obter ícone da categoria
+const getCategoryIcon = (category: string) => {
+  return categoryIcons[category] || Stethoscope;
 };
 
 const services = [
@@ -388,9 +404,14 @@ export default function Servicos() {
               <CardContent className="p-4 relative">
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex items-center gap-2">
-                    <div className={cn("p-1.5 rounded-lg bg-gradient-to-br", categoryColors[service.category as keyof typeof categoryColors])}>
-                      <Stethoscope className="h-3.5 w-3.5 text-white" />
-                    </div>
+                    {(() => {
+                      const CategoryIcon = getCategoryIcon(service.category);
+                      return (
+                        <div className={cn("p-1.5 rounded-lg bg-gradient-to-br", categoryColors[service.category as keyof typeof categoryColors])}>
+                          <CategoryIcon className="h-3.5 w-3.5 text-white" />
+                        </div>
+                      );
+                    })()}
                     <Badge variant="outline" className={cn("text-xs capitalize", categoryBgColors[service.category as keyof typeof categoryBgColors])}>
                       {service.category}
                     </Badge>
@@ -489,9 +510,14 @@ export default function Servicos() {
                 <TableRow key={service.id} className={cn(!service.active && "opacity-60")}>
                   <TableCell>
                     <div className="flex items-center gap-3">
-                      <div className={cn("p-1.5 rounded-lg bg-gradient-to-br", categoryColors[service.category as keyof typeof categoryColors])}>
-                        <Stethoscope className="h-3.5 w-3.5 text-white" />
-                      </div>
+                      {(() => {
+                        const CategoryIcon = getCategoryIcon(service.category);
+                        return (
+                          <div className={cn("p-1.5 rounded-lg bg-gradient-to-br", categoryColors[service.category as keyof typeof categoryColors])}>
+                            <CategoryIcon className="h-3.5 w-3.5 text-white" />
+                          </div>
+                        );
+                      })()}
                       <div>
                         <p className="font-medium flex items-center gap-2">
                           {service.name}
