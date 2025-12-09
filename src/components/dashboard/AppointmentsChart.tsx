@@ -8,8 +8,9 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { PeriodSelector, Period } from "./PeriodSelector";
 
-const data = [
+const weekData = [
   { day: "Seg", agendados: 24, realizados: 22, cancelados: 2 },
   { day: "Ter", agendados: 28, realizados: 25, cancelados: 3 },
   { day: "Qua", agendados: 32, realizados: 30, cancelados: 2 },
@@ -18,12 +19,37 @@ const data = [
   { day: "Sáb", agendados: 18, realizados: 16, cancelados: 2 },
 ];
 
+const monthData = [
+  { day: "Sem 1", agendados: 120, realizados: 108, cancelados: 12 },
+  { day: "Sem 2", agendados: 135, realizados: 125, cancelados: 10 },
+  { day: "Sem 3", agendados: 142, realizados: 130, cancelados: 12 },
+  { day: "Sem 4", agendados: 128, realizados: 118, cancelados: 10 },
+];
+
+const quarterData = [
+  { day: "Jan", agendados: 520, realizados: 478, cancelados: 42 },
+  { day: "Fev", agendados: 545, realizados: 502, cancelados: 43 },
+  { day: "Mar", agendados: 580, realizados: 538, cancelados: 42 },
+];
+
+const dataByPeriod = {
+  week: weekData,
+  month: monthData,
+  quarter: quarterData,
+};
+
+const periodLabels = {
+  week: "Esta Semana",
+  month: "Este Mês",
+  quarter: "Este Trimestre",
+};
+
 export function AppointmentsChart() {
+  const [period, setPeriod] = useState<Period>("week");
   const [primaryColor, setPrimaryColor] = useState("hsl(217, 91%, 50%)");
   const [successColor, setSuccessColor] = useState("hsl(142, 76%, 36%)");
   const [destructiveColor, setDestructiveColor] = useState("hsl(0, 84%, 60%)");
 
-  // Listen for theme changes and update chart colors
   useEffect(() => {
     const updateColors = () => {
       const root = document.documentElement;
@@ -38,7 +64,6 @@ export function AppointmentsChart() {
 
     updateColors();
 
-    // Create observer for theme changes
     const observer = new MutationObserver(updateColors);
     observer.observe(document.documentElement, { 
       attributes: true, 
@@ -48,11 +73,16 @@ export function AppointmentsChart() {
     return () => observer.disconnect();
   }, []);
 
+  const data = dataByPeriod[period];
+
   return (
     <div className="rounded-2xl border border-border/50 bg-card p-6 shadow-sm">
-      <div className="mb-6">
-        <h3 className="text-lg font-semibold text-foreground">Agendamentos da Semana</h3>
-        <p className="text-sm text-muted-foreground">Comparativo diário</p>
+      <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div>
+          <h3 className="text-lg font-semibold text-foreground">Agendamentos</h3>
+          <p className="text-sm text-muted-foreground">{periodLabels[period]}</p>
+        </div>
+        <PeriodSelector value={period} onChange={setPeriod} />
       </div>
       
       <div className="h-[300px]">
