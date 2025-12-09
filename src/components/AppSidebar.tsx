@@ -99,6 +99,7 @@ export function AppSidebar() {
 
   return (
     <Sidebar
+      data-sidebar
       className="border-r border-border/50 bg-card/50 backdrop-blur-sm transition-all duration-300"
       collapsible="icon"
     >

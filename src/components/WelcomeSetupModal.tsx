@@ -82,6 +82,7 @@ export default function WelcomeSetupModal({ open, onOpenChange }: WelcomeSetupMo
 
   const handleNext = () => {
     if (isLastStep) {
+      localStorage.setItem("medclinic-welcome-dismissed", "true");
       onOpenChange(false);
     } else {
       setCurrentStep(prev => prev + 1);
@@ -89,6 +90,7 @@ export default function WelcomeSetupModal({ open, onOpenChange }: WelcomeSetupMo
   };
 
   const handleSkip = () => {
+    localStorage.setItem("medclinic-welcome-dismissed", "true");
     onOpenChange(false);
   };
 
