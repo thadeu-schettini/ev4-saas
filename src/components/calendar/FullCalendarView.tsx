@@ -170,11 +170,16 @@ export const FullCalendarView = () => {
   // Force day view on mobile
   const effectiveView = isMobile ? "timeGridDay" : currentView;
 
-  // Sync calendar view when mobile state changes
+  // Sync calendar view when mobile state changes and scroll to current time
   useEffect(() => {
     if (calendarRef.current) {
       const api = calendarRef.current.getApi();
       api.changeView(effectiveView);
+      
+      // Scroll to current time after a small delay to ensure DOM is ready
+      setTimeout(() => {
+        api.scrollToTime({ hour: new Date().getHours() - 2, minute: 0 });
+      }, 100);
     }
   }, [isMobile, effectiveView]);
 
