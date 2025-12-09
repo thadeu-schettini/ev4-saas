@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { PageHeader } from "@/components/ui/page-header";
 import { PageContainer, PageContent } from "@/components/ui/page-container";
+import { LabResultModal } from "@/components/laboratorios/LabResultModal";
+import { ConnectLabModal } from "@/components/laboratorios/ConnectLabModal";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -105,6 +107,9 @@ const labStatusConfig = {
 const IntegracaoLaboratorios = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("results");
+  const [showConnectModal, setShowConnectModal] = useState(false);
+  const [showResultModal, setShowResultModal] = useState(false);
+  const [selectedResult, setSelectedResult] = useState<typeof mockResults[0] | null>(null);
 
   const stats = [
     { label: "Resultados Hoje", value: 23, icon: FileText, color: "text-primary" },
@@ -125,7 +130,7 @@ const IntegracaoLaboratorios = () => {
               <RefreshCw className="h-4 w-4" />
               Sincronizar
             </Button>
-            <Button className="gap-2">
+            <Button className="gap-2" onClick={() => setShowConnectModal(true)}>
               <Link2 className="h-4 w-4" />
               Conectar Lab
             </Button>
@@ -249,7 +254,10 @@ const IntegracaoLaboratorios = () => {
                           <div className="flex gap-1">
                             {result.status === "ready" && (
                               <>
-                                <Button variant="outline" size="sm" className="gap-1">
+                                <Button variant="outline" size="sm" className="gap-1" onClick={() => {
+                                  setSelectedResult(result);
+                                  setShowResultModal(true);
+                                }}>
                                   <Eye className="h-4 w-4" />
                                   Ver
                                 </Button>
@@ -373,6 +381,9 @@ const IntegracaoLaboratorios = () => {
         </TabsContent>
       </Tabs>
       </PageContent>
+
+      <ConnectLabModal open={showConnectModal} onOpenChange={setShowConnectModal} />
+      <LabResultModal open={showResultModal} onOpenChange={setShowResultModal} result={selectedResult} />
     </PageContainer>
   );
 };

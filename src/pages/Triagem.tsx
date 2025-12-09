@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { PageHeader } from "@/components/ui/page-header";
 import { PageContainer, PageContent } from "@/components/ui/page-container";
+import { NewTriagemModal } from "@/components/triagem/NewTriagemModal";
+import { TemplatePreviewModal } from "@/components/triagem/TemplatePreviewModal";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -82,6 +84,9 @@ const statusConfig = {
 const Triagem = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("triagens");
+  const [showNewTriagemModal, setShowNewTriagemModal] = useState(false);
+  const [showTemplatePreview, setShowTemplatePreview] = useState(false);
+  const [selectedTemplate, setSelectedTemplate] = useState<typeof mockTemplates[0] | null>(null);
 
   const stats = [
     { label: "Enviadas Hoje", value: 12, icon: Send, color: "text-primary" },
@@ -102,7 +107,7 @@ const Triagem = () => {
               <Plus className="h-4 w-4" />
               Novo Template
             </Button>
-            <Button className="gap-2">
+            <Button className="gap-2" onClick={() => setShowNewTriagemModal(true)}>
               <Send className="h-4 w-4" />
               Enviar Triagem
             </Button>
@@ -262,11 +267,14 @@ const Triagem = () => {
                     <span>{template.uses} usos</span>
                   </div>
                   <div className="flex gap-2">
-                    <Button variant="outline" size="sm" className="flex-1">
+                    <Button variant="outline" size="sm" className="flex-1" onClick={() => {
+                      setSelectedTemplate(template);
+                      setShowTemplatePreview(true);
+                    }}>
                       <Eye className="h-4 w-4 mr-1" />
                       Visualizar
                     </Button>
-                    <Button size="sm" className="flex-1">
+                    <Button size="sm" className="flex-1" onClick={() => setShowNewTriagemModal(true)}>
                       <Send className="h-4 w-4 mr-1" />
                       Usar
                     </Button>
@@ -278,6 +286,9 @@ const Triagem = () => {
         </TabsContent>
       </Tabs>
       </PageContent>
+
+      <NewTriagemModal open={showNewTriagemModal} onOpenChange={setShowNewTriagemModal} />
+      <TemplatePreviewModal open={showTemplatePreview} onOpenChange={setShowTemplatePreview} template={selectedTemplate} />
     </PageContainer>
   );
 };
