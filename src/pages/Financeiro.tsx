@@ -2,6 +2,8 @@ import { useState } from "react";
 import { NewTransactionModal } from "@/components/financeiro/NewTransactionModal";
 import { PageHeader } from "@/components/ui/page-header";
 import { PageContainer, PageContent } from "@/components/ui/page-container";
+import { FinanceiroSkeleton } from "@/components/skeletons/PageSkeletons";
+import { useSimulatedLoading } from "@/hooks/use-loading";
 import { 
   DollarSign, 
   TrendingUp, 
@@ -109,6 +111,7 @@ const appointmentRevenue = [
 ];
 
 export default function Financeiro() {
+  const isLoading = useSimulatedLoading(1000);
   const [searchTerm, setSearchTerm] = useState("");
   const [periodFilter, setPeriodFilter] = useState("month");
   const [showNewTransactionModal, setShowNewTransactionModal] = useState(false);
@@ -170,6 +173,10 @@ export default function Financeiro() {
       />
 
       <PageContent>
+        {isLoading ? (
+          <FinanceiroSkeleton />
+        ) : (
+          <>
         {/* Metrics Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <Card className="bg-gradient-to-br from-emerald-500/10 to-emerald-600/5 border-emerald-500/20">
@@ -597,6 +604,8 @@ export default function Financeiro() {
             </Card>
           </TabsContent>
         </Tabs>
+          </>
+        )}
       </PageContent>
     </PageContainer>
   );

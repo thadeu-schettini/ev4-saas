@@ -13,6 +13,8 @@ import { PatientCardView } from "@/components/pacientes/PatientCardView";
 import { PatientFilters } from "@/components/pacientes/PatientFilters";
 import { PageHeader } from "@/components/ui/page-header";
 import { PageContainer, PageContent } from "@/components/ui/page-container";
+import { PacientesSkeleton } from "@/components/skeletons/PageSkeletons";
+import { useSimulatedLoading } from "@/hooks/use-loading";
 import {
   Select,
   SelectContent,
@@ -76,6 +78,7 @@ interface FilterState {
 }
 
 export default function Pacientes() {
+  const isLoading = useSimulatedLoading(800);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
   const [sheetOpen, setSheetOpen] = useState(false);
@@ -255,6 +258,10 @@ export default function Pacientes() {
       </PageHeader>
 
       <PageContent>
+        {isLoading ? (
+          <PacientesSkeleton />
+        ) : (
+          <>
         {/* Stats Mini Cards */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           <Card className="border-border/50 bg-card/50 backdrop-blur-sm">
@@ -519,6 +526,8 @@ export default function Pacientes() {
             open={sheetOpen}
             onOpenChange={handleCloseSheet}
           />
+        )}
+          </>
         )}
       </PageContent>
     </PageContainer>

@@ -22,6 +22,8 @@ import { QueueManagementView } from "@/components/recepcao/QueueManagementView";
 import { AdvancedFilters } from "@/components/recepcao/AdvancedFilters";
 import { RoomStatusPanel } from "@/components/recepcao/RoomStatusPanel";
 import { PendingConfirmations } from "@/components/recepcao/PendingConfirmations";
+import { RecepcaoSkeleton } from "@/components/skeletons/PageSkeletons";
+import { useSimulatedLoading } from "@/hooks/use-loading";
 import {
   Sheet,
   SheetContent,
@@ -37,6 +39,7 @@ import {
 type ViewType = "timeline" | "kanban" | "hybrid" | "grid" | "queue";
 
 const Recepcao = () => {
+  const isLoading = useSimulatedLoading(800);
   const [currentView, setCurrentView] = useState<ViewType>("hybrid");
   const [searchQuery, setSearchQuery] = useState("");
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -157,6 +160,10 @@ const Recepcao = () => {
       />
 
       <PageContent>
+        {isLoading ? (
+          <RecepcaoSkeleton />
+        ) : (
+          <>
         {/* Search and View Selector */}
         <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-6">
           <div className="relative flex-1">
@@ -225,6 +232,8 @@ const Recepcao = () => {
             </div>
           </div>
         </div>
+          </>
+        )}
       </PageContent>
     </PageContainer>
   );
