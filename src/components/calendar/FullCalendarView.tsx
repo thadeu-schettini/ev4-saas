@@ -324,7 +324,7 @@ export const FullCalendarView = () => {
 
   return (
     <>
-      <div className="h-full flex flex-col bg-gradient-to-br from-background to-muted/10 rounded-xl border border-border/50 overflow-hidden">
+      <div className="h-full flex flex-col bg-gradient-to-br from-background to-muted/10 rounded-xl border border-border/50 overflow-hidden min-h-0">
         {/* Calendar Header */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-3 p-3 sm:p-4 bg-card/50 border-b border-border/50 backdrop-blur-sm">
           {/* Navigation */}
@@ -399,8 +399,8 @@ export const FullCalendarView = () => {
       </div>
 
       {/* Calendar Container */}
-      <div className="flex-1 p-2 sm:p-4 overflow-auto min-h-0">
-        <div className="h-full min-h-[400px] bg-card rounded-xl border border-border/50 shadow-sm overflow-hidden calendar-container">
+      <div className="flex-1 p-2 sm:p-4 overflow-hidden min-h-0">
+        <div className="h-full bg-card rounded-xl border border-border/50 shadow-sm overflow-hidden calendar-container">
           <FullCalendar
             ref={calendarRef}
             plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}

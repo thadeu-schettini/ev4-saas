@@ -67,9 +67,9 @@ export function MainLayout({ children }: MainLayoutProps) {
 
   return (
     <SidebarProvider>
-      <div className="flex min-h-screen w-full bg-background">
+      <div className="flex h-screen w-full bg-background overflow-hidden">
         <AppSidebar />
-        <main className="flex-1 overflow-auto">
+        <main className="flex-1 flex flex-col overflow-hidden">
           {/* Mobile header with menu trigger */}
           <div className="sticky top-0 z-40 flex h-14 items-center gap-2 border-b border-border/50 bg-background/80 px-3 sm:px-4 backdrop-blur-sm lg:hidden">
             <SidebarTrigger className="shrink-0" />
@@ -113,7 +113,7 @@ export function MainLayout({ children }: MainLayoutProps) {
           </div>
 
           {/* Page content with transition animation */}
-          <div className="animate-fade-in">
+          <div className="flex-1 overflow-auto animate-fade-in">
             {children || <Outlet />}
           </div>
         </main>

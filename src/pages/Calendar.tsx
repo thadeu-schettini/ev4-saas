@@ -110,7 +110,7 @@ const Calendar = () => {
   );
 
   return (
-    <PageContainer>
+    <PageContainer className="flex flex-col h-full overflow-hidden">
       <PageHeader
         title="Agenda"
         description="Gerencie seus agendamentos"
@@ -192,7 +192,7 @@ const Calendar = () => {
       </div>
 
       {/* Main Content - Desktop with sidebar, Mobile full calendar */}
-      <div className="flex flex-1 min-h-0 px-4 sm:px-6 py-4 gap-4">
+      <div className="flex flex-1 min-h-0 px-4 sm:px-6 py-4 gap-4 overflow-hidden">
         {/* Desktop Sidebar - Hidden on tablet/mobile or when hideUpcoming is true */}
         {!hideUpcoming && (
           <div className="hidden xl:flex flex-col w-[360px] border border-border/50 bg-card/50 backdrop-blur-sm rounded-xl overflow-hidden flex-shrink-0">
@@ -201,7 +201,7 @@ const Calendar = () => {
         )}
 
         {/* Calendar Area - Full width on mobile/tablet */}
-        <div className="flex-1 min-w-0">
+        <div className="flex-1 min-w-0 min-h-0 h-full overflow-hidden">
           <FullCalendarView />
         </div>
       </div>
