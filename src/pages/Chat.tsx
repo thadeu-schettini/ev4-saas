@@ -194,7 +194,7 @@ export default function Chat() {
                 )}
               >
                 <div className="flex items-start gap-2.5">
-                  <div className="relative">
+                  <div className="relative shrink-0">
                     <Avatar className="h-10 w-10">
                       <AvatarImage src={conv.patient.avatar} />
                       <AvatarFallback className="text-xs bg-muted">
@@ -208,9 +208,9 @@ export default function Chat() {
                     )}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between mb-0.5">
+                    <div className="flex items-center justify-between mb-0.5 gap-2">
                       <span className="font-medium text-sm truncate">{conv.patient.name}</span>
-                      <span className="text-[10px] text-muted-foreground">{conv.timestamp}</span>
+                      <span className="text-[10px] text-muted-foreground shrink-0">{conv.timestamp}</span>
                     </div>
                     <p className="text-xs text-muted-foreground truncate">{conv.lastMessage}</p>
                     <div className="mt-1">
@@ -228,63 +228,49 @@ export default function Chat() {
 
   // Chat Area Component
   const ChatArea = () => (
-    <div className="flex-1 flex flex-col h-full">
+    <div className="flex-1 flex flex-col h-full min-w-0">
       {/* Conversation Header */}
-      <div className="px-3 sm:px-4 py-3 border-b bg-card flex items-center justify-between shrink-0">
-        <div className="flex items-center gap-2 sm:gap-3">
+      <div className="px-2 sm:px-4 py-2 sm:py-3 border-b bg-card flex items-center justify-between gap-2 shrink-0">
+        <div className="flex items-center gap-2 min-w-0 flex-1">
           {/* Back button for mobile */}
           <Button
             variant="ghost"
             size="icon"
-            className="h-8 w-8 md:hidden"
+            className="h-8 w-8 shrink-0 lg:hidden"
             onClick={() => setShowChat(false)}
           >
             <ArrowLeft className="h-4 w-4" />
           </Button>
-          <Avatar className="h-8 w-8 sm:h-9 sm:w-9">
+          <Avatar className="h-8 w-8 shrink-0">
             <AvatarFallback className="text-xs bg-muted">
               {selectedConversation.patient.name.split(" ").map(n => n[0]).join("")}
             </AvatarFallback>
           </Avatar>
-          <div className="min-w-0">
+          <div className="min-w-0 flex-1">
             <h2 className="font-medium text-sm truncate">{selectedConversation.patient.name}</h2>
-            <p className="text-xs text-muted-foreground hidden sm:block">{selectedConversation.patient.phone}</p>
           </div>
-          <div className="hidden sm:block">
-            {getStatusBadge(selectedConversation.status)}
-          </div>
+          {getStatusBadge(selectedConversation.status)}
         </div>
-        <div className="flex items-center gap-0.5 sm:gap-1">
-          <Button variant="ghost" size="icon" className="h-8 w-8 hidden sm:flex">
-            <Phone className="h-4 w-4" />
-          </Button>
-          <Button variant="ghost" size="icon" className="h-8 w-8 hidden sm:flex">
-            <Video className="h-4 w-4" />
-          </Button>
-          <Button variant="ghost" size="icon" className="h-8 w-8 hidden sm:flex">
-            <Star className="h-4 w-4" />
-          </Button>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-8 w-8">
-                <MoreVertical className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem><Phone className="h-4 w-4 mr-2" />Ligar</DropdownMenuItem>
-              <DropdownMenuItem><Video className="h-4 w-4 mr-2" />Vídeo</DropdownMenuItem>
-              <DropdownMenuItem><Calendar className="h-4 w-4 mr-2" />Agendar</DropdownMenuItem>
-              <DropdownMenuItem><FileText className="h-4 w-4 mr-2" />Enviar Docs</DropdownMenuItem>
-              <DropdownMenuItem><UserPlus className="h-4 w-4 mr-2" />Criar Paciente</DropdownMenuItem>
-              <DropdownMenuItem><Forward className="h-4 w-4 mr-2" />Transferir</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0">
+              <MoreVertical className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem><Phone className="h-4 w-4 mr-2" />Ligar</DropdownMenuItem>
+            <DropdownMenuItem><Video className="h-4 w-4 mr-2" />Vídeo</DropdownMenuItem>
+            <DropdownMenuItem><Calendar className="h-4 w-4 mr-2" />Agendar</DropdownMenuItem>
+            <DropdownMenuItem><FileText className="h-4 w-4 mr-2" />Enviar Docs</DropdownMenuItem>
+            <DropdownMenuItem><UserPlus className="h-4 w-4 mr-2" />Criar Paciente</DropdownMenuItem>
+            <DropdownMenuItem><Forward className="h-4 w-4 mr-2" />Transferir</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
 
       {/* Messages */}
-      <ScrollArea className="flex-1 p-3 sm:p-4">
-        <div className="space-y-3 max-w-3xl mx-auto">
+      <ScrollArea className="flex-1">
+        <div className="p-3 sm:p-4 space-y-3">
           {messages.map((msg) => (
             <div
               key={msg.id}
@@ -295,7 +281,7 @@ export default function Chat() {
             >
               <div
                 className={cn(
-                  "max-w-[85%] sm:max-w-[70%] px-3 py-2 rounded-lg text-sm",
+                  "max-w-[80%] px-3 py-2 rounded-lg text-sm",
                   msg.sender === "patient"
                     ? "bg-muted"
                     : "bg-primary text-primary-foreground"
@@ -307,7 +293,7 @@ export default function Chat() {
                     <span>IA</span>
                   </div>
                 )}
-                <p className="break-words">{msg.content}</p>
+                <p className="whitespace-pre-wrap break-words">{msg.content}</p>
                 <div className={cn(
                   "text-[10px] mt-1 flex items-center gap-1",
                   msg.sender === "patient" ? "text-muted-foreground" : "opacity-70"
@@ -323,7 +309,7 @@ export default function Chat() {
 
       {/* AI Suggestions */}
       {showSuggestions && (
-        <div className="px-3 sm:px-4 py-2 border-t bg-muted/30 shrink-0">
+        <div className="px-3 py-2 border-t bg-muted/30 shrink-0">
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
               <Bot className="h-3.5 w-3.5" />
@@ -331,14 +317,14 @@ export default function Chat() {
             </div>
             <Button
               variant="ghost"
-              size="sm"
-              className="h-6 text-xs"
+              size="icon"
+              className="h-6 w-6"
               onClick={() => setShowSuggestions(false)}
             >
               <X className="h-3 w-3" />
             </Button>
           </div>
-          <div className="flex gap-1.5 overflow-x-auto pb-1">
+          <div className="flex gap-1.5 overflow-x-auto pb-1 -mx-1 px-1">
             {suggestedResponses.map((response, index) => (
               <button
                 key={index}
@@ -354,27 +340,22 @@ export default function Chat() {
 
       {/* Input Area */}
       <div className="p-2 sm:p-3 border-t bg-card shrink-0">
-        <div className="flex items-center gap-1.5 sm:gap-2 max-w-3xl mx-auto">
+        <div className="flex items-center gap-1.5">
           <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0">
             <Paperclip className="h-4 w-4" />
           </Button>
-          <div className="flex-1 relative">
+          <div className="flex-1 min-w-0">
             <Input
               placeholder="Digite sua mensagem..."
               value={messageInput}
               onChange={(e) => setMessageInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSend()}
-              className="pr-16 sm:pr-20 text-sm"
+              className="text-sm w-full"
             />
-            <div className="absolute right-1 top-1/2 -translate-y-1/2 flex items-center gap-0.5">
-              <Button variant="ghost" size="icon" className="h-7 w-7">
-                <Smile className="h-4 w-4" />
-              </Button>
-              <Button variant="ghost" size="icon" className="h-7 w-7 hidden sm:flex">
-                <Mic className="h-4 w-4" />
-              </Button>
-            </div>
           </div>
+          <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0 hidden sm:flex">
+            <Smile className="h-4 w-4" />
+          </Button>
           <Button size="icon" className="h-8 w-8 shrink-0" onClick={handleSend}>
             <Send className="h-4 w-4" />
           </Button>
@@ -384,18 +365,18 @@ export default function Chat() {
   );
 
   return (
-    <div className="h-screen flex flex-col bg-background">
+    <div className="h-[calc(100vh-4rem)] flex flex-col bg-background">
       {/* Header */}
-      <div className="flex items-center justify-between px-3 sm:px-4 py-2 sm:py-3 border-b bg-card shrink-0">
-        <div className="flex items-center gap-2 sm:gap-3">
+      <div className="flex items-center justify-between px-3 py-2 border-b bg-card shrink-0">
+        <div className="flex items-center gap-2 min-w-0">
           {/* Mobile menu trigger */}
           <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-8 w-8 md:hidden">
+              <Button variant="ghost" size="icon" className="h-8 w-8 lg:hidden shrink-0">
                 <Menu className="h-4 w-4" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="left" className="w-80 p-0">
+            <SheetContent side="left" className="w-72 p-0">
               <div className="p-3 border-b flex items-center gap-2">
                 <div className="p-1.5 rounded-lg bg-primary/10">
                   <MessageSquare className="h-4 w-4 text-primary" />
@@ -406,35 +387,31 @@ export default function Chat() {
             </SheetContent>
           </Sheet>
           
-          <div className="p-1.5 sm:p-2 rounded-lg bg-primary/10">
-            <MessageSquare className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
+          <div className="p-1.5 rounded-lg bg-primary/10 shrink-0">
+            <MessageSquare className="h-4 w-4 text-primary" />
           </div>
-          <div>
-            <h1 className="font-semibold text-sm sm:text-lg">Mensagens</h1>
-            <p className="text-[10px] sm:text-xs text-muted-foreground hidden sm:block">WhatsApp, e-mail e redes sociais</p>
-          </div>
+          <span className="font-semibold text-sm truncate">Mensagens</span>
         </div>
-        <div className="flex items-center gap-2 sm:gap-3">
-          <div className="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full bg-muted/50 border">
-            <Bot className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-primary" />
-            <span className="text-[10px] sm:text-xs font-medium hidden sm:inline">Autopilot</span>
+        <div className="flex items-center gap-2 shrink-0">
+          <div className="flex items-center gap-1.5 px-2 py-1 rounded-full bg-muted/50 border">
+            <Bot className="h-3 w-3 text-primary" />
             <Switch checked={autopilotEnabled} onCheckedChange={setAutopilotEnabled} className="scale-75" />
           </div>
-          <Button variant="ghost" size="icon" className="h-7 w-7 sm:h-8 sm:w-8">
-            <Settings className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+          <Button variant="ghost" size="icon" className="h-8 w-8">
+            <Settings className="h-4 w-4" />
           </Button>
         </div>
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 flex overflow-hidden">
+      <div className="flex-1 flex overflow-hidden min-h-0">
         {/* Desktop Sidebar */}
-        <div className="hidden md:flex w-80 border-r flex-col bg-card/50">
+        <div className="hidden lg:flex w-72 xl:w-80 border-r flex-col bg-card/50 shrink-0">
           <ConversationList />
         </div>
 
         {/* Mobile: Show list or chat based on selection */}
-        <div className="flex-1 flex flex-col md:hidden">
+        <div className="flex-1 flex flex-col lg:hidden min-w-0">
           {showChat ? (
             <ChatArea />
           ) : (
@@ -443,7 +420,7 @@ export default function Chat() {
         </div>
 
         {/* Desktop Chat Area */}
-        <div className="hidden md:flex flex-1 flex-col">
+        <div className="hidden lg:flex flex-1 flex-col min-w-0">
           <ChatArea />
         </div>
       </div>
