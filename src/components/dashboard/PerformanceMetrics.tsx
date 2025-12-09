@@ -59,7 +59,7 @@ export function PerformanceMetrics() {
   );
 
   return (
-    <Card>
+    <Card className="flex-1 flex flex-col">
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
           <div>
