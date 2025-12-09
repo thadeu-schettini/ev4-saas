@@ -45,6 +45,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { PageContainer, PageContent } from "@/components/ui/page-container";
+import { PageHeader } from "@/components/ui/page-header";
 
 type ConfigSection = 
   | "home" 
@@ -262,24 +264,15 @@ export default function Configuracoes() {
   if (activeSection === "home") {
     return (
       <TooltipProvider>
-        <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20 p-4 md:p-8">
-          <div className="max-w-7xl mx-auto space-y-8 section-content">
-            {/* Header */}
-            <div className="space-y-3 animate-fade-in">
-              <div className="flex items-center gap-3">
-                <div className="p-3 rounded-xl bg-gradient-to-br from-primary to-primary/60 shadow-lg">
-                  <Settings className="h-8 w-8 text-primary-foreground" />
-                </div>
-                <div>
-                  <h1 className="text-4xl font-bold bg-gradient-to-r from-primary via-primary to-primary/60 bg-clip-text text-transparent">
-                    Configurações
-                  </h1>
-                  <p className="text-muted-foreground">
-                    Configure todos os aspectos do sistema
-                  </p>
-                </div>
-              </div>
-            </div>
+        <PageContainer className="bg-gradient-to-br from-background via-background to-muted/20">
+          <PageHeader
+            title="Configurações"
+            description="Configure todos os aspectos do sistema"
+            icon={Settings}
+            iconColor="from-slate-500 to-slate-700"
+          />
+          <PageContent>
+            <div className="max-w-7xl mx-auto space-y-8 section-content">
 
             {/* Overall Progress */}
             <Card className="border-border/50 backdrop-blur-sm bg-card/95 shadow-xl animate-fade-in">
@@ -492,7 +485,8 @@ export default function Configuracoes() {
               </CardContent>
             </Card>
           </div>
-        </div>
+          </PageContent>
+        </PageContainer>
       </TooltipProvider>
     );
   }

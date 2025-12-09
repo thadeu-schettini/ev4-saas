@@ -6,6 +6,8 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { CelebrationConfetti } from "@/components/CelebrationConfetti";
 import { LevelUpModal } from "@/components/LevelUpModal";
 import { MissionCompleteModal } from "@/components/MissionCompleteModal";
+import { PageContainer, PageContent } from "@/components/ui/page-container";
+import { PageHeader } from "@/components/ui/page-header";
 import { 
   Share2, 
   Copy, 
@@ -141,7 +143,7 @@ const Indicacoes = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
+    <PageContainer className="bg-gradient-to-br from-background via-background to-primary/5">
       {/* Celebration Effects */}
       <CelebrationConfetti trigger={showConfetti} onComplete={() => setShowConfetti(false)} />
       <LevelUpModal 
@@ -161,14 +163,22 @@ const Indicacoes = () => {
         missionTitle={completedMission.title}
         reward={completedMission.reward}
       />
+      
       {/* Animated Background */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-20 right-20 w-96 h-96 bg-primary/5 rounded-full blur-3xl animate-pulse" />
         <div className="absolute bottom-20 left-20 w-96 h-96 bg-accent/10 rounded-full blur-3xl animate-pulse delay-1000" />
       </div>
 
-      <div className="relative z-10 container mx-auto px-4 py-8 max-w-7xl">
-        {/* Header Hero */}
+      <PageHeader
+        title="Indicações"
+        description="Compartilhe e ganhe recompensas exclusivas"
+        icon={Gift}
+        iconColor="from-pink-500 to-rose-600"
+      />
+
+      <PageContent className="relative z-10">
+        {/* Hero Text */}
         <div className="text-center mb-12 animate-fade-in">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-4">
             <Sparkles className="h-4 w-4 text-primary animate-pulse" />
@@ -187,12 +197,6 @@ const Indicacoes = () => {
               Simular Level Up
             </Button>
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
-            Compartilhe e Ganhe Recompensas
-          </h1>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Convide outros profissionais e seja recompensado com benefícios exclusivos a cada nova indicação ativa
-          </p>
         </div>
 
         {/* Share Section */}
@@ -482,8 +486,8 @@ const Indicacoes = () => {
             </ScrollArea>
           </Card>
         </div>
-      </div>
-    </div>
+      </PageContent>
+    </PageContainer>
   );
 };
 
