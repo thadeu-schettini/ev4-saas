@@ -15,6 +15,7 @@ import Configuracoes from "./pages/Configuracoes";
 import Profissionais from "./pages/Profissionais";
 import FormulariosClinicos from "./pages/FormulariosClinicos";
 import Pacientes from "./pages/Pacientes";
+import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -25,8 +26,12 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <MainLayout>
-          <Routes>
+        <Routes>
+          {/* Auth page without MainLayout */}
+          <Route path="/auth" element={<Auth />} />
+          
+          {/* App routes with MainLayout */}
+          <Route element={<MainLayout />}>
             <Route path="/" element={<Index />} />
             <Route path="/calendar" element={<Calendar />} />
             <Route path="/prontuario" element={<Prontuario />} />
@@ -38,10 +43,11 @@ const App = () => (
             <Route path="/profissionais" element={<Profissionais />} />
             <Route path="/formularios-clinicos" element={<FormulariosClinicos />} />
             <Route path="/pacientes" element={<Pacientes />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </MainLayout>
+          </Route>
+          
+          {/* Catch-all route */}
+          <Route path="*" element={<NotFound />} />
+        </Routes>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
