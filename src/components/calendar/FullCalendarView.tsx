@@ -1,25 +1,21 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import { EventClickArg, DateSelectArg, EventDropArg } from "@fullcalendar/core";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { 
-  Calendar as CalendarIcon, 
   ChevronLeft, 
   ChevronRight,
   LayoutGrid,
   List,
   CalendarDays,
-  Plus,
-  User,
-  Clock,
   MapPin
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface CalendarEvent {
   id: string;
@@ -139,11 +135,10 @@ const mockEvents: CalendarEvent[] = [
       room: "Sala 3"
     }
   },
-  // Tomorrow
   {
     id: "7",
     title: "Consulta - Fernanda Lima",
-    start: new Date(new Date().setDate(new Date().getDate() + 1)),
+    start: new Date(new Date(new Date().setDate(new Date().getDate() + 1)).setHours(10, 0, 0, 0)),
     end: new Date(new Date(new Date().setDate(new Date().getDate() + 1)).setHours(10, 30, 0, 0)),
     extendedProps: {
       patient: "Fernanda Lima",
@@ -158,7 +153,8 @@ type ViewType = "dayGridMonth" | "timeGridWeek" | "timeGridDay";
 
 export const FullCalendarView = () => {
   const calendarRef = useRef<FullCalendar>(null);
-  const [currentView, setCurrentView] = useState<ViewType>("timeGridWeek");
+  const isMobile = useIsMobile();
+  const [currentView, setCurrentView] = useState<ViewType>(isMobile ? "timeGridDay" : "timeGridWeek");
   const [currentDate, setCurrentDate] = useState(new Date());
   const [events] = useState<CalendarEvent[]>(mockEvents);
 
@@ -249,25 +245,25 @@ export const FullCalendarView = () => {
 
     return (
       <div className={cn(
-        "w-full h-full p-2 rounded-lg border-l-4 overflow-hidden transition-all duration-200 hover:shadow-md cursor-pointer",
+        "w-full h-full p-1.5 sm:p-2 rounded-lg border-l-4 overflow-hidden transition-all duration-200 hover:shadow-md cursor-pointer",
         colors.bg,
         colors.border
       )}>
         <div className="flex flex-col h-full">
-          <div className="flex items-center gap-1.5 mb-1">
-            <span className={cn("w-2 h-2 rounded-full flex-shrink-0", colors.dot)} />
-            <span className={cn("text-xs font-bold truncate", colors.text)}>
+          <div className="flex items-center gap-1 mb-0.5 sm:mb-1">
+            <span className={cn("w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full flex-shrink-0", colors.dot)} />
+            <span className={cn("text-[10px] sm:text-xs font-bold truncate", colors.text)}>
               {eventInfo.timeText}
             </span>
           </div>
-          <p className="text-sm font-semibold text-foreground truncate">
+          <p className="text-xs sm:text-sm font-semibold text-foreground truncate">
             {eventInfo.event.extendedProps.patient}
           </p>
-          <p className="text-xs text-muted-foreground truncate">
+          <p className="text-[10px] sm:text-xs text-muted-foreground truncate hidden sm:block">
             {eventInfo.event.extendedProps.service}
           </p>
           {eventInfo.event.extendedProps.room && (
-            <div className="flex items-center gap-1 mt-auto pt-1">
+            <div className="hidden sm:flex items-center gap-1 mt-auto pt-1">
               <MapPin className="w-3 h-3 text-muted-foreground" />
               <span className="text-xs text-muted-foreground">
                 {eventInfo.event.extendedProps.room}
@@ -280,44 +276,46 @@ export const FullCalendarView = () => {
   };
 
   return (
-    <div className="h-full flex flex-col bg-gradient-to-br from-background to-muted/10">
+    <div className="h-full flex flex-col bg-gradient-to-br from-background to-muted/10 rounded-xl border border-border/50 overflow-hidden">
       {/* Calendar Header */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-4 bg-card/50 border-b border-border/50 backdrop-blur-sm">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-3 p-3 sm:p-4 bg-card/50 border-b border-border/50 backdrop-blur-sm">
         {/* Navigation */}
-        <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={handlePrev}
-            className="h-9 w-9 hover:bg-primary/10 hover:border-primary/30 hover:text-primary transition-all"
-          >
-            <ChevronLeft className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={handleNext}
-            className="h-9 w-9 hover:bg-primary/10 hover:border-primary/30 hover:text-primary transition-all"
-          >
-            <ChevronRight className="h-4 w-4" />
-          </Button>
+        <div className="flex items-center gap-1 sm:gap-2 w-full sm:w-auto">
+          <div className="flex items-center gap-1">
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={handlePrev}
+              className="h-8 w-8 sm:h-9 sm:w-9 hover:bg-primary/10 hover:border-primary/30 hover:text-primary transition-all"
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={handleNext}
+              className="h-8 w-8 sm:h-9 sm:w-9 hover:bg-primary/10 hover:border-primary/30 hover:text-primary transition-all"
+            >
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+          </div>
           <Button
             variant="outline"
             size="sm"
             onClick={handleToday}
-            className="h-9 px-3 hover:bg-primary/10 hover:border-primary/30 hover:text-primary transition-all font-medium"
+            className="h-8 sm:h-9 px-2 sm:px-3 hover:bg-primary/10 hover:border-primary/30 hover:text-primary transition-all font-medium text-xs sm:text-sm"
           >
             Hoje
           </Button>
-          <div className="px-4 py-2 rounded-lg bg-gradient-to-r from-primary/10 to-primary/5 border border-primary/20">
-            <span className="text-sm font-bold text-foreground capitalize">
+          <div className="flex-1 sm:flex-none px-2 sm:px-4 py-1.5 sm:py-2 rounded-lg bg-gradient-to-r from-primary/10 to-primary/5 border border-primary/20 min-w-0">
+            <span className="text-xs sm:text-sm font-bold text-foreground capitalize truncate block">
               {formatCurrentDate()}
             </span>
           </div>
         </div>
 
         {/* View Toggle */}
-        <div className="flex items-center gap-1 p-1 bg-muted/50 rounded-lg border border-border/50">
+        <div className="flex items-center gap-1 p-1 bg-muted/50 rounded-lg border border-border/50 w-full sm:w-auto justify-center sm:justify-start">
           {viewOptions.map((option) => {
             const Icon = option.icon;
             const isActive = currentView === option.value;
@@ -328,32 +326,23 @@ export const FullCalendarView = () => {
                 size="sm"
                 onClick={() => handleViewChange(option.value)}
                 className={cn(
-                  "h-8 px-3 gap-1.5 transition-all",
+                  "h-7 sm:h-8 px-2 sm:px-3 gap-1 sm:gap-1.5 transition-all flex-1 sm:flex-none",
                   isActive 
                     ? "bg-primary text-primary-foreground shadow-md" 
                     : "hover:bg-primary/10 hover:text-primary"
                 )}
               >
-                <Icon className="h-4 w-4" />
-                <span className="hidden sm:inline text-xs font-medium">{option.label}</span>
+                <Icon className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                <span className="text-[10px] sm:text-xs font-medium">{option.label}</span>
               </Button>
             );
           })}
         </div>
-
-        {/* New Appointment */}
-        <Button
-          size="sm"
-          className="h-9 gap-2 bg-gradient-to-r from-primary to-primary-glow hover:opacity-90 shadow-md"
-        >
-          <Plus className="h-4 w-4" />
-          <span className="hidden sm:inline">Novo Agendamento</span>
-        </Button>
       </div>
 
       {/* Calendar Container */}
-      <div className="flex-1 p-4 overflow-auto">
-        <div className="h-full min-h-[500px] bg-card rounded-xl border border-border/50 shadow-sm overflow-hidden calendar-container">
+      <div className="flex-1 p-2 sm:p-4 overflow-auto min-h-0">
+        <div className="h-full min-h-[400px] bg-card rounded-xl border border-border/50 shadow-sm overflow-hidden calendar-container">
           <FullCalendar
             ref={calendarRef}
             plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
