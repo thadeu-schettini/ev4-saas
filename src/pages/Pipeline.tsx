@@ -291,12 +291,12 @@ export default function Pipeline() {
 
           {/* Pipeline Tab */}
           <TabsContent value="pipeline" className="mt-0">
-            <ScrollArea className="w-full">
-              <div className="flex gap-4 pb-4 min-w-max">
+            <div className="overflow-x-auto pb-4 -mx-4 px-4">
+              <div className="flex gap-4" style={{ minWidth: 'max-content' }}>
                 {pipelineStages.map((stage) => {
                   const StageIcon = stage.icon;
                   return (
-                    <div key={stage.id} className="w-80 flex-shrink-0">
+                    <div key={stage.id} className="w-72 lg:w-80 flex-shrink-0">
                       {/* Stage Header */}
                       <div className={cn(
                         "p-4 rounded-t-2xl bg-gradient-to-r text-white shadow-lg",
@@ -305,7 +305,7 @@ export default function Pipeline() {
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
                             <StageIcon className="h-5 w-5" />
-                            <h3 className="font-semibold">{stage.name}</h3>
+                            <h3 className="font-semibold text-sm lg:text-base">{stage.name}</h3>
                           </div>
                           <Badge className="bg-white/20 text-white border-0 backdrop-blur-sm">
                             {stage.count}
@@ -314,7 +314,7 @@ export default function Pipeline() {
                       </div>
 
                       {/* Stage Cards */}
-                      <div className="bg-muted/30 rounded-b-2xl p-3 min-h-[450px] space-y-3 border border-t-0 border-border/50">
+                      <div className="bg-muted/30 rounded-b-2xl p-3 min-h-[400px] lg:min-h-[450px] space-y-3 border border-t-0 border-border/50 max-h-[60vh] overflow-y-auto">
                         {getPatientsByStage(stage.id).map((patient) => (
                           <Card 
                             key={patient.id} 
@@ -418,7 +418,7 @@ export default function Pipeline() {
                   );
                 })}
               </div>
-            </ScrollArea>
+            </div>
           </TabsContent>
 
           {/* Reengajar Tab */}

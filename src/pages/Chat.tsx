@@ -327,47 +327,55 @@ export default function Chat() {
         </div>
 
         {/* Main Chat Interface */}
-        <Card className="flex flex-col lg:flex-row h-[calc(100vh-380px)] min-h-[500px] overflow-hidden border-border/50">
+        <Card className="flex flex-col lg:flex-row h-[calc(100vh-380px)] min-h-[500px] overflow-hidden border-border/50 shadow-xl bg-card/50 backdrop-blur-sm">
           {/* Conversations List */}
-          <div className="w-full lg:w-96 border-b lg:border-b-0 lg:border-r flex flex-col bg-muted/20">
-            {/* Search & Filters */}
-            <div className="p-4 border-b space-y-3">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <div className="w-full lg:w-[380px] border-b lg:border-b-0 lg:border-r flex flex-col bg-gradient-to-b from-muted/30 to-muted/10">
+            {/* Search & Filters Header */}
+            <div className="p-4 border-b bg-gradient-to-r from-emerald-500/5 via-teal-500/5 to-cyan-500/5 space-y-3">
+              <div className="relative group">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
                 <Input
                   placeholder="Buscar conversas..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-9 bg-background"
+                  className="pl-9 bg-background/80 backdrop-blur-sm border-border/50 focus:border-primary/50 transition-all"
                 />
               </div>
               <div className="flex items-center gap-2">
-                <Button variant="outline" size="sm" className="flex-1 gap-1.5 text-xs h-9">
+                <Button variant="outline" size="sm" className="flex-1 gap-1.5 text-xs h-9 bg-background/50 hover:bg-background border-border/50">
                   <Filter className="h-3.5 w-3.5" />
                   Filtros
                 </Button>
                 <Tabs defaultValue="all" className="flex-1">
-                  <TabsList className="h-9 w-full bg-muted/50">
-                    <TabsTrigger value="all" className="text-xs flex-1 h-7">Todos</TabsTrigger>
-                    <TabsTrigger value="unread" className="text-xs flex-1 h-7">Não lidos</TabsTrigger>
+                  <TabsList className="h-9 w-full bg-background/50 backdrop-blur-sm p-1">
+                    <TabsTrigger value="all" className="text-xs flex-1 h-7 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Todos</TabsTrigger>
+                    <TabsTrigger value="unread" className="text-xs flex-1 h-7 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Não lidos</TabsTrigger>
                   </TabsList>
                 </Tabs>
               </div>
             </div>
 
-            {/* Channel Filter */}
-            <div className="px-4 py-3 border-b flex items-center gap-2 overflow-x-auto bg-background/50">
-              <Badge variant="secondary" className="cursor-pointer hover:bg-primary/10 shrink-0 px-3">Todos</Badge>
+            {/* Channel Filter Pills */}
+            <div className="px-4 py-3 border-b flex items-center gap-2 overflow-x-auto bg-background/30 backdrop-blur-sm">
+              <Badge 
+                variant="secondary" 
+                className="cursor-pointer shrink-0 px-4 py-1.5 bg-primary text-primary-foreground hover:bg-primary/90 transition-colors font-medium"
+              >
+                Todos
+              </Badge>
               {Object.entries(channelColors).slice(0, 4).map(([channel, color]) => {
                 const Icon = channelIcons[channel as keyof typeof channelIcons];
                 return (
                   <Badge 
                     key={channel}
                     variant="outline" 
-                    className={cn("cursor-pointer shrink-0 gap-1.5 px-3 hover:border-primary/30", color.split(' ')[0])}
+                    className={cn(
+                      "cursor-pointer shrink-0 gap-1.5 px-4 py-1.5 hover:scale-105 transition-all",
+                      color
+                    )}
                   >
-                    <Icon className="h-3 w-3" />
-                    {channel.charAt(0).toUpperCase() + channel.slice(1)}
+                    <Icon className="h-3.5 w-3.5" />
+                    <span className="capitalize">{channel}</span>
                   </Badge>
                 );
               })}
@@ -375,7 +383,7 @@ export default function Chat() {
 
             {/* Conversations */}
             <ScrollArea className="flex-1">
-              <div className="p-2 space-y-1">
+              <div className="p-3 space-y-2">
                 {conversations.map((conv) => {
                   const ChannelIcon = getChannelIcon(conv.channel);
                   const isSelected = selectedConversation?.id === conv.id;
@@ -385,47 +393,59 @@ export default function Chat() {
                       key={conv.id}
                       onClick={() => setSelectedConversation(conv)}
                       className={cn(
-                        "p-4 rounded-xl cursor-pointer transition-all duration-200",
+                        "p-4 rounded-2xl cursor-pointer transition-all duration-300 relative overflow-hidden group",
                         isSelected 
-                          ? "bg-primary/10 border-2 border-primary/30 shadow-sm" 
-                          : "hover:bg-muted/50 border-2 border-transparent"
+                          ? "bg-gradient-to-r from-primary/15 to-primary/5 border-2 border-primary/40 shadow-lg shadow-primary/10" 
+                          : "hover:bg-gradient-to-r hover:from-muted/80 hover:to-muted/40 border-2 border-transparent hover:border-border/50"
                       )}
                     >
-                      <div className="flex items-start gap-3">
+                      {/* Hover Glow Effect */}
+                      <div className={cn(
+                        "absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none",
+                        "bg-gradient-to-r from-primary/5 via-transparent to-transparent"
+                      )} />
+                      
+                      <div className="flex items-start gap-3 relative">
                         <div className="relative">
-                          <Avatar className="h-12 w-12 ring-2 ring-background shadow-sm">
+                          <Avatar className={cn(
+                            "h-12 w-12 ring-2 shadow-md transition-all",
+                            isSelected ? "ring-primary/50" : "ring-background"
+                          )}>
                             <AvatarImage src={conv.patient.avatar} />
-                            <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/10 text-primary font-medium">
+                            <AvatarFallback className="bg-gradient-to-br from-primary/30 to-primary/10 text-primary font-semibold">
                               {conv.patient.name.split(" ").map(n => n[0]).join("")}
                             </AvatarFallback>
                           </Avatar>
                           <div className={cn(
-                            "absolute -bottom-1 -right-1 p-1.5 rounded-full border-2 border-background",
+                            "absolute -bottom-0.5 -right-0.5 p-1.5 rounded-full border-2 border-background shadow-sm",
                             channelColors[conv.channel as keyof typeof channelColors]
                           )}>
                             <ChannelIcon className="h-3 w-3" />
                           </div>
                         </div>
                         <div className="flex-1 min-w-0">
-                          <div className="flex items-center justify-between mb-1">
-                            <h4 className="font-semibold text-sm truncate">{conv.patient.name}</h4>
-                            <span className="text-xs text-muted-foreground">{conv.timestamp}</span>
+                          <div className="flex items-center justify-between mb-1.5">
+                            <h4 className={cn(
+                              "font-semibold text-sm truncate transition-colors",
+                              isSelected && "text-primary"
+                            )}>{conv.patient.name}</h4>
+                            <span className="text-xs text-muted-foreground font-medium">{conv.timestamp}</span>
                           </div>
-                          <p className="text-xs text-muted-foreground truncate mb-2">{conv.lastMessage}</p>
-                          <div className="flex items-center gap-2">
+                          <p className="text-xs text-muted-foreground truncate mb-2.5 leading-relaxed">{conv.lastMessage}</p>
+                          <div className="flex items-center gap-2 flex-wrap">
                             {conv.unread > 0 && (
-                              <Badge className="h-5 min-w-5 px-1.5 bg-primary text-primary-foreground text-xs">
+                              <Badge className="h-5 min-w-5 px-2 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground text-xs font-bold shadow-sm">
                                 {conv.unread}
                               </Badge>
                             )}
                             {conv.aiActive && (
-                              <Badge variant="outline" className="text-purple-600 border-purple-500/30 bg-purple-500/10 gap-1 text-xs py-0">
+                              <Badge variant="outline" className="text-purple-600 border-purple-500/40 bg-purple-500/10 gap-1 text-xs py-0.5 px-2">
                                 <Sparkles className="h-2.5 w-2.5" />
                                 IA
                               </Badge>
                             )}
                             {conv.priority === "high" && (
-                              <Badge variant="outline" className="text-red-600 border-red-500/30 bg-red-500/10 text-xs py-0">
+                              <Badge variant="outline" className="text-red-600 border-red-500/40 bg-red-500/10 text-xs py-0.5 px-2 animate-pulse">
                                 Urgente
                               </Badge>
                             )}
@@ -440,24 +460,30 @@ export default function Chat() {
           </div>
 
           {/* Chat Area */}
-          <div className="flex-1 flex flex-col min-w-0">
+          <div className="flex-1 flex flex-col min-w-0 bg-gradient-to-b from-background to-muted/10">
             {selectedConversation ? (
               <>
                 {/* Chat Header */}
-                <div className="p-4 border-b flex items-center justify-between bg-background/50 backdrop-blur-sm">
+                <div className="p-4 border-b flex items-center justify-between bg-gradient-to-r from-background via-background to-muted/20 backdrop-blur-sm">
                   <div className="flex items-center gap-4">
-                    <Avatar className="h-11 w-11 ring-2 ring-background shadow-sm">
-                      <AvatarImage src={selectedConversation.patient.avatar} />
-                      <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/10 text-primary font-medium">
-                        {selectedConversation.patient.name.split(" ").map(n => n[0]).join("")}
-                      </AvatarFallback>
-                    </Avatar>
+                    <div className="relative">
+                      <Avatar className="h-12 w-12 ring-2 ring-primary/20 shadow-lg">
+                        <AvatarImage src={selectedConversation.patient.avatar} />
+                        <AvatarFallback className="bg-gradient-to-br from-primary/30 to-primary/10 text-primary font-semibold">
+                          {selectedConversation.patient.name.split(" ").map(n => n[0]).join("")}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-emerald-500 rounded-full border-2 border-background" />
+                    </div>
                     <div>
                       <div className="flex items-center gap-2">
-                        <h3 className="font-semibold">{selectedConversation.patient.name}</h3>
+                        <h3 className="font-bold text-lg">{selectedConversation.patient.name}</h3>
                         {getStatusBadge(selectedConversation.status)}
                       </div>
-                      <p className="text-xs text-muted-foreground">{selectedConversation.patient.phone}</p>
+                      <p className="text-sm text-muted-foreground flex items-center gap-1.5">
+                        <Phone className="h-3 w-3" />
+                        {selectedConversation.patient.phone}
+                      </p>
                     </div>
                   </div>
                   <div className="flex items-center gap-1">
@@ -525,15 +551,22 @@ export default function Chat() {
                 </div>
 
                 {/* Quick Actions Bar */}
-                <div className="px-4 py-3 border-b flex items-center justify-between bg-muted/30">
+                <div className="px-4 py-3 border-b flex items-center justify-between bg-gradient-to-r from-muted/40 via-muted/20 to-transparent backdrop-blur-sm">
                   <div className="flex items-center gap-2">
                     {quickActions.map((action) => (
                       <TooltipProvider key={action.label}>
                         <Tooltip>
                           <TooltipTrigger asChild>
-                            <Button variant="outline" size="sm" className={cn("gap-1.5 h-8", action.color)}>
-                              <action.icon className="h-3.5 w-3.5" />
-                              <span className="hidden sm:inline text-xs">{action.label}</span>
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              className={cn(
+                                "gap-1.5 h-9 px-3 border-border/50 bg-background/50 hover:bg-background hover:scale-105 transition-all shadow-sm",
+                                action.color
+                              )}
+                            >
+                              <action.icon className="h-4 w-4" />
+                              <span className="hidden sm:inline text-xs font-medium">{action.label}</span>
                             </Button>
                           </TooltipTrigger>
                           <TooltipContent>{action.label}</TooltipContent>
@@ -542,31 +575,31 @@ export default function Chat() {
                     ))}
                   </div>
                   <div className="flex items-center gap-3">
-                    <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/20">
-                      <Brain className="h-3.5 w-3.5 text-purple-500" />
-                      <span className="text-xs font-medium text-purple-600">IA Ativa</span>
+                    <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/30 shadow-sm">
+                      <Brain className="h-4 w-4 text-purple-500" />
+                      <span className="text-xs font-semibold text-purple-600">IA Ativa</span>
                       <Switch 
                         checked={selectedConversation.aiActive} 
-                        className="scale-75 data-[state=checked]:bg-purple-500"
+                        className="scale-75 data-[state=checked]:bg-gradient-to-r data-[state=checked]:from-purple-500 data-[state=checked]:to-pink-500"
                       />
                     </div>
                   </div>
                 </div>
 
                 {/* Messages */}
-                <ScrollArea className="flex-1 p-4">
+                <ScrollArea className="flex-1 p-4 bg-gradient-to-b from-transparent to-muted/5">
                   <div className="space-y-4 max-w-3xl mx-auto">
                     {messages.map((msg) => (
                       <div
                         key={msg.id}
                         className={cn(
-                          "flex gap-3 group",
+                          "flex gap-3 group animate-fade-in",
                           msg.sender === "patient" ? "justify-start" : "justify-end"
                         )}
                       >
                         {msg.sender === "patient" && (
-                          <Avatar className="h-8 w-8 mt-1">
-                            <AvatarFallback className="bg-muted text-xs">MS</AvatarFallback>
+                          <Avatar className="h-9 w-9 mt-1 ring-2 ring-background shadow-sm">
+                            <AvatarFallback className="bg-gradient-to-br from-muted to-muted/50 text-xs font-semibold">MS</AvatarFallback>
                           </Avatar>
                         )}
                         <div className={cn(
@@ -574,48 +607,48 @@ export default function Chat() {
                           msg.sender === "patient" ? "order-2" : "order-1"
                         )}>
                           <div className={cn(
-                            "p-4 rounded-2xl shadow-sm",
+                            "p-4 rounded-2xl shadow-md transition-all hover:shadow-lg",
                             msg.sender === "patient" 
-                              ? "bg-muted/80 rounded-tl-sm" 
+                              ? "bg-muted/90 backdrop-blur-sm rounded-tl-md border border-border/50" 
                               : msg.isAI 
-                                ? "bg-gradient-to-br from-purple-500/10 to-pink-500/10 border border-purple-500/20 rounded-tr-sm"
-                                : "bg-primary text-primary-foreground rounded-tr-sm"
+                                ? "bg-gradient-to-br from-purple-500/15 via-purple-500/10 to-pink-500/10 border border-purple-500/30 rounded-tr-md shadow-purple-500/10"
+                                : "bg-gradient-to-r from-primary to-primary/90 text-primary-foreground rounded-tr-md shadow-primary/20"
                           )}>
                             {msg.isAI && (
-                              <div className="flex items-center gap-1.5 mb-2 text-xs text-purple-600">
-                                <Sparkles className="h-3 w-3" />
-                                <span className="font-medium">Resposta da IA</span>
+                              <div className="flex items-center gap-1.5 mb-2 text-xs text-purple-600 font-semibold">
+                                <Sparkles className="h-3.5 w-3.5" />
+                                <span>Resposta da IA</span>
                               </div>
                             )}
                             <p className="text-sm whitespace-pre-wrap leading-relaxed">{msg.content}</p>
                           </div>
                           <div className={cn(
-                            "flex items-center gap-2 mt-1.5 text-xs text-muted-foreground",
+                            "flex items-center gap-2 mt-2 text-xs text-muted-foreground",
                             msg.sender === "patient" ? "justify-start" : "justify-end"
                           )}>
-                            <span>{msg.timestamp}</span>
+                            <span className="font-medium">{msg.timestamp}</span>
                             {msg.sender !== "patient" && (
                               msg.status === "read" 
-                                ? <CheckCheck className="h-3.5 w-3.5 text-blue-500" />
-                                : <Check className="h-3.5 w-3.5" />
+                                ? <CheckCheck className="h-4 w-4 text-blue-500" />
+                                : <Check className="h-4 w-4" />
                             )}
                           </div>
                           
                           {/* Message Actions */}
                           <div className={cn(
-                            "absolute top-2 opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1",
+                            "absolute top-3 opacity-0 group-hover:opacity-100 transition-all flex items-center gap-1 bg-background/90 backdrop-blur-sm rounded-lg p-1 shadow-lg border border-border/50",
                             msg.sender === "patient" ? "right-2" : "left-2"
                           )}>
-                            <Button variant="ghost" size="icon" className="h-7 w-7">
+                            <Button variant="ghost" size="icon" className="h-7 w-7 hover:bg-primary/10">
                               <Reply className="h-3.5 w-3.5" />
                             </Button>
-                            <Button variant="ghost" size="icon" className="h-7 w-7">
+                            <Button variant="ghost" size="icon" className="h-7 w-7 hover:bg-primary/10">
                               <Copy className="h-3.5 w-3.5" />
                             </Button>
                           </div>
                         </div>
                         {msg.sender !== "patient" && msg.isAI && (
-                          <Avatar className="h-8 w-8 mt-1 order-2">
+                          <Avatar className="h-9 w-9 mt-1 order-2 ring-2 ring-purple-500/30 shadow-md">
                             <AvatarFallback className="bg-gradient-to-br from-purple-500 to-pink-500 text-white">
                               <Bot className="h-4 w-4" />
                             </AvatarFallback>
@@ -660,13 +693,13 @@ export default function Chat() {
                 )}
 
                 {/* Input Area */}
-                <div className="p-4 border-t bg-background">
-                  <div className="flex items-end gap-3">
-                    <div className="flex items-center gap-1">
+                <div className="p-4 border-t bg-gradient-to-r from-background via-background to-muted/20">
+                  <div className="flex items-end gap-3 max-w-4xl mx-auto">
+                    <div className="flex items-center gap-1 p-1 rounded-xl bg-muted/30">
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger asChild>
-                            <Button variant="ghost" size="icon" className="h-9 w-9">
+                            <Button variant="ghost" size="icon" className="h-9 w-9 hover:bg-background hover:scale-105 transition-all">
                               <Paperclip className="h-4 w-4" />
                             </Button>
                           </TooltipTrigger>
@@ -676,7 +709,7 @@ export default function Chat() {
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger asChild>
-                            <Button variant="ghost" size="icon" className="h-9 w-9">
+                            <Button variant="ghost" size="icon" className="h-9 w-9 hover:bg-background hover:scale-105 transition-all">
                               <Image className="h-4 w-4" />
                             </Button>
                           </TooltipTrigger>
@@ -686,7 +719,7 @@ export default function Chat() {
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger asChild>
-                            <Button variant="ghost" size="icon" className="h-9 w-9">
+                            <Button variant="ghost" size="icon" className="h-9 w-9 hover:bg-background hover:scale-105 transition-all">
                               <Mic className="h-4 w-4" />
                             </Button>
                           </TooltipTrigger>
@@ -699,33 +732,33 @@ export default function Chat() {
                         placeholder="Digite sua mensagem..."
                         value={messageInput}
                         onChange={(e) => setMessageInput(e.target.value)}
-                        className="min-h-[44px] max-h-32 resize-none pr-12"
+                        className="min-h-[48px] max-h-32 resize-none pr-14 rounded-2xl bg-muted/30 border-border/50 focus:border-primary/50 focus:bg-background transition-all shadow-sm"
                         rows={1}
                       />
                       <Button 
                         variant="ghost" 
                         size="icon" 
-                        className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 h-8 w-8 hover:bg-primary/10 hover:scale-110 transition-all"
                       >
                         <Smile className="h-4 w-4" />
                       </Button>
                     </div>
-                    <Button className="gap-2 h-11 px-5 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700">
+                    <Button className="gap-2 h-12 px-6 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 hover:scale-105 transition-all rounded-xl">
                       <Send className="h-4 w-4" />
-                      <span className="hidden sm:inline">Enviar</span>
+                      <span className="hidden sm:inline font-semibold">Enviar</span>
                     </Button>
                   </div>
                 </div>
               </>
             ) : (
-              <div className="flex-1 flex items-center justify-center">
-                <div className="text-center">
-                  <div className="p-6 rounded-2xl bg-muted/50 mx-auto mb-4 w-fit">
-                    <MessageSquare className="h-12 w-12 text-muted-foreground" />
+              <div className="flex-1 flex items-center justify-center bg-gradient-to-b from-muted/5 to-muted/20">
+                <div className="text-center animate-fade-in">
+                  <div className="p-8 rounded-3xl bg-gradient-to-br from-primary/5 to-primary/10 mx-auto mb-6 w-fit shadow-lg border border-primary/10">
+                    <MessageSquare className="h-16 w-16 text-primary/50" />
                   </div>
-                  <h3 className="font-semibold text-lg mb-2">Nenhuma conversa selecionada</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Selecione uma conversa para começar
+                  <h3 className="font-bold text-xl mb-2">Nenhuma conversa selecionada</h3>
+                  <p className="text-muted-foreground max-w-xs">
+                    Selecione uma conversa na lista ao lado para começar a atender
                   </p>
                 </div>
               </div>
