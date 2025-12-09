@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { NewTransactionModal } from "@/components/financeiro/NewTransactionModal";
 import { 
   DollarSign, 
   TrendingUp, 
@@ -110,6 +111,7 @@ const appointmentRevenue = [
 export default function Financeiro() {
   const [searchTerm, setSearchTerm] = useState("");
   const [periodFilter, setPeriodFilter] = useState("month");
+  const [showNewTransactionModal, setShowNewTransactionModal] = useState(false);
 
   const totalReceita = transactions.filter(t => t.type === "receita" && t.status === "pago").reduce((acc, t) => acc + t.value, 0);
   const totalDespesa = transactions.filter(t => t.type === "despesa" && t.status === "pago").reduce((acc, t) => acc + t.value, 0);
@@ -161,7 +163,7 @@ export default function Financeiro() {
               <Button variant="outline" size="icon">
                 <Download className="h-4 w-4" />
               </Button>
-              <Button className="gap-2">
+              <Button className="gap-2" onClick={() => setShowNewTransactionModal(true)}>
                 <Plus className="h-4 w-4" />
                 <span className="hidden sm:inline">Nova Transação</span>
               </Button>
@@ -169,6 +171,11 @@ export default function Financeiro() {
           </div>
         </div>
       </div>
+
+      <NewTransactionModal 
+        open={showNewTransactionModal} 
+        onOpenChange={setShowNewTransactionModal} 
+      />
 
       <div className="container mx-auto px-4 py-6 space-y-6">
         {/* Metrics Cards */}
