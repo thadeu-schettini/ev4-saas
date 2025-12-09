@@ -1,10 +1,23 @@
+import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, Clock } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import { Calendar, Clock, Edit, Save, X, Plus, Trash2 } from "lucide-react";
+import { toast } from "sonner";
 
 interface Professional {
   name: string;
   nextAvailable: string;
+}
+
+interface ScheduleDay {
+  day: string;
+  hours: string;
+  slots: number;
+  enabled: boolean;
 }
 
 interface ProfessionalScheduleTabProps {
@@ -12,39 +25,133 @@ interface ProfessionalScheduleTabProps {
 }
 
 export const ProfessionalScheduleTab = ({ professional }: ProfessionalScheduleTabProps) => {
-  const schedule = [
-    { day: "Segunda-feira", hours: "08:00 - 17:00", slots: 18 },
-    { day: "Terça-feira", hours: "08:00 - 17:00", slots: 18 },
-    { day: "Quarta-feira", hours: "08:00 - 12:00", slots: 8 },
-    { day: "Quinta-feira", hours: "08:00 - 17:00", slots: 18 },
-    { day: "Sexta-feira", hours: "08:00 - 15:00", slots: 14 }
-  ];
+  const [isEditing, setIsEditing] = useState(false);
+  const [schedule, setSchedule] = useState<ScheduleDay[]>([
+    { day: "Segunda-feira", hours: "08:00 - 17:00", slots: 18, enabled: true },
+    { day: "Terça-feira", hours: "08:00 - 17:00", slots: 18, enabled: true },
+    { day: "Quarta-feira", hours: "08:00 - 12:00", slots: 8, enabled: true },
+    { day: "Quinta-feira", hours: "08:00 - 17:00", slots: 18, enabled: true },
+    { day: "Sexta-feira", hours: "08:00 - 15:00", slots: 14, enabled: true },
+    { day: "Sábado", hours: "08:00 - 12:00", slots: 8, enabled: false },
+  ]);
 
-  const todayAppointments = [
+  const [todayAppointments] = useState([
     { time: "08:00", patient: "João Silva", type: "Consulta" },
     { time: "08:30", patient: "Maria Santos", type: "Retorno" },
     { time: "09:00", patient: "Pedro Costa", type: "Consulta" },
     { time: "10:00", patient: "Ana Oliveira", type: "Consulta" },
     { time: "11:00", patient: "Carlos Mendes", type: "Retorno" },
-  ];
+  ]);
+
+  const handleSave = () => {
+    setIsEditing(false);
+    toast.success("Horários atualizados com sucesso!");
+  };
+
+  const handleCancel = () => {
+    setIsEditing(false);
+  };
+
+  const updateScheduleDay = (index: number, field: keyof ScheduleDay, value: any) => {
+    setSchedule(prev => prev.map((item, i) => 
+      i === index ? { ...item, [field]: value } : item
+    ));
+  };
 
   return (
     <div className="space-y-4">
       <Card className="p-4 border-border/50 bg-card/50 backdrop-blur-sm">
-        <h3 className="font-semibold mb-4 flex items-center gap-2">
-          <Calendar className="h-4 w-4 text-primary" />
-          Horários de Trabalho
-        </h3>
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="font-semibold flex items-center gap-2">
+            <Calendar className="h-4 w-4 text-primary" />
+            Horários de Trabalho
+          </h3>
+          {!isEditing ? (
+            <Button variant="outline" size="sm" onClick={() => setIsEditing(true)}>
+              <Edit className="h-4 w-4 mr-2" />
+              Editar
+            </Button>
+          ) : (
+            <div className="flex gap-2">
+              <Button variant="outline" size="sm" onClick={handleCancel}>
+                <X className="h-4 w-4 mr-2" />
+                Cancelar
+              </Button>
+              <Button size="sm" onClick={handleSave}>
+                <Save className="h-4 w-4 mr-2" />
+                Salvar
+              </Button>
+            </div>
+          )}
+        </div>
+        
         <div className="space-y-3">
-          {schedule.map((item) => (
-            <div key={item.day} className="flex items-center justify-between p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors">
-              <div>
-                <p className="font-medium text-sm">{item.day}</p>
-                <p className="text-xs text-muted-foreground mt-0.5">{item.hours}</p>
-              </div>
-              <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20">
-                {item.slots} vagas
-              </Badge>
+          {schedule.map((item, index) => (
+            <div 
+              key={item.day} 
+              className={`flex items-center justify-between p-3 rounded-lg transition-colors ${
+                item.enabled 
+                  ? "bg-muted/30 hover:bg-muted/50" 
+                  : "bg-muted/10 opacity-60"
+              }`}
+            >
+              {isEditing ? (
+                <>
+                  <div className="flex items-center gap-3 flex-1">
+                    <Switch
+                      checked={item.enabled}
+                      onCheckedChange={(checked) => updateScheduleDay(index, 'enabled', checked)}
+                    />
+                    <div className="min-w-[120px]">
+                      <p className="font-medium text-sm">{item.day}</p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Input
+                        type="time"
+                        defaultValue={item.hours.split(" - ")[0]}
+                        className="w-24 h-8"
+                        onChange={(e) => {
+                          const [_, end] = item.hours.split(" - ");
+                          updateScheduleDay(index, 'hours', `${e.target.value} - ${end}`);
+                        }}
+                      />
+                      <span className="text-muted-foreground">-</span>
+                      <Input
+                        type="time"
+                        defaultValue={item.hours.split(" - ")[1]}
+                        className="w-24 h-8"
+                        onChange={(e) => {
+                          const [start] = item.hours.split(" - ");
+                          updateScheduleDay(index, 'hours', `${start} - ${e.target.value}`);
+                        }}
+                      />
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Label className="text-xs text-muted-foreground">Vagas:</Label>
+                    <Input
+                      type="number"
+                      value={item.slots}
+                      onChange={(e) => updateScheduleDay(index, 'slots', Number(e.target.value))}
+                      className="w-16 h-8"
+                    />
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div>
+                    <p className="font-medium text-sm">{item.day}</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">{item.hours}</p>
+                  </div>
+                  <Badge variant="outline" className={`${
+                    item.enabled 
+                      ? "bg-primary/10 text-primary border-primary/20" 
+                      : "bg-muted text-muted-foreground"
+                  }`}>
+                    {item.enabled ? `${item.slots} vagas` : "Fechado"}
+                  </Badge>
+                </>
+              )}
             </div>
           ))}
         </div>
