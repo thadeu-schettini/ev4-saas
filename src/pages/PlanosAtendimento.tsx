@@ -24,7 +24,9 @@ import {
   Heart,
   Palette,
   Activity,
-  LucideIcon
+  LucideIcon,
+  LayoutGrid,
+  List
 } from "lucide-react";
 import { PageHeader } from "@/components/ui/page-header";
 import { PageContainer, PageContent } from "@/components/ui/page-container";
@@ -38,6 +40,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSepara
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Progress } from "@/components/ui/progress";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
 import { PlanPatientModal } from "@/components/planos/PlanPatientModal";
 import { PlanEditModal } from "@/components/planos/PlanEditModal";
@@ -151,6 +154,7 @@ const stats = [
 
 export default function PlanosAtendimento() {
   const [search, setSearch] = useState("");
+  const [view, setView] = useState<"grid" | "table">("table");
   const [isNewPlanOpen, setIsNewPlanOpen] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<typeof plans[0] | null>(null);
   const [isAddPatientOpen, setIsAddPatientOpen] = useState(false);
@@ -271,176 +275,279 @@ export default function PlanosAtendimento() {
                 onChange={(e) => setSearch(e.target.value)}
               />
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3">
               <Badge variant="outline" className="gap-1">
                 Ativos: {plans.filter(p => p.active).length}
               </Badge>
               <Badge variant="outline" className="gap-1">
                 Inativos: {plans.filter(p => !p.active).length}
               </Badge>
+              {/* View Toggle */}
+              <div className="flex items-center gap-1 bg-muted/50 p-1 rounded-lg">
+                <Button
+                  variant={view === "table" ? "default" : "ghost"}
+                  size="sm"
+                  onClick={() => setView("table")}
+                  className="h-8 w-8 p-0"
+                >
+                  <List className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant={view === "grid" ? "default" : "ghost"}
+                  size="sm"
+                  onClick={() => setView("grid")}
+                  className="h-8 w-8 p-0"
+                >
+                  <LayoutGrid className="h-4 w-4" />
+                </Button>
+              </div>
             </div>
           </div>
         </CardContent>
       </Card>
 
-      {/* Plans Grid */}
-      <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
-        {filteredPlans.map((plan) => {
-          const CategoryIcon = getCategoryIcon(plan.category);
-          const categoryColor = categoryColors[plan.category as keyof typeof categoryColors];
-          const categoryBg = categoryBgColors[plan.category as keyof typeof categoryBgColors];
-          
-          return (
-            <Card 
-              key={plan.id}
-              className={cn(
-                "group relative overflow-hidden border-border/50 hover:border-primary/20 transition-all duration-300 hover:shadow-lg cursor-pointer",
-                !plan.active && "opacity-60"
-              )}
-              onClick={() => setSelectedPlan(plan)}
-            >
-              {/* Subtle background accent */}
-              <div className={cn("absolute top-0 right-0 w-32 h-32 opacity-[0.03] bg-gradient-to-br rounded-full -translate-y-1/2 translate-x-1/2", categoryColor)} />
-              
-              <CardContent className="p-5 space-y-4">
-                {/* Header Row */}
-                <div className="flex items-start justify-between gap-3">
-                  <div className="flex items-start gap-3 flex-1 min-w-0">
-                    <div className={cn(
-                      "p-2 rounded-lg bg-gradient-to-br shrink-0",
-                      categoryColor
-                    )}>
-                      <CategoryIcon className="h-4 w-4 text-white" />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors truncate">
+      {/* Table View */}
+      {view === "table" && (
+        <Card className="border-border/50">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Plano</TableHead>
+                <TableHead className="hidden md:table-cell">Sessões</TableHead>
+                <TableHead className="hidden sm:table-cell">Pacientes</TableHead>
+                <TableHead>Preço</TableHead>
+                <TableHead className="hidden lg:table-cell">Conclusão</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead className="text-right">Ações</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {filteredPlans.map((plan) => {
+                const CategoryIcon = getCategoryIcon(plan.category);
+                const categoryColor = categoryColors[plan.category as keyof typeof categoryColors] || "from-primary/70 to-primary/50";
+                
+                return (
+                  <TableRow 
+                    key={plan.id} 
+                    className={cn("cursor-pointer", !plan.active && "opacity-60")}
+                    onClick={() => setSelectedPlan(plan)}
+                  >
+                    <TableCell>
+                      <div className="flex items-center gap-3">
+                        <div className={cn("p-1.5 rounded-lg bg-gradient-to-br", categoryColor)}>
+                          <CategoryIcon className="h-3.5 w-3.5 text-white" />
+                        </div>
+                        <div>
+                          <p className="font-medium flex items-center gap-2">
+                            {plan.name}
+                            {plan.popular && (
+                              <Star className="h-3.5 w-3.5 fill-amber-500 text-amber-500" />
+                            )}
+                          </p>
+                          <p className="text-xs text-muted-foreground hidden sm:block line-clamp-1">
+                            {plan.description}
+                          </p>
+                        </div>
+                      </div>
+                    </TableCell>
+                    <TableCell className="hidden md:table-cell">
+                      <Badge variant="outline">{plan.sessions}</Badge>
+                    </TableCell>
+                    <TableCell className="hidden sm:table-cell">
+                      <span className="text-muted-foreground">{plan.patients}</span>
+                    </TableCell>
+                    <TableCell className="font-medium">
+                      {plan.price > 0 
+                        ? `R$ ${plan.price.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}` 
+                        : <Badge variant="secondary" className="bg-emerald-500/10 text-emerald-600 border-emerald-500/20 text-xs">Gratuito</Badge>
+                      }
+                    </TableCell>
+                    <TableCell className="hidden lg:table-cell">
+                      <div className="flex items-center gap-2">
+                        <Progress value={plan.completion} className="h-1.5 w-16" />
+                        <span className="text-xs text-muted-foreground">{plan.completion}%</span>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant={plan.active ? "default" : "secondary"}>
+                        {plan.active ? "Ativo" : "Inativo"}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-right" onClick={(e) => e.stopPropagation()}>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="icon" className="h-8 w-8">
+                            <MoreVertical className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem className="gap-2" onClick={() => setSelectedPlan(plan)}>
+                            <Eye className="h-4 w-4" />
+                            Visualizar
+                          </DropdownMenuItem>
+                          <DropdownMenuItem className="gap-2" onClick={() => {
+                            setPlanToEdit(plan);
+                            setIsEditPlanOpen(true);
+                          }}>
+                            <Edit2 className="h-4 w-4" />
+                            Editar
+                          </DropdownMenuItem>
+                          <DropdownMenuItem className="gap-2">
+                            <Copy className="h-4 w-4" />
+                            Duplicar
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem className="gap-2 text-destructive">
+                            <Trash2 className="h-4 w-4" />
+                            Excluir
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </Card>
+      )}
+
+      {/* Grid View */}
+      {view === "grid" && (
+        <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
+          {filteredPlans.map((plan) => {
+            const CategoryIcon = getCategoryIcon(plan.category);
+            const categoryColor = categoryColors[plan.category as keyof typeof categoryColors] || "from-primary/70 to-primary/50";
+            const categoryBg = categoryBgColors[plan.category as keyof typeof categoryBgColors] || "bg-primary/10";
+            
+            return (
+              <Card 
+                key={plan.id}
+                className={cn(
+                  "group relative overflow-hidden border-border/50 hover:border-primary/20 transition-all duration-300 hover:shadow-lg cursor-pointer",
+                  !plan.active && "opacity-60"
+                )}
+                onClick={() => setSelectedPlan(plan)}
+              >
+                {/* Subtle background accent */}
+                <div className={cn("absolute top-0 right-0 w-24 h-24 rounded-full blur-3xl opacity-20 -translate-y-1/2 translate-x-1/2 bg-gradient-to-br", categoryColor)} />
+                
+                <CardContent className="p-4 relative">
+                  {/* Header Row */}
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-2">
+                      <div className={cn("p-1.5 rounded-lg bg-gradient-to-br", categoryColor)}>
+                        <CategoryIcon className="h-3.5 w-3.5 text-white" />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold text-sm group-hover:text-primary transition-colors line-clamp-1">
                           {plan.name}
                         </h3>
-                        {plan.popular && (
-                          <Badge className="bg-amber-500/10 text-amber-600 border-amber-500/20 text-[10px] px-1.5 py-0 h-5">
-                            <Star className="h-2.5 w-2.5 fill-amber-500 mr-0.5" />
-                            Popular
-                          </Badge>
-                        )}
+                        <p className="text-xs text-muted-foreground capitalize">{plan.category}</p>
                       </div>
-                      <p className="text-sm text-muted-foreground line-clamp-1 mt-0.5">
-                        {plan.description}
-                      </p>
+                    </div>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+                        <Button variant="ghost" size="icon" className="h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <MoreVertical className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem className="gap-2" onClick={(e) => { e.stopPropagation(); setSelectedPlan(plan); }}>
+                          <Eye className="h-4 w-4" />
+                          Visualizar
+                        </DropdownMenuItem>
+                        <DropdownMenuItem className="gap-2" onClick={(e) => {
+                          e.stopPropagation();
+                          setPlanToEdit(plan);
+                          setIsEditPlanOpen(true);
+                        }}>
+                          <Edit2 className="h-4 w-4" />
+                          Editar
+                        </DropdownMenuItem>
+                        <DropdownMenuItem className="gap-2" onClick={(e) => e.stopPropagation()}>
+                          <Copy className="h-4 w-4" />
+                          Duplicar
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem className="gap-2 text-destructive" onClick={(e) => e.stopPropagation()}>
+                          <Trash2 className="h-4 w-4" />
+                          Excluir
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
+
+                  {/* Quick Stats Row */}
+                  <div className="flex items-center gap-3 mb-3 text-xs text-muted-foreground">
+                    <div className="flex items-center gap-1">
+                      <Calendar className="h-3 w-3" />
+                      <span>{plan.sessions} sessões</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Users className="h-3 w-3" />
+                      <span>{plan.patients} pacientes</span>
                     </div>
                   </div>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
-                      <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <MoreVertical className="h-4 w-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuItem className="gap-2">
-                        <Eye className="h-4 w-4" />
-                        Visualizar
-                      </DropdownMenuItem>
-                      <DropdownMenuItem className="gap-2">
-                        <Edit2 className="h-4 w-4" />
-                        Editar
-                      </DropdownMenuItem>
-                      <DropdownMenuItem className="gap-2">
-                        <Copy className="h-4 w-4" />
-                        Duplicar
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem className="gap-2 text-destructive">
-                        <Trash2 className="h-4 w-4" />
-                        Excluir
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
 
-                {/* Quick Stats Row */}
-                <div className="flex items-center gap-4 text-sm">
-                  <div className="flex items-center gap-1.5 text-muted-foreground">
-                    <Calendar className="h-3.5 w-3.5" />
-                    <span className="font-medium text-foreground">{plan.sessions}</span>
-                    <span>sessões</span>
+                  {/* Progress */}
+                  <div className="space-y-1 mb-3">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="text-muted-foreground">Conclusão</span>
+                      <span className="font-medium">{plan.completion}%</span>
+                    </div>
+                    <Progress value={plan.completion} className="h-1.5" />
                   </div>
-                  <div className="flex items-center gap-1.5 text-muted-foreground">
-                    <Users className="h-3.5 w-3.5" />
-                    <span className="font-medium text-foreground">{plan.patients}</span>
-                    <span>pacientes</span>
-                  </div>
-                </div>
 
-                {/* Services Pills */}
-                <div className="flex flex-wrap gap-1.5">
-                  {plan.services.slice(0, 2).map((service, idx) => (
-                    <span 
-                      key={idx} 
-                      className={cn(
-                        "text-xs px-2 py-1 rounded-md",
-                        categoryBg,
-                        "text-muted-foreground"
+                  {/* Footer */}
+                  <div className="flex items-center justify-between pt-3 border-t border-border/50">
+                    {plan.price > 0 ? (
+                      <span className="text-lg font-bold">
+                        R$ {plan.price.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                      </span>
+                    ) : (
+                      <Badge variant="secondary" className="bg-emerald-500/10 text-emerald-600 border-emerald-500/20 text-xs">
+                        Gratuito
+                      </Badge>
+                    )}
+                    <div className="flex items-center gap-2">
+                      {plan.popular && (
+                        <Badge className="bg-amber-500/10 text-amber-600 border-amber-500/20 gap-1 text-xs">
+                          <Star className="h-2.5 w-2.5 fill-amber-500" />
+                          Popular
+                        </Badge>
                       )}
-                    >
-                      {service}
-                    </span>
-                  ))}
-                  {plan.services.length > 2 && (
-                    <span className="text-xs px-2 py-1 rounded-md bg-muted/50 text-muted-foreground">
-                      +{plan.services.length - 2} mais
-                    </span>
-                  )}
-                </div>
-
-                {/* Progress Bar */}
-                <div className="space-y-1.5">
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="text-muted-foreground">Conclusão</span>
-                    <span className="font-medium">{plan.completion}%</span>
+                      <Badge variant={plan.active ? "default" : "secondary"} className="text-xs">
+                        {plan.active ? "Ativo" : "Inativo"}
+                      </Badge>
+                    </div>
                   </div>
-                  <Progress value={plan.completion} className="h-1.5" />
-                </div>
+                </CardContent>
+              </Card>
+            );
+          })}
 
-                {/* Footer */}
-                <div className="flex items-center justify-between pt-3 border-t border-border/50">
-                  {plan.price > 0 ? (
-                    <span className="text-lg font-bold">
-                      R$ {plan.price.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                    </span>
-                  ) : (
-                    <Badge variant="secondary" className="bg-emerald-500/10 text-emerald-600 border-emerald-500/20">
-                      Gratuito / SUS
-                    </Badge>
-                  )}
-                  <Badge variant={plan.active ? "default" : "secondary"} className="text-xs">
-                    {plan.active ? "Ativo" : "Inativo"}
-                  </Badge>
-                </div>
-              </CardContent>
-            </Card>
-          );
-        })}
-
-        {/* New Plan Card */}
-        <Card 
-          className="border-2 border-dashed border-border/50 hover:border-primary/30 transition-all duration-300 cursor-pointer group"
-          onClick={() => setIsNewPlanOpen(true)}
-        >
-          <CardContent className="h-full min-h-[400px] flex flex-col items-center justify-center gap-4 text-center p-6">
-            <div className="p-4 rounded-2xl bg-muted/50 group-hover:bg-primary/10 transition-colors">
-              <Plus className="h-8 w-8 text-muted-foreground group-hover:text-primary transition-colors" />
-            </div>
-            <div>
-              <h3 className="font-semibold text-lg group-hover:text-primary transition-colors">
-                Criar Novo Plano
-              </h3>
-              <p className="text-sm text-muted-foreground mt-1">
-                Configure um novo protocolo de atendimento
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+          {/* New Plan Card */}
+          <Card 
+            className="border-2 border-dashed border-border/50 hover:border-primary/30 transition-all duration-300 cursor-pointer group"
+            onClick={() => setIsNewPlanOpen(true)}
+          >
+            <CardContent className="h-full min-h-[200px] flex flex-col items-center justify-center gap-4 text-center p-6">
+              <div className="p-4 rounded-2xl bg-muted/50 group-hover:bg-primary/10 transition-colors">
+                <Plus className="h-8 w-8 text-muted-foreground group-hover:text-primary transition-colors" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-lg group-hover:text-primary transition-colors">
+                  Criar Novo Plano
+                </h3>
+                <p className="text-sm text-muted-foreground mt-1">
+                  Configure um novo protocolo de atendimento
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
 
       {/* Plan Detail Modal */}
       <PlanDetailModal

@@ -2,10 +2,11 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Card } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { PageContainer, PageContent } from "@/components/ui/page-container";
 import { PageHeader } from "@/components/ui/page-header";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
@@ -32,7 +33,10 @@ import {
   UserCog,
   MoreVertical,
   Edit,
-  Trash2
+  Trash2,
+  LayoutGrid,
+  List,
+  Eye
 } from "lucide-react";
 import { ProfessionalGeneralTab } from "@/components/profissionais/ProfessionalGeneralTab";
 import { ProfessionalScheduleTab } from "@/components/profissionais/ProfessionalScheduleTab";
@@ -156,6 +160,7 @@ const statusConfig = {
 
 const Profissionais = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [view, setView] = useState<"grid" | "table">("table");
   const [selectedProfessional, setSelectedProfessional] = useState<Professional | null>(null);
   const [sheetOpen, setSheetOpen] = useState(false);
   const [newModalOpen, setNewModalOpen] = useState(false);
@@ -208,89 +213,209 @@ const Profissionais = () => {
       </PageHeader>
 
       <PageContent>
-        {/* Search */}
-        <div className="relative max-w-md">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder="Buscar por nome, especialidade ou CRM..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10"
-          />
-        </div>
-
-        {/* Grid de Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filteredProfessionals.map((professional, index) => (
-            <Card
-              key={professional.id}
-              className="p-4 cursor-pointer hover:shadow-md hover:border-primary/20 transition-all animate-fade-in"
-              style={{ animationDelay: `${index * 50}ms` }}
-              onClick={() => handleCardClick(professional)}
+        {/* Search & Filters */}
+        <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+          <div className="relative max-w-md flex-1">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Buscar por nome, especialidade ou CRM..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10"
+            />
+          </div>
+          {/* View Toggle */}
+          <div className="flex items-center gap-1 bg-muted/50 p-1 rounded-lg">
+            <Button
+              variant={view === "table" ? "default" : "ghost"}
+              size="sm"
+              onClick={() => setView("table")}
+              className="h-8 w-8 p-0"
             >
-              <div className="flex items-start gap-4">
-                <div className="relative">
-                  <Avatar className="h-14 w-14">
-                    <AvatarImage src={professional.avatar} alt={professional.name} />
-                    <AvatarFallback className="bg-primary/10 text-primary font-semibold">
-                      {professional.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className={`absolute -bottom-0.5 -right-0.5 h-4 w-4 rounded-full border-2 border-background ${statusConfig[professional.status].dotColor}`} />
-                </div>
-                
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold text-foreground truncate">{professional.name}</h3>
-                  <p className="text-sm text-muted-foreground">{professional.specialty}</p>
-                  <p className="text-xs text-muted-foreground mt-1">{professional.crm}</p>
-                </div>
-
-                {/* Actions Dropdown */}
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
-                    <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0">
-                      <MoreVertical className="h-4 w-4" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuItem onClick={(e) => handleEdit(e as any, professional)}>
-                      <Edit className="h-4 w-4 mr-2" />
-                      Editar
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem
-                      className="text-destructive focus:text-destructive"
-                      onClick={(e) => handleDeleteClick(e as any, professional)}
-                    >
-                      <Trash2 className="h-4 w-4 mr-2" />
-                      Excluir
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
-
-              <div className="mt-4 flex items-center justify-between">
-                <Badge variant="outline" className={statusConfig[professional.status].color}>
-                  {statusConfig[professional.status].label}
-                </Badge>
-                <div className="text-xs text-muted-foreground">
-                  <span className="font-medium text-foreground">{professional.appointmentsToday}</span> hoje
-                </div>
-              </div>
-
-              <div className="mt-3 pt-3 border-t border-border/50 flex items-center gap-4 text-xs text-muted-foreground">
-                <div className="flex items-center gap-1">
-                  <Clock className="h-3 w-3" />
-                  <span>{professional.nextAvailable}</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <MapPin className="h-3 w-3" />
-                  <span>{professional.address}</span>
-                </div>
-              </div>
-            </Card>
-          ))}
+              <List className="h-4 w-4" />
+            </Button>
+            <Button
+              variant={view === "grid" ? "default" : "ghost"}
+              size="sm"
+              onClick={() => setView("grid")}
+              className="h-8 w-8 p-0"
+            >
+              <LayoutGrid className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
+
+        {/* Table View */}
+        {view === "table" && (
+          <Card className="border-border/50">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Profissional</TableHead>
+                  <TableHead className="hidden md:table-cell">Contato</TableHead>
+                  <TableHead className="hidden sm:table-cell">Local</TableHead>
+                  <TableHead>Consultas Hoje</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead className="text-right">Ações</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {filteredProfessionals.map((professional) => (
+                  <TableRow 
+                    key={professional.id} 
+                    className="cursor-pointer"
+                    onClick={() => handleCardClick(professional)}
+                  >
+                    <TableCell>
+                      <div className="flex items-center gap-3">
+                        <div className="relative">
+                          <Avatar className="h-10 w-10">
+                            <AvatarImage src={professional.avatar} alt={professional.name} />
+                            <AvatarFallback className="bg-primary/10 text-primary font-semibold text-sm">
+                              {professional.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div className={`absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-background ${statusConfig[professional.status].dotColor}`} />
+                        </div>
+                        <div>
+                          <p className="font-medium">{professional.name}</p>
+                          <p className="text-xs text-muted-foreground">{professional.specialty} · {professional.crm}</p>
+                        </div>
+                      </div>
+                    </TableCell>
+                    <TableCell className="hidden md:table-cell">
+                      <div className="space-y-0.5">
+                        <p className="text-sm">{professional.phone}</p>
+                        <p className="text-xs text-muted-foreground truncate max-w-[180px]">{professional.email}</p>
+                      </div>
+                    </TableCell>
+                    <TableCell className="hidden sm:table-cell text-sm text-muted-foreground">
+                      {professional.address}
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant="outline">{professional.appointmentsToday}</Badge>
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant="outline" className={statusConfig[professional.status].color}>
+                        {statusConfig[professional.status].label}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-right" onClick={(e) => e.stopPropagation()}>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="icon" className="h-8 w-8">
+                            <MoreVertical className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem onClick={() => handleCardClick(professional)}>
+                            <Eye className="h-4 w-4 mr-2" />
+                            Ver detalhes
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={(e) => handleEdit(e as any, professional)}>
+                            <Edit className="h-4 w-4 mr-2" />
+                            Editar
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem
+                            className="text-destructive focus:text-destructive"
+                            onClick={(e) => handleDeleteClick(e as any, professional)}
+                          >
+                            <Trash2 className="h-4 w-4 mr-2" />
+                            Excluir
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </Card>
+        )}
+
+        {/* Grid View */}
+        {view === "grid" && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {filteredProfessionals.map((professional, index) => (
+              <Card
+                key={professional.id}
+                className="group relative overflow-hidden border-border/50 hover:border-primary/30 transition-all duration-300 hover:shadow-lg cursor-pointer"
+                style={{ animationDelay: `${index * 50}ms` }}
+                onClick={() => handleCardClick(professional)}
+              >
+                {/* Subtle background accent */}
+                <div className="absolute top-0 right-0 w-24 h-24 rounded-full blur-3xl opacity-10 -translate-y-1/2 translate-x-1/2 bg-gradient-to-br from-primary/70 to-primary/50" />
+                
+                <CardContent className="p-4 relative">
+                  {/* Header Row */}
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-3">
+                      <div className="relative">
+                        <Avatar className="h-11 w-11">
+                          <AvatarImage src={professional.avatar} alt={professional.name} />
+                          <AvatarFallback className="bg-primary/10 text-primary font-semibold">
+                            {professional.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className={`absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 rounded-full border-2 border-background ${statusConfig[professional.status].dotColor}`} />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold text-sm text-foreground group-hover:text-primary transition-colors">
+                          {professional.name}
+                        </h3>
+                        <p className="text-xs text-muted-foreground">{professional.specialty}</p>
+                      </div>
+                    </div>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+                        <Button variant="ghost" size="icon" className="h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <MoreVertical className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem onClick={(e) => handleEdit(e as any, professional)}>
+                          <Edit className="h-4 w-4 mr-2" />
+                          Editar
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem
+                          className="text-destructive focus:text-destructive"
+                          onClick={(e) => handleDeleteClick(e as any, professional)}
+                        >
+                          <Trash2 className="h-4 w-4 mr-2" />
+                          Excluir
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
+
+                  {/* Quick Stats */}
+                  <div className="flex items-center gap-3 mb-3 text-xs text-muted-foreground">
+                    <div className="flex items-center gap-1">
+                      <Clock className="h-3 w-3" />
+                      <span>{professional.nextAvailable}</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <MapPin className="h-3 w-3" />
+                      <span>{professional.address}</span>
+                    </div>
+                  </div>
+
+                  {/* Footer */}
+                  <div className="flex items-center justify-between pt-3 border-t border-border/50">
+                    <Badge variant="outline" className={statusConfig[professional.status].color}>
+                      {statusConfig[professional.status].label}
+                    </Badge>
+                    <div className="text-xs text-muted-foreground">
+                      <span className="font-medium text-foreground">{professional.appointmentsToday}</span> hoje
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
       </PageContent>
 
       {/* Professional Detail Sheet */}
