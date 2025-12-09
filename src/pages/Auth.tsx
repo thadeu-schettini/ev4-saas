@@ -565,7 +565,7 @@ export default function Auth() {
                 </div>
 
                 {/* Plan Cards */}
-                <div className="space-y-3">
+                <div className="space-y-4 pt-3">
                   {plans.map((plan) => (
                     <Card 
                       key={plan.id}
