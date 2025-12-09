@@ -28,6 +28,8 @@ import Pipeline from "./pages/Pipeline";
 import Chat from "./pages/Chat";
 import PortalPaciente from "./pages/PortalPaciente";
 import SuperAdmin from "./pages/SuperAdmin";
+import MeuPerfil from "./pages/MeuPerfil";
+import Ajuda from "./pages/Ajuda";
 import Auth from "./pages/Auth";
 import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
@@ -70,6 +72,8 @@ const App = () => (
               <Route path="/pipeline" element={<Pipeline />} />
               <Route path="/chat" element={<Chat />} />
               <Route path="/superadmin" element={<SuperAdmin />} />
+              <Route path="/meu-perfil" element={<MeuPerfil />} />
+              <Route path="/ajuda" element={<Ajuda />} />
             </Route>
             
             {/* Portal Paciente - separate layout */}

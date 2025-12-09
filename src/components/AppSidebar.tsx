@@ -230,21 +230,29 @@ export function AppSidebar() {
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="gap-2 cursor-pointer">
-              <User className="h-4 w-4" />
-              <span>Meu Perfil</span>
+            <DropdownMenuItem className="gap-2 cursor-pointer" asChild>
+              <NavLink to="/meu-perfil">
+                <User className="h-4 w-4" />
+                <span>Meu Perfil</span>
+              </NavLink>
             </DropdownMenuItem>
-            <DropdownMenuItem className="gap-2 cursor-pointer">
-              <Settings className="h-4 w-4" />
-              <span>Configurações</span>
+            <DropdownMenuItem className="gap-2 cursor-pointer" asChild>
+              <NavLink to="/configuracoes">
+                <Settings className="h-4 w-4" />
+                <span>Configurações</span>
+              </NavLink>
             </DropdownMenuItem>
-            <DropdownMenuItem className="gap-2 cursor-pointer">
-              <Bell className="h-4 w-4" />
-              <span>Notificações</span>
+            <DropdownMenuItem className="gap-2 cursor-pointer" asChild>
+              <NavLink to="/notificacoes">
+                <Bell className="h-4 w-4" />
+                <span>Notificações</span>
+              </NavLink>
             </DropdownMenuItem>
-            <DropdownMenuItem className="gap-2 cursor-pointer">
-              <HelpCircle className="h-4 w-4" />
-              <span>Ajuda</span>
+            <DropdownMenuItem className="gap-2 cursor-pointer" asChild>
+              <NavLink to="/ajuda">
+                <HelpCircle className="h-4 w-4" />
+                <span>Ajuda</span>
+              </NavLink>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem className="gap-2 cursor-pointer text-destructive focus:text-destructive">

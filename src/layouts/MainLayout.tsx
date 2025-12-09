@@ -37,6 +37,8 @@ const pageInfo: Record<string, { title: string; icon: React.ElementType }> = {
   "/indicacoes": { title: "Indicações", icon: Gift },
   "/billing": { title: "Faturamento", icon: CreditCard },
   "/configuracoes": { title: "Configurações", icon: Settings },
+  "/meu-perfil": { title: "Meu Perfil", icon: UserCog },
+  "/ajuda": { title: "Ajuda", icon: Settings },
 };
 
 export function MainLayout({ children }: MainLayoutProps) {
