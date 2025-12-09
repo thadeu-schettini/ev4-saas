@@ -22,6 +22,8 @@ import { QueueManagementView } from "@/components/recepcao/QueueManagementView";
 import { AdvancedFilters } from "@/components/recepcao/AdvancedFilters";
 import { RoomStatusPanel } from "@/components/recepcao/RoomStatusPanel";
 import { PendingConfirmations } from "@/components/recepcao/PendingConfirmations";
+import { ReceptionSummaryBar } from "@/components/recepcao/ReceptionSummaryBar";
+import { NextPatientCard } from "@/components/recepcao/NextPatientCard";
 import { RecepcaoSkeleton } from "@/components/skeletons/PageSkeletons";
 import { useSimulatedLoading } from "@/hooks/use-loading";
 import {
@@ -163,76 +165,82 @@ const Recepcao = () => {
         {isLoading ? (
           <RecepcaoSkeleton />
         ) : (
-          <>
-        {/* Search and View Selector */}
-        <div className="flex flex-col gap-3">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Buscar paciente, profissional ou serviço..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 bg-background/50 backdrop-blur-sm border-border/50 focus:border-primary/50 w-full"
-            />
-          </div>
-          <div className="flex gap-2 justify-between sm:justify-end">
-            <AdvancedFilters
-              filters={availableFilters}
-              activeFilters={activeFilters}
-              onFilterChange={handleFilterChange}
-              onClearFilters={handleClearFilters}
-            />
-            <ViewSelector currentView={currentView} onViewChange={setCurrentView} />
-          </div>
-        </div>
+          <div className="space-y-4 sm:space-y-6">
+            {/* Summary Bar - Quick stats at a glance */}
+            <ReceptionSummaryBar />
 
-        {/* Main Content */}
-        <div className="flex flex-col lg:flex-row gap-4 sm:gap-6">
-          <div className="flex-1">
-            {renderView()}
-          </div>
+            {/* Next Patient Card - Most important action */}
+            <NextPatientCard />
 
-          {/* Desktop Sidebar */}
-          <div className="hidden lg:block w-72 xl:w-80 flex-shrink-0">
-            <div className="sticky top-32">
-              <Accordion type="single" collapsible defaultValue="confirmations" className="space-y-2">
-                <AccordionItem value="confirmations" className="border rounded-lg bg-card">
-                  <AccordionTrigger className="px-4 hover:no-underline">
-                    <span className="font-semibold">Confirmações Pendentes</span>
-                  </AccordionTrigger>
-                  <AccordionContent className="px-4">
-                    <PendingConfirmations />
-                  </AccordionContent>
-                </AccordionItem>
-                <AccordionItem value="rooms" className="border rounded-lg bg-card">
-                  <AccordionTrigger className="px-4 hover:no-underline">
-                    <span className="font-semibold">Status das Salas</span>
-                  </AccordionTrigger>
-                  <AccordionContent className="px-4">
-                    <RoomStatusPanel />
-                  </AccordionContent>
-                </AccordionItem>
-                <AccordionItem value="actions" className="border rounded-lg bg-card">
-                  <AccordionTrigger className="px-4 hover:no-underline">
-                    <span className="font-semibold">Ações Rápidas</span>
-                  </AccordionTrigger>
-                  <AccordionContent className="px-4">
-                    <QuickActions />
-                  </AccordionContent>
-                </AccordionItem>
-                <AccordionItem value="alerts" className="border rounded-lg bg-card">
-                  <AccordionTrigger className="px-4 hover:no-underline">
-                    <span className="font-semibold">Alertas do Dia</span>
-                  </AccordionTrigger>
-                  <AccordionContent className="px-4">
-                    <AlertsPanel />
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
+            {/* Search and View Selector */}
+            <div className="flex flex-col gap-3">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Buscar paciente, profissional ou serviço..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10 bg-background/50 backdrop-blur-sm border-border/50 focus:border-primary/50 w-full"
+                />
+              </div>
+              <div className="flex gap-2 justify-between sm:justify-end">
+                <AdvancedFilters
+                  filters={availableFilters}
+                  activeFilters={activeFilters}
+                  onFilterChange={handleFilterChange}
+                  onClearFilters={handleClearFilters}
+                />
+                <ViewSelector currentView={currentView} onViewChange={setCurrentView} />
+              </div>
+            </div>
+
+            {/* Main Content */}
+            <div className="flex flex-col lg:flex-row gap-4 sm:gap-6">
+              <div className="flex-1">
+                {renderView()}
+              </div>
+
+              {/* Desktop Sidebar */}
+              <div className="hidden lg:block w-72 xl:w-80 flex-shrink-0">
+                <div className="sticky top-32 space-y-2">
+                  <Accordion type="multiple" defaultValue={["confirmations", "rooms"]} className="space-y-2">
+                    <AccordionItem value="confirmations" className="border rounded-lg bg-card/50 backdrop-blur-sm">
+                      <AccordionTrigger className="px-4 hover:no-underline">
+                        <span className="font-semibold text-sm">Confirmações Pendentes</span>
+                      </AccordionTrigger>
+                      <AccordionContent className="px-4">
+                        <PendingConfirmations />
+                      </AccordionContent>
+                    </AccordionItem>
+                    <AccordionItem value="rooms" className="border rounded-lg bg-card/50 backdrop-blur-sm">
+                      <AccordionTrigger className="px-4 hover:no-underline">
+                        <span className="font-semibold text-sm">Status das Salas</span>
+                      </AccordionTrigger>
+                      <AccordionContent className="px-4">
+                        <RoomStatusPanel />
+                      </AccordionContent>
+                    </AccordionItem>
+                    <AccordionItem value="actions" className="border rounded-lg bg-card/50 backdrop-blur-sm">
+                      <AccordionTrigger className="px-4 hover:no-underline">
+                        <span className="font-semibold text-sm">Ações Rápidas</span>
+                      </AccordionTrigger>
+                      <AccordionContent className="px-4">
+                        <QuickActions />
+                      </AccordionContent>
+                    </AccordionItem>
+                    <AccordionItem value="alerts" className="border rounded-lg bg-card/50 backdrop-blur-sm">
+                      <AccordionTrigger className="px-4 hover:no-underline">
+                        <span className="font-semibold text-sm">Alertas do Dia</span>
+                      </AccordionTrigger>
+                      <AccordionContent className="px-4">
+                        <AlertsPanel />
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-          </>
         )}
       </PageContent>
     </PageContainer>

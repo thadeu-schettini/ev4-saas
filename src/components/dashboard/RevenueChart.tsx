@@ -8,22 +8,48 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { PeriodSelector, Period } from "./PeriodSelector";
 
-const data = [
-  { name: "Jan", receita: 45000, despesas: 32000 },
-  { name: "Fev", receita: 52000, despesas: 34000 },
-  { name: "Mar", receita: 48000, despesas: 31000 },
-  { name: "Abr", receita: 61000, despesas: 35000 },
-  { name: "Mai", receita: 55000, despesas: 33000 },
-  { name: "Jun", receita: 67000, despesas: 38000 },
-  { name: "Jul", receita: 72000, despesas: 40000 },
+const weekData = [
+  { name: "Seg", receita: 8500, despesas: 5200 },
+  { name: "Ter", receita: 12000, despesas: 6800 },
+  { name: "Qua", receita: 9800, despesas: 5500 },
+  { name: "Qui", receita: 14200, despesas: 7100 },
+  { name: "Sex", receita: 11500, despesas: 6300 },
+  { name: "Sáb", receita: 7800, despesas: 4200 },
+  { name: "Dom", receita: 3200, despesas: 1800 },
 ];
 
+const monthData = [
+  { name: "Sem 1", receita: 45000, despesas: 32000 },
+  { name: "Sem 2", receita: 52000, despesas: 34000 },
+  { name: "Sem 3", receita: 48000, despesas: 31000 },
+  { name: "Sem 4", receita: 61000, despesas: 35000 },
+];
+
+const quarterData = [
+  { name: "Jan", receita: 145000, despesas: 92000 },
+  { name: "Fev", receita: 152000, despesas: 94000 },
+  { name: "Mar", receita: 168000, despesas: 101000 },
+];
+
+const dataByPeriod = {
+  week: weekData,
+  month: monthData,
+  quarter: quarterData,
+};
+
+const periodLabels = {
+  week: "Esta Semana",
+  month: "Este Mês",
+  quarter: "Este Trimestre",
+};
+
 export function RevenueChart() {
+  const [period, setPeriod] = useState<Period>("month");
   const [primaryColor, setPrimaryColor] = useState("hsl(217, 91%, 50%)");
   const [successColor, setSuccessColor] = useState("hsl(142, 76%, 36%)");
 
-  // Listen for theme changes and update chart colors
   useEffect(() => {
     const updateColors = () => {
       const root = document.documentElement;
@@ -36,7 +62,6 @@ export function RevenueChart() {
 
     updateColors();
 
-    // Create observer for theme changes
     const observer = new MutationObserver(updateColors);
     observer.observe(document.documentElement, { 
       attributes: true, 
@@ -46,11 +71,16 @@ export function RevenueChart() {
     return () => observer.disconnect();
   }, []);
 
+  const data = dataByPeriod[period];
+
   return (
     <div className="rounded-2xl border border-border/50 bg-card p-6 shadow-sm">
-      <div className="mb-6">
-        <h3 className="text-lg font-semibold text-foreground">Receita vs Despesas</h3>
-        <p className="text-sm text-muted-foreground">Últimos 7 meses</p>
+      <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div>
+          <h3 className="text-lg font-semibold text-foreground">Receita vs Despesas</h3>
+          <p className="text-sm text-muted-foreground">{periodLabels[period]}</p>
+        </div>
+        <PeriodSelector value={period} onChange={setPeriod} />
       </div>
       
       <div className="h-[300px]">
