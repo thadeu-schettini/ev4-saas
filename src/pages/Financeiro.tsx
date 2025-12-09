@@ -149,7 +149,7 @@ export default function Financeiro() {
         title="Financeiro"
         description="Gerencie receitas, despesas e parcelamentos"
         icon={DollarSign}
-        iconColor="from-emerald-500 to-emerald-600"
+        iconColor="from-success to-success"
       >
         <Select value={periodFilter} onValueChange={setPeriodFilter}>
           <SelectTrigger className="w-[140px]">
@@ -183,52 +183,52 @@ export default function Financeiro() {
           <>
         {/* Metrics Cards */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-          <Card className="bg-gradient-to-br from-emerald-500/10 to-emerald-600/5 border-emerald-500/20">
+          <Card className="bg-gradient-to-br from-success/10 to-success/5 border-success/20">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-muted-foreground">Receita Total</p>
-                  <p className="text-2xl font-bold text-emerald-600">
+                  <p className="text-2xl font-bold text-success">
                     R$ {totalReceita.toLocaleString('pt-BR')}
                   </p>
-                  <div className="flex items-center gap-1 mt-1 text-xs text-emerald-600">
+                  <div className="flex items-center gap-1 mt-1 text-xs text-success">
                     <ArrowUpRight className="h-3 w-3" />
                     <span>+12% vs mês anterior</span>
                   </div>
                 </div>
-                <div className="h-12 w-12 rounded-full bg-emerald-500/20 flex items-center justify-center">
-                  <TrendingUp className="h-6 w-6 text-emerald-600" />
+                <div className="h-12 w-12 rounded-full bg-success/20 flex items-center justify-center">
+                  <TrendingUp className="h-6 w-6 text-success" />
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-red-500/10 to-red-600/5 border-red-500/20">
+          <Card className="bg-gradient-to-br from-destructive/10 to-destructive/5 border-destructive/20">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-muted-foreground">Despesas</p>
-                  <p className="text-2xl font-bold text-red-600">
+                  <p className="text-2xl font-bold text-destructive">
                     R$ {totalDespesa.toLocaleString('pt-BR')}
                   </p>
-                  <div className="flex items-center gap-1 mt-1 text-xs text-red-600">
+                  <div className="flex items-center gap-1 mt-1 text-xs text-destructive">
                     <ArrowDownRight className="h-3 w-3" />
                     <span>-5% vs mês anterior</span>
                   </div>
                 </div>
-                <div className="h-12 w-12 rounded-full bg-red-500/20 flex items-center justify-center">
-                  <TrendingDown className="h-6 w-6 text-red-600" />
+                <div className="h-12 w-12 rounded-full bg-destructive/20 flex items-center justify-center">
+                  <TrendingDown className="h-6 w-6 text-destructive" />
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-blue-500/10 to-blue-600/5 border-blue-500/20">
+          <Card className="bg-gradient-to-br from-info/10 to-info/5 border-info/20">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-muted-foreground">Saldo</p>
-                  <p className="text-2xl font-bold text-blue-600">
+                  <p className="text-2xl font-bold text-info">
                     R$ {saldo.toLocaleString('pt-BR')}
                   </p>
                   <div className="flex items-center gap-1 mt-1 text-xs text-muted-foreground">
@@ -236,28 +236,28 @@ export default function Financeiro() {
                     <span>Lucro líquido</span>
                   </div>
                 </div>
-                <div className="h-12 w-12 rounded-full bg-blue-500/20 flex items-center justify-center">
-                  <PiggyBank className="h-6 w-6 text-blue-600" />
+                <div className="h-12 w-12 rounded-full bg-info/20 flex items-center justify-center">
+                  <PiggyBank className="h-6 w-6 text-info" />
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-amber-500/10 to-amber-600/5 border-amber-500/20">
+          <Card className="bg-gradient-to-br from-warning/10 to-warning/5 border-warning/20">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-muted-foreground">Pendente</p>
-                  <p className="text-2xl font-bold text-amber-600">
+                  <p className="text-2xl font-bold text-warning">
                     R$ {pendente.toLocaleString('pt-BR')}
                   </p>
-                  <div className="flex items-center gap-1 mt-1 text-xs text-amber-600">
+                  <div className="flex items-center gap-1 mt-1 text-xs text-warning">
                     <Clock className="h-3 w-3" />
                     <span>Aguardando pagamento</span>
                   </div>
                 </div>
-                <div className="h-12 w-12 rounded-full bg-amber-500/20 flex items-center justify-center">
-                  <Receipt className="h-6 w-6 text-amber-600" />
+                <div className="h-12 w-12 rounded-full bg-warning/20 flex items-center justify-center">
+                  <Receipt className="h-6 w-6 text-warning" />
                 </div>
               </div>
             </CardContent>
@@ -409,8 +409,8 @@ export default function Financeiro() {
                             <div className="flex items-center gap-3">
                               <div className={`h-8 w-8 rounded-full flex items-center justify-center ${
                                 transaction.type === 'receita' 
-                                  ? 'bg-emerald-500/20 text-emerald-600' 
-                                  : 'bg-red-500/20 text-red-600'
+                                  ? 'bg-success/20 text-success' 
+                                  : 'bg-destructive/20 text-destructive'
                               }`}>
                                 {transaction.type === 'receita' ? (
                                   <ArrowUpRight className="h-4 w-4" />
@@ -433,7 +433,7 @@ export default function Financeiro() {
                             {transaction.paymentMethod}
                           </TableCell>
                           <TableCell className={`font-medium ${
-                            transaction.type === 'receita' ? 'text-emerald-600' : 'text-red-600'
+                            transaction.type === 'receita' ? 'text-success' : 'text-destructive'
                           }`}>
                             {transaction.type === 'receita' ? '+' : '-'}R$ {transaction.value.toLocaleString('pt-BR')}
                           </TableCell>

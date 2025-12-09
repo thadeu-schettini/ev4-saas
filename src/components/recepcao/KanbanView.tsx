@@ -132,9 +132,9 @@ const columns = [
 ];
 
 const getWaitingTimeColor = (minutes: number) => {
-  if (minutes >= 60) return "bg-red-500/20 text-red-700 dark:text-red-400 border-red-500/30";
-  if (minutes >= 30) return "bg-orange-500/20 text-orange-700 dark:text-orange-400 border-orange-500/30";
-  return "bg-green-500/20 text-green-700 dark:text-green-400 border-green-500/30";
+  if (minutes >= 60) return "bg-destructive/20 text-destructive border-destructive/30";
+  if (minutes >= 30) return "bg-warning/20 text-warning border-warning/30";
+  return "bg-success/20 text-success border-success/30";
 };
 
 const getWaitingTimeLabel = (minutes: number) => {

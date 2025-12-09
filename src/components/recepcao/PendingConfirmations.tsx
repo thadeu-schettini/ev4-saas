@@ -69,14 +69,14 @@ export const PendingConfirmations = () => {
         <p className="text-xs text-muted-foreground">
           Amanhã • Aguardando confirmação
         </p>
-        <Badge variant="secondary" className="bg-amber-500/20 text-amber-700 border-amber-500/30">
+        <Badge variant="secondary" className="bg-warning/20 text-warning border-warning/30">
           {pendingAppointments.length}
         </Badge>
       </div>
         {pendingAppointments.map((appointment) => (
           <div
             key={appointment.id}
-            className="group p-3 rounded-lg bg-background/80 backdrop-blur-sm border border-border/50 hover:border-amber-500/30 hover:shadow-md transition-all duration-300"
+            className="group p-3 rounded-lg bg-background/80 backdrop-blur-sm border border-border/50 hover:border-warning/30 hover:shadow-md transition-all duration-300"
           >
             <div className="flex items-start justify-between gap-3 mb-2">
               <div className="flex-1 min-w-0">
@@ -97,7 +97,7 @@ export const PendingConfirmations = () => {
               <Button
                 size="sm"
                 variant="outline"
-                className="h-7 flex-1 text-xs bg-green-500/10 border-green-500/30 hover:bg-green-500/20 hover:border-green-500/50 text-green-700 dark:text-green-400"
+                className="h-7 flex-1 text-xs bg-success/10 border-success/30 hover:bg-success/20 hover:border-success/50 text-success"
                 onClick={() =>
                   handleWhatsApp(appointment.phone, appointment.patient, appointment.time)
                 }
