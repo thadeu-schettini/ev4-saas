@@ -14,7 +14,9 @@ import {
   MapPin,
   Video,
   Building2,
-  Home
+  Home,
+  Maximize2,
+  Minimize2
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
@@ -169,7 +171,12 @@ const mockEvents: CalendarEvent[] = [
 
 type ViewType = "dayGridMonth" | "timeGridWeek" | "timeGridDay";
 
-export const FullCalendarView = () => {
+interface FullCalendarViewProps {
+  isFullscreen?: boolean;
+  onToggleFullscreen?: () => void;
+}
+
+export const FullCalendarView = ({ isFullscreen, onToggleFullscreen }: FullCalendarViewProps = {}) => {
   const calendarRef = useRef<FullCalendar>(null);
   const isMobile = useIsMobile();
   const [currentView, setCurrentView] = useState<ViewType>("timeGridWeek");
@@ -476,6 +483,23 @@ export const FullCalendarView = () => {
             <List className="h-3.5 w-3.5 text-primary" />
             <span className="text-xs font-medium text-primary">Dia</span>
           </div>
+        )}
+
+        {/* Fullscreen Toggle */}
+        {onToggleFullscreen && (
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={onToggleFullscreen}
+            className="h-8 w-8 sm:h-9 sm:w-9 hover:bg-primary/10 hover:border-primary/30 hover:text-primary transition-all ml-auto"
+            title={isFullscreen ? "Sair da tela cheia" : "Tela cheia"}
+          >
+            {isFullscreen ? (
+              <Minimize2 className="h-4 w-4" />
+            ) : (
+              <Maximize2 className="h-4 w-4" />
+            )}
+          </Button>
         )}
       </div>
 
