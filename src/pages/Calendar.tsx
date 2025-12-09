@@ -24,6 +24,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 
 const Calendar = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [hideUpcoming, setHideUpcoming] = useState(true); // Hidden by default
   const isMobile = useIsMobile();
   
   const appointments = [
@@ -184,15 +185,20 @@ const Calendar = () => {
 
       {/* Filters - Collapsible on mobile */}
       <div className="px-4 sm:px-6 pt-3">
-        <CalendarFilters />
+        <CalendarFilters 
+          hideUpcoming={hideUpcoming}
+          onHideUpcomingChange={setHideUpcoming}
+        />
       </div>
 
       {/* Main Content - Desktop with sidebar, Mobile full calendar */}
       <div className="flex flex-1 min-h-0 px-4 sm:px-6 py-4 gap-4">
-        {/* Desktop Sidebar - Hidden on tablet/mobile */}
-        <div className="hidden xl:flex flex-col w-[360px] border border-border/50 bg-card/50 backdrop-blur-sm rounded-xl overflow-hidden flex-shrink-0">
-          <SidebarContent />
-        </div>
+        {/* Desktop Sidebar - Hidden on tablet/mobile or when hideUpcoming is true */}
+        {!hideUpcoming && (
+          <div className="hidden xl:flex flex-col w-[360px] border border-border/50 bg-card/50 backdrop-blur-sm rounded-xl overflow-hidden flex-shrink-0">
+            <SidebarContent />
+          </div>
+        )}
 
         {/* Calendar Area - Full width on mobile/tablet */}
         <div className="flex-1 min-w-0">

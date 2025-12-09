@@ -14,11 +14,15 @@ const services = ["Consulta", "Retorno", "Exame", "Procedimento", "Avaliação"]
 const professionals = ["Dr. Carlos Silva", "Dra. Ana Santos", "Dr. Pedro Lima", "Dra. Maria Costa"];
 const statuses = ["Confirmado", "Pendente", "Cancelado", "Aguardando"];
 
-export const CalendarFilters = () => {
+interface CalendarFiltersProps {
+  hideUpcoming?: boolean;
+  onHideUpcomingChange?: (value: boolean) => void;
+}
+
+export const CalendarFilters = ({ hideUpcoming = true, onHideUpcomingChange }: CalendarFiltersProps) => {
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
   const [showExternal, setShowExternal] = useState(false);
   const [showBlocks, setShowBlocks] = useState(false);
-  const [hideUpcoming, setHideUpcoming] = useState(true); // Hidden by default
 
   const toggleFilter = (filter: string) => {
     if (activeFilters.includes(filter)) {
@@ -40,7 +44,7 @@ export const CalendarFilters = () => {
         <Button 
           variant={hideUpcoming ? "default" : "outline"}
           size="sm"
-          onClick={() => setHideUpcoming(!hideUpcoming)}
+          onClick={() => onHideUpcomingChange?.(!hideUpcoming)}
           className={`h-8 sm:h-9 px-2.5 sm:px-4 text-xs sm:text-sm font-semibold transition-all duration-300 group flex-shrink-0 ${
             hideUpcoming 
               ? "bg-primary text-primary-foreground hover:bg-primary/90" 
