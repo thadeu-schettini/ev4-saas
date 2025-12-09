@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -17,7 +16,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import {
-  ArrowLeft,
   Crown,
   Sparkles,
   TrendingUp,
@@ -40,6 +38,8 @@ import {
 import { UpgradeCelebrationModal } from "@/components/UpgradeCelebrationModal";
 import { FeaturePreviewModal } from "@/components/FeaturePreviewModal";
 import { useToast } from "@/hooks/use-toast";
+import { PageContainer, PageContent } from "@/components/ui/page-container";
+import { PageHeader } from "@/components/ui/page-header";
 
 const Billing = () => {
   const { toast } = useToast();
@@ -231,7 +231,7 @@ const Billing = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
+    <PageContainer className="bg-gradient-to-br from-background via-background to-primary/5">
       {/* Celebration Modal */}
       {upgradedPlan && (
         <UpgradeCelebrationModal
@@ -258,28 +258,16 @@ const Billing = () => {
           }
         }}
       />
-      {/* Header */}
-      <div className="border-b bg-background/50 backdrop-blur-sm sticky top-0 z-10">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Link to="/">
-                <Button variant="ghost" size="icon">
-                  <ArrowLeft className="h-5 w-5" />
-                </Button>
-              </Link>
-              <div>
-                <h1 className="text-2xl font-bold">Planos e Faturamento</h1>
-                <p className="text-sm text-muted-foreground">
-                  Gerencie seu plano e desbloqueie mais recursos
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      
+      <PageHeader
+        title="Planos e Faturamento"
+        description="Gerencie seu plano e desbloqueie mais recursos"
+        icon={CreditCard}
+        iconColor="from-violet-500 to-purple-600"
+        backLink="/"
+      />
 
-      <div className="container mx-auto px-4 py-8 space-y-8">
+      <PageContent>
         {/* Trial Banner */}
         {trialActive && (
           <Card className="border-2 border-primary/50 bg-gradient-to-r from-primary/10 to-accent/5 animate-fade-in">
@@ -906,8 +894,8 @@ const Billing = () => {
             </Card>
           </TabsContent>
         </Tabs>
-      </div>
-    </div>
+      </PageContent>
+    </PageContainer>
   );
 };
 

@@ -17,6 +17,8 @@ import { ConsultationComparison } from "@/components/ConsultationComparison";
 import { PrintPreview } from "@/components/PrintPreview";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DynamicFormBuilder, FormSection } from "@/components/DynamicFormBuilder";
+import { PageContainer, PageContent } from "@/components/ui/page-container";
+import { PageHeader } from "@/components/ui/page-header";
 
 // Validation schemas
 const vitalSignsSchema = z.object({
@@ -677,10 +679,18 @@ Solicitados exames complementares:
   };
 
   return (
-    <div className="min-h-screen bg-background p-2 sm:p-4 md:p-6">
-      {/* Header with Timer */}
-      <div className="max-w-[1800px] mx-auto mb-4 sm:mb-6">
-        <Card className="border shadow-sm">
+    <PageContainer>
+      <PageHeader
+        title="Prontuário Eletrônico"
+        description="Consulta em andamento"
+        icon={Stethoscope}
+        iconColor="from-emerald-500 to-teal-600"
+        backLink="/pacientes"
+      />
+      
+      <PageContent size="full">
+        {/* Patient Info and Timer */}
+        <Card className="border shadow-sm max-w-[1800px] mx-auto">
           <CardContent className="p-3 sm:p-4 md:p-6">
             <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
               {/* Left: Patient Info */}
@@ -746,11 +756,9 @@ Solicitados exames complementares:
             </div>
           </CardContent>
         </Card>
-      </div>
 
-      {/* Form Type Selector and Recording */}
-      <div className="max-w-[1800px] mx-auto mb-4 sm:mb-6">
-        <Card className="border shadow-sm">
+        {/* Form Type Selector and Recording */}
+        <Card className="border shadow-sm max-w-[1800px] mx-auto">
           <CardContent className="p-3 sm:p-4">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
               <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 flex-1 w-full">
@@ -793,7 +801,6 @@ Solicitados exames complementares:
             </div>
           </CardContent>
         </Card>
-      </div>
 
       {/* Transcription Panel */}
       {showTranscriptionPanel && (
@@ -902,9 +909,8 @@ Solicitados exames complementares:
         </div>
       )}
 
-      {/* Layout Principal com Tabs */}
-      <div className="max-w-[1800px] mx-auto space-y-4 sm:space-y-6">
-        <Card className="border shadow-sm">
+        {/* Layout Principal com Tabs */}
+        <Card className="border shadow-sm max-w-[1800px] mx-auto">
           <CardContent className="p-3 sm:p-4 md:p-6">
             <Tabs value={activeTab} onValueChange={setActiveTab}>
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 sm:mb-6 gap-3 sm:gap-4">
@@ -1160,8 +1166,8 @@ Solicitados exames complementares:
             </Tabs>
           </CardContent>
         </Card>
-      </div>
-    </div>
+      </PageContent>
+    </PageContainer>
   );
 };
 
