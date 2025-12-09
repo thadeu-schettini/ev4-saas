@@ -274,6 +274,16 @@ export const FullCalendarView = () => {
     const status = eventInfo.event.extendedProps.status as keyof typeof statusColors;
     const colors = statusColors[status];
     const isMonthView = effectiveView === "dayGridMonth";
+    
+    // Calculate event duration in minutes for responsive display
+    const start = eventInfo.event.start;
+    const end = eventInfo.event.end;
+    const durationMinutes = start && end ? (end.getTime() - start.getTime()) / (1000 * 60) : 30;
+    
+    // Determine content level based on duration
+    const isCompact = durationMinutes <= 20;
+    const isMedium = durationMinutes > 20 && durationMinutes <= 35;
+    const isLarge = durationMinutes > 35;
 
     if (isMonthView) {
       return (
@@ -288,16 +298,57 @@ export const FullCalendarView = () => {
       );
     }
 
+    // Ultra compact view for very short appointments
+    if (isCompact) {
+      return (
+        <div className={cn(
+          "w-full h-full px-1.5 py-0.5 rounded border-l-2 transition-all duration-200 hover:shadow-md cursor-pointer flex items-center gap-1.5 overflow-hidden",
+          colors.bg,
+          colors.border
+        )}>
+          <span className={cn("w-1.5 h-1.5 rounded-full flex-shrink-0", colors.dot)} />
+          <span className={cn("text-[10px] font-bold flex-shrink-0", colors.text)}>
+            {eventInfo.timeText?.split(" - ")[0] || eventInfo.timeText}
+          </span>
+          <span className="text-[10px] font-medium text-foreground truncate">
+            {eventInfo.event.extendedProps.patient?.split(" ")[0]}
+          </span>
+        </div>
+      );
+    }
+
+    // Medium view - show time, patient name
+    if (isMedium) {
+      return (
+        <div className={cn(
+          "w-full h-full p-1 rounded-md border-l-2 transition-all duration-200 hover:shadow-md cursor-pointer overflow-hidden",
+          colors.bg,
+          colors.border
+        )}>
+          <div className="flex flex-col h-full min-w-0">
+            <div className="flex items-center gap-1 min-w-0">
+              <span className={cn("w-1.5 h-1.5 rounded-full flex-shrink-0", colors.dot)} />
+              <span className={cn("text-[10px] font-bold", colors.text)}>
+                {eventInfo.timeText}
+              </span>
+            </div>
+            <p className="text-[11px] font-semibold text-foreground truncate min-w-0 leading-tight mt-0.5">
+              {eventInfo.event.extendedProps.patient}
+            </p>
+          </div>
+        </div>
+      );
+    }
+
+    // Full view for longer appointments
     return (
       <div className={cn(
-        "w-full h-full p-1 sm:p-2 rounded-md sm:rounded-lg border-l-2 sm:border-l-4 transition-all duration-200 hover:shadow-md cursor-pointer",
+        "w-full h-full p-1.5 sm:p-2 rounded-md sm:rounded-lg border-l-2 sm:border-l-4 transition-all duration-200 hover:shadow-md cursor-pointer overflow-hidden",
         colors.bg,
         colors.border
-      )}
-      style={{ overflow: 'hidden' }}
-      >
-        <div className="flex flex-col h-full min-w-0 overflow-hidden">
-          <div className="flex items-center gap-1 sm:gap-1.5 mb-0.5 sm:mb-1 min-w-0">
+      )}>
+        <div className="flex flex-col h-full min-w-0">
+          <div className="flex items-center gap-1 sm:gap-1.5 mb-0.5 min-w-0">
             <span className={cn("w-1.5 sm:w-2 h-1.5 sm:h-2 rounded-full flex-shrink-0", colors.dot)} />
             <span className={cn("text-[10px] sm:text-xs font-bold", colors.text)}>
               {eventInfo.timeText}
@@ -306,13 +357,13 @@ export const FullCalendarView = () => {
           <p className="text-[11px] sm:text-sm font-semibold text-foreground truncate min-w-0 leading-tight">
             {eventInfo.event.extendedProps.patient}
           </p>
-          <p className="text-[9px] sm:text-xs text-muted-foreground truncate min-w-0 hidden sm:block">
+          <p className="text-[9px] sm:text-xs text-muted-foreground truncate min-w-0">
             {eventInfo.event.extendedProps.service}
           </p>
-          {eventInfo.event.extendedProps.room && !isMobile && (
-            <div className="flex items-center gap-1 mt-auto pt-1 min-w-0">
-              <MapPin className="w-3 h-3 text-muted-foreground flex-shrink-0" />
-              <span className="text-xs text-muted-foreground truncate">
+          {eventInfo.event.extendedProps.room && isLarge && durationMinutes >= 45 && (
+            <div className="flex items-center gap-1 mt-auto pt-0.5 min-w-0">
+              <MapPin className="w-2.5 h-2.5 text-muted-foreground flex-shrink-0" />
+              <span className="text-[9px] text-muted-foreground truncate">
                 {eventInfo.event.extendedProps.room}
               </span>
             </div>
