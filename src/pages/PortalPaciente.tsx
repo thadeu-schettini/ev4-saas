@@ -116,7 +116,7 @@ export default function PortalPaciente() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-primary/10 px-2 sm:px-0">
+    <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-primary/10">
       {/* Header */}
       <header className="sticky top-0 z-50 bg-card/95 backdrop-blur-xl border-b">
         <div className="container mx-auto px-4 py-3">
@@ -146,9 +146,9 @@ export default function PortalPaciente() {
         </div>
       </header>
 
-      <div className="container mx-auto px-4 py-6">
+      <div className="container mx-auto px-4 sm:px-6 py-4 sm:py-6">
         {/* Welcome Card */}
-        <Card className="mb-6 p-6 bg-gradient-to-r from-primary/10 via-primary/5 to-transparent border-primary/20">
+        <Card className="mb-4 sm:mb-6 p-4 sm:p-6 bg-gradient-to-r from-primary/10 via-primary/5 to-transparent border-primary/20">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div className="flex items-center gap-4">
               <div className="relative">
@@ -179,7 +179,7 @@ export default function PortalPaciente() {
         </Card>
 
         {/* Quick Stats */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-4 sm:mb-6">
           <Card className="p-4">
             <div className="flex items-center gap-3">
               <div className="p-2 rounded-lg bg-blue-500/10">

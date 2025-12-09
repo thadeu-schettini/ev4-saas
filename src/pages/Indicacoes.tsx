@@ -178,15 +178,14 @@ const Indicacoes = () => {
       />
 
       <PageContent className="relative z-10">
-        {/* Hero Text */}
-        <div className="text-center mb-12 animate-fade-in">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-4">
-            <Sparkles className="h-4 w-4 text-primary animate-pulse" />
-            <span className="text-sm font-semibold text-primary">Programa de Indicações</span>
+        <div className="text-center mb-6 sm:mb-12 animate-fade-in">
+          <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-primary/10 border border-primary/20 mb-4">
+            <Sparkles className="h-3 w-3 sm:h-4 sm:w-4 text-primary animate-pulse" />
+            <span className="text-xs sm:text-sm font-semibold text-primary">Programa de Indicações</span>
           </div>
           
-          {/* Demo Buttons - Remove in production */}
-          <div className="flex gap-2 justify-center mb-4">
+          {/* Demo Buttons - Remove in production - Hidden on mobile */}
+          <div className="hidden sm:flex gap-2 justify-center mb-4">
             <Button onClick={() => handleCompleteMission(1)} variant="outline" size="sm">
               Simular Missão 1
             </Button>
@@ -200,7 +199,7 @@ const Indicacoes = () => {
         </div>
 
         {/* Share Section */}
-        <Card className="mb-8 p-4 sm:p-8 border-2 border-primary/20 bg-gradient-to-br from-card to-card/50 backdrop-blur-sm shadow-xl animate-scale-in">
+        <Card className="p-4 sm:p-6 md:p-8 border-2 border-primary/20 bg-gradient-to-br from-card to-card/50 backdrop-blur-sm shadow-xl animate-scale-in">
           <div className="flex flex-col gap-4 sm:gap-6">
             <div className="flex-1 w-full">
               <label className="text-sm font-semibold text-muted-foreground mb-2 block flex items-center gap-2">
@@ -230,7 +229,7 @@ const Indicacoes = () => {
           </div>
         </Card>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-8 mb-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
           {/* Level Progress */}
           <Card className="lg:col-span-2 p-4 sm:p-6 bg-gradient-to-br from-card to-muted/20 border-border/50 shadow-lg">
             <div className="flex items-start justify-between mb-6">
@@ -301,7 +300,7 @@ const Indicacoes = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-8 mb-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
           {/* Weekly Missions */}
           <Card className="p-4 sm:p-6 bg-card/50 backdrop-blur-sm border-border/50 shadow-lg">
             <div className="flex items-center justify-between mb-6">

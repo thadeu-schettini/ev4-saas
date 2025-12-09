@@ -141,7 +141,7 @@ export default function Pipeline() {
 
       <PageContent>
         {/* Stats Cards */}
-        <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
+        <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
           <Card className="group relative overflow-hidden border-primary/20 hover:border-primary/40 transition-all duration-300 hover:shadow-lg">
             <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-primary/10 opacity-50" />
             <CardContent className="p-4 relative">
@@ -219,7 +219,7 @@ export default function Pipeline() {
         </div>
 
         {/* AI Insights Bar */}
-        <Card className="mb-6 overflow-hidden border-purple-500/20">
+        <Card className="overflow-hidden border-purple-500/20">
           <div className="p-4 bg-gradient-to-r from-purple-500/5 via-pink-500/5 to-amber-500/5">
             <div className="flex items-center gap-3 mb-4">
               <div className="p-2 rounded-xl bg-gradient-to-br from-purple-500 to-pink-600 shadow-lg">

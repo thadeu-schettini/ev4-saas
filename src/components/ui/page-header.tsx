@@ -46,9 +46,9 @@ export function PageHeader({
       <div className="absolute inset-0 bg-gradient-to-b from-primary/[0.02] to-transparent pointer-events-none" />
       
       <div className="container mx-auto px-4 sm:px-6 relative">
-        <div className="flex items-center justify-between h-16 md:h-[72px]">
+        <div className="flex items-center justify-between h-14 sm:h-16 md:h-[72px] gap-4">
           {/* Left Section */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 min-w-0 flex-1">
             {backLink && (
               <Link to={backLink}>
                 <Button variant="ghost" size="icon" className="h-9 w-9 shrink-0 rounded-lg hover:bg-muted transition-colors">
@@ -57,28 +57,28 @@ export function PageHeader({
               </Link>
             )}
             
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 min-w-0">
               {Icon && (
                 <div className={cn(
-                  "h-10 w-10 rounded-xl bg-gradient-to-br flex items-center justify-center shadow-sm transition-transform hover:scale-105",
+                  "h-9 w-9 sm:h-10 sm:w-10 rounded-xl bg-gradient-to-br flex items-center justify-center shadow-sm transition-transform hover:scale-105 shrink-0",
                   gradientClass
                 )}>
-                  <Icon className="h-5 w-5 text-white" />
+                  <Icon className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
                 </div>
               )}
-              <div className="flex flex-col">
-                <div className="flex items-center gap-2">
-                  <h1 className="text-lg sm:text-xl font-semibold tracking-tight text-foreground">
+              <div className="flex flex-col min-w-0">
+                <div className="flex items-center gap-2 min-w-0">
+                  <h1 className="text-base sm:text-lg md:text-xl font-semibold tracking-tight text-foreground truncate">
                     {title}
                   </h1>
                   {badge && (
-                    <Badge variant={badge.variant || "secondary"} className="text-[10px] px-1.5 py-0 h-5 font-medium">
+                    <Badge variant={badge.variant || "secondary"} className="text-[10px] px-1.5 py-0 h-5 font-medium shrink-0">
                       {badge.text}
                     </Badge>
                   )}
                 </div>
                 {description && (
-                  <p className="text-xs sm:text-sm text-muted-foreground leading-none mt-0.5">
+                  <p className="text-xs sm:text-sm text-muted-foreground leading-none mt-0.5 truncate">
                     {description}
                   </p>
                 )}
@@ -88,7 +88,7 @@ export function PageHeader({
           
           {/* Right Section - Actions */}
           {(children || actions) && (
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 shrink-0">
               {children || actions}
             </div>
           )}

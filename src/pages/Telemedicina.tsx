@@ -297,7 +297,7 @@ export default function Telemedicina() {
         </Card>
 
         {/* Stats */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           {stats.map((stat) => (
             <Card key={stat.label} className="group overflow-hidden border-border/50 hover:border-primary/30 transition-all duration-300 hover:shadow-lg">
               <CardContent className="p-4">

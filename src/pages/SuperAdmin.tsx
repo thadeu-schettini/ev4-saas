@@ -169,7 +169,7 @@ export default function SuperAdmin() {
   };
 
   return (
-    <PageContainer className="px-4 sm:px-6">
+    <PageContainer>
       <PageHeader
         icon={Shield}
         iconGradient="from-red-500 to-orange-600"
@@ -187,7 +187,7 @@ export default function SuperAdmin() {
       </PageHeader>
 
       {/* Main Metrics */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+      <div className="px-4 sm:px-6 grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-4 sm:mb-6">
         <Card className="p-4 bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20">
           <div className="flex items-center justify-between">
             <div>
@@ -249,7 +249,8 @@ export default function SuperAdmin() {
         </Card>
       </div>
 
-      <Tabs defaultValue="overview" className="space-y-6">
+      <div className="px-4 sm:px-6 pb-6">
+        <Tabs defaultValue="overview" className="space-y-4 sm:space-y-6">
         <TabsList className="bg-muted/50 p-1 flex-wrap h-auto gap-1">
           <TabsTrigger value="overview" className="gap-2 text-xs sm:text-sm">
             <BarChart3 className="h-4 w-4" />
@@ -659,6 +660,7 @@ export default function SuperAdmin() {
           </div>
         </TabsContent>
       </Tabs>
+      </div>
     </PageContainer>
   );
 }

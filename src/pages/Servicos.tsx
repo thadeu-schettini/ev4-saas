@@ -274,7 +274,7 @@ export default function Servicos() {
       </div>
 
       {/* Filters Bar */}
-      <Card className="mb-6 border-border/50">
+      <Card className="border-border/50">
         <CardContent className="p-4">
           <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
             <div className="flex flex-wrap items-center gap-3">
@@ -359,7 +359,7 @@ export default function Servicos() {
       </Card>
 
       {/* Results Count */}
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between">
         <p className="text-sm text-muted-foreground">
           {filteredServices.length} serviço{filteredServices.length !== 1 ? 's' : ''} encontrado{filteredServices.length !== 1 ? 's' : ''}
         </p>
