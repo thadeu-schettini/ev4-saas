@@ -9,6 +9,7 @@ import { PageContainer } from "@/components/ui/page-container";
 import { PageHeader } from "@/components/ui/page-header";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger } from "@/components/ui/drawer";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import "@/components/calendar/CalendarStyles.css";
 import { 
   Calendar as CalendarIcon, 
@@ -17,7 +18,8 @@ import {
   Clock,
   ListFilter,
   Plus,
-  ChevronRight
+  ChevronRight,
+  Maximize2
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -25,6 +27,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 const Calendar = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [hideUpcoming, setHideUpcoming] = useState(true); // Hidden by default
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const isMobile = useIsMobile();
   
   const appointments = [
@@ -202,9 +205,24 @@ const Calendar = () => {
 
         {/* Calendar Area - Full width on mobile/tablet */}
         <div className="flex-1 min-w-0 min-h-0 h-full overflow-hidden">
-          <FullCalendarView />
+          <FullCalendarView 
+            isFullscreen={isFullscreen}
+            onToggleFullscreen={() => setIsFullscreen(true)}
+          />
         </div>
       </div>
+
+      {/* Fullscreen Calendar Dialog */}
+      <Dialog open={isFullscreen} onOpenChange={setIsFullscreen}>
+        <DialogContent className="max-w-[100vw] w-[100vw] h-[100vh] max-h-[100vh] p-0 border-0 rounded-none">
+          <div className="h-full w-full">
+            <FullCalendarView 
+              isFullscreen={isFullscreen}
+              onToggleFullscreen={() => setIsFullscreen(false)}
+            />
+          </div>
+        </DialogContent>
+      </Dialog>
     </PageContainer>
   );
 };
