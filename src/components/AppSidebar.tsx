@@ -121,8 +121,8 @@ export function AppSidebar() {
                 <>
                   <span className="text-muted-foreground">{item.title}</span>
                   <Badge 
-                    variant="secondary" 
-                    className="ml-auto text-[9px] px-1.5 py-0 h-4 bg-muted text-muted-foreground border-0 font-medium"
+                    variant="outline" 
+                    className="ml-auto text-[9px] px-1.5 py-0 h-4 bg-warning/15 text-warning border-warning/30 font-medium"
                   >
                     <Lock className="w-2.5 h-2.5 mr-0.5" />
                     Em breve

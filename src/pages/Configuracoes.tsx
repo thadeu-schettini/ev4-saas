@@ -47,6 +47,7 @@ import {
 } from "@/components/ui/tooltip";
 import { PageContainer, PageContent } from "@/components/ui/page-container";
 import { PageHeader } from "@/components/ui/page-header";
+import { useThemeColor, themeColors } from "@/hooks/use-theme-color";
 
 type ConfigSection = 
   | "home" 
@@ -59,6 +60,7 @@ type ConfigSection =
   | "acessos";
 
 export default function Configuracoes() {
+  const { currentTheme, setTheme } = useThemeColor();
   const [activeSection, setActiveSection] = useState<ConfigSection>("home");
   const [orgData, setOrgData] = useState({
     nomeFantasia: "Clínica Demo",
@@ -675,41 +677,46 @@ export default function Configuracoes() {
                     </div>
 
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                      {[
-                        { name: "Sky", primary: "#3b82f6", secondary: "#0ea5e9" },
-                        { name: "Purple", primary: "#a855f7", secondary: "#ec4899" },
-                        { name: "Orange", primary: "#f97316", secondary: "#ef4444" },
-                        { name: "Green", primary: "#22c55e", secondary: "#10b981" },
-                        { name: "Blue", primary: "#2563eb", secondary: "#3b82f6" },
-                        { name: "Red", primary: "#ef4444", secondary: "#f97316" },
-                        { name: "Cyan", primary: "#06b6d4", secondary: "#0ea5e9" },
-                        { name: "Indigo", primary: "#6366f1", secondary: "#8b5cf6" },
-                      ].map((theme) => (
-                        <button
-                          key={theme.name}
-                          className="group relative flex flex-col items-center gap-3 p-4 rounded-xl border-2 border-border hover:border-primary transition-all hover:shadow-lg"
-                        >
-                          <div className="relative w-full h-16 rounded-lg overflow-hidden shadow-md">
-                            <div
-                              className="absolute inset-0 w-1/2"
-                              style={{ background: theme.primary }}
-                            />
-                            <div
-                              className="absolute inset-0 left-1/2"
-                              style={{ background: theme.secondary }}
-                            />
-                          </div>
-                          <span className="text-sm font-medium">{theme.name}</span>
-                          <CheckCircle2 className="absolute -top-2 -right-2 h-5 w-5 text-primary opacity-0 group-hover:opacity-100 transition-opacity" />
-                        </button>
-                      ))}
+                      {themeColors.map((theme) => {
+                        const isSelected = currentTheme.name === theme.name;
+                        // Convert HSL string to CSS color
+                        const primaryColor = `hsl(${theme.primary})`;
+                        const glowColor = `hsl(${theme.primaryGlow})`;
+                        
+                        return (
+                          <button
+                            key={theme.name}
+                            onClick={() => {
+                              setTheme(theme);
+                              toast.success(`Tema "${theme.name}" aplicado!`);
+                            }}
+                            className={`group relative flex flex-col items-center gap-3 p-4 rounded-xl border-2 transition-all hover:shadow-lg ${
+                              isSelected 
+                                ? "border-primary bg-primary/5 shadow-md" 
+                                : "border-border hover:border-primary/50"
+                            }`}
+                          >
+                            <div className="relative w-full h-16 rounded-lg overflow-hidden shadow-md">
+                              <div
+                                className="absolute inset-0 w-1/2"
+                                style={{ background: primaryColor }}
+                              />
+                              <div
+                                className="absolute inset-0 left-1/2"
+                                style={{ background: glowColor }}
+                              />
+                            </div>
+                            <span className="text-sm font-medium">{theme.name}</span>
+                            {isSelected && (
+                              <CheckCircle2 
+                                className="absolute -top-2 -right-2 h-6 w-6 text-primary bg-background rounded-full" 
+                              />
+                            )}
+                          </button>
+                        );
+                      })}
                     </div>
                   </div>
-
-                  <Button onClick={handleSave} className="w-full md:w-auto gap-2">
-                    <Save className="h-4 w-4" />
-                    Salvar Tema
-                  </Button>
                 </CardContent>
               </Card>
             </div>

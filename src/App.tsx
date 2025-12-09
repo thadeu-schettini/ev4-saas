@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "next-themes";
+import { ThemeColorProvider } from "@/hooks/use-theme-color";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { MainLayout } from "@/layouts/MainLayout";
 import Index from "./pages/Index";
@@ -39,10 +40,11 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-      <ErrorBoundary>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
+      <ThemeColorProvider>
+        <ErrorBoundary>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
           <BrowserRouter>
             <Routes>
             {/* Auth pages without MainLayout */}
@@ -83,8 +85,9 @@ const App = () => (
             <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
-        </TooltipProvider>
-      </ErrorBoundary>
+          </TooltipProvider>
+        </ErrorBoundary>
+      </ThemeColorProvider>
     </ThemeProvider>
   </QueryClientProvider>
 );
