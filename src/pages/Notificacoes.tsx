@@ -31,6 +31,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell } from "recharts";
+import { NewCampaignModal } from "@/components/notificacoes/NewCampaignModal";
 
 const channelData = [
   { name: "Push", icon: Bell, sent: 1247, delivered: 1189, failed: 58, rate: 95.3, color: "from-amber-500 to-orange-500" },
@@ -73,6 +74,7 @@ const pieData = [
 export default function Notificacoes() {
   const [selectedChannels, setSelectedChannels] = useState<string[]>(["push"]);
   const [notificationType, setNotificationType] = useState("lembrete");
+  const [isNewCampaignOpen, setIsNewCampaignOpen] = useState(false);
 
   const toggleChannel = (channel: string) => {
     setSelectedChannels(prev => 
@@ -99,7 +101,7 @@ export default function Notificacoes() {
               <RefreshCw className="h-4 w-4" />
               Atualizar
             </Button>
-            <Button size="sm" className="gap-2">
+            <Button size="sm" className="gap-2" onClick={() => setIsNewCampaignOpen(true)}>
               <Plus className="h-4 w-4" />
               Nova Campanha
             </Button>
@@ -554,6 +556,8 @@ export default function Notificacoes() {
         </TabsContent>
       </Tabs>
       </PageContent>
+
+      <NewCampaignModal open={isNewCampaignOpen} onOpenChange={setIsNewCampaignOpen} />
     </PageContainer>
   );
 }

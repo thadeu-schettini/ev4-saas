@@ -35,6 +35,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { ReviewResponseModal } from "@/components/avaliacoes/ReviewResponseModal";
+import { AIAnalysisModal } from "@/components/avaliacoes/AIAnalysisModal";
 
 const satisfactionData = [
   { month: "Jul", nota: 4.2 },
@@ -141,6 +142,7 @@ export default function Avaliacoes() {
   const [filterStatus, setFilterStatus] = useState("all");
   const [selectedReview, setSelectedReview] = useState<typeof reviews[0] | null>(null);
   const [isResponseModalOpen, setIsResponseModalOpen] = useState(false);
+  const [isAIAnalysisOpen, setIsAIAnalysisOpen] = useState(false);
 
   const filteredReviews = reviews.filter(review => {
     const matchesSearch = review.patient.toLowerCase().includes(search.toLowerCase()) ||
@@ -167,7 +169,7 @@ export default function Avaliacoes() {
               <Download className="h-4 w-4" />
               Exportar
             </Button>
-            <Button size="sm" className="gap-2">
+            <Button size="sm" className="gap-2" onClick={() => setIsAIAnalysisOpen(true)}>
               <Sparkles className="h-4 w-4" />
               Análise com IA
             </Button>
@@ -529,6 +531,8 @@ export default function Avaliacoes() {
         open={isResponseModalOpen}
         onOpenChange={setIsResponseModalOpen}
       />
+
+      <AIAnalysisModal open={isAIAnalysisOpen} onOpenChange={setIsAIAnalysisOpen} />
     </PageContainer>
   );
 }

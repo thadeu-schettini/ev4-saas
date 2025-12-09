@@ -260,8 +260,7 @@ export default function Telemedicina() {
 
       <PageContent>
         {/* Provider Status */}
-        <Card className="border-border/50 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/5 to-transparent" />
+        <Card className="border-border/50 overflow-hidden relative">
         <CardContent className="p-4 relative">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="flex items-center gap-4">
