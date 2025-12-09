@@ -285,42 +285,53 @@ export default function PlanosAtendimento() {
 
       {/* Plans Grid */}
       <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
-        {filteredPlans.map((plan) => (
-          <Card 
-            key={plan.id}
-            className={cn(
-              "group relative overflow-hidden border-border/50 hover:border-primary/30 transition-all duration-300 hover:shadow-xl cursor-pointer",
-              !plan.active && "opacity-60"
-            )}
-            onClick={() => setSelectedPlan(plan)}
-          >
-            {/* Background gradient */}
-            <div className={cn("absolute inset-0 opacity-5 bg-gradient-to-br", categoryColors[plan.category as keyof typeof categoryColors])} />
-            
-            {/* Header */}
-            <CardHeader className="pb-3 relative">
-              <div className="flex items-start justify-between">
-                {(() => {
-                  const CategoryIcon = getCategoryIcon(plan.category);
-                  return (
+        {filteredPlans.map((plan) => {
+          const CategoryIcon = getCategoryIcon(plan.category);
+          const categoryColor = categoryColors[plan.category as keyof typeof categoryColors];
+          const categoryBg = categoryBgColors[plan.category as keyof typeof categoryBgColors];
+          
+          return (
+            <Card 
+              key={plan.id}
+              className={cn(
+                "group relative overflow-hidden border-border/50 hover:border-primary/20 transition-all duration-300 hover:shadow-lg cursor-pointer",
+                !plan.active && "opacity-60"
+              )}
+              onClick={() => setSelectedPlan(plan)}
+            >
+              {/* Subtle background accent */}
+              <div className={cn("absolute top-0 right-0 w-32 h-32 opacity-[0.03] bg-gradient-to-br rounded-full -translate-y-1/2 translate-x-1/2", categoryColor)} />
+              
+              <CardContent className="p-5 space-y-4">
+                {/* Header Row */}
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex items-start gap-3 flex-1 min-w-0">
                     <div className={cn(
-                      "p-1.5 rounded-lg bg-gradient-to-br shadow-sm group-hover:scale-105 transition-transform",
-                      categoryColors[plan.category as keyof typeof categoryColors]
+                      "p-2 rounded-lg bg-gradient-to-br shrink-0",
+                      categoryColor
                     )}>
-                      <CategoryIcon className="h-3.5 w-3.5 text-white" />
+                      <CategoryIcon className="h-4 w-4 text-white" />
                     </div>
-                  );
-                })()}
-                <div className="flex items-center gap-2">
-                  {plan.popular && (
-                    <Badge className="bg-amber-500/10 text-amber-600 border-amber-500/20 gap-1 flex items-center">
-                      <Star className="h-3 w-3 fill-amber-500" />
-                      Popular
-                    </Badge>
-                  )}
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors truncate">
+                          {plan.name}
+                        </h3>
+                        {plan.popular && (
+                          <Badge className="bg-amber-500/10 text-amber-600 border-amber-500/20 text-[10px] px-1.5 py-0 h-5">
+                            <Star className="h-2.5 w-2.5 fill-amber-500 mr-0.5" />
+                            Popular
+                          </Badge>
+                        )}
+                      </div>
+                      <p className="text-sm text-muted-foreground line-clamp-1 mt-0.5">
+                        {plan.description}
+                      </p>
+                    </div>
+                  </div>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
-                      <Button variant="ghost" size="icon" className="h-8 w-8">
+                      <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
                         <MoreVertical className="h-4 w-4" />
                       </Button>
                     </DropdownMenuTrigger>
@@ -345,91 +356,70 @@ export default function PlanosAtendimento() {
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </div>
-              </div>
-              <div className="mt-4">
-                <CardTitle className="text-lg group-hover:text-primary transition-colors">
-                  {plan.name}
-                </CardTitle>
-                <CardDescription className="mt-1 line-clamp-2">
-                  {plan.description}
-                </CardDescription>
-              </div>
-            </CardHeader>
 
-            <CardContent className="relative space-y-4">
-              {/* Meta Info */}
-              <div className="grid grid-cols-3 gap-3">
-                <div className="text-center p-2 rounded-lg bg-muted/50">
-                  <div className="flex items-center justify-center gap-1 text-muted-foreground mb-1">
+                {/* Quick Stats Row */}
+                <div className="flex items-center gap-4 text-sm">
+                  <div className="flex items-center gap-1.5 text-muted-foreground">
                     <Calendar className="h-3.5 w-3.5" />
+                    <span className="font-medium text-foreground">{plan.sessions}</span>
+                    <span>sessões</span>
                   </div>
-                  <p className="text-lg font-bold">{plan.sessions}</p>
-                  <p className="text-xs text-muted-foreground">Sessões</p>
-                </div>
-                <div className="text-center p-2 rounded-lg bg-muted/50">
-                  <div className="flex items-center justify-center gap-1 text-muted-foreground mb-1">
+                  <div className="flex items-center gap-1.5 text-muted-foreground">
                     <Users className="h-3.5 w-3.5" />
+                    <span className="font-medium text-foreground">{plan.patients}</span>
+                    <span>pacientes</span>
                   </div>
-                  <p className="text-lg font-bold">{plan.patients}</p>
-                  <p className="text-xs text-muted-foreground">Pacientes</p>
                 </div>
-                <div className="text-center p-2 rounded-lg bg-muted/50">
-                  <div className="flex items-center justify-center gap-1 text-muted-foreground mb-1">
-                    <Target className="h-3.5 w-3.5" />
-                  </div>
-                  <p className="text-lg font-bold">{plan.completion}%</p>
-                  <p className="text-xs text-muted-foreground">Conclusão</p>
-                </div>
-              </div>
 
-              {/* Services */}
-              <div className="space-y-2">
-                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                  Serviços inclusos
-                </p>
+                {/* Services Pills */}
                 <div className="flex flex-wrap gap-1.5">
-                  {plan.services.slice(0, 3).map((service, idx) => (
-                    <Badge key={idx} variant="outline" className="text-xs">
+                  {plan.services.slice(0, 2).map((service, idx) => (
+                    <span 
+                      key={idx} 
+                      className={cn(
+                        "text-xs px-2 py-1 rounded-md",
+                        categoryBg,
+                        "text-muted-foreground"
+                      )}
+                    >
                       {service}
-                    </Badge>
+                    </span>
                   ))}
-                  {plan.services.length > 3 && (
-                    <Badge variant="secondary" className="text-xs">
-                      +{plan.services.length - 3}
-                    </Badge>
+                  {plan.services.length > 2 && (
+                    <span className="text-xs px-2 py-1 rounded-md bg-muted/50 text-muted-foreground">
+                      +{plan.services.length - 2} mais
+                    </span>
                   )}
                 </div>
-              </div>
 
-              {/* Progress */}
-              <div className="space-y-2">
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-muted-foreground">Taxa de conclusão</span>
-                  <span className="font-medium">{plan.completion}%</span>
+                {/* Progress Bar */}
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-muted-foreground">Conclusão</span>
+                    <span className="font-medium">{plan.completion}%</span>
+                  </div>
+                  <Progress value={plan.completion} className="h-1.5" />
                 </div>
-                <Progress value={plan.completion} className="h-2" />
-              </div>
 
-              {/* Footer */}
-              <div className="flex items-center justify-between pt-3 border-t border-border/50">
-                <div>
+                {/* Footer */}
+                <div className="flex items-center justify-between pt-3 border-t border-border/50">
                   {plan.price > 0 ? (
-                    <p className="text-xl font-bold">
+                    <span className="text-lg font-bold">
                       R$ {plan.price.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                    </p>
+                    </span>
                   ) : (
                     <Badge variant="secondary" className="bg-emerald-500/10 text-emerald-600 border-emerald-500/20">
                       Gratuito / SUS
                     </Badge>
                   )}
+                  <Badge variant={plan.active ? "default" : "secondary"} className="text-xs">
+                    {plan.active ? "Ativo" : "Inativo"}
+                  </Badge>
                 </div>
-                <Badge variant={plan.active ? "default" : "secondary"}>
-                  {plan.active ? "Ativo" : "Inativo"}
-                </Badge>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+              </CardContent>
+            </Card>
+          );
+        })}
 
         {/* New Plan Card */}
         <Card 
