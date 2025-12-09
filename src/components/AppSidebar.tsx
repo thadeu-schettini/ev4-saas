@@ -103,7 +103,7 @@ export function AppSidebar() {
       {/* Header with Logo */}
       <SidebarHeader className={cn(
         "border-b border-border/50 py-4",
-        collapsed ? "px-3" : "px-4"
+        collapsed ? "px-0" : "px-4"
       )}>
         <div className="flex items-center justify-center w-full">
           {!collapsed ? (
@@ -124,7 +124,7 @@ export function AppSidebar() {
         </div>
       </SidebarHeader>
 
-      <SidebarContent className={cn("py-4", collapsed ? "px-2" : "px-3")}>
+      <SidebarContent className={cn("py-4", collapsed ? "px-0" : "px-3")}>
         {/* Main Navigation */}
         <SidebarGroup>
           {!collapsed && (
@@ -171,7 +171,7 @@ export function AppSidebar() {
       {/* Footer with user and collapse */}
       <SidebarFooter className={cn(
         "border-t border-border/50 space-y-3",
-        collapsed ? "p-3" : "p-3"
+        collapsed ? "px-0 py-3" : "p-3"
       )}>
         {/* User Profile */}
         <DropdownMenu>
