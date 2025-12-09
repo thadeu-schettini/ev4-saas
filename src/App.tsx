@@ -34,6 +34,19 @@ import Ajuda from "./pages/Ajuda";
 import Auth from "./pages/Auth";
 import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
+// New feature pages
+import Triagem from "./pages/Triagem";
+import Protocolos from "./pages/Protocolos";
+import Interconsulta from "./pages/Interconsulta";
+import Produtividade from "./pages/Produtividade";
+import PrevisaoDemanda from "./pages/PrevisaoDemanda";
+import Estoque from "./pages/Estoque";
+import LembretesMedicacao from "./pages/LembretesMedicacao";
+import Consentimentos from "./pages/Consentimentos";
+import PesquisaNPS from "./pages/PesquisaNPS";
+import IntegracaoLaboratorios from "./pages/IntegracaoLaboratorios";
+import ReceitaDigital from "./pages/ReceitaDigital";
+import WhatsAppBusiness from "./pages/WhatsAppBusiness";
 
 const queryClient = new QueryClient();
 
@@ -76,6 +89,19 @@ const App = () => (
               <Route path="/superadmin" element={<SuperAdmin />} />
               <Route path="/meu-perfil" element={<MeuPerfil />} />
               <Route path="/ajuda" element={<Ajuda />} />
+              {/* New feature routes */}
+              <Route path="/triagem" element={<Triagem />} />
+              <Route path="/protocolos" element={<Protocolos />} />
+              <Route path="/interconsulta" element={<Interconsulta />} />
+              <Route path="/produtividade" element={<Produtividade />} />
+              <Route path="/previsao-demanda" element={<PrevisaoDemanda />} />
+              <Route path="/estoque" element={<Estoque />} />
+              <Route path="/lembretes-medicacao" element={<LembretesMedicacao />} />
+              <Route path="/consentimentos" element={<Consentimentos />} />
+              <Route path="/pesquisa-nps" element={<PesquisaNPS />} />
+              <Route path="/integracao-laboratorios" element={<IntegracaoLaboratorios />} />
+              <Route path="/receita-digital" element={<ReceitaDigital />} />
+              <Route path="/whatsapp-business" element={<WhatsAppBusiness />} />
             </Route>
             
             {/* Portal Paciente - separate layout */}
