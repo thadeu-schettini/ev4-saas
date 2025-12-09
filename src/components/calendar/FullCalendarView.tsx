@@ -155,7 +155,7 @@ type ViewType = "dayGridMonth" | "timeGridWeek" | "timeGridDay";
 export const FullCalendarView = () => {
   const calendarRef = useRef<FullCalendar>(null);
   const isMobile = useIsMobile();
-  const [currentView, setCurrentView] = useState<ViewType>(isMobile ? "timeGridDay" : "timeGridWeek");
+  const [currentView, setCurrentView] = useState<ViewType>("timeGridWeek");
   const [currentDate, setCurrentDate] = useState(new Date());
   const [events] = useState<CalendarEvent[]>(mockEvents);
   const [selectedAppointment, setSelectedAppointment] = useState<CalendarEvent | null>(null);
@@ -167,6 +167,16 @@ export const FullCalendarView = () => {
     endTime?: string;
   } | null>(null);
 
+  // Force day view on mobile
+  const effectiveView = isMobile ? "timeGridDay" : currentView;
+
+  // Sync calendar view when mobile state changes
+  useState(() => {
+    if (calendarRef.current) {
+      calendarRef.current.getApi().changeView(effectiveView);
+    }
+  });
+
   const viewOptions = [
     { value: "timeGridDay" as ViewType, label: "Dia", icon: List },
     { value: "timeGridWeek" as ViewType, label: "Semana", icon: CalendarDays },
@@ -174,6 +184,7 @@ export const FullCalendarView = () => {
   ];
 
   const handleViewChange = (view: ViewType) => {
+    if (isMobile) return; // Block view change on mobile
     setCurrentView(view);
     calendarRef.current?.getApi().changeView(view);
   };
@@ -243,10 +254,10 @@ export const FullCalendarView = () => {
       year: "numeric"
     };
     
-    if (currentView === "timeGridDay") {
+    if (effectiveView === "timeGridDay") {
       options.day = "numeric";
       options.weekday = "long";
-    } else if (currentView === "timeGridWeek") {
+    } else if (effectiveView === "timeGridWeek") {
       options.day = "numeric";
     }
     
@@ -256,7 +267,7 @@ export const FullCalendarView = () => {
   const renderEventContent = (eventInfo: any) => {
     const status = eventInfo.event.extendedProps.status as keyof typeof statusColors;
     const colors = statusColors[status];
-    const isMonthView = currentView === "dayGridMonth";
+    const isMonthView = effectiveView === "dayGridMonth";
 
     if (isMonthView) {
       return (
@@ -345,30 +356,40 @@ export const FullCalendarView = () => {
           </div>
         </div>
 
-        {/* View Toggle */}
-        <div className="flex items-center gap-1 p-1 bg-muted/50 rounded-lg border border-border/50 w-full sm:w-auto justify-center sm:justify-start">
-          {viewOptions.map((option) => {
-            const Icon = option.icon;
-            const isActive = currentView === option.value;
-            return (
-              <Button
-                key={option.value}
-                variant={isActive ? "default" : "ghost"}
-                size="sm"
-                onClick={() => handleViewChange(option.value)}
-                className={cn(
-                  "h-7 sm:h-8 px-2 sm:px-3 gap-1 sm:gap-1.5 transition-all flex-1 sm:flex-none",
-                  isActive 
-                    ? "bg-primary text-primary-foreground shadow-md" 
-                    : "hover:bg-primary/10 hover:text-primary"
-                )}
-              >
-                <Icon className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                <span className="text-[10px] sm:text-xs font-medium">{option.label}</span>
-              </Button>
-            );
-          })}
-        </div>
+        {/* View Toggle - Hidden on mobile */}
+        {!isMobile && (
+          <div className="flex items-center gap-1 p-1 bg-muted/50 rounded-lg border border-border/50 w-full sm:w-auto justify-center sm:justify-start">
+            {viewOptions.map((option) => {
+              const Icon = option.icon;
+              const isActive = effectiveView === option.value;
+              return (
+                <Button
+                  key={option.value}
+                  variant={isActive ? "default" : "ghost"}
+                  size="sm"
+                  onClick={() => handleViewChange(option.value)}
+                  className={cn(
+                    "h-7 sm:h-8 px-2 sm:px-3 gap-1 sm:gap-1.5 transition-all flex-1 sm:flex-none",
+                    isActive 
+                      ? "bg-primary text-primary-foreground shadow-md" 
+                      : "hover:bg-primary/10 hover:text-primary"
+                  )}
+                >
+                  <Icon className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                  <span className="text-[10px] sm:text-xs font-medium">{option.label}</span>
+                </Button>
+              );
+            })}
+          </div>
+        )}
+        
+        {/* Mobile indicator */}
+        {isMobile && (
+          <div className="flex items-center gap-1.5 px-2 py-1 bg-primary/10 rounded-lg border border-primary/20">
+            <List className="h-3.5 w-3.5 text-primary" />
+            <span className="text-xs font-medium text-primary">Dia</span>
+          </div>
+        )}
       </div>
 
       {/* Calendar Container */}
@@ -377,7 +398,7 @@ export const FullCalendarView = () => {
           <FullCalendar
             ref={calendarRef}
             plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-            initialView={currentView}
+            initialView={effectiveView}
             headerToolbar={false}
             locale="pt-br"
             events={events}
@@ -400,7 +421,7 @@ export const FullCalendarView = () => {
             dayMaxEvents={3}
             nowIndicator={true}
             height="100%"
-            dayHeaderFormat={{ weekday: "short", day: "numeric" }}
+            dayHeaderFormat={isMobile ? { weekday: "short" } : { weekday: "short", day: "numeric" }}
             eventTimeFormat={{
               hour: "2-digit",
               minute: "2-digit",
