@@ -34,6 +34,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { ReviewResponseModal } from "@/components/avaliacoes/ReviewResponseModal";
 
 const satisfactionData = [
   { month: "Jul", nota: 4.2 },
@@ -138,6 +139,8 @@ export default function Avaliacoes() {
   const [search, setSearch] = useState("");
   const [filterRating, setFilterRating] = useState("all");
   const [filterStatus, setFilterStatus] = useState("all");
+  const [selectedReview, setSelectedReview] = useState<typeof reviews[0] | null>(null);
+  const [isResponseModalOpen, setIsResponseModalOpen] = useState(false);
 
   const filteredReviews = reviews.filter(review => {
     const matchesSearch = review.patient.toLowerCase().includes(search.toLowerCase()) ||
@@ -338,7 +341,13 @@ export default function Avaliacoes() {
                               </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
-                              <DropdownMenuItem className="gap-2">
+                              <DropdownMenuItem 
+                                className="gap-2"
+                                onClick={() => {
+                                  setSelectedReview(review);
+                                  setIsResponseModalOpen(true);
+                                }}
+                              >
                                 <Reply className="h-4 w-4" />
                                 Responder
                               </DropdownMenuItem>
@@ -513,6 +522,13 @@ export default function Avaliacoes() {
           </div>
         </div>
       </PageContent>
+
+      {/* Response Modal */}
+      <ReviewResponseModal 
+        review={selectedReview}
+        open={isResponseModalOpen}
+        onOpenChange={setIsResponseModalOpen}
+      />
     </PageContainer>
   );
 }

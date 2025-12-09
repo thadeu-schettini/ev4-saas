@@ -27,7 +27,7 @@ import {
   Smartphone
 } from "lucide-react";
 import { PageHeader } from "@/components/ui/page-header";
-import { PageContainer } from "@/components/ui/page-container";
+import { PageContainer, PageContent } from "@/components/ui/page-container";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -258,8 +258,9 @@ export default function Telemedicina() {
         }
       />
 
-      {/* Provider Status */}
-      <Card className="mb-6 border-border/50 overflow-hidden">
+      <PageContent>
+        {/* Provider Status */}
+        <Card className="border-border/50 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/5 to-transparent" />
         <CardContent className="p-4 relative">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -580,6 +581,7 @@ export default function Telemedicina() {
           </div>
         </TabsContent>
       </Tabs>
+      </PageContent>
     </PageContainer>
   );
 }

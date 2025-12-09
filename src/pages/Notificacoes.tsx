@@ -20,7 +20,7 @@ import {
   Sparkles
 } from "lucide-react";
 import { PageHeader } from "@/components/ui/page-header";
-import { PageContainer } from "@/components/ui/page-container";
+import { PageContainer, PageContent } from "@/components/ui/page-container";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -107,8 +107,9 @@ export default function Notificacoes() {
         }
       />
 
-      {/* Stats Overview */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+      <PageContent>
+        {/* Stats Overview */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {channelData.map((channel) => (
           <Card 
             key={channel.name} 
@@ -552,6 +553,7 @@ export default function Notificacoes() {
           </div>
         </TabsContent>
       </Tabs>
+      </PageContent>
     </PageContainer>
   );
 }

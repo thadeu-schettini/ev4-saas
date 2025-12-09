@@ -21,7 +21,7 @@ import {
   Target
 } from "lucide-react";
 import { PageHeader } from "@/components/ui/page-header";
-import { PageContainer } from "@/components/ui/page-container";
+import { PageContainer, PageContent } from "@/components/ui/page-container";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -193,8 +193,9 @@ export default function PlanosAtendimento() {
         }
       />
 
-      {/* Stats */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+      <PageContent>
+        {/* Stats */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map((stat) => (
           <Card key={stat.label} className="group relative overflow-hidden border-border/50 hover:border-primary/30 transition-all duration-300 hover:shadow-lg">
             <div className={cn("absolute inset-0 opacity-5 bg-gradient-to-br", stat.color)} />
@@ -496,6 +497,7 @@ export default function PlanosAtendimento() {
           )}
         </DialogContent>
       </Dialog>
+      </PageContent>
     </PageContainer>
   );
 }
