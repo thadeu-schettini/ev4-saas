@@ -67,10 +67,12 @@ const Calendar = () => {
       </PageHeader>
 
       {/* Filters */}
-      <CalendarFilters />
+      <div className="px-4 sm:px-6 pt-4">
+        <CalendarFilters />
+      </div>
 
       {/* Main Content */}
-      <div className="flex h-[calc(100vh-180px)]">
+      <div className="flex h-[calc(100vh-200px)] px-4 sm:px-6 py-4">
         {/* Left Sidebar */}
         <div className={cn(
           "border-r border-border/50 bg-card/50 backdrop-blur-sm transition-all duration-300 flex flex-col",

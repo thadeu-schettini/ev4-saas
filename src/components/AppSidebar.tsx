@@ -78,9 +78,16 @@ export function AppSidebar() {
         asChild
         isActive={isActive(item.url)}
         tooltip={collapsed ? item.title : undefined}
-        className={cn(collapsed && "justify-center")}
+        className={cn(collapsed && "justify-center px-0")}
       >
-        <NavLink to={item.url} end className={cn(collapsed && "justify-center")}>
+        <NavLink 
+          to={item.url} 
+          end 
+          className={cn(
+            "flex items-center gap-3",
+            collapsed && "justify-center w-full px-0"
+          )}
+        >
           <item.icon className="h-5 w-5 shrink-0" />
           {!collapsed && <span>{item.title}</span>}
         </NavLink>
@@ -96,9 +103,9 @@ export function AppSidebar() {
       {/* Header with Logo */}
       <SidebarHeader className={cn(
         "border-b border-border/50 py-4",
-        collapsed ? "px-2" : "px-4"
+        collapsed ? "px-3" : "px-4"
       )}>
-        <div className="flex items-center justify-center">
+        <div className="flex items-center justify-center w-full">
           {!collapsed ? (
             <div className="flex items-center gap-3 w-full">
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary/70 shadow-lg shadow-primary/20 shrink-0">
@@ -110,14 +117,14 @@ export function AppSidebar() {
               </div>
             </div>
           ) : (
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary/70 shadow-lg shadow-primary/20">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary/70 shadow-lg shadow-primary/20 mx-auto">
               <span className="text-base font-bold text-primary-foreground">M</span>
             </div>
           )}
         </div>
       </SidebarHeader>
 
-      <SidebarContent className={cn("py-4", collapsed ? "px-1" : "px-2")}>
+      <SidebarContent className={cn("py-4", collapsed ? "px-2" : "px-3")}>
         {/* Main Navigation */}
         <SidebarGroup>
           {!collapsed && (
@@ -164,7 +171,7 @@ export function AppSidebar() {
       {/* Footer with user and collapse */}
       <SidebarFooter className={cn(
         "border-t border-border/50 space-y-3",
-        collapsed ? "p-2" : "p-3"
+        collapsed ? "p-3" : "p-3"
       )}>
         {/* User Profile */}
         <DropdownMenu>
@@ -172,11 +179,11 @@ export function AppSidebar() {
             <Button
               variant="ghost"
               className={cn(
-                "w-full justify-start gap-3 px-2 py-6 hover:bg-accent",
-                collapsed && "justify-center px-0"
+                "w-full gap-3 px-2 py-6 hover:bg-accent",
+                collapsed ? "justify-center px-0" : "justify-start"
               )}
             >
-              <Avatar className="h-9 w-9 shrink-0">
+              <Avatar className={cn("shrink-0", collapsed ? "h-10 w-10" : "h-9 w-9")}>
                 <AvatarImage src="https://github.com/shadcn.png" alt="Usuário" />
                 <AvatarFallback className="bg-primary/10 text-primary font-medium">
                   DR
