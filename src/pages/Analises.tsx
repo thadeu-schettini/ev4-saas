@@ -146,7 +146,7 @@ export default function Analises() {
         actions={
           <div className="flex gap-2">
             <Select value={period} onValueChange={setPeriod}>
-              <SelectTrigger className="w-[140px]">
+              <SelectTrigger className="w-[120px] sm:w-[140px]">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -158,11 +158,11 @@ export default function Analises() {
             </Select>
             <Button variant="outline" size="sm" className="gap-2" onClick={handleRefresh}>
               <RefreshCw className={cn("h-4 w-4", isRefreshing && "animate-spin")} />
-              Atualizar
+              <span className="hidden sm:inline">Atualizar</span>
             </Button>
             <Button size="sm" className="gap-2" onClick={() => setIsAIQueryOpen(true)}>
               <MessageSquare className="h-4 w-4" />
-              Perguntar à IA
+              <span className="hidden sm:inline">Perguntar à IA</span>
             </Button>
           </div>
         }

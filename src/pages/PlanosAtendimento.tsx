@@ -222,7 +222,7 @@ export default function PlanosAtendimento() {
       </div>
 
       {/* Search */}
-      <Card className="mb-6 border-border/50">
+      <Card className="border-border/50">
         <CardContent className="p-4">
           <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
             <div className="relative flex-1 max-w-md">

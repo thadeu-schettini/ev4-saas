@@ -150,7 +150,7 @@ export default function Relatorios() {
 
       <PageContent>
         {/* Stats */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           {[
             { label: "Relatórios Gerados", value: "247", icon: FileText, change: "+12 este mês", color: "from-blue-500 to-cyan-500" },
             { label: "Exportações", value: "89", icon: Download, change: "+5 hoje", color: "from-emerald-500 to-green-500" },

@@ -360,7 +360,7 @@ const Billing = () => {
 
         {/* Locked Features Section */}
         <Card className="border-2 border-warning/30 bg-gradient-to-br from-warning/5 via-background to-warning/10 animate-fade-in">
-          <CardHeader className="p-4 sm:p-6">
+          <CardHeader className="p-3 sm:p-4 md:p-6">
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
               <div className="h-10 w-10 rounded-full bg-warning/20 flex items-center justify-center">
                 <Lock className="h-5 w-5 text-warning" />
@@ -371,8 +371,8 @@ const Billing = () => {
               </div>
             </div>
           </CardHeader>
-          <CardContent className="p-4 sm:p-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <CardContent className="p-3 sm:p-4 md:p-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
               {lockedFeatures.map((feature, idx) => {
                 const FeatureIcon = feature.icon;
                 return (

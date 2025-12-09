@@ -24,13 +24,13 @@ interface PageContentProps {
 export function PageContent({ children, className, size = "default", noPadding = false }: PageContentProps) {
   return (
     <div className={cn(
-      !noPadding && "py-6",
+      !noPadding && "py-4 sm:py-6",
       size === "default" && "container mx-auto px-4 sm:px-6",
       size === "wide" && "px-4 sm:px-6",
-      size === "full" && "",
+      size === "full" && "px-4 sm:px-6",
       className
     )}>
-      <div className="space-y-6">
+      <div className="space-y-4 sm:space-y-6">
         {children}
       </div>
     </div>

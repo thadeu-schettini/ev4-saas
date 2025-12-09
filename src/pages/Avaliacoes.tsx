@@ -181,7 +181,7 @@ export default function Avaliacoes() {
 
       <PageContent>
         {/* Stats Overview */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           <Card className="group relative overflow-hidden border-border/50 hover:border-primary/30 transition-all duration-300 hover:shadow-lg">
             <div className="absolute inset-0 opacity-5 bg-gradient-to-br from-amber-500 to-orange-500" />
             <CardContent className="p-4 relative">
@@ -253,7 +253,7 @@ export default function Avaliacoes() {
         </div>
 
         {/* Main Content */}
-        <div className="grid lg:grid-cols-3 gap-6">
+        <div className="grid lg:grid-cols-3 gap-4 sm:gap-6">
           {/* Reviews List */}
           <div className="lg:col-span-2 space-y-4">
             <Card className="border-border/50">

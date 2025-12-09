@@ -165,17 +165,17 @@ const Recepcao = () => {
         ) : (
           <>
         {/* Search and View Selector */}
-        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-6">
+        <div className="flex flex-col gap-3">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               placeholder="Buscar paciente, profissional ou serviço..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 bg-background/50 backdrop-blur-sm border-border/50 focus:border-primary/50"
+              className="pl-10 bg-background/50 backdrop-blur-sm border-border/50 focus:border-primary/50 w-full"
             />
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-2 justify-between sm:justify-end">
             <AdvancedFilters
               filters={availableFilters}
               activeFilters={activeFilters}
@@ -187,13 +187,13 @@ const Recepcao = () => {
         </div>
 
         {/* Main Content */}
-        <div className="flex gap-6">
+        <div className="flex flex-col lg:flex-row gap-4 sm:gap-6">
           <div className="flex-1">
             {renderView()}
           </div>
 
           {/* Desktop Sidebar */}
-          <div className="hidden lg:block w-80 flex-shrink-0">
+          <div className="hidden lg:block w-72 xl:w-80 flex-shrink-0">
             <div className="sticky top-32">
               <Accordion type="single" collapsible defaultValue="confirmations" className="space-y-2">
                 <AccordionItem value="confirmations" className="border rounded-lg bg-card">

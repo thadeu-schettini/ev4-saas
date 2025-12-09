@@ -263,48 +263,48 @@ export default function Pacientes() {
         ) : (
           <>
         {/* Stats Mini Cards */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
           <Card className="border-border/50 bg-card/50 backdrop-blur-sm">
-            <CardContent className="p-3 flex items-center gap-3">
-              <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-                <Users className="h-4 w-4 text-primary" />
+            <CardContent className="p-2 sm:p-3 flex items-center gap-2 sm:gap-3">
+              <div className="h-8 w-8 sm:h-9 sm:w-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                <Users className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary" />
               </div>
               <div>
-                <p className="text-xs text-muted-foreground">Total</p>
-                <p className="text-lg font-bold">{stats.total.toLocaleString()}</p>
+                <p className="text-[10px] sm:text-xs text-muted-foreground">Total</p>
+                <p className="text-base sm:text-lg font-bold">{stats.total.toLocaleString()}</p>
               </div>
             </CardContent>
           </Card>
           <Card className="border-border/50 bg-card/50 backdrop-blur-sm">
-            <CardContent className="p-3 flex items-center gap-3">
-              <div className="h-9 w-9 rounded-lg bg-emerald-500/10 flex items-center justify-center shrink-0">
-                <UserCheck className="h-4 w-4 text-emerald-600" />
+            <CardContent className="p-2 sm:p-3 flex items-center gap-2 sm:gap-3">
+              <div className="h-8 w-8 sm:h-9 sm:w-9 rounded-lg bg-emerald-500/10 flex items-center justify-center shrink-0">
+                <UserCheck className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-emerald-600" />
               </div>
               <div>
-                <p className="text-xs text-muted-foreground">Ativos</p>
-                <p className="text-lg font-bold text-emerald-600">{stats.active.toLocaleString()}</p>
+                <p className="text-[10px] sm:text-xs text-muted-foreground">Ativos</p>
+                <p className="text-base sm:text-lg font-bold text-emerald-600">{stats.active.toLocaleString()}</p>
               </div>
             </CardContent>
           </Card>
           <Card className="border-border/50 bg-card/50 backdrop-blur-sm">
-            <CardContent className="p-3 flex items-center gap-3">
-              <div className="h-9 w-9 rounded-lg bg-amber-500/10 flex items-center justify-center shrink-0">
-                <AlertCircle className="h-4 w-4 text-amber-600" />
+            <CardContent className="p-2 sm:p-3 flex items-center gap-2 sm:gap-3">
+              <div className="h-8 w-8 sm:h-9 sm:w-9 rounded-lg bg-amber-500/10 flex items-center justify-center shrink-0">
+                <AlertCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-amber-600" />
               </div>
               <div>
-                <p className="text-xs text-muted-foreground">Pendências</p>
-                <p className="text-lg font-bold text-amber-600">{stats.pending}</p>
+                <p className="text-[10px] sm:text-xs text-muted-foreground">Pendências</p>
+                <p className="text-base sm:text-lg font-bold text-amber-600">{stats.pending}</p>
               </div>
             </CardContent>
           </Card>
           <Card className="border-border/50 bg-card/50 backdrop-blur-sm">
-            <CardContent className="p-3 flex items-center gap-3">
-              <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-                <Calendar className="h-4 w-4 text-primary" />
+            <CardContent className="p-2 sm:p-3 flex items-center gap-2 sm:gap-3">
+              <div className="h-8 w-8 sm:h-9 sm:w-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                <Calendar className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary" />
               </div>
               <div>
-                <p className="text-xs text-muted-foreground">Com Agenda</p>
-                <p className="text-lg font-bold text-primary">{stats.withAppointments}</p>
+                <p className="text-[10px] sm:text-xs text-muted-foreground">Com Agenda</p>
+                <p className="text-base sm:text-lg font-bold text-primary">{stats.withAppointments}</p>
               </div>
             </CardContent>
           </Card>
