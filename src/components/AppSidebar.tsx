@@ -26,7 +26,9 @@ import {
   Brain,
   Star,
   FileBarChart,
+  Lock,
 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { NavLink } from "@/components/NavLink";
 import {
   Sidebar,
@@ -53,7 +55,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-const mainNavItems = [
+interface NavItem {
+  title: string;
+  url: string;
+  icon: typeof Home;
+  comingSoon?: boolean;
+}
+
+const mainNavItems: NavItem[] = [
   { title: "Dashboard", url: "/", icon: Home },
   { title: "Agenda", url: "/calendar", icon: Calendar },
   { title: "Recepção", url: "/recepcao", icon: Building2 },
@@ -61,18 +70,18 @@ const mainNavItems = [
   { title: "Prontuário", url: "/prontuario", icon: FileText },
 ];
 
-const managementItems = [
+const managementItems: NavItem[] = [
   { title: "Profissionais", url: "/profissionais", icon: UserCog },
   { title: "Serviços", url: "/servicos", icon: Stethoscope },
   { title: "Planos", url: "/planos-atendimento", icon: Layers },
   { title: "Formulários", url: "/formularios-clinicos", icon: ClipboardList },
 ];
 
-const otherItems = [
+const otherItems: NavItem[] = [
   { title: "Pipeline", url: "/pipeline", icon: Target },
   { title: "Chat", url: "/chat", icon: MessageSquare },
   { title: "Notificações", url: "/notificacoes", icon: Bell },
-  { title: "Telemedicina", url: "/telemedicina", icon: Video },
+  { title: "Telemedicina", url: "/telemedicina", icon: Video, comingSoon: true },
   { title: "Relatórios", url: "/relatorios", icon: FileBarChart },
   { title: "Análises", url: "/analises", icon: Brain },
   { title: "Avaliações", url: "/avaliacoes", icon: Star },
@@ -90,30 +99,67 @@ export function AppSidebar() {
 
   const isActive = (path: string) => currentPath === path;
 
-  const renderNavItem = (item: typeof mainNavItems[0]) => (
-    <SidebarMenuItem key={item.title} className={cn(collapsed && "flex justify-center")}>
-      <SidebarMenuButton
-        asChild
-        isActive={isActive(item.url)}
-        tooltip={collapsed ? item.title : undefined}
-        className={cn(
-          collapsed && "w-10 h-10 p-0 flex items-center justify-center mx-auto"
-        )}
-      >
-        <NavLink 
-          to={item.url} 
-          end 
+  const renderNavItem = (item: NavItem) => {
+    // Coming soon items are disabled
+    if (item.comingSoon) {
+      return (
+        <SidebarMenuItem key={item.title} className={cn(collapsed && "flex justify-center")}>
+          <SidebarMenuButton
+            tooltip={collapsed ? `${item.title} (Em breve)` : undefined}
+            className={cn(
+              "cursor-not-allowed opacity-50",
+              collapsed && "w-10 h-10 p-0 flex items-center justify-center mx-auto"
+            )}
+            onClick={(e) => e.preventDefault()}
+          >
+            <div className={cn(
+              "flex items-center gap-3 w-full",
+              collapsed && "justify-center w-10 h-10 p-0"
+            )}>
+              <item.icon className="h-5 w-5 shrink-0 text-muted-foreground" />
+              {!collapsed && (
+                <>
+                  <span className="text-muted-foreground">{item.title}</span>
+                  <Badge 
+                    variant="secondary" 
+                    className="ml-auto text-[9px] px-1.5 py-0 h-4 bg-muted text-muted-foreground border-0 font-medium"
+                  >
+                    <Lock className="w-2.5 h-2.5 mr-0.5" />
+                    Em breve
+                  </Badge>
+                </>
+              )}
+            </div>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
+      );
+    }
+
+    return (
+      <SidebarMenuItem key={item.title} className={cn(collapsed && "flex justify-center")}>
+        <SidebarMenuButton
+          asChild
+          isActive={isActive(item.url)}
+          tooltip={collapsed ? item.title : undefined}
           className={cn(
-            "flex items-center gap-3",
-            collapsed && "justify-center w-10 h-10 p-0"
+            collapsed && "w-10 h-10 p-0 flex items-center justify-center mx-auto"
           )}
         >
-          <item.icon className="h-5 w-5 shrink-0" />
-          {!collapsed && <span>{item.title}</span>}
-        </NavLink>
-      </SidebarMenuButton>
-    </SidebarMenuItem>
-  );
+          <NavLink 
+            to={item.url} 
+            end 
+            className={cn(
+              "flex items-center gap-3",
+              collapsed && "justify-center w-10 h-10 p-0"
+            )}
+          >
+            <item.icon className="h-5 w-5 shrink-0" />
+            {!collapsed && <span>{item.title}</span>}
+          </NavLink>
+        </SidebarMenuButton>
+      </SidebarMenuItem>
+    );
+  };
 
   return (
     <Sidebar
