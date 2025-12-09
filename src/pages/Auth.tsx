@@ -192,8 +192,8 @@ export default function Auth() {
 
   return (
     <div className="min-h-screen w-full flex">
-      {/* Left Side - Branding */}
-      <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden">
+      {/* Left Side - Branding (Fixed) */}
+      <div className="hidden lg:flex lg:w-1/2 fixed left-0 top-0 bottom-0 overflow-hidden">
         {/* Animated Background */}
         <div className="absolute inset-0 bg-gradient-to-br from-primary via-primary/90 to-blue-600">
           <div className="absolute inset-0">
@@ -274,8 +274,8 @@ export default function Auth() {
         <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-black/20 to-transparent" />
       </div>
 
-      {/* Right Side - Forms */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center px-6 py-8 sm:px-8 md:px-12 lg:px-8 bg-background">
+      {/* Right Side - Forms (Scrollable) */}
+      <div className="w-full lg:w-1/2 lg:ml-[50%] min-h-screen flex items-center justify-center px-6 py-8 sm:px-8 md:px-12 lg:px-12 bg-background overflow-y-auto">
         <div className="w-full max-w-md mx-auto">
           {/* Mobile Logo */}
           <div className="flex lg:hidden items-center justify-center gap-3 mb-8">
@@ -564,22 +564,21 @@ export default function Auth() {
                   </div>
                 </div>
 
-                {/* Plan Cards */}
-                <div className="space-y-4 pt-3">
+                <div className="space-y-5">
                   {plans.map((plan) => (
-                    <Card 
-                      key={plan.id}
-                      onClick={() => setSelectedPlan(plan.id)}
-                      className={cn(
-                        "relative cursor-pointer transition-all duration-300 border-2 overflow-hidden",
-                        plan.highlight && "ring-2 ring-amber-500/50 shadow-[0_0_30px_rgba(245,158,11,0.15)]",
-                        selectedPlan === plan.id 
-                          ? "border-primary shadow-lg scale-[1.02]" 
-                          : plan.highlight 
-                            ? "border-amber-500/50 hover:border-amber-500" 
-                            : "border-transparent hover:border-primary/30"
-                      )}
-                    >
+                    <div key={plan.id} className={plan.badge ? "pt-3" : ""}>
+                      <Card 
+                        onClick={() => setSelectedPlan(plan.id)}
+                        className={cn(
+                          "relative cursor-pointer transition-all duration-300 border-2",
+                          plan.highlight && "ring-2 ring-amber-500/50 shadow-[0_0_30px_rgba(245,158,11,0.15)]",
+                          selectedPlan === plan.id 
+                            ? "border-primary shadow-lg scale-[1.02]" 
+                            : plan.highlight 
+                              ? "border-amber-500/50 hover:border-amber-500" 
+                              : "border-transparent hover:border-primary/30"
+                        )}
+                      >
                       {/* Highlight Glow Effect */}
                       {plan.highlight && (
                         <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 to-orange-500/5 pointer-events-none" />
@@ -679,6 +678,7 @@ export default function Auth() {
                         )}
                       </CardContent>
                     </Card>
+                    </div>
                   ))}
                 </div>
 
