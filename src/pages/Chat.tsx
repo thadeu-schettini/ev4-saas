@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Switch } from "@/components/ui/switch";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 import {
   MessageSquare,
@@ -15,10 +16,8 @@ import {
   Paperclip,
   Smile,
   Bot,
-  Clock,
   CheckCheck,
   Star,
-  Filter,
   Settings,
   Mic,
   Video,
@@ -26,6 +25,9 @@ import {
   FileText,
   UserPlus,
   Forward,
+  Menu,
+  ArrowLeft,
+  X,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -94,9 +96,9 @@ const messages = [
 
 // AI suggested responses
 const suggestedResponses = [
-  "Tenho disponibilidade na segunda às 9h ou 10h30. Qual prefere?",
+  "Tenho disponibilidade na segunda às 9h ou 10h30.",
   "Vou verificar a agenda e já retorno.",
-  "Para primeira consulta, tenha em mãos sua carteirinha e documento.",
+  "Tenha em mãos sua carteirinha e documento.",
 ];
 
 export default function Chat() {
@@ -106,6 +108,8 @@ export default function Chat() {
   const [autopilotEnabled, setAutopilotEnabled] = useState(true);
   const [showSuggestions, setShowSuggestions] = useState(true);
   const [filter, setFilter] = useState("all");
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [showChat, setShowChat] = useState(false);
 
   const getStatusBadge = (status: string) => {
     switch (status) {
@@ -125,262 +129,322 @@ export default function Chat() {
     setMessageInput("");
   };
 
+  const handleSelectConversation = (conv: typeof conversations[0]) => {
+    setSelectedConversation(conv);
+    setShowChat(true);
+    setMobileMenuOpen(false);
+  };
+
+  // Conversation List Component
+  const ConversationList = () => (
+    <div className="flex flex-col h-full">
+      {/* Search */}
+      <div className="p-3 border-b">
+        <div className="relative">
+          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+          <Input
+            placeholder="Buscar..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="pl-8 h-8 text-sm"
+          />
+        </div>
+      </div>
+
+      {/* Filters */}
+      <div className="px-3 py-2 border-b flex items-center gap-1.5 overflow-x-auto">
+        <Button
+          variant={filter === "all" ? "default" : "ghost"}
+          size="sm"
+          className="h-7 text-xs shrink-0"
+          onClick={() => setFilter("all")}
+        >
+          Todos
+        </Button>
+        <Button
+          variant={filter === "unread" ? "default" : "ghost"}
+          size="sm"
+          className="h-7 text-xs shrink-0"
+          onClick={() => setFilter("unread")}
+        >
+          Não lidos
+        </Button>
+        <Button
+          variant={filter === "pending" ? "default" : "ghost"}
+          size="sm"
+          className="h-7 text-xs shrink-0"
+          onClick={() => setFilter("pending")}
+        >
+          Pendentes
+        </Button>
+      </div>
+
+      {/* Conversation List */}
+      <ScrollArea className="flex-1">
+        <div className="p-2 space-y-0.5">
+          {conversations.map((conv) => {
+            const isSelected = selectedConversation?.id === conv.id;
+            return (
+              <div
+                key={conv.id}
+                onClick={() => handleSelectConversation(conv)}
+                className={cn(
+                  "p-3 rounded-lg cursor-pointer transition-colors",
+                  isSelected ? "bg-primary/10" : "hover:bg-muted/50"
+                )}
+              >
+                <div className="flex items-start gap-2.5">
+                  <div className="relative">
+                    <Avatar className="h-10 w-10">
+                      <AvatarImage src={conv.patient.avatar} />
+                      <AvatarFallback className="text-xs bg-muted">
+                        {conv.patient.name.split(" ").map(n => n[0]).join("")}
+                      </AvatarFallback>
+                    </Avatar>
+                    {conv.unread > 0 && (
+                      <span className="absolute -top-0.5 -right-0.5 h-4 w-4 rounded-full bg-primary text-[10px] font-medium text-primary-foreground flex items-center justify-center">
+                        {conv.unread}
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between mb-0.5">
+                      <span className="font-medium text-sm truncate">{conv.patient.name}</span>
+                      <span className="text-[10px] text-muted-foreground">{conv.timestamp}</span>
+                    </div>
+                    <p className="text-xs text-muted-foreground truncate">{conv.lastMessage}</p>
+                    <div className="mt-1">
+                      {getStatusBadge(conv.status)}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </ScrollArea>
+    </div>
+  );
+
+  // Chat Area Component
+  const ChatArea = () => (
+    <div className="flex-1 flex flex-col h-full">
+      {/* Conversation Header */}
+      <div className="px-3 sm:px-4 py-3 border-b bg-card flex items-center justify-between shrink-0">
+        <div className="flex items-center gap-2 sm:gap-3">
+          {/* Back button for mobile */}
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 md:hidden"
+            onClick={() => setShowChat(false)}
+          >
+            <ArrowLeft className="h-4 w-4" />
+          </Button>
+          <Avatar className="h-8 w-8 sm:h-9 sm:w-9">
+            <AvatarFallback className="text-xs bg-muted">
+              {selectedConversation.patient.name.split(" ").map(n => n[0]).join("")}
+            </AvatarFallback>
+          </Avatar>
+          <div className="min-w-0">
+            <h2 className="font-medium text-sm truncate">{selectedConversation.patient.name}</h2>
+            <p className="text-xs text-muted-foreground hidden sm:block">{selectedConversation.patient.phone}</p>
+          </div>
+          <div className="hidden sm:block">
+            {getStatusBadge(selectedConversation.status)}
+          </div>
+        </div>
+        <div className="flex items-center gap-0.5 sm:gap-1">
+          <Button variant="ghost" size="icon" className="h-8 w-8 hidden sm:flex">
+            <Phone className="h-4 w-4" />
+          </Button>
+          <Button variant="ghost" size="icon" className="h-8 w-8 hidden sm:flex">
+            <Video className="h-4 w-4" />
+          </Button>
+          <Button variant="ghost" size="icon" className="h-8 w-8 hidden sm:flex">
+            <Star className="h-4 w-4" />
+          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon" className="h-8 w-8">
+                <MoreVertical className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem><Phone className="h-4 w-4 mr-2" />Ligar</DropdownMenuItem>
+              <DropdownMenuItem><Video className="h-4 w-4 mr-2" />Vídeo</DropdownMenuItem>
+              <DropdownMenuItem><Calendar className="h-4 w-4 mr-2" />Agendar</DropdownMenuItem>
+              <DropdownMenuItem><FileText className="h-4 w-4 mr-2" />Enviar Docs</DropdownMenuItem>
+              <DropdownMenuItem><UserPlus className="h-4 w-4 mr-2" />Criar Paciente</DropdownMenuItem>
+              <DropdownMenuItem><Forward className="h-4 w-4 mr-2" />Transferir</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      </div>
+
+      {/* Messages */}
+      <ScrollArea className="flex-1 p-3 sm:p-4">
+        <div className="space-y-3 max-w-3xl mx-auto">
+          {messages.map((msg) => (
+            <div
+              key={msg.id}
+              className={cn(
+                "flex",
+                msg.sender === "patient" ? "justify-start" : "justify-end"
+              )}
+            >
+              <div
+                className={cn(
+                  "max-w-[85%] sm:max-w-[70%] px-3 py-2 rounded-lg text-sm",
+                  msg.sender === "patient"
+                    ? "bg-muted"
+                    : "bg-primary text-primary-foreground"
+                )}
+              >
+                {msg.isAI && (
+                  <div className="flex items-center gap-1 text-[10px] opacity-70 mb-1">
+                    <Bot className="h-3 w-3" />
+                    <span>IA</span>
+                  </div>
+                )}
+                <p className="break-words">{msg.content}</p>
+                <div className={cn(
+                  "text-[10px] mt-1 flex items-center gap-1",
+                  msg.sender === "patient" ? "text-muted-foreground" : "opacity-70"
+                )}>
+                  {msg.timestamp}
+                  {msg.sender !== "patient" && <CheckCheck className="h-3 w-3" />}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </ScrollArea>
+
+      {/* AI Suggestions */}
+      {showSuggestions && (
+        <div className="px-3 sm:px-4 py-2 border-t bg-muted/30 shrink-0">
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+              <Bot className="h-3.5 w-3.5" />
+              <span>Sugestões</span>
+            </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-6 text-xs"
+              onClick={() => setShowSuggestions(false)}
+            >
+              <X className="h-3 w-3" />
+            </Button>
+          </div>
+          <div className="flex gap-1.5 overflow-x-auto pb-1">
+            {suggestedResponses.map((response, index) => (
+              <button
+                key={index}
+                onClick={() => setMessageInput(response)}
+                className="px-2.5 py-1.5 text-xs bg-card border rounded-md hover:bg-muted transition-colors text-left whitespace-nowrap shrink-0"
+              >
+                {response}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Input Area */}
+      <div className="p-2 sm:p-3 border-t bg-card shrink-0">
+        <div className="flex items-center gap-1.5 sm:gap-2 max-w-3xl mx-auto">
+          <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0">
+            <Paperclip className="h-4 w-4" />
+          </Button>
+          <div className="flex-1 relative">
+            <Input
+              placeholder="Digite sua mensagem..."
+              value={messageInput}
+              onChange={(e) => setMessageInput(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleSend()}
+              className="pr-16 sm:pr-20 text-sm"
+            />
+            <div className="absolute right-1 top-1/2 -translate-y-1/2 flex items-center gap-0.5">
+              <Button variant="ghost" size="icon" className="h-7 w-7">
+                <Smile className="h-4 w-4" />
+              </Button>
+              <Button variant="ghost" size="icon" className="h-7 w-7 hidden sm:flex">
+                <Mic className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+          <Button size="icon" className="h-8 w-8 shrink-0" onClick={handleSend}>
+            <Send className="h-4 w-4" />
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+
   return (
     <div className="h-screen flex flex-col bg-background">
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b bg-card">
-        <div className="flex items-center gap-3">
-          <div className="p-2 rounded-lg bg-primary/10">
-            <MessageSquare className="h-5 w-5 text-primary" />
+      <div className="flex items-center justify-between px-3 sm:px-4 py-2 sm:py-3 border-b bg-card shrink-0">
+        <div className="flex items-center gap-2 sm:gap-3">
+          {/* Mobile menu trigger */}
+          <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="icon" className="h-8 w-8 md:hidden">
+                <Menu className="h-4 w-4" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left" className="w-80 p-0">
+              <div className="p-3 border-b flex items-center gap-2">
+                <div className="p-1.5 rounded-lg bg-primary/10">
+                  <MessageSquare className="h-4 w-4 text-primary" />
+                </div>
+                <span className="font-semibold text-sm">Conversas</span>
+              </div>
+              <ConversationList />
+            </SheetContent>
+          </Sheet>
+          
+          <div className="p-1.5 sm:p-2 rounded-lg bg-primary/10">
+            <MessageSquare className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
           </div>
           <div>
-            <h1 className="font-semibold text-lg">Central de Mensagens</h1>
-            <p className="text-xs text-muted-foreground">WhatsApp, e-mail e redes sociais</p>
+            <h1 className="font-semibold text-sm sm:text-lg">Mensagens</h1>
+            <p className="text-[10px] sm:text-xs text-muted-foreground hidden sm:block">WhatsApp, e-mail e redes sociais</p>
           </div>
         </div>
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-muted/50 border">
-            <Bot className="h-3.5 w-3.5 text-primary" />
-            <span className="text-xs font-medium">Autopilot</span>
+        <div className="flex items-center gap-2 sm:gap-3">
+          <div className="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full bg-muted/50 border">
+            <Bot className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-primary" />
+            <span className="text-[10px] sm:text-xs font-medium hidden sm:inline">Autopilot</span>
             <Switch checked={autopilotEnabled} onCheckedChange={setAutopilotEnabled} className="scale-75" />
           </div>
-          <Button variant="ghost" size="icon" className="h-8 w-8">
-            <Settings className="h-4 w-4" />
+          <Button variant="ghost" size="icon" className="h-7 w-7 sm:h-8 sm:w-8">
+            <Settings className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
           </Button>
         </div>
       </div>
 
       {/* Main Content */}
       <div className="flex-1 flex overflow-hidden">
-        {/* Sidebar - Conversations */}
-        <div className="w-80 border-r flex flex-col bg-card/50">
-          {/* Search */}
-          <div className="p-3 border-b">
-            <div className="relative">
-              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
-              <Input
-                placeholder="Buscar..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-8 h-8 text-sm"
-              />
-            </div>
-          </div>
-
-          {/* Filters */}
-          <div className="px-3 py-2 border-b flex items-center gap-1.5">
-            <Button
-              variant={filter === "all" ? "default" : "ghost"}
-              size="sm"
-              className="h-7 text-xs"
-              onClick={() => setFilter("all")}
-            >
-              Todos
-            </Button>
-            <Button
-              variant={filter === "unread" ? "default" : "ghost"}
-              size="sm"
-              className="h-7 text-xs"
-              onClick={() => setFilter("unread")}
-            >
-              Não lidos
-            </Button>
-            <Button
-              variant={filter === "pending" ? "default" : "ghost"}
-              size="sm"
-              className="h-7 text-xs"
-              onClick={() => setFilter("pending")}
-            >
-              Pendentes
-            </Button>
-          </div>
-
-          {/* Conversation List */}
-          <ScrollArea className="flex-1">
-            <div className="p-2 space-y-0.5">
-              {conversations.map((conv) => {
-                const isSelected = selectedConversation?.id === conv.id;
-                return (
-                  <div
-                    key={conv.id}
-                    onClick={() => setSelectedConversation(conv)}
-                    className={cn(
-                      "p-3 rounded-lg cursor-pointer transition-colors",
-                      isSelected ? "bg-primary/10" : "hover:bg-muted/50"
-                    )}
-                  >
-                    <div className="flex items-start gap-2.5">
-                      <div className="relative">
-                        <Avatar className="h-10 w-10">
-                          <AvatarImage src={conv.patient.avatar} />
-                          <AvatarFallback className="text-xs bg-muted">
-                            {conv.patient.name.split(" ").map(n => n[0]).join("")}
-                          </AvatarFallback>
-                        </Avatar>
-                        {conv.unread > 0 && (
-                          <span className="absolute -top-0.5 -right-0.5 h-4 w-4 rounded-full bg-primary text-[10px] font-medium text-primary-foreground flex items-center justify-center">
-                            {conv.unread}
-                          </span>
-                        )}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center justify-between mb-0.5">
-                          <span className="font-medium text-sm truncate">{conv.patient.name}</span>
-                          <span className="text-[10px] text-muted-foreground">{conv.timestamp}</span>
-                        </div>
-                        <p className="text-xs text-muted-foreground truncate">{conv.lastMessage}</p>
-                        <div className="mt-1">
-                          {getStatusBadge(conv.status)}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </ScrollArea>
+        {/* Desktop Sidebar */}
+        <div className="hidden md:flex w-80 border-r flex-col bg-card/50">
+          <ConversationList />
         </div>
 
-        {/* Chat Area */}
-        <div className="flex-1 flex flex-col">
-          {/* Conversation Header */}
-          <div className="px-4 py-3 border-b bg-card flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Avatar className="h-9 w-9">
-                <AvatarFallback className="text-xs bg-muted">
-                  {selectedConversation.patient.name.split(" ").map(n => n[0]).join("")}
-                </AvatarFallback>
-              </Avatar>
-              <div>
-                <h2 className="font-medium text-sm">{selectedConversation.patient.name}</h2>
-                <p className="text-xs text-muted-foreground">{selectedConversation.patient.phone}</p>
-              </div>
-              {getStatusBadge(selectedConversation.status)}
-            </div>
-            <div className="flex items-center gap-1">
-              <Button variant="ghost" size="icon" className="h-8 w-8">
-                <Phone className="h-4 w-4" />
-              </Button>
-              <Button variant="ghost" size="icon" className="h-8 w-8">
-                <Video className="h-4 w-4" />
-              </Button>
-              <Button variant="ghost" size="icon" className="h-8 w-8">
-                <Star className="h-4 w-4" />
-              </Button>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon" className="h-8 w-8">
-                    <MoreVertical className="h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem><Calendar className="h-4 w-4 mr-2" />Agendar</DropdownMenuItem>
-                  <DropdownMenuItem><FileText className="h-4 w-4 mr-2" />Enviar Docs</DropdownMenuItem>
-                  <DropdownMenuItem><UserPlus className="h-4 w-4 mr-2" />Criar Paciente</DropdownMenuItem>
-                  <DropdownMenuItem><Forward className="h-4 w-4 mr-2" />Transferir</DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-          </div>
-
-          {/* Messages */}
-          <ScrollArea className="flex-1 p-4">
-            <div className="space-y-3 max-w-3xl mx-auto">
-              {messages.map((msg) => (
-                <div
-                  key={msg.id}
-                  className={cn(
-                    "flex",
-                    msg.sender === "patient" ? "justify-start" : "justify-end"
-                  )}
-                >
-                  <div
-                    className={cn(
-                      "max-w-[70%] px-3 py-2 rounded-lg text-sm",
-                      msg.sender === "patient"
-                        ? "bg-muted"
-                        : "bg-primary text-primary-foreground"
-                    )}
-                  >
-                    {msg.isAI && (
-                      <div className="flex items-center gap-1 text-[10px] opacity-70 mb-1">
-                        <Bot className="h-3 w-3" />
-                        <span>IA</span>
-                      </div>
-                    )}
-                    <p>{msg.content}</p>
-                    <div className={cn(
-                      "text-[10px] mt-1 flex items-center gap-1",
-                      msg.sender === "patient" ? "text-muted-foreground" : "opacity-70"
-                    )}>
-                      {msg.timestamp}
-                      {msg.sender !== "patient" && <CheckCheck className="h-3 w-3" />}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </ScrollArea>
-
-          {/* AI Suggestions */}
-          {showSuggestions && (
-            <div className="px-4 py-2 border-t bg-muted/30">
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                  <Bot className="h-3.5 w-3.5" />
-                  <span>Sugestões</span>
-                </div>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-6 text-xs"
-                  onClick={() => setShowSuggestions(false)}
-                >
-                  Ocultar
-                </Button>
-              </div>
-              <div className="flex flex-wrap gap-1.5">
-                {suggestedResponses.map((response, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setMessageInput(response)}
-                    className="px-2.5 py-1.5 text-xs bg-card border rounded-md hover:bg-muted transition-colors text-left max-w-xs truncate"
-                  >
-                    {response}
-                  </button>
-                ))}
-              </div>
-            </div>
+        {/* Mobile: Show list or chat based on selection */}
+        <div className="flex-1 flex flex-col md:hidden">
+          {showChat ? (
+            <ChatArea />
+          ) : (
+            <ConversationList />
           )}
+        </div>
 
-          {/* Input Area */}
-          <div className="p-3 border-t bg-card">
-            <div className="flex items-center gap-2 max-w-3xl mx-auto">
-              <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0">
-                <Paperclip className="h-4 w-4" />
-              </Button>
-              <div className="flex-1 relative">
-                <Input
-                  placeholder="Digite sua mensagem..."
-                  value={messageInput}
-                  onChange={(e) => setMessageInput(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && handleSend()}
-                  className="pr-20"
-                />
-                <div className="absolute right-1 top-1/2 -translate-y-1/2 flex items-center gap-0.5">
-                  <Button variant="ghost" size="icon" className="h-7 w-7">
-                    <Smile className="h-4 w-4" />
-                  </Button>
-                  <Button variant="ghost" size="icon" className="h-7 w-7">
-                    <Mic className="h-4 w-4" />
-                  </Button>
-                </div>
-              </div>
-              <Button size="icon" className="h-8 w-8 shrink-0" onClick={handleSend}>
-                <Send className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
+        {/* Desktop Chat Area */}
+        <div className="hidden md:flex flex-1 flex-col">
+          <ChatArea />
         </div>
       </div>
     </div>
