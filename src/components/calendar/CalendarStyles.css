@@ -32,7 +32,7 @@
 
 /* Time Grid Slots */
 .calendar-container .fc .fc-timegrid-slot {
-  height: 72px !important;
+  height: 96px !important;
   border-color: hsl(var(--border) / 0.5);
 }
 
@@ -212,7 +212,7 @@
   }
   
   .calendar-container .fc .fc-timegrid-slot {
-    height: 56px !important;
+    height: 72px !important;
   }
   
   .calendar-container .fc .fc-timegrid-slot-label {

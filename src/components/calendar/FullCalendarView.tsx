@@ -16,6 +16,7 @@ import {
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { AppointmentCard } from "@/components/AppointmentCard";
 
 interface CalendarEvent {
   id: string;
@@ -157,6 +158,8 @@ export const FullCalendarView = () => {
   const [currentView, setCurrentView] = useState<ViewType>(isMobile ? "timeGridDay" : "timeGridWeek");
   const [currentDate, setCurrentDate] = useState(new Date());
   const [events] = useState<CalendarEvent[]>(mockEvents);
+  const [selectedAppointment, setSelectedAppointment] = useState<CalendarEvent | null>(null);
+  const [appointmentModalOpen, setAppointmentModalOpen] = useState(false);
 
   const viewOptions = [
     { value: "timeGridDay" as ViewType, label: "Dia", icon: List },
@@ -186,15 +189,21 @@ export const FullCalendarView = () => {
 
   const handleEventClick = (info: EventClickArg) => {
     const event = info.event;
-    const props = event.extendedProps;
-    toast.info(
-      <div className="space-y-1">
-        <p className="font-semibold">{props.patient}</p>
-        <p className="text-sm text-muted-foreground">{props.service}</p>
-        <p className="text-xs text-muted-foreground">{props.professional}</p>
-      </div>,
-      { duration: 3000 }
-    );
+    // Open appointment modal with selected event data
+    setSelectedAppointment({
+      id: event.id,
+      title: event.title,
+      start: event.start || new Date(),
+      end: event.end || new Date(),
+      extendedProps: {
+        patient: event.extendedProps.patient,
+        professional: event.extendedProps.professional,
+        service: event.extendedProps.service,
+        status: event.extendedProps.status,
+        room: event.extendedProps.room
+      }
+    });
+    setAppointmentModalOpen(true);
   };
 
   const handleDateSelect = (info: DateSelectArg) => {
@@ -278,11 +287,12 @@ export const FullCalendarView = () => {
   };
 
   return (
-    <div className="h-full flex flex-col bg-gradient-to-br from-background to-muted/10 rounded-xl border border-border/50 overflow-hidden">
-      {/* Calendar Header */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-3 p-3 sm:p-4 bg-card/50 border-b border-border/50 backdrop-blur-sm">
-        {/* Navigation */}
-        <div className="flex items-center gap-1 sm:gap-2 w-full sm:w-auto">
+    <>
+      <div className="h-full flex flex-col bg-gradient-to-br from-background to-muted/10 rounded-xl border border-border/50 overflow-hidden">
+        {/* Calendar Header */}
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-3 p-3 sm:p-4 bg-card/50 border-b border-border/50 backdrop-blur-sm">
+          {/* Navigation */}
+          <div className="flex items-center gap-1 sm:gap-2 w-full sm:w-auto">
           <div className="flex items-center gap-1">
             <Button
               variant="outline"
@@ -377,9 +387,16 @@ export const FullCalendarView = () => {
               minute: "2-digit",
               hour12: false
             }}
-          />
+            />
+          </div>
         </div>
       </div>
-    </div>
+
+      {/* Appointment Detail Modal */}
+      <AppointmentCard 
+        open={appointmentModalOpen} 
+        onOpenChange={setAppointmentModalOpen} 
+      />
+    </>
   );
 };
