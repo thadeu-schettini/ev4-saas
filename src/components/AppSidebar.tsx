@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import {
   Home,
@@ -13,6 +12,10 @@ import {
   Building2,
   ChevronLeft,
   ChevronRight,
+  LogOut,
+  User,
+  Bell,
+  HelpCircle,
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import {
@@ -30,6 +33,15 @@ import {
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const mainNavItems = [
   { title: "Dashboard", url: "/", icon: Home },
@@ -147,8 +159,69 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
 
-      {/* Footer with collapse button */}
-      <SidebarFooter className="border-t border-border/50 p-3">
+      {/* Footer with user and collapse */}
+      <SidebarFooter className="border-t border-border/50 p-3 space-y-3">
+        {/* User Profile */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              className={cn(
+                "w-full justify-start gap-3 px-2 py-6 hover:bg-accent",
+                collapsed && "justify-center px-0"
+              )}
+            >
+              <Avatar className="h-9 w-9 shrink-0">
+                <AvatarImage src="https://github.com/shadcn.png" alt="Usuário" />
+                <AvatarFallback className="bg-primary/10 text-primary font-medium">
+                  DR
+                </AvatarFallback>
+              </Avatar>
+              {!collapsed && (
+                <div className="flex flex-col items-start text-left">
+                  <span className="text-sm font-medium text-foreground">Dr. Ricardo</span>
+                  <span className="text-xs text-muted-foreground">Cardiologista</span>
+                </div>
+              )}
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent 
+            side="top" 
+            align="start" 
+            className="w-56 bg-popover border border-border shadow-lg"
+          >
+            <DropdownMenuLabel className="font-normal">
+              <div className="flex flex-col space-y-1">
+                <p className="text-sm font-medium">Dr. Ricardo Silva</p>
+                <p className="text-xs text-muted-foreground">ricardo@medclinic.com</p>
+              </div>
+            </DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem className="gap-2 cursor-pointer">
+              <User className="h-4 w-4" />
+              <span>Meu Perfil</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem className="gap-2 cursor-pointer">
+              <Settings className="h-4 w-4" />
+              <span>Configurações</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem className="gap-2 cursor-pointer">
+              <Bell className="h-4 w-4" />
+              <span>Notificações</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem className="gap-2 cursor-pointer">
+              <HelpCircle className="h-4 w-4" />
+              <span>Ajuda</span>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem className="gap-2 cursor-pointer text-destructive focus:text-destructive">
+              <LogOut className="h-4 w-4" />
+              <span>Sair</span>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+
+        {/* Collapse Button */}
         <Button
           variant="ghost"
           size="sm"
