@@ -46,6 +46,19 @@ const categories = [
   { id: "procedimento", name: "Procedimentos", count: 4 },
 ];
 
+// Cores por categoria - tons suaves
+const categoryColors = {
+  consulta: "from-blue-400/70 to-blue-500/70",
+  exame: "from-emerald-400/70 to-emerald-500/70",
+  procedimento: "from-violet-400/70 to-violet-500/70",
+};
+
+const categoryBgColors = {
+  consulta: "bg-blue-500/10",
+  exame: "bg-emerald-500/10",
+  procedimento: "bg-violet-500/10",
+};
+
 const services = [
   { 
     id: 1, 
@@ -59,7 +72,6 @@ const services = [
     popular: true,
     uses: 248,
     tussCode: "10101012",
-    color: "from-primary/80 to-primary/60"
   },
   { 
     id: 2, 
@@ -73,7 +85,6 @@ const services = [
     popular: true,
     uses: 186,
     tussCode: "10101020",
-    color: "from-primary/80 to-primary/60"
   },
   { 
     id: 3, 
@@ -86,7 +97,6 @@ const services = [
     active: true,
     popular: false,
     uses: 142,
-    color: "from-primary/80 to-primary/60"
   },
   { 
     id: 4, 
@@ -99,7 +109,6 @@ const services = [
     active: true,
     popular: false,
     uses: 98,
-    color: "from-primary/80 to-primary/60"
   },
   { 
     id: 5, 
@@ -113,7 +122,6 @@ const services = [
     popular: true,
     uses: 312,
     tussCode: "40301010",
-    color: "from-primary/70 to-primary/50"
   },
   { 
     id: 6, 
@@ -126,7 +134,6 @@ const services = [
     active: true,
     popular: false,
     uses: 87,
-    color: "from-primary/70 to-primary/50"
   },
   { 
     id: 7, 
@@ -139,7 +146,6 @@ const services = [
     active: false,
     popular: false,
     uses: 64,
-    color: "from-primary/60 to-primary/40"
   },
   { 
     id: 8, 
@@ -152,15 +158,14 @@ const services = [
     active: true,
     popular: false,
     uses: 23,
-    color: "from-primary/60 to-primary/40"
   },
 ];
 
 const stats = [
-  { label: "Total de Serviços", value: 24, icon: Stethoscope, change: "+3", color: "from-primary/90 to-primary/70" },
-  { label: "Serviços Ativos", value: 21, icon: Zap, change: "+2", color: "from-primary/80 to-primary/60" },
-  { label: "Receita Média", value: "R$ 215", icon: DollarSign, change: "+8%", color: "from-primary/70 to-primary/50" },
-  { label: "Mais Utilizado", value: "ECG", icon: Star, change: "312x", color: "from-primary/60 to-primary/40" },
+  { label: "Total de Serviços", value: 24, icon: Stethoscope, change: "+3", color: "from-blue-400/60 to-blue-500/60" },
+  { label: "Serviços Ativos", value: 21, icon: Zap, change: "+2", color: "from-emerald-400/60 to-emerald-500/60" },
+  { label: "Receita Média", value: "R$ 215", icon: DollarSign, change: "+8%", color: "from-amber-400/60 to-amber-500/60" },
+  { label: "Mais Utilizado", value: "ECG", icon: Star, change: "312x", color: "from-violet-400/60 to-violet-500/60" },
 ];
 
 export default function Servicos() {
@@ -255,19 +260,20 @@ export default function Servicos() {
         {/* Stats */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map((stat) => (
-          <Card key={stat.label} className="group relative overflow-hidden border-border/50 hover:border-primary/30 transition-all duration-300 hover:shadow-lg">
-            <div className={cn("absolute inset-0 opacity-5 bg-gradient-to-br", stat.color)} />
+          <Card key={stat.label} className="group relative overflow-hidden border-border/50 hover:border-primary/30 transition-all duration-300 hover:shadow-md">
             <CardContent className="p-4 relative">
-              <div className="flex items-start justify-between mb-3">
-                <div className={cn("p-2.5 rounded-xl bg-gradient-to-br shadow-lg", stat.color)}>
-                  <stat.icon className="h-5 w-5 text-white" />
+              <div className="flex items-center gap-3 mb-2">
+                <div className={cn("p-1.5 rounded-lg bg-gradient-to-br", stat.color)}>
+                  <stat.icon className="h-3.5 w-3.5 text-white" />
                 </div>
-                <Badge variant="secondary" className="text-xs font-medium text-emerald-600">
+                <p className="text-sm text-muted-foreground">{stat.label}</p>
+              </div>
+              <div className="flex items-end justify-between">
+                <p className="text-2xl font-bold">{stat.value}</p>
+                <Badge variant="secondary" className="text-xs font-medium text-muted-foreground">
                   {stat.change}
                 </Badge>
               </div>
-              <p className="text-sm text-muted-foreground">{stat.label}</p>
-              <p className="text-2xl font-bold">{stat.value}</p>
             </CardContent>
           </Card>
         ))}
@@ -379,13 +385,17 @@ export default function Servicos() {
                 !service.active && "opacity-60"
               )}
             >
-              <div className={cn("absolute inset-0 opacity-5 bg-gradient-to-br", service.color)} />
               <CardContent className="p-4 relative">
-                <div className="flex items-start justify-between mb-4">
-                  <div className={cn("p-2.5 rounded-xl bg-gradient-to-br shadow-lg group-hover:scale-110 transition-transform", service.color)}>
-                    <Stethoscope className="h-5 w-5 text-white" />
-                  </div>
+                <div className="flex items-start justify-between mb-3">
                   <div className="flex items-center gap-2">
+                    <div className={cn("p-1.5 rounded-lg bg-gradient-to-br", categoryColors[service.category as keyof typeof categoryColors])}>
+                      <Stethoscope className="h-3.5 w-3.5 text-white" />
+                    </div>
+                    <Badge variant="outline" className={cn("text-xs capitalize", categoryBgColors[service.category as keyof typeof categoryBgColors])}>
+                      {service.category}
+                    </Badge>
+                  </div>
+                  <div className="flex items-center gap-1">
                     {service.popular && (
                       <Badge className="bg-amber-500/10 text-amber-600 border-amber-500/20 gap-1">
                         <Star className="h-3 w-3 fill-amber-500" />
@@ -479,8 +489,8 @@ export default function Servicos() {
                 <TableRow key={service.id} className={cn(!service.active && "opacity-60")}>
                   <TableCell>
                     <div className="flex items-center gap-3">
-                      <div className={cn("p-2 rounded-lg bg-gradient-to-br", service.color)}>
-                        <Stethoscope className="h-4 w-4 text-white" />
+                      <div className={cn("p-1.5 rounded-lg bg-gradient-to-br", categoryColors[service.category as keyof typeof categoryColors])}>
+                        <Stethoscope className="h-3.5 w-3.5 text-white" />
                       </div>
                       <div>
                         <p className="font-medium flex items-center gap-2">
