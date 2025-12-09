@@ -182,8 +182,8 @@ export default function PortalPaciente() {
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-4 sm:mb-6">
           <Card className="p-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-blue-500/10">
-                <Calendar className="h-5 w-5 text-blue-600" />
+              <div className="p-2 rounded-lg bg-info/10">
+                <Calendar className="h-5 w-5 text-info" />
               </div>
               <div>
                 <p className="text-xs text-muted-foreground">Próxima Consulta</p>
@@ -193,19 +193,19 @@ export default function PortalPaciente() {
           </Card>
           <Card className="p-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-amber-500/10">
-                <CreditCard className="h-5 w-5 text-amber-600" />
+              <div className="p-2 rounded-lg bg-warning/10">
+                <CreditCard className="h-5 w-5 text-warning" />
               </div>
               <div>
                 <p className="text-xs text-muted-foreground">Pendências</p>
-                <p className="font-semibold text-amber-600">R$ 280,00</p>
+                <p className="font-semibold text-warning">R$ 280,00</p>
               </div>
             </div>
           </Card>
           <Card className="p-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-emerald-500/10">
-                <FileText className="h-5 w-5 text-emerald-600" />
+              <div className="p-2 rounded-lg bg-success/10">
+                <FileText className="h-5 w-5 text-success" />
               </div>
               <div>
                 <p className="text-xs text-muted-foreground">Documentos</p>
@@ -215,8 +215,8 @@ export default function PortalPaciente() {
           </Card>
           <Card className="p-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-purple-500/10">
-                <Activity className="h-5 w-5 text-purple-600" />
+              <div className="p-2 rounded-lg bg-primary/10">
+                <Activity className="h-5 w-5 text-primary" />
               </div>
               <div>
                 <p className="text-xs text-muted-foreground">Consultas</p>
@@ -351,11 +351,11 @@ export default function PortalPaciente() {
               </div>
 
               {/* Pending Alert */}
-              <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 mb-6">
+              <div className="p-4 rounded-xl bg-warning/10 border border-warning/20 mb-6">
                 <div className="flex items-start gap-3">
-                  <AlertCircle className="h-5 w-5 text-amber-600 mt-0.5" />
+                  <AlertCircle className="h-5 w-5 text-warning mt-0.5" />
                   <div className="flex-1">
-                    <h4 className="font-medium text-amber-600">Pagamento Pendente</h4>
+                    <h4 className="font-medium text-warning">Pagamento Pendente</h4>
                     <p className="text-sm text-muted-foreground">
                       Você tem R$ 280,00 pendentes. Vencimento: 20/12/2024
                     </p>
@@ -373,17 +373,17 @@ export default function PortalPaciente() {
                     key={payment.id} 
                     className={cn(
                       "flex items-center justify-between p-4 rounded-xl",
-                      payment.status === "pending" ? "bg-amber-500/5 border border-amber-500/20" : "bg-muted/30"
+                      payment.status === "pending" ? "bg-warning/5 border border-warning/20" : "bg-muted/30"
                     )}
                   >
                     <div className="flex items-center gap-3">
                       <div className={cn(
                         "p-2 rounded-lg",
-                        payment.status === "paid" ? "bg-emerald-500/10" : "bg-amber-500/10"
+                        payment.status === "paid" ? "bg-success/10" : "bg-warning/10"
                       )}>
                         <CreditCard className={cn(
                           "h-4 w-4",
-                          payment.status === "paid" ? "text-emerald-600" : "text-amber-600"
+                          payment.status === "paid" ? "text-success" : "text-warning"
                         )} />
                       </div>
                       <div>

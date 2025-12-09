@@ -105,16 +105,16 @@ export default function Pipeline() {
   };
 
   const getScoreColor = (score: number) => {
-    if (score >= 90) return "text-emerald-600 bg-emerald-500/10 border-emerald-500/20";
-    if (score >= 70) return "text-amber-600 bg-amber-500/10 border-amber-500/20";
-    return "text-red-600 bg-red-500/10 border-red-500/20";
+    if (score >= 90) return "text-success bg-success/10 border-success/20";
+    if (score >= 70) return "text-warning bg-warning/10 border-warning/20";
+    return "text-destructive bg-destructive/10 border-destructive/20";
   };
 
   const getUrgencyColor = (urgency: string) => {
     switch (urgency) {
-      case "high": return "text-red-600 bg-red-500/10 border-red-500/20";
-      case "medium": return "text-amber-600 bg-amber-500/10 border-amber-500/20";
-      default: return "text-blue-600 bg-blue-500/10 border-blue-500/20";
+      case "high": return "text-destructive bg-destructive/10 border-destructive/20";
+      case "medium": return "text-warning bg-warning/10 border-warning/20";
+      default: return "text-info bg-info/10 border-info/20";
     }
   };
 

@@ -193,7 +193,7 @@ export default function SuperAdmin() {
             <div>
               <p className="text-xs text-muted-foreground">Total Clínicas</p>
               <p className="text-2xl font-bold">{metricsData.totalClinics}</p>
-              <div className="flex items-center gap-1 text-xs text-emerald-600 mt-1">
+              <div className="flex items-center gap-1 text-xs text-success mt-1">
                 <TrendingUp className="h-3 w-3" />
                 +8 este mês
               </div>
@@ -203,47 +203,47 @@ export default function SuperAdmin() {
             </div>
           </div>
         </Card>
-        <Card className="p-4 bg-gradient-to-br from-emerald-500/5 to-emerald-500/10 border-emerald-500/20">
+        <Card className="p-4 bg-gradient-to-br from-success/5 to-success/10 border-success/20">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-xs text-muted-foreground">MRR</p>
-              <p className="text-2xl font-bold text-emerald-600">R$ {(metricsData.mrr / 1000).toFixed(1)}k</p>
-              <div className="flex items-center gap-1 text-xs text-emerald-600 mt-1">
+              <p className="text-2xl font-bold text-success">R$ {(metricsData.mrr / 1000).toFixed(1)}k</p>
+              <div className="flex items-center gap-1 text-xs text-success mt-1">
                 <TrendingUp className="h-3 w-3" />
                 +{metricsData.growthRate}%
               </div>
             </div>
-            <div className="p-3 rounded-xl bg-emerald-500/10">
-              <DollarSign className="h-6 w-6 text-emerald-600" />
+            <div className="p-3 rounded-xl bg-success/10">
+              <DollarSign className="h-6 w-6 text-success" />
             </div>
           </div>
         </Card>
-        <Card className="p-4 bg-gradient-to-br from-blue-500/5 to-blue-500/10 border-blue-500/20">
+        <Card className="p-4 bg-gradient-to-br from-info/5 to-info/10 border-info/20">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-xs text-muted-foreground">Usuários Ativos</p>
-              <p className="text-2xl font-bold text-blue-600">{metricsData.activeUsers}</p>
+              <p className="text-2xl font-bold text-info">{metricsData.activeUsers}</p>
               <div className="flex items-center gap-1 text-xs text-muted-foreground mt-1">
                 de {metricsData.totalUsers} total
               </div>
             </div>
-            <div className="p-3 rounded-xl bg-blue-500/10">
-              <Users className="h-6 w-6 text-blue-600" />
+            <div className="p-3 rounded-xl bg-info/10">
+              <Users className="h-6 w-6 text-info" />
             </div>
           </div>
         </Card>
-        <Card className="p-4 bg-gradient-to-br from-red-500/5 to-red-500/10 border-red-500/20">
+        <Card className="p-4 bg-gradient-to-br from-destructive/5 to-destructive/10 border-destructive/20">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-xs text-muted-foreground">Churn Rate</p>
-              <p className="text-2xl font-bold text-red-600">{metricsData.churnRate}%</p>
-              <div className="flex items-center gap-1 text-xs text-emerald-600 mt-1">
+              <p className="text-2xl font-bold text-destructive">{metricsData.churnRate}%</p>
+              <div className="flex items-center gap-1 text-xs text-success mt-1">
                 <TrendingDown className="h-3 w-3" />
                 -0.5% vs mês anterior
               </div>
             </div>
-            <div className="p-3 rounded-xl bg-red-500/10">
-              <Activity className="h-6 w-6 text-red-600" />
+            <div className="p-3 rounded-xl bg-destructive/10">
+              <Activity className="h-6 w-6 text-destructive" />
             </div>
           </div>
         </Card>
