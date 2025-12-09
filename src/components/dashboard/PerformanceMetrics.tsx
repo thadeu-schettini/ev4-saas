@@ -78,7 +78,7 @@ export function PerformanceMetrics() {
           </div>
         </div>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-4 flex-1 flex flex-col justify-between">
         {performanceData.map((item, index) => {
           const Icon = item.icon;
           const isAboveTarget = item.value >= item.target;

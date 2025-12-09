@@ -8,7 +8,7 @@ interface PageContainerProps {
 
 export function PageContainer({ children, className }: PageContainerProps) {
   return (
-    <div className={cn("h-full flex flex-col bg-background overflow-hidden", className)}>
+    <div className={cn("h-full flex flex-col bg-background", className)}>
       {children}
     </div>
   );

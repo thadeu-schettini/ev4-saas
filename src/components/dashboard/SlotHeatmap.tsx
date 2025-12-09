@@ -59,7 +59,7 @@ export function SlotHeatmap() {
           </div>
         </div>
       </CardHeader>
-      <CardContent>
+      <CardContent className="flex-1 flex flex-col">
         {/* Peak indicators */}
         <div className="flex flex-wrap gap-3 mb-4">
           <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-destructive/10 border border-destructive/20">
