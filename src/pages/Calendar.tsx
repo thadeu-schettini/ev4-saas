@@ -37,8 +37,8 @@ const Calendar = () => {
 
   const stats = [
     { label: "Agendamentos", value: "12", icon: Users, color: "text-primary" },
-    { label: "Concluídos", value: "8", icon: TrendingUp, color: "text-emerald-600" },
-    { label: "Pendentes", value: "4", icon: Clock, color: "text-amber-600" },
+    { label: "Concluídos", value: "8", icon: TrendingUp, color: "text-success" },
+    { label: "Pendentes", value: "4", icon: Clock, color: "text-warning" },
   ];
 
   const SidebarContent = () => (

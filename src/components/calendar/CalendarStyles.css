@@ -204,22 +204,63 @@
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .calendar-container .fc .fc-col-header-cell {
-    padding: 8px 4px;
+    padding: 6px 2px;
   }
   
   .calendar-container .fc .fc-col-header-cell-cushion {
-    font-size: 0.7rem;
+    font-size: 0.65rem;
+    letter-spacing: 0;
   }
   
   .calendar-container .fc .fc-timegrid-slot {
-    height: 72px !important;
+    height: 60px !important;
   }
   
   .calendar-container .fc .fc-timegrid-slot-label {
-    font-size: 0.65rem;
+    font-size: 0.6rem;
+    padding-left: 2px;
+    padding-right: 2px;
   }
   
   .calendar-container .fc .fc-event {
-    margin: 1px 2px;
+    margin: 1px 1px;
+    border-radius: 4px;
+  }
+  
+  .calendar-container .fc .fc-timegrid-axis {
+    width: 35px !important;
+  }
+  
+  .calendar-container .fc .fc-daygrid-day-number {
+    font-size: 0.75rem;
+    padding: 4px;
+  }
+  
+  .calendar-container .fc .fc-day-today .fc-daygrid-day-number {
+    width: 22px;
+    height: 22px;
+    font-size: 0.7rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .calendar-container .fc .fc-col-header-cell {
+    padding: 4px 1px;
+  }
+  
+  .calendar-container .fc .fc-col-header-cell-cushion {
+    font-size: 0.55rem;
+  }
+  
+  .calendar-container .fc .fc-timegrid-slot {
+    height: 50px !important;
+  }
+  
+  .calendar-container .fc .fc-timegrid-slot-label {
+    font-size: 0.5rem;
+  }
+  
+  .calendar-container .fc .fc-timegrid-axis {
+    width: 28px !important;
   }
 }
