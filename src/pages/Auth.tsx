@@ -275,8 +275,8 @@ export default function Auth() {
       </div>
 
       {/* Right Side - Forms */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-8 bg-background">
-        <div className="w-full max-w-md">
+      <div className="w-full lg:w-1/2 flex items-center justify-center px-6 py-8 sm:px-8 md:px-12 lg:px-8 bg-background">
+        <div className="w-full max-w-md mx-auto">
           {/* Mobile Logo */}
           <div className="flex lg:hidden items-center justify-center gap-3 mb-8">
             <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-primary/70 shadow-lg flex items-center justify-center">
