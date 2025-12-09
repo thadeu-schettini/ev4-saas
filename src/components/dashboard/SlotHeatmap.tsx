@@ -42,7 +42,7 @@ export function SlotHeatmap() {
   const peakDay = "Sex";
 
   return (
-    <Card className="overflow-hidden">
+    <Card className="overflow-hidden flex-1 flex flex-col">
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
           <div>

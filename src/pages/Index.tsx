@@ -124,12 +124,12 @@ const Index = () => {
               </div>
             </div>
 
-            {/* Heatmap Row */}
+            {/* Heatmap Row - Equal height cards */}
             <div className="grid gap-6 grid-cols-1 lg:grid-cols-3">
-              <div className="lg:col-span-2">
+              <div className="lg:col-span-2 flex">
                 <SlotHeatmap />
               </div>
-              <div className="lg:col-span-1">
+              <div className="lg:col-span-1 flex">
                 <PerformanceMetrics />
               </div>
             </div>
