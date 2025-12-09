@@ -5,9 +5,12 @@ import {
   Search,
   Bell,
   Menu,
-  Building2
+  Building2,
+  Plus
 } from "lucide-react";
 import { PageContainer } from "@/components/ui/page-container";
+import { PageHeader } from "@/components/ui/page-header";
+import { PageContent } from "@/components/ui/page-container";
 import { ViewSelector } from "@/components/recepcao/ViewSelector";
 import { TimelineView } from "@/components/recepcao/TimelineView";
 import { KanbanView } from "@/components/recepcao/KanbanView";
@@ -89,107 +92,94 @@ const Recepcao = () => {
 
   return (
     <PageContainer>
-      {/* Header */}
-      <div className="border-b border-border/50 bg-background/50 backdrop-blur-sm sticky top-0 z-50">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col gap-4 py-4">
-            {/* Top bar */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3 sm:gap-4">
-                <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
-                  <SheetTrigger asChild className="lg:hidden">
-                    <Button variant="ghost" size="icon" className="hover:bg-primary/10">
-                      <Menu className="h-5 w-5" />
-                    </Button>
-                  </SheetTrigger>
-                  <SheetContent side="left" className="w-80 p-0">
-                    <div className="p-4">
-                      <Accordion type="single" collapsible defaultValue="confirmations" className="space-y-2">
-                        <AccordionItem value="confirmations" className="border rounded-lg bg-card">
-                          <AccordionTrigger className="px-4 hover:no-underline">
-                            <span className="font-semibold">Confirmações Pendentes</span>
-                          </AccordionTrigger>
-                          <AccordionContent className="px-4">
-                            <PendingConfirmations />
-                          </AccordionContent>
-                        </AccordionItem>
-                        <AccordionItem value="rooms" className="border rounded-lg bg-card">
-                          <AccordionTrigger className="px-4 hover:no-underline">
-                            <span className="font-semibold">Status das Salas</span>
-                          </AccordionTrigger>
-                          <AccordionContent className="px-4">
-                            <RoomStatusPanel />
-                          </AccordionContent>
-                        </AccordionItem>
-                        <AccordionItem value="actions" className="border rounded-lg bg-card">
-                          <AccordionTrigger className="px-4 hover:no-underline">
-                            <span className="font-semibold">Ações Rápidas</span>
-                          </AccordionTrigger>
-                          <AccordionContent className="px-4">
-                            <QuickActions />
-                          </AccordionContent>
-                        </AccordionItem>
-                        <AccordionItem value="alerts" className="border rounded-lg bg-card">
-                          <AccordionTrigger className="px-4 hover:no-underline">
-                            <span className="font-semibold">Alertas do Dia</span>
-                          </AccordionTrigger>
-                          <AccordionContent className="px-4">
-                            <AlertsPanel />
-                          </AccordionContent>
-                        </AccordionItem>
-                      </Accordion>
-                    </div>
-                  </SheetContent>
-                </Sheet>
-                
-                <div className="flex items-center gap-3">
-                  <div className="p-2.5 rounded-xl bg-gradient-to-br from-orange-500 to-red-500 shadow-lg shrink-0">
-                    <Building2 className="h-6 w-6 text-primary-foreground" />
-                  </div>
-                  <div>
-                    <h1 className="text-2xl font-bold text-foreground">Recepção</h1>
-                    <p className="text-xs sm:text-sm text-muted-foreground">
-                      {new Date().toLocaleDateString("pt-BR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <Button variant="ghost" size="icon" className="relative hover:bg-primary/10">
-                  <Bell className="h-5 w-5" />
-                  <span className="absolute top-1 right-1 h-2 w-2 bg-destructive rounded-full animate-pulse" />
+      <PageHeader
+        icon={Building2}
+        title="Recepção"
+        description={new Date().toLocaleDateString("pt-BR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
+        iconGradient="from-orange-500 to-red-600"
+        actions={
+          <div className="flex items-center gap-2">
+            <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
+              <SheetTrigger asChild className="lg:hidden">
+                <Button variant="ghost" size="icon" className="hover:bg-primary/10">
+                  <Menu className="h-5 w-5" />
                 </Button>
-              </div>
-            </div>
+              </SheetTrigger>
+              <SheetContent side="left" className="w-80 p-0">
+                <div className="p-4">
+                  <Accordion type="single" collapsible defaultValue="confirmations" className="space-y-2">
+                    <AccordionItem value="confirmations" className="border rounded-lg bg-card">
+                      <AccordionTrigger className="px-4 hover:no-underline">
+                        <span className="font-semibold">Confirmações Pendentes</span>
+                      </AccordionTrigger>
+                      <AccordionContent className="px-4">
+                        <PendingConfirmations />
+                      </AccordionContent>
+                    </AccordionItem>
+                    <AccordionItem value="rooms" className="border rounded-lg bg-card">
+                      <AccordionTrigger className="px-4 hover:no-underline">
+                        <span className="font-semibold">Status das Salas</span>
+                      </AccordionTrigger>
+                      <AccordionContent className="px-4">
+                        <RoomStatusPanel />
+                      </AccordionContent>
+                    </AccordionItem>
+                    <AccordionItem value="actions" className="border rounded-lg bg-card">
+                      <AccordionTrigger className="px-4 hover:no-underline">
+                        <span className="font-semibold">Ações Rápidas</span>
+                      </AccordionTrigger>
+                      <AccordionContent className="px-4">
+                        <QuickActions />
+                      </AccordionContent>
+                    </AccordionItem>
+                    <AccordionItem value="alerts" className="border rounded-lg bg-card">
+                      <AccordionTrigger className="px-4 hover:no-underline">
+                        <span className="font-semibold">Alertas do Dia</span>
+                      </AccordionTrigger>
+                      <AccordionContent className="px-4">
+                        <AlertsPanel />
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
+                </div>
+              </SheetContent>
+            </Sheet>
+            <Button variant="ghost" size="icon" className="relative hover:bg-primary/10">
+              <Bell className="h-5 w-5" />
+              <span className="absolute top-1 right-1 h-2 w-2 bg-destructive rounded-full animate-pulse" />
+            </Button>
+            <Button className="gap-2 hidden sm:flex">
+              <Plus className="h-4 w-4" />
+              Novo Check-in
+            </Button>
+          </div>
+        }
+      />
 
-            {/* Search and View Selector */}
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Buscar paciente, profissional ou serviço..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 bg-background/50 backdrop-blur-sm border-border/50 focus:border-primary/50"
-                />
-              </div>
-              <div className="flex gap-2">
-                <AdvancedFilters
-                  filters={availableFilters}
-                  activeFilters={activeFilters}
-                  onFilterChange={handleFilterChange}
-                  onClearFilters={handleClearFilters}
-                />
-                <ViewSelector currentView={currentView} onViewChange={setCurrentView} />
-              </div>
-            </div>
+      <PageContent>
+        {/* Search and View Selector */}
+        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-6">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Buscar paciente, profissional ou serviço..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10 bg-background/50 backdrop-blur-sm border-border/50 focus:border-primary/50"
+            />
+          </div>
+          <div className="flex gap-2">
+            <AdvancedFilters
+              filters={availableFilters}
+              activeFilters={activeFilters}
+              onFilterChange={handleFilterChange}
+              onClearFilters={handleClearFilters}
+            />
+            <ViewSelector currentView={currentView} onViewChange={setCurrentView} />
           </div>
         </div>
-      </div>
 
-      {/* Main Content */}
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        {/* Main Content */}
         <div className="flex gap-6">
           <div className="flex-1">
             {renderView()}
@@ -235,7 +225,7 @@ const Recepcao = () => {
             </div>
           </div>
         </div>
-      </div>
+      </PageContent>
     </PageContainer>
   );
 };

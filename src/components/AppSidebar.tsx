@@ -78,10 +78,11 @@ export function AppSidebar() {
         asChild
         isActive={isActive(item.url)}
         tooltip={collapsed ? item.title : undefined}
+        className={cn(collapsed && "justify-center")}
       >
-        <NavLink to={item.url} end>
+        <NavLink to={item.url} end className={cn(collapsed && "justify-center")}>
           <item.icon className="h-5 w-5 shrink-0" />
-          <span>{item.title}</span>
+          {!collapsed && <span>{item.title}</span>}
         </NavLink>
       </SidebarMenuButton>
     </SidebarMenuItem>
@@ -89,14 +90,14 @@ export function AppSidebar() {
 
   return (
     <Sidebar
-      className={cn(
-        "border-r border-border/50 bg-card/50 backdrop-blur-sm transition-all duration-300",
-        collapsed ? "w-[72px]" : "w-[260px]"
-      )}
+      className="border-r border-border/50 bg-card/50 backdrop-blur-sm transition-all duration-300"
       collapsible="icon"
     >
       {/* Header with Logo */}
-      <SidebarHeader className="border-b border-border/50 px-4 py-4">
+      <SidebarHeader className={cn(
+        "border-b border-border/50 py-4",
+        collapsed ? "px-2" : "px-4"
+      )}>
         <div className="flex items-center justify-center">
           {!collapsed ? (
             <div className="flex items-center gap-3 w-full">
@@ -109,14 +110,14 @@ export function AppSidebar() {
               </div>
             </div>
           ) : (
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary/70 shadow-lg shadow-primary/20">
-              <span className="text-lg font-bold text-primary-foreground">M</span>
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary/70 shadow-lg shadow-primary/20">
+              <span className="text-base font-bold text-primary-foreground">M</span>
             </div>
           )}
         </div>
       </SidebarHeader>
 
-      <SidebarContent className="px-2 py-4">
+      <SidebarContent className={cn("py-4", collapsed ? "px-1" : "px-2")}>
         {/* Main Navigation */}
         <SidebarGroup>
           {!collapsed && (
@@ -161,7 +162,10 @@ export function AppSidebar() {
       </SidebarContent>
 
       {/* Footer with user and collapse */}
-      <SidebarFooter className="border-t border-border/50 p-3 space-y-3">
+      <SidebarFooter className={cn(
+        "border-t border-border/50 space-y-3",
+        collapsed ? "p-2" : "p-3"
+      )}>
         {/* User Profile */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

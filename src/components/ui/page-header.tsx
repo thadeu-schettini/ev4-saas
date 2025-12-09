@@ -5,17 +5,19 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
-interface PageHeaderProps {
+export interface PageHeaderProps {
   title: string;
   description?: string;
   icon?: LucideIcon;
   iconColor?: string;
+  iconGradient?: string;
   badge?: {
     text: string;
     variant?: "default" | "secondary" | "destructive" | "outline";
   };
   backLink?: string;
   children?: ReactNode;
+  actions?: ReactNode;
   className?: string;
 }
 
@@ -23,12 +25,16 @@ export function PageHeader({
   title,
   description,
   icon: Icon,
-  iconColor = "from-primary to-primary/70",
+  iconColor,
+  iconGradient,
   badge,
   backLink,
   children,
+  actions,
   className,
 }: PageHeaderProps) {
+  const gradientClass = iconGradient || iconColor || "from-primary to-primary/70";
+
   return (
     <header className={cn(
       "border-b border-border/40 bg-background/80 backdrop-blur-md sticky top-0 z-40 relative overflow-hidden",
@@ -56,7 +62,7 @@ export function PageHeader({
               {Icon && (
                 <div className={cn(
                   "h-10 w-10 rounded-xl bg-gradient-to-br flex items-center justify-center shadow-sm transition-transform hover:scale-105",
-                  iconColor
+                  gradientClass
                 )}>
                   <Icon className="h-5 w-5 text-white" />
                 </div>
@@ -82,9 +88,9 @@ export function PageHeader({
           </div>
           
           {/* Right Section - Actions */}
-          {children && (
+          {(children || actions) && (
             <div className="flex items-center gap-2">
-              {children}
+              {children || actions}
             </div>
           )}
         </div>
