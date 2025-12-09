@@ -23,7 +23,7 @@ import { AdvancedFilters } from "@/components/recepcao/AdvancedFilters";
 import { RoomStatusPanel } from "@/components/recepcao/RoomStatusPanel";
 import { PendingConfirmations } from "@/components/recepcao/PendingConfirmations";
 import { ReceptionSummaryBar } from "@/components/recepcao/ReceptionSummaryBar";
-import { NextPatientCard } from "@/components/recepcao/NextPatientCard";
+import { WaitingRoomPanel } from "@/components/recepcao/WaitingRoomPanel";
 import { RecepcaoSkeleton } from "@/components/skeletons/PageSkeletons";
 import { useSimulatedLoading } from "@/hooks/use-loading";
 import {
@@ -166,11 +166,11 @@ const Recepcao = () => {
           <RecepcaoSkeleton />
         ) : (
           <div className="space-y-4 sm:space-y-6">
-            {/* Summary Bar - Quick stats at a glance */}
+            {/* Summary Bar - Quick stats */}
             <ReceptionSummaryBar />
 
-            {/* Next Patient Card - Most important action */}
-            <NextPatientCard />
+            {/* Waiting Room - Most important for reception workflow */}
+            <WaitingRoomPanel />
 
             {/* Search and View Selector */}
             <div className="flex flex-col gap-3">
@@ -194,7 +194,7 @@ const Recepcao = () => {
               </div>
             </div>
 
-            {/* Main Content */}
+            {/* Main Content - Appointments List */}
             <div className="flex flex-col lg:flex-row gap-4 sm:gap-6">
               <div className="flex-1">
                 {renderView()}

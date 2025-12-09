@@ -1,19 +1,21 @@
 import { useState } from "react";
-import { MoreVertical, Clock, User, CheckCircle2, DollarSign, MessageSquare, AlertTriangle } from "lucide-react";
+import { MoreVertical, Clock, User, CheckCircle2, DollarSign, MessageSquare, AlertTriangle, UserCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { CheckInModal } from "@/components/recepcao/CheckInModal";
 import { PaymentModal } from "@/components/recepcao/PaymentModal";
 import { CommunicationModal } from "@/components/recepcao/CommunicationModal";
+import { toast } from "sonner";
 
 interface AppointmentListItemProps {
   time: string;
   patientName: string;
-  status: "confirmed" | "pending" | "completed" | "cancelled";
+  status: "confirmed" | "pending" | "completed" | "cancelled" | "waiting";
   service?: string;
   professional?: string;
   urgent?: boolean;
   onUrgencyToggle?: () => void;
+  onPatientArrived?: () => void;
 }
 
 const statusConfig = {
@@ -32,6 +34,14 @@ const statusConfig = {
     borderColor: "border-warning/30",
     iconBg: "bg-warning/10",
     textColor: "text-warning"
+  },
+  waiting: {
+    label: "Aguardando",
+    gradient: "from-info/20 to-info/5",
+    dotColor: "bg-info",
+    borderColor: "border-info/30",
+    iconBg: "bg-info/10",
+    textColor: "text-info"
   },
   completed: {
     label: "Concluído",
@@ -58,13 +68,25 @@ export const AppointmentListItem = ({
   service = "Consulta",
   professional = "Profissional",
   urgent = false,
-  onUrgencyToggle
+  onUrgencyToggle,
+  onPatientArrived
 }: AppointmentListItemProps) => {
   const config = statusConfig[status];
   const [checkInOpen, setCheckInOpen] = useState(false);
   const [paymentOpen, setPaymentOpen] = useState(false);
   const [communicationOpen, setCommunicationOpen] = useState(false);
 
+  const handlePatientArrived = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (onPatientArrived) {
+      onPatientArrived();
+    }
+    toast.success(`${patientName} registrado na sala de espera`, {
+      description: "Paciente aguardando atendimento",
+    });
+  };
+
+  const showArrivedButton = status === "confirmed" || status === "pending";
   return (
     <>
       <div className={`group relative bg-card border ${urgent ? 'border-destructive/50 shadow-[0_0_15px_rgba(239,68,68,0.1)]' : 'border-border'} hover:border-primary/30 hover:shadow-md transition-all duration-300 rounded-lg overflow-hidden`}>
@@ -131,6 +153,16 @@ export const AppointmentListItem = ({
                   <AlertTriangle className="h-3.5 w-3.5" />
                 </Button>
               )}
+              {showArrivedButton && (
+                <Button
+                  size="sm"
+                  onClick={handlePatientArrived}
+                  className="h-8 px-3 bg-info hover:bg-info/90 text-info-foreground"
+                >
+                  <UserCheck className="h-3.5 w-3.5 mr-1.5" />
+                  <span className="text-xs">Chegou</span>
+                </Button>
+              )}
               <Button
                 size="sm"
                 variant="ghost"
@@ -191,6 +223,16 @@ export const AppointmentListItem = ({
                 className="h-8 px-2.5"
               >
                 <AlertTriangle className="h-3 w-3" />
+              </Button>
+            )}
+            {showArrivedButton && (
+              <Button
+                size="sm"
+                onClick={handlePatientArrived}
+                className="flex-1 h-8 text-xs bg-info hover:bg-info/90 text-info-foreground"
+              >
+                <UserCheck className="h-3 w-3 mr-1" />
+                Chegou
               </Button>
             )}
             <Button
