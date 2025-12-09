@@ -59,7 +59,7 @@ const services = [
     popular: true,
     uses: 248,
     tussCode: "10101012",
-    color: "from-rose-500 to-pink-500"
+    color: "from-primary/80 to-primary/60"
   },
   { 
     id: 2, 
@@ -73,7 +73,7 @@ const services = [
     popular: true,
     uses: 186,
     tussCode: "10101020",
-    color: "from-violet-500 to-purple-500"
+    color: "from-primary/80 to-primary/60"
   },
   { 
     id: 3, 
@@ -86,7 +86,7 @@ const services = [
     active: true,
     popular: false,
     uses: 142,
-    color: "from-pink-500 to-rose-500"
+    color: "from-primary/80 to-primary/60"
   },
   { 
     id: 4, 
@@ -99,7 +99,7 @@ const services = [
     active: true,
     popular: false,
     uses: 98,
-    color: "from-blue-500 to-cyan-500"
+    color: "from-primary/80 to-primary/60"
   },
   { 
     id: 5, 
@@ -113,7 +113,7 @@ const services = [
     popular: true,
     uses: 312,
     tussCode: "40301010",
-    color: "from-emerald-500 to-green-500"
+    color: "from-primary/70 to-primary/50"
   },
   { 
     id: 6, 
@@ -126,7 +126,7 @@ const services = [
     active: true,
     popular: false,
     uses: 87,
-    color: "from-teal-500 to-cyan-500"
+    color: "from-primary/70 to-primary/50"
   },
   { 
     id: 7, 
@@ -139,7 +139,7 @@ const services = [
     active: false,
     popular: false,
     uses: 64,
-    color: "from-amber-500 to-orange-500"
+    color: "from-primary/60 to-primary/40"
   },
   { 
     id: 8, 
@@ -152,15 +152,15 @@ const services = [
     active: true,
     popular: false,
     uses: 23,
-    color: "from-red-500 to-rose-500"
+    color: "from-primary/60 to-primary/40"
   },
 ];
 
 const stats = [
-  { label: "Total de Serviços", value: 24, icon: Stethoscope, change: "+3", color: "from-blue-500 to-cyan-500" },
-  { label: "Serviços Ativos", value: 21, icon: Zap, change: "+2", color: "from-emerald-500 to-green-500" },
-  { label: "Receita Média", value: "R$ 215", icon: DollarSign, change: "+8%", color: "from-amber-500 to-orange-500" },
-  { label: "Mais Utilizado", value: "ECG", icon: Star, change: "312x", color: "from-violet-500 to-purple-500" },
+  { label: "Total de Serviços", value: 24, icon: Stethoscope, change: "+3", color: "from-primary/90 to-primary/70" },
+  { label: "Serviços Ativos", value: 21, icon: Zap, change: "+2", color: "from-primary/80 to-primary/60" },
+  { label: "Receita Média", value: "R$ 215", icon: DollarSign, change: "+8%", color: "from-primary/70 to-primary/50" },
+  { label: "Mais Utilizado", value: "ECG", icon: Star, change: "312x", color: "from-primary/60 to-primary/40" },
 ];
 
 export default function Servicos() {

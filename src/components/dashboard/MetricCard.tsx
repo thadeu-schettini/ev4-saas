@@ -18,7 +18,7 @@ export function MetricCard({
   change,
   changeType = "neutral",
   icon: Icon,
-  iconGradient = "from-primary to-primary/80",
+  iconGradient = "from-primary/80 to-primary/60",
   description,
   index = 0,
 }: MetricCardProps) {
