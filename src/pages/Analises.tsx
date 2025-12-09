@@ -20,7 +20,8 @@ import {
   Zap,
   BarChart3,
   PieChart,
-  LineChart
+  LineChart,
+  MessageSquare
 } from "lucide-react";
 import { PageHeader } from "@/components/ui/page-header";
 import { PageContainer, PageContent } from "@/components/ui/page-container";
@@ -32,6 +33,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, PieChart as RePieChart, Pie, Cell, LineChart as ReLineChart, Line } from "recharts";
+import { AIQueryModal } from "@/components/analises/AIQueryModal";
 
 const revenueData = [
   { month: "Jan", receita: 45000, despesas: 32000 },
@@ -127,6 +129,7 @@ const kpis = [
 export default function Analises() {
   const [period, setPeriod] = useState("mes");
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [isAIQueryOpen, setIsAIQueryOpen] = useState(false);
 
   const handleRefresh = () => {
     setIsRefreshing(true);
@@ -157,9 +160,9 @@ export default function Analises() {
               <RefreshCw className={cn("h-4 w-4", isRefreshing && "animate-spin")} />
               Atualizar
             </Button>
-            <Button size="sm" className="gap-2">
-              <Download className="h-4 w-4" />
-              Exportar
+            <Button size="sm" className="gap-2" onClick={() => setIsAIQueryOpen(true)}>
+              <MessageSquare className="h-4 w-4" />
+              Perguntar à IA
             </Button>
           </div>
         }
@@ -470,6 +473,11 @@ export default function Analises() {
             </CardContent>
           </Card>
         </div>
+
+        <AIQueryModal 
+          open={isAIQueryOpen} 
+          onOpenChange={setIsAIQueryOpen} 
+        />
       </PageContent>
     </PageContainer>
   );

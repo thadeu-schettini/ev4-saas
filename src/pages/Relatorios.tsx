@@ -19,7 +19,8 @@ import {
   AlertCircle,
   BarChart3,
   PieChart,
-  Activity
+  Activity,
+  Plus
 } from "lucide-react";
 import { PageHeader } from "@/components/ui/page-header";
 import { PageContainer, PageContent } from "@/components/ui/page-container";
@@ -33,6 +34,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
 import { toast } from "@/hooks/use-toast";
+import { ScheduleReportModal } from "@/components/relatorios/ScheduleReportModal";
 
 const reportCategories = [
   { 
@@ -101,6 +103,7 @@ export default function Relatorios() {
   const [selectedCategory, setSelectedCategory] = useState("financeiro");
   const [isGenerating, setIsGenerating] = useState(false);
   const [generationProgress, setGenerationProgress] = useState(0);
+  const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
 
   const handleGenerateReport = (reportName: string) => {
     setIsGenerating(true);
@@ -174,17 +177,17 @@ export default function Relatorios() {
 
         {/* Main Content */}
         <Tabs defaultValue="generate" className="space-y-6">
-          <TabsList className="bg-muted/50 p-1">
-            <TabsTrigger value="generate" className="gap-2">
-              <FileBarChart className="h-4 w-4" />
+          <TabsList className="bg-muted/50 p-1 flex-wrap h-auto gap-1">
+            <TabsTrigger value="generate" className="gap-2 text-xs sm:text-sm">
+              <FileBarChart className="h-4 w-4 hidden sm:block" />
               Gerar Relatório
             </TabsTrigger>
-            <TabsTrigger value="recent" className="gap-2">
-              <Clock className="h-4 w-4" />
+            <TabsTrigger value="recent" className="gap-2 text-xs sm:text-sm">
+              <Clock className="h-4 w-4 hidden sm:block" />
               Recentes
             </TabsTrigger>
-            <TabsTrigger value="scheduled" className="gap-2">
-              <Calendar className="h-4 w-4" />
+            <TabsTrigger value="scheduled" className="gap-2 text-xs sm:text-sm">
+              <Calendar className="h-4 w-4 hidden sm:block" />
               Agendados
             </TabsTrigger>
           </TabsList>
@@ -392,8 +395,8 @@ export default function Relatorios() {
                     <CardTitle className="text-lg">Relatórios Agendados</CardTitle>
                     <CardDescription>Relatórios gerados automaticamente</CardDescription>
                   </div>
-                  <Button size="sm" className="gap-2">
-                    <Calendar className="h-4 w-4" />
+                  <Button size="sm" className="gap-2" onClick={() => setIsScheduleModalOpen(true)}>
+                    <Plus className="h-4 w-4" />
                     Novo Agendamento
                   </Button>
                 </div>
@@ -431,6 +434,11 @@ export default function Relatorios() {
             </Card>
           </TabsContent>
         </Tabs>
+
+        <ScheduleReportModal 
+          open={isScheduleModalOpen} 
+          onOpenChange={setIsScheduleModalOpen} 
+        />
       </PageContent>
     </PageContainer>
   );

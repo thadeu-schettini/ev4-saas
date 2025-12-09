@@ -158,26 +158,26 @@ export default function Notificacoes() {
         ))}
       </div>
 
-      {/* Main Content Tabs */}
-      <Tabs defaultValue="overview" className="space-y-6">
-        <TabsList className="bg-muted/50 p-1">
-          <TabsTrigger value="overview" className="gap-2">
-            <BarChart3 className="h-4 w-4" />
-            Visão Geral
-          </TabsTrigger>
-          <TabsTrigger value="send" className="gap-2">
-            <Send className="h-4 w-4" />
-            Enviar
-          </TabsTrigger>
-          <TabsTrigger value="history" className="gap-2">
-            <Clock className="h-4 w-4" />
-            Histórico
-          </TabsTrigger>
-          <TabsTrigger value="templates" className="gap-2">
-            <Sparkles className="h-4 w-4" />
-            Templates
-          </TabsTrigger>
-        </TabsList>
+        {/* Main Content Tabs */}
+        <Tabs defaultValue="overview" className="space-y-6">
+          <TabsList className="bg-muted/50 p-1 flex-wrap h-auto gap-1">
+            <TabsTrigger value="overview" className="gap-2 text-xs sm:text-sm">
+              <BarChart3 className="h-4 w-4 hidden sm:block" />
+              Visão Geral
+            </TabsTrigger>
+            <TabsTrigger value="send" className="gap-2 text-xs sm:text-sm">
+              <Send className="h-4 w-4 hidden sm:block" />
+              Enviar
+            </TabsTrigger>
+            <TabsTrigger value="history" className="gap-2 text-xs sm:text-sm">
+              <Clock className="h-4 w-4 hidden sm:block" />
+              Histórico
+            </TabsTrigger>
+            <TabsTrigger value="templates" className="gap-2 text-xs sm:text-sm">
+              <Sparkles className="h-4 w-4 hidden sm:block" />
+              Templates
+            </TabsTrigger>
+          </TabsList>
 
         {/* Overview Tab */}
         <TabsContent value="overview" className="space-y-6">

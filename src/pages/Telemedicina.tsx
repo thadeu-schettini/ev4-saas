@@ -260,80 +260,79 @@ export default function Telemedicina() {
 
       <PageContent>
         {/* Provider Status */}
-        <Card className="border-border/50 overflow-hidden relative">
-        <CardContent className="p-4 relative">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div className="flex items-center gap-4">
-              <div className="relative">
-                <div className="p-3 rounded-2xl bg-gradient-to-br from-emerald-500 to-green-500 shadow-lg">
-                  <Globe className="h-6 w-6 text-white" />
+        <Card className="border-border/50 overflow-hidden">
+          <CardContent className="p-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="flex items-center gap-4">
+                <div className="relative">
+                  <div className="p-3 rounded-2xl bg-gradient-to-br from-emerald-500 to-green-500 shadow-lg">
+                    <Globe className="h-6 w-6 text-white" />
+                  </div>
+                  <div className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-emerald-500 border-2 border-background animate-pulse" />
                 </div>
-                <div className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-emerald-500 border-2 border-background animate-pulse" />
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h3 className="font-semibold">Status do Provedor</h3>
+                    <Badge className="bg-emerald-500/10 text-emerald-600 border-emerald-500/20">
+                      Online
+                    </Badge>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    Servidor de videoconferência operando normalmente
+                  </p>
+                </div>
               </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <h3 className="font-semibold">Status do Provedor</h3>
-                  <Badge className="bg-emerald-500/10 text-emerald-600 border-emerald-500/20">
-                    Online
+              <div className="flex items-center gap-2">
+                <Button variant="outline" size="sm" className="gap-2">
+                  <Shield className="h-4 w-4" />
+                  Diagnóstico
+                </Button>
+                <Button variant="outline" size="sm" className="gap-2">
+                  <RefreshCw className="h-4 w-4" />
+                  Atualizar
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Stats */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          {stats.map((stat) => (
+            <Card key={stat.label} className="group overflow-hidden border-border/50 hover:border-primary/30 transition-all duration-300 hover:shadow-lg">
+              <CardContent className="p-4">
+                <div className="flex items-start justify-between mb-3">
+                  <div className={cn("p-2.5 rounded-xl bg-gradient-to-br shadow-lg", stat.color)}>
+                    <stat.icon className="h-5 w-5 text-white" />
+                  </div>
+                  <Badge variant="secondary" className="text-xs font-medium text-emerald-600">
+                    {stat.change}
                   </Badge>
                 </div>
-                <p className="text-sm text-muted-foreground">
-                  Servidor de videoconferência operando normalmente
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm" className="gap-2">
-                <Shield className="h-4 w-4" />
-                Diagnóstico
-              </Button>
-              <Button variant="outline" size="sm" className="gap-2">
-                <RefreshCw className="h-4 w-4" />
-                Atualizar
-              </Button>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+                <p className="text-sm text-muted-foreground">{stat.label}</p>
+                <p className="text-2xl font-bold">{stat.value}</p>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        {stats.map((stat) => (
-          <Card key={stat.label} className="group relative overflow-hidden border-border/50 hover:border-primary/30 transition-all duration-300 hover:shadow-lg">
-            <div className={cn("absolute inset-0 opacity-5 bg-gradient-to-br", stat.color)} />
-            <CardContent className="p-4 relative">
-              <div className="flex items-start justify-between mb-3">
-                <div className={cn("p-2.5 rounded-xl bg-gradient-to-br shadow-lg", stat.color)}>
-                  <stat.icon className="h-5 w-5 text-white" />
-                </div>
-                <Badge variant="secondary" className="text-xs font-medium text-emerald-600">
-                  {stat.change}
-                </Badge>
-              </div>
-              <p className="text-sm text-muted-foreground">{stat.label}</p>
-              <p className="text-2xl font-bold">{stat.value}</p>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-
-      {/* Main Content */}
-      <Tabs defaultValue="active" className="space-y-6">
-        <TabsList className="bg-muted/50 p-1">
-          <TabsTrigger value="active" className="gap-2">
-            <Video className="h-4 w-4" />
-            Salas Ativas
-            <Badge variant="secondary" className="ml-1">{activeSessions.length}</Badge>
-          </TabsTrigger>
-          <TabsTrigger value="history" className="gap-2">
-            <Clock className="h-4 w-4" />
-            Histórico
-          </TabsTrigger>
-          <TabsTrigger value="settings" className="gap-2">
-            <Settings2 className="h-4 w-4" />
-            Configurações
-          </TabsTrigger>
-        </TabsList>
+        {/* Main Content */}
+        <Tabs defaultValue="active" className="space-y-6">
+          <TabsList className="bg-muted/50 p-1 flex-wrap h-auto gap-1">
+            <TabsTrigger value="active" className="gap-2 text-xs sm:text-sm">
+              <Video className="h-4 w-4 hidden sm:block" />
+              Salas Ativas
+              <Badge variant="secondary" className="ml-1 text-xs">{activeSessions.length}</Badge>
+            </TabsTrigger>
+            <TabsTrigger value="history" className="gap-2 text-xs sm:text-sm">
+              <Clock className="h-4 w-4 hidden sm:block" />
+              Histórico
+            </TabsTrigger>
+            <TabsTrigger value="settings" className="gap-2 text-xs sm:text-sm">
+              <Settings2 className="h-4 w-4 hidden sm:block" />
+              Configurações
+            </TabsTrigger>
+          </TabsList>
 
         {/* Active Sessions */}
         <TabsContent value="active" className="space-y-4">
@@ -347,11 +346,7 @@ export default function Telemedicina() {
                     session.status === "active" && "border-emerald-500/30"
                   )}
                 >
-                  <div className={cn(
-                    "absolute inset-0 opacity-5",
-                    session.status === "active" ? "bg-gradient-to-r from-emerald-500" : "bg-gradient-to-r from-amber-500"
-                  )} />
-                  <CardContent className="p-4 relative">
+                  <CardContent className="p-4">
                     <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                       <div className="flex items-center gap-4">
                         <div className={cn(
@@ -401,7 +396,7 @@ export default function Telemedicina() {
                         </Badge>
                       </div>
 
-                      <div className="flex items-center gap-2">
+                      <div className="flex flex-wrap items-center gap-2">
                         <Button 
                           variant="outline" 
                           size="sm" 
@@ -409,21 +404,21 @@ export default function Telemedicina() {
                           onClick={() => copyToClipboard(`https://meet.medclinic.com/p/${session.id.slice(0, 8)}`, "paciente")}
                         >
                           <Copy className="h-4 w-4" />
-                          Copiar Link
+                          <span className="hidden sm:inline">Copiar Link</span>
                         </Button>
                         {session.status === "active" ? (
                           <>
                             <Button variant="outline" size="sm" className="gap-2">
                               <MessageSquare className="h-4 w-4" />
-                              Chat
+                              <span className="hidden sm:inline">Chat</span>
                             </Button>
                             <Button size="sm" className="gap-2 bg-emerald-500 hover:bg-emerald-600">
                               <ExternalLink className="h-4 w-4" />
-                              Entrar
+                              <span className="hidden sm:inline">Entrar</span>
                             </Button>
                             <Button variant="destructive" size="sm" className="gap-2">
                               <PhoneOff className="h-4 w-4" />
-                              Encerrar
+                              <span className="hidden sm:inline">Encerrar</span>
                             </Button>
                           </>
                         ) : (
