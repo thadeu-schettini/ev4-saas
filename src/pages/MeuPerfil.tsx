@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { 
   User, Camera, Trash2, Save, Clock, Building2, Globe, 
   Calendar, Briefcase, Languages, Shield, Bell, 
-  Video, Link2, Stethoscope, Plus, X
+  Video, Link2, Stethoscope, Plus, X, Upload, Image
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -71,6 +71,50 @@ export default function MeuPerfil() {
   });
   const [googleCalendarConnected, setGoogleCalendarConnected] = useState(false);
   const [newSpecialty, setNewSpecialty] = useState("");
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error("A imagem deve ter no máximo 5MB");
+        return;
+      }
+      
+      // Validate file type
+      if (!file.type.startsWith("image/")) {
+        toast.error("Por favor, selecione uma imagem válida");
+        return;
+      }
+
+      setIsUploading(true);
+      
+      const reader = new FileReader();
+      reader.onload = () => {
+        setAvatarPreview(reader.result as string);
+        setIsUploading(false);
+        toast.success("Foto atualizada com sucesso!");
+      };
+      reader.onerror = () => {
+        setIsUploading(false);
+        toast.error("Erro ao carregar a imagem");
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleRemoveAvatar = () => {
+    setAvatarPreview(null);
+    setProfile(prev => ({ ...prev, avatarUrl: "" }));
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+    toast.success("Foto removida com sucesso!");
+  };
 
   const handleSave = () => {
     toast.success("Perfil atualizado com sucesso!");
@@ -119,18 +163,37 @@ export default function MeuPerfil() {
           <div className="lg:col-span-4 xl:col-span-3">
             <Card className="border-border/50 bg-card/50 backdrop-blur-sm sticky top-20">
               <CardContent className="p-6">
-                {/* Avatar Section */}
+                {/* Avatar Section with Upload */}
                 <div className="flex flex-col items-center text-center">
                   <div className="relative group">
                     <Avatar className="h-32 w-32 border-4 border-background shadow-xl">
-                      <AvatarImage src={profile.avatarUrl} />
+                      <AvatarImage src={avatarPreview || profile.avatarUrl} />
                       <AvatarFallback className="bg-gradient-to-br from-primary to-primary/60 text-primary-foreground text-4xl font-bold">
                         {profile.firstName[0]}{profile.lastName[0]}
                       </AvatarFallback>
                     </Avatar>
-                    <div className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
-                      <Camera className="h-8 w-8 text-white" />
-                    </div>
+                    
+                    {/* Hidden file input */}
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/jpeg,image/png,image/webp,image/gif"
+                      className="hidden"
+                      onChange={handleAvatarChange}
+                    />
+                    
+                    {/* Hover overlay for click */}
+                    <button
+                      onClick={() => fileInputRef.current?.click()}
+                      disabled={isUploading}
+                      className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer disabled:cursor-wait"
+                    >
+                      {isUploading ? (
+                        <div className="h-8 w-8 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      ) : (
+                        <Camera className="h-8 w-8 text-white" />
+                      )}
+                    </button>
                   </div>
                   
                   <h3 className="mt-4 text-xl font-bold">Dr(a). {profile.firstName} {profile.lastName}</h3>
@@ -146,15 +209,32 @@ export default function MeuPerfil() {
                   </div>
 
                   <div className="flex gap-2 mt-4">
-                    <Button variant="outline" size="sm" className="gap-2">
-                      <Camera className="h-4 w-4" />
-                      Alterar foto
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="gap-2"
+                      onClick={() => fileInputRef.current?.click()}
+                      disabled={isUploading}
+                    >
+                      <Upload className="h-4 w-4" />
+                      {avatarPreview || profile.avatarUrl ? "Trocar foto" : "Enviar foto"}
                     </Button>
-                    <Button variant="outline" size="sm" className="gap-2 text-destructive hover:text-destructive">
-                      <Trash2 className="h-4 w-4" />
-                      Remover
-                    </Button>
+                    {(avatarPreview || profile.avatarUrl) && (
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="gap-2 text-destructive hover:text-destructive"
+                        onClick={handleRemoveAvatar}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                        Remover
+                      </Button>
+                    )}
                   </div>
+                  
+                  <p className="text-xs text-muted-foreground mt-2">
+                    JPG, PNG ou WebP. Máximo 5MB.
+                  </p>
                 </div>
 
                 <Separator className="my-6" />
