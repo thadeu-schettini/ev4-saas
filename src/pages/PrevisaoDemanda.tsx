@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { PageHeader } from "@/components/ui/page-header";
-import { PageContainer } from "@/components/ui/page-container";
+import { PageContainer, PageContent } from "@/components/ui/page-container";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -124,28 +124,29 @@ const PrevisaoDemanda = () => {
         }
       />
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        {stats.map((stat, index) => (
-          <Card key={index} className="relative overflow-hidden group hover:shadow-md transition-all">
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between mb-2">
-                <div className="p-2 rounded-lg bg-muted/50">
-                  <stat.icon className="h-4 w-4 text-primary" />
+      <PageContent>
+        {/* Stats Cards */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {stats.map((stat, index) => (
+            <Card key={index} className="relative overflow-hidden group hover:shadow-md transition-all">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between mb-2">
+                  <div className="p-2 rounded-lg bg-muted/50">
+                    <stat.icon className="h-4 w-4 text-primary" />
+                  </div>
+                  {stat.change && (
+                    <Badge variant="outline" className={stat.positive ? "bg-confirmed/10 text-confirmed border-confirmed/20" : "bg-destructive/10 text-destructive border-destructive/20"}>
+                      {stat.positive ? <ArrowUpRight className="h-3 w-3 mr-1" /> : <ArrowDownRight className="h-3 w-3 mr-1" />}
+                      {stat.change}
+                    </Badge>
+                  )}
                 </div>
-                {stat.change && (
-                  <Badge variant="outline" className={stat.positive ? "bg-confirmed/10 text-confirmed border-confirmed/20" : "bg-destructive/10 text-destructive border-destructive/20"}>
-                    {stat.positive ? <ArrowUpRight className="h-3 w-3 mr-1" /> : <ArrowDownRight className="h-3 w-3 mr-1" />}
-                    {stat.change}
-                  </Badge>
-                )}
-              </div>
-              <p className="text-2xl font-bold">{stat.value}</p>
-              <p className="text-sm text-muted-foreground">{stat.label}</p>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+                <p className="text-2xl font-bold">{stat.value}</p>
+                <p className="text-sm text-muted-foreground">{stat.label}</p>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
         {/* Demand Forecast Chart */}
@@ -352,6 +353,7 @@ const PrevisaoDemanda = () => {
           </CardContent>
         </Card>
       </div>
+      </PageContent>
     </PageContainer>
   );
 };

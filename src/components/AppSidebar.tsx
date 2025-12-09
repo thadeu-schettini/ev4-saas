@@ -27,6 +27,19 @@ import {
   Star,
   FileBarChart,
   Lock,
+  ClipboardCheck,
+  BookOpen,
+  Users2,
+  TrendingUp,
+  BarChart2,
+  Package,
+  Pill,
+  FileCheck,
+  ThumbsUp,
+  TestTube,
+  FileSignature,
+  MessageCircle,
+  Beaker,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { NavLink } from "@/components/NavLink";
@@ -89,6 +102,22 @@ const otherItems: NavItem[] = [
   { title: "Indicações", url: "/indicacoes", icon: Gift },
   { title: "Faturamento", url: "/billing", icon: CreditCard },
   { title: "Configurações", url: "/configuracoes", icon: Settings },
+];
+
+// Temporary menu for new features evaluation
+const newFeaturesItems: NavItem[] = [
+  { title: "Triagem", url: "/triagem", icon: ClipboardCheck },
+  { title: "Protocolos", url: "/protocolos", icon: BookOpen },
+  { title: "Interconsulta", url: "/interconsulta", icon: Users2 },
+  { title: "Produtividade", url: "/produtividade", icon: TrendingUp },
+  { title: "Previsão Demanda", url: "/previsao-demanda", icon: BarChart2 },
+  { title: "Estoque", url: "/estoque", icon: Package },
+  { title: "Lembretes Med.", url: "/lembretes-medicacao", icon: Pill },
+  { title: "Consentimentos", url: "/consentimentos", icon: FileCheck },
+  { title: "Pesquisa NPS", url: "/pesquisa-nps", icon: ThumbsUp },
+  { title: "Labs", url: "/integracao-laboratorios", icon: Beaker },
+  { title: "Receita Digital", url: "/receita-digital", icon: FileSignature },
+  { title: "WhatsApp", url: "/whatsapp-business", icon: MessageCircle },
 ];
 
 export function AppSidebar() {
@@ -230,6 +259,20 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu className="space-y-1">
               {otherItems.map(renderNavItem)}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        {/* New Features - Temporary */}
+        <SidebarGroup className="mt-4">
+          {!collapsed && (
+            <SidebarGroupLabel className="px-3 mb-2 text-xs font-medium uppercase tracking-wider text-muted-foreground/70">
+              🆕 Novas Funcionalidades
+            </SidebarGroupLabel>
+          )}
+          <SidebarGroupContent>
+            <SidebarMenu className="space-y-1">
+              {newFeaturesItems.map(renderNavItem)}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
