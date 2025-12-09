@@ -1,7 +1,11 @@
+import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Flame } from "lucide-react";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Button } from "@/components/ui/button";
+import { Flame, ChevronDown, ChevronUp } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 // Mock data for heatmap - represents slot utilization by hour and day
 const heatmapData = [
@@ -32,6 +36,9 @@ const getHeatLabel = (value: number) => {
 };
 
 export function SlotHeatmap() {
+  const [isExpanded, setIsExpanded] = useState(true);
+  const [showLegend, setShowLegend] = useState(true);
+
   const avgOccupancy = Math.round(
     heatmapData.reduce((acc, day) => 
       acc + day.slots.reduce((s, v) => s + v, 0) / day.slots.length, 0
@@ -60,22 +67,41 @@ export function SlotHeatmap() {
         </div>
       </CardHeader>
       <CardContent className="flex-1 flex flex-col">
-        {/* Peak indicators */}
-        <div className="flex flex-wrap gap-3 mb-4">
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-destructive/10 border border-destructive/20">
-            <div className="w-2 h-2 rounded-full bg-destructive animate-pulse" />
-            <span className="text-xs font-medium text-destructive">Pico: {peakDay} às {peakHour}</span>
-          </div>
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-success/10 border border-success/20">
-            <div className="w-2 h-2 rounded-full bg-success" />
-            <span className="text-xs font-medium text-success">Melhor horário: Sáb 17h</span>
-          </div>
-        </div>
+        {/* Peak indicators with animation */}
+        <Collapsible open={isExpanded} onOpenChange={setIsExpanded}>
+          <CollapsibleTrigger asChild>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="w-full justify-between mb-3 hover:bg-muted/50 transition-colors"
+            >
+              <span className="text-xs text-muted-foreground">Indicadores de pico</span>
+              <div className={cn(
+                "transition-transform duration-300",
+                isExpanded ? "rotate-180" : "rotate-0"
+              )}>
+                <ChevronDown className="h-4 w-4" />
+              </div>
+            </Button>
+          </CollapsibleTrigger>
+          <CollapsibleContent className="animate-accordion-down data-[state=closed]:animate-accordion-up">
+            <div className="flex flex-wrap gap-3 mb-4 animate-fade-in">
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-destructive/10 border border-destructive/20 transition-all duration-300 hover:scale-105">
+                <div className="w-2 h-2 rounded-full bg-destructive animate-pulse" />
+                <span className="text-xs font-medium text-destructive">Pico: {peakDay} às {peakHour}</span>
+              </div>
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-success/10 border border-success/20 transition-all duration-300 hover:scale-105">
+                <div className="w-2 h-2 rounded-full bg-success" />
+                <span className="text-xs font-medium text-success">Melhor horário: Sáb 17h</span>
+              </div>
+            </div>
+          </CollapsibleContent>
+        </Collapsible>
 
-        {/* Heatmap Grid */}
+        {/* Heatmap Grid with flex-1 to expand */}
         <TooltipProvider>
-          <div className="overflow-x-auto">
-            <div className="min-w-[500px]">
+          <div className="overflow-x-auto flex-1 flex flex-col">
+            <div className="min-w-[500px] flex-1 flex flex-col">
               {/* Hours header */}
               <div className="flex mb-1">
                 <div className="w-10 flex-shrink-0" />
@@ -89,10 +115,14 @@ export function SlotHeatmap() {
                 ))}
               </div>
 
-              {/* Heatmap rows */}
-              <div className="space-y-1">
-                {heatmapData.map((dayData) => (
-                  <div key={dayData.day} className="flex items-center gap-1">
+              {/* Heatmap rows with staggered animation */}
+              <div className="space-y-1 flex-1 flex flex-col justify-between">
+                {heatmapData.map((dayData, dayIndex) => (
+                  <div 
+                    key={dayData.day} 
+                    className="flex items-center gap-1 animate-fade-in"
+                    style={{ animationDelay: `${dayIndex * 50}ms` }}
+                  >
                     <div className="w-10 text-xs font-medium text-muted-foreground flex-shrink-0">
                       {dayData.day}
                     </div>
@@ -101,7 +131,12 @@ export function SlotHeatmap() {
                         <Tooltip key={idx}>
                           <TooltipTrigger asChild>
                             <div
-                              className={`flex-1 h-7 rounded-sm cursor-pointer transition-all duration-200 ${getHeatColor(value)}`}
+                              className={cn(
+                                "flex-1 h-8 rounded-sm cursor-pointer transition-all duration-300",
+                                getHeatColor(value),
+                                "hover:scale-110 hover:z-10 hover:shadow-lg"
+                              )}
+                              style={{ animationDelay: `${(dayIndex * 12 + idx) * 20}ms` }}
                             />
                           </TooltipTrigger>
                           <TooltipContent className="bg-card border-border">
@@ -123,29 +158,50 @@ export function SlotHeatmap() {
           </div>
         </TooltipProvider>
 
-        {/* Legend */}
-        <div className="flex flex-wrap items-center justify-center gap-3 mt-4 pt-3 border-t border-border/50">
-          <div className="flex items-center gap-1.5">
-            <div className="w-3 h-3 rounded-sm bg-muted/60" />
-            <span className="text-[10px] text-muted-foreground">0-25%</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <div className="w-3 h-3 rounded-sm bg-primary/40" />
-            <span className="text-[10px] text-muted-foreground">25-50%</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <div className="w-3 h-3 rounded-sm bg-success/60" />
-            <span className="text-[10px] text-muted-foreground">50-75%</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <div className="w-3 h-3 rounded-sm bg-warning/70" />
-            <span className="text-[10px] text-muted-foreground">75-90%</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <div className="w-3 h-3 rounded-sm bg-destructive/80" />
-            <span className="text-[10px] text-muted-foreground">90-100%</span>
-          </div>
-        </div>
+        {/* Legend with toggle animation */}
+        <Collapsible open={showLegend} onOpenChange={setShowLegend}>
+          <CollapsibleTrigger asChild>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="w-full justify-center gap-2 mt-3 pt-3 border-t border-border/50 hover:bg-transparent"
+            >
+              <span className="text-xs text-muted-foreground">
+                {showLegend ? "Ocultar" : "Mostrar"} legenda
+              </span>
+              <div className={cn(
+                "transition-transform duration-300",
+                showLegend ? "rotate-180" : "rotate-0"
+              )}>
+                <ChevronUp className="h-3 w-3" />
+              </div>
+            </Button>
+          </CollapsibleTrigger>
+          <CollapsibleContent className="animate-accordion-down data-[state=closed]:animate-accordion-up">
+            <div className="flex flex-wrap items-center justify-center gap-3 pt-2 animate-fade-in">
+              <div className="flex items-center gap-1.5 transition-transform duration-200 hover:scale-105">
+                <div className="w-3 h-3 rounded-sm bg-muted/60" />
+                <span className="text-[10px] text-muted-foreground">0-25%</span>
+              </div>
+              <div className="flex items-center gap-1.5 transition-transform duration-200 hover:scale-105">
+                <div className="w-3 h-3 rounded-sm bg-primary/40" />
+                <span className="text-[10px] text-muted-foreground">25-50%</span>
+              </div>
+              <div className="flex items-center gap-1.5 transition-transform duration-200 hover:scale-105">
+                <div className="w-3 h-3 rounded-sm bg-success/60" />
+                <span className="text-[10px] text-muted-foreground">50-75%</span>
+              </div>
+              <div className="flex items-center gap-1.5 transition-transform duration-200 hover:scale-105">
+                <div className="w-3 h-3 rounded-sm bg-warning/70" />
+                <span className="text-[10px] text-muted-foreground">75-90%</span>
+              </div>
+              <div className="flex items-center gap-1.5 transition-transform duration-200 hover:scale-105">
+                <div className="w-3 h-3 rounded-sm bg-destructive/80" />
+                <span className="text-[10px] text-muted-foreground">90-100%</span>
+              </div>
+            </div>
+          </CollapsibleContent>
+        </Collapsible>
       </CardContent>
     </Card>
   );
