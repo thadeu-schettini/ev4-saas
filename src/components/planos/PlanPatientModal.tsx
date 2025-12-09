@@ -31,7 +31,7 @@ interface PlanPatientModalProps {
   plan: {
     id: number;
     name: string;
-    color: string;
+    category: string;
   } | null;
 }
 
@@ -87,8 +87,8 @@ export function PlanPatientModal({ open, onOpenChange, plan }: PlanPatientModalP
       <DialogContent className="max-w-lg max-h-[90vh] overflow-hidden flex flex-col">
         <DialogHeader>
           <div className="flex items-center gap-3">
-            <div className={cn("p-3 rounded-2xl bg-gradient-to-br shadow-lg", plan.color)}>
-              <UserPlus className="h-5 w-5 text-white" />
+            <div className="p-1.5 rounded-lg bg-gradient-to-br from-primary/70 to-primary/50 shadow-sm">
+              <UserPlus className="h-3.5 w-3.5 text-white" />
             </div>
             <div>
               <DialogTitle>Adicionar Pacientes</DialogTitle>

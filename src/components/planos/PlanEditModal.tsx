@@ -33,7 +33,7 @@ interface Plan {
   active: boolean;
   patients: number;
   completion: number;
-  color: string;
+  category: string;
   popular?: boolean;
 }
 
@@ -70,8 +70,8 @@ export function PlanEditModal({ open, onOpenChange, plan }: PlanEditModalProps) 
       <DialogContent className="max-w-lg">
         <DialogHeader>
           <div className="flex items-center gap-3">
-            <div className={cn("p-3 rounded-2xl bg-gradient-to-br shadow-lg", plan.color)}>
-              <Layers className="h-5 w-5 text-white" />
+            <div className="p-1.5 rounded-lg bg-gradient-to-br from-primary/70 to-primary/50 shadow-sm">
+              <Layers className="h-3.5 w-3.5 text-white" />
             </div>
             <div>
               <DialogTitle>Editar Plano</DialogTitle>

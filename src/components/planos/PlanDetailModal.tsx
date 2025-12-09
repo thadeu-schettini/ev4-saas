@@ -51,7 +51,7 @@ interface PlanDetailModalProps {
     active: boolean;
     patients: number;
     completion: number;
-    color: string;
+    category: string;
     popular?: boolean;
   } | null;
   onAddPatient: () => void;
@@ -156,11 +156,8 @@ export function PlanDetailModal({ open, onOpenChange, plan, onAddPatient, onEdit
       <DialogContent className="max-w-4xl max-h-[90vh]">
         <DialogHeader>
           <div className="flex items-center gap-4">
-            <div className={cn(
-              "p-3 rounded-2xl bg-gradient-to-br shadow-lg",
-              plan.color
-            )}>
-              <Layers className="h-6 w-6 text-white" />
+            <div className="p-2 rounded-lg bg-gradient-to-br from-primary/70 to-primary/50 shadow-sm">
+              <Layers className="h-4 w-4 text-white" />
             </div>
             <div className="flex-1">
               <DialogTitle className="text-xl">{plan.name}</DialogTitle>

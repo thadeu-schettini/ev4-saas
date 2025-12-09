@@ -18,7 +18,13 @@ import {
   Star,
   ArrowRight,
   Sparkles,
-  Target
+  Target,
+  Baby,
+  Bone,
+  Heart,
+  Palette,
+  Activity,
+  LucideIcon
 } from "lucide-react";
 import { PageHeader } from "@/components/ui/page-header";
 import { PageContainer, PageContent } from "@/components/ui/page-container";
@@ -37,6 +43,37 @@ import { PlanPatientModal } from "@/components/planos/PlanPatientModal";
 import { PlanEditModal } from "@/components/planos/PlanEditModal";
 import { PlanDetailModal } from "@/components/planos/PlanDetailModal";
 
+// Cores por categoria de plano
+const categoryColors: Record<string, string> = {
+  gestacao: "from-pink-400/70 to-rose-500/70",
+  fisioterapia: "from-blue-400/70 to-cyan-500/70",
+  cardiologia: "from-red-400/70 to-rose-500/70",
+  dermatologia: "from-violet-400/70 to-purple-500/70",
+  reabilitacao: "from-emerald-400/70 to-green-500/70",
+};
+
+const categoryBgColors: Record<string, string> = {
+  gestacao: "bg-pink-500/10",
+  fisioterapia: "bg-blue-500/10",
+  cardiologia: "bg-red-500/10",
+  dermatologia: "bg-violet-500/10",
+  reabilitacao: "bg-emerald-500/10",
+};
+
+// Ícones por categoria
+const categoryIcons: Record<string, LucideIcon> = {
+  gestacao: Baby,
+  fisioterapia: Bone,
+  cardiologia: Heart,
+  dermatologia: Palette,
+  reabilitacao: Activity,
+};
+
+// Helper para obter ícone da categoria
+const getCategoryIcon = (category: string) => {
+  return categoryIcons[category] || Layers;
+};
+
 const plans = [
   {
     id: 1,
@@ -48,7 +85,7 @@ const plans = [
     active: true,
     patients: 24,
     completion: 78,
-    color: "from-pink-500 to-rose-500",
+    category: "gestacao",
     popular: true
   },
   {
@@ -61,7 +98,7 @@ const plans = [
     active: true,
     patients: 18,
     completion: 65,
-    color: "from-blue-500 to-cyan-500",
+    category: "fisioterapia",
     popular: true
   },
   {
@@ -74,7 +111,7 @@ const plans = [
     active: true,
     patients: 42,
     completion: 92,
-    color: "from-red-500 to-rose-500",
+    category: "cardiologia",
     popular: false
   },
   {
@@ -87,7 +124,7 @@ const plans = [
     active: true,
     patients: 12,
     completion: 45,
-    color: "from-violet-500 to-purple-500",
+    category: "dermatologia",
     popular: false
   },
   {
@@ -100,7 +137,7 @@ const plans = [
     active: false,
     patients: 8,
     completion: 100,
-    color: "from-emerald-500 to-green-500",
+    category: "reabilitacao",
     popular: false
   },
 ];
@@ -258,20 +295,25 @@ export default function PlanosAtendimento() {
             onClick={() => setSelectedPlan(plan)}
           >
             {/* Background gradient */}
-            <div className={cn("absolute inset-0 opacity-5 bg-gradient-to-br", plan.color)} />
+            <div className={cn("absolute inset-0 opacity-5 bg-gradient-to-br", categoryColors[plan.category as keyof typeof categoryColors])} />
             
             {/* Header */}
             <CardHeader className="pb-3 relative">
               <div className="flex items-start justify-between">
-                <div className={cn(
-                  "p-3 rounded-2xl bg-gradient-to-br shadow-lg group-hover:scale-110 transition-transform",
-                  plan.color
-                )}>
-                  <Layers className="h-6 w-6 text-white" />
-                </div>
+                {(() => {
+                  const CategoryIcon = getCategoryIcon(plan.category);
+                  return (
+                    <div className={cn(
+                      "p-1.5 rounded-lg bg-gradient-to-br shadow-sm group-hover:scale-105 transition-transform",
+                      categoryColors[plan.category as keyof typeof categoryColors]
+                    )}>
+                      <CategoryIcon className="h-3.5 w-3.5 text-white" />
+                    </div>
+                  );
+                })()}
                 <div className="flex items-center gap-2">
                   {plan.popular && (
-                    <Badge className="bg-amber-500/10 text-amber-600 border-amber-500/20 gap-1">
+                    <Badge className="bg-amber-500/10 text-amber-600 border-amber-500/20 gap-1 flex items-center">
                       <Star className="h-3 w-3 fill-amber-500" />
                       Popular
                     </Badge>
