@@ -36,7 +36,7 @@ export function PageHeader({
   const gradientClass = iconGradient || iconColor || "from-primary to-primary/70";
   return (
     <header className={cn(
-      "border-b border-border/40 bg-background/80 backdrop-blur-md sticky top-0 z-40 relative overflow-hidden hidden lg:block",
+      "border-b border-border/40 bg-background/80 backdrop-blur-md sticky top-0 z-40 relative overflow-hidden",
       className
     )}>
       {/* Subtle decorative gradient line */}
