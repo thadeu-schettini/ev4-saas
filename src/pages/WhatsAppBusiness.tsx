@@ -33,6 +33,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { NewTemplateModal } from "@/components/whatsapp/NewTemplateModal";
+import { toast } from "sonner";
 
 const mockTemplates = [
   {
@@ -127,11 +129,25 @@ const WhatsAppBusiness = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("templates");
   const [automations, setAutomations] = useState(mockAutomations);
+  const [showNewTemplateModal, setShowNewTemplateModal] = useState(false);
+  const [showConfigModal, setShowConfigModal] = useState(false);
 
   const handleToggleAutomation = (id: number) => {
     setAutomations(automations.map(a => 
       a.id === id ? { ...a, active: !a.active } : a
     ));
+    const automation = automations.find(a => a.id === id);
+    if (automation) {
+      toast.success(`Automação "${automation.name}" ${automation.active ? 'desativada' : 'ativada'}`);
+    }
+  };
+
+  const handleViewTemplate = (template: typeof mockTemplates[0]) => {
+    toast.info(`Visualizando template: ${template.name}`);
+  };
+
+  const handleEditTemplate = (template: typeof mockTemplates[0]) => {
+    toast.info(`Editando template: ${template.name}`);
   };
 
   const stats = [
@@ -149,11 +165,11 @@ const WhatsAppBusiness = () => {
         icon={MessageCircle}
         actions={
           <div className="flex gap-2">
-            <Button variant="outline" className="gap-2">
+            <Button variant="outline" className="gap-2" onClick={() => setShowConfigModal(true)}>
               <Settings2 className="h-4 w-4" />
               Configurar
             </Button>
-            <Button className="gap-2">
+            <Button className="gap-2" onClick={() => setShowNewTemplateModal(true)}>
               <Plus className="h-4 w-4" />
               Novo Template
             </Button>
@@ -231,11 +247,11 @@ const WhatsAppBusiness = () => {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleEditTemplate(template)}>
                           <Edit className="h-4 w-4 mr-2" />
                           Editar
                         </DropdownMenuItem>
-                        <DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleViewTemplate(template)}>
                           <Eye className="h-4 w-4 mr-2" />
                           Visualizar
                         </DropdownMenuItem>
@@ -352,6 +368,11 @@ const WhatsAppBusiness = () => {
         </TabsContent>
       </Tabs>
       </PageContent>
+
+      <NewTemplateModal 
+        open={showNewTemplateModal} 
+        onOpenChange={setShowNewTemplateModal} 
+      />
     </PageContainer>
   );
 };

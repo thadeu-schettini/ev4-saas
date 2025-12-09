@@ -34,6 +34,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { NewPrescriptionModal } from "@/components/receita/NewPrescriptionModal";
+import { QRCodeModal } from "@/components/receita/QRCodeModal";
+import { toast } from "sonner";
 
 const mockPrescriptions = [
   {
@@ -108,6 +111,9 @@ const typeConfig = {
 const ReceitaDigital = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("prescriptions");
+  const [showNewPrescriptionModal, setShowNewPrescriptionModal] = useState(false);
+  const [showQRCodeModal, setShowQRCodeModal] = useState(false);
+  const [selectedPrescription, setSelectedPrescription] = useState<typeof mockPrescriptions[0] | null>(null);
 
   const stats = [
     { label: "Receitas Hoje", value: 34, icon: FileDigit, color: "text-primary" },
@@ -116,6 +122,24 @@ const ReceitaDigital = () => {
     { label: "Pendentes", value: 6, icon: Clock, color: "text-pending" }
   ];
 
+  const handleViewQRCode = (prescription: typeof mockPrescriptions[0]) => {
+    setSelectedPrescription(prescription);
+    setShowQRCodeModal(true);
+  };
+
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText("https://receita.clinica.com.br/abc123");
+    toast.success("Link copiado para a área de transferência");
+  };
+
+  const handleSendWhatsApp = (prescription: typeof mockPrescriptions[0]) => {
+    toast.success(`Receita enviada para ${prescription.patient} via WhatsApp`);
+  };
+
+  const handleDownloadPDF = (prescription: typeof mockPrescriptions[0]) => {
+    toast.success(`PDF da receita de ${prescription.patient} baixado`);
+  };
+
   return (
     <PageContainer>
       <PageHeader
@@ -123,7 +147,7 @@ const ReceitaDigital = () => {
         description="Prescrição eletrônica integrada com farmácias"
         icon={FileDigit}
         actions={
-          <Button className="gap-2">
+          <Button className="gap-2" onClick={() => setShowNewPrescriptionModal(true)}>
             <Plus className="h-4 w-4" />
             Nova Receita
           </Button>
@@ -236,21 +260,41 @@ const ReceitaDigital = () => {
                         <Eye className="h-4 w-4" />
                         Ver Receita
                       </Button>
-                      <Button variant="outline" size="sm" className="gap-1">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="gap-1"
+                        onClick={() => handleViewQRCode(prescription)}
+                      >
                         <QrCode className="h-4 w-4" />
                         QR Code
                       </Button>
-                      <Button variant="outline" size="sm" className="gap-1">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="gap-1"
+                        onClick={handleCopyLink}
+                      >
                         <Copy className="h-4 w-4" />
                         Copiar Link
                       </Button>
                       {prescription.status !== "expired" && (
-                        <Button variant="outline" size="sm" className="gap-1">
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="gap-1"
+                          onClick={() => handleSendWhatsApp(prescription)}
+                        >
                           <Smartphone className="h-4 w-4" />
                           Enviar WhatsApp
                         </Button>
                       )}
-                      <Button variant="outline" size="sm" className="gap-1">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="gap-1"
+                        onClick={() => handleDownloadPDF(prescription)}
+                      >
                         <Download className="h-4 w-4" />
                         PDF
                       </Button>
@@ -275,6 +319,17 @@ const ReceitaDigital = () => {
         </div>
       </ScrollArea>
       </PageContent>
+
+      <NewPrescriptionModal 
+        open={showNewPrescriptionModal} 
+        onOpenChange={setShowNewPrescriptionModal} 
+      />
+
+      <QRCodeModal 
+        open={showQRCodeModal} 
+        onOpenChange={setShowQRCodeModal}
+        prescription={selectedPrescription}
+      />
     </PageContainer>
   );
 };

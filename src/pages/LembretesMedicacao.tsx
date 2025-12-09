@@ -32,6 +32,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { NewReminderModal } from "@/components/lembretes/NewReminderModal";
+import { toast } from "sonner";
 
 const mockReminders = [
   {
@@ -105,6 +107,7 @@ const statusConfig = {
 const LembretesMedicacao = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("reminders");
+  const [showNewReminderModal, setShowNewReminderModal] = useState(false);
 
   const stats = [
     { label: "Lembretes Ativos", value: 156, icon: Bell, color: "text-primary" },
@@ -113,6 +116,10 @@ const LembretesMedicacao = () => {
     { label: "Não Respondidos", value: 12, icon: XCircle, color: "text-destructive" }
   ];
 
+  const handleSendNow = (reminder: typeof mockReminders[0]) => {
+    toast.success(`Lembrete enviado para ${reminder.patient}`);
+  };
+
   return (
     <PageContainer>
       <PageHeader
@@ -120,7 +127,7 @@ const LembretesMedicacao = () => {
         description="Notificações automáticas para adesão ao tratamento"
         icon={Bell}
         actions={
-          <Button className="gap-2">
+          <Button className="gap-2" onClick={() => setShowNewReminderModal(true)}>
             <Plus className="h-4 w-4" />
             Novo Lembrete
           </Button>
@@ -245,7 +252,9 @@ const LembretesMedicacao = () => {
                             <DropdownMenuContent align="end">
                               <DropdownMenuItem>Editar</DropdownMenuItem>
                               <DropdownMenuItem>Ver Histórico</DropdownMenuItem>
-                              <DropdownMenuItem>Enviar Agora</DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => handleSendNow(reminder)}>
+                                Enviar Agora
+                              </DropdownMenuItem>
                               <DropdownMenuItem className="text-destructive">Excluir</DropdownMenuItem>
                             </DropdownMenuContent>
                           </DropdownMenu>
@@ -308,6 +317,11 @@ const LembretesMedicacao = () => {
         </TabsContent>
       </Tabs>
       </PageContent>
+
+      <NewReminderModal 
+        open={showNewReminderModal} 
+        onOpenChange={setShowNewReminderModal} 
+      />
     </PageContainer>
   );
 };

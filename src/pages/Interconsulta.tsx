@@ -26,6 +26,8 @@ import {
   Filter,
   Eye
 } from "lucide-react";
+import { NewInterconsultaModal } from "@/components/interconsulta/NewInterconsultaModal";
+import { toast } from "sonner";
 
 const mockInterconsultas = [
   {
@@ -95,6 +97,7 @@ const statusConfig = {
 const Interconsulta = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("received");
+  const [showNewInterconsultaModal, setShowNewInterconsultaModal] = useState(false);
 
   const stats = [
     { label: "Recebidas", value: 8, icon: ArrowRight, color: "text-primary" },
@@ -103,6 +106,18 @@ const Interconsulta = () => {
     { label: "Concluídas", value: 12, icon: CheckCircle2, color: "text-confirmed" }
   ];
 
+  const handleAccept = (interconsulta: typeof mockInterconsultas[0]) => {
+    toast.success(`Interconsulta de ${interconsulta.patient} aceita`);
+  };
+
+  const handleViewDetails = (interconsulta: typeof mockInterconsultas[0]) => {
+    toast.info(`Visualizando detalhes da interconsulta de ${interconsulta.patient}`);
+  };
+
+  const handleSendMessage = (interconsulta: typeof mockInterconsultas[0]) => {
+    toast.info(`Abrindo mensagem para ${interconsulta.fromDoctor}`);
+  };
+
   return (
     <PageContainer>
       <PageHeader
@@ -110,7 +125,7 @@ const Interconsulta = () => {
         description="Encaminhamentos internos entre profissionais"
         icon={ArrowLeftRight}
         actions={
-          <Button className="gap-2">
+          <Button className="gap-2" onClick={() => setShowNewInterconsultaModal(true)}>
             <Plus className="h-4 w-4" />
             Nova Interconsulta
           </Button>
@@ -252,17 +267,31 @@ const Interconsulta = () => {
 
                         {/* Actions */}
                         <div className="flex gap-2 pt-2">
-                          <Button variant="outline" size="sm" className="gap-2">
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            className="gap-2"
+                            onClick={() => handleViewDetails(interconsulta)}
+                          >
                             <Eye className="h-4 w-4" />
                             Ver Detalhes
                           </Button>
-                          <Button variant="outline" size="sm" className="gap-2">
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            className="gap-2"
+                            onClick={() => handleSendMessage(interconsulta)}
+                          >
                             <MessageSquare className="h-4 w-4" />
                             Mensagem
                           </Button>
                           {interconsulta.status === "pending" && (
                             <>
-                              <Button size="sm" className="gap-2 ml-auto">
+                              <Button 
+                                size="sm" 
+                                className="gap-2 ml-auto"
+                                onClick={() => handleAccept(interconsulta)}
+                              >
                                 <CheckCircle2 className="h-4 w-4" />
                                 Aceitar
                               </Button>
@@ -288,6 +317,11 @@ const Interconsulta = () => {
         </TabsContent>
       </Tabs>
       </PageContent>
+
+      <NewInterconsultaModal 
+        open={showNewInterconsultaModal} 
+        onOpenChange={setShowNewInterconsultaModal} 
+      />
     </PageContainer>
   );
 };

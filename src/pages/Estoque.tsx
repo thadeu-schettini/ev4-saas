@@ -32,6 +32,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { NewItemModal } from "@/components/estoque/NewItemModal";
+import { StockMovementModal } from "@/components/estoque/StockMovementModal";
 
 const mockItems = [
   {
@@ -125,6 +127,10 @@ const Estoque = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("all");
   const [viewMode, setViewMode] = useState<"grid" | "table">("table");
+  const [showNewItemModal, setShowNewItemModal] = useState(false);
+  const [showMovementModal, setShowMovementModal] = useState(false);
+  const [movementType, setMovementType] = useState<"entry" | "exit">("entry");
+  const [selectedItem, setSelectedItem] = useState<typeof mockItems[0] | null>(null);
 
   const stats = [
     { label: "Total de Itens", value: 234, icon: Package, color: "text-primary" },
@@ -135,6 +141,12 @@ const Estoque = () => {
 
   const getStockPercentage = (current: number, min: number) => {
     return Math.min((current / (min * 2)) * 100, 100);
+  };
+
+  const handleMovement = (item: typeof mockItems[0], type: "entry" | "exit") => {
+    setSelectedItem(item);
+    setMovementType(type);
+    setShowMovementModal(true);
   };
 
   return (
@@ -149,7 +161,7 @@ const Estoque = () => {
               <ShoppingCart className="h-4 w-4" />
               Pedido de Compra
             </Button>
-            <Button className="gap-2">
+            <Button className="gap-2" onClick={() => setShowNewItemModal(true)}>
               <Plus className="h-4 w-4" />
               Novo Item
             </Button>
@@ -289,8 +301,12 @@ const Estoque = () => {
                               </DropdownMenuTrigger>
                               <DropdownMenuContent align="end">
                                 <DropdownMenuItem>Editar</DropdownMenuItem>
-                                <DropdownMenuItem>Registrar Entrada</DropdownMenuItem>
-                                <DropdownMenuItem>Registrar Saída</DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => handleMovement(item, "entry")}>
+                                  Registrar Entrada
+                                </DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => handleMovement(item, "exit")}>
+                                  Registrar Saída
+                                </DropdownMenuItem>
                                 <DropdownMenuItem>Histórico</DropdownMenuItem>
                               </DropdownMenuContent>
                             </DropdownMenu>
@@ -330,8 +346,12 @@ const Estoque = () => {
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
                             <DropdownMenuItem>Editar</DropdownMenuItem>
-                            <DropdownMenuItem>Registrar Entrada</DropdownMenuItem>
-                            <DropdownMenuItem>Registrar Saída</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => handleMovement(item, "entry")}>
+                              Registrar Entrada
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => handleMovement(item, "exit")}>
+                              Registrar Saída
+                            </DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
                       </div>
@@ -370,6 +390,18 @@ const Estoque = () => {
         </TabsContent>
       </Tabs>
       </PageContent>
+
+      <NewItemModal 
+        open={showNewItemModal} 
+        onOpenChange={setShowNewItemModal} 
+      />
+      
+      <StockMovementModal 
+        open={showMovementModal} 
+        onOpenChange={setShowMovementModal}
+        item={selectedItem}
+        type={movementType}
+      />
     </PageContainer>
   );
 };

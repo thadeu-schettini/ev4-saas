@@ -32,6 +32,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { NewConsentModal } from "@/components/consentimentos/NewConsentModal";
+import { toast } from "sonner";
 
 const mockConsents = [
   {
@@ -99,6 +101,8 @@ const statusConfig = {
 const Consentimentos = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("consents");
+  const [showNewConsentModal, setShowNewConsentModal] = useState(false);
+  const [showNewTemplateModal, setShowNewTemplateModal] = useState(false);
 
   const stats = [
     { label: "Enviados", value: 234, icon: Send, color: "text-primary" },
@@ -106,6 +110,26 @@ const Consentimentos = () => {
     { label: "Pendentes", value: 28, icon: Clock, color: "text-pending" },
     { label: "Taxa Assinatura", value: "85%", icon: PenTool, color: "text-info" }
   ];
+
+  const handleViewConsent = (consent: typeof mockConsents[0]) => {
+    toast.info(`Visualizando consentimento de ${consent.patient}`);
+  };
+
+  const handleDownloadPDF = (consent: typeof mockConsents[0]) => {
+    toast.success(`PDF do consentimento de ${consent.patient} baixado`);
+  };
+
+  const handleResend = (consent: typeof mockConsents[0]) => {
+    toast.success(`Consentimento reenviado para ${consent.patient}`);
+  };
+
+  const handleViewTemplate = (template: typeof mockTemplates[0]) => {
+    toast.info(`Visualizando template: ${template.name}`);
+  };
+
+  const handleUseTemplate = (template: typeof mockTemplates[0]) => {
+    setShowNewConsentModal(true);
+  };
 
   return (
     <PageContainer>
@@ -115,11 +139,11 @@ const Consentimentos = () => {
         icon={FileSignature}
         actions={
           <div className="flex gap-2">
-            <Button variant="outline" className="gap-2">
+            <Button variant="outline" className="gap-2" onClick={() => setShowNewTemplateModal(true)}>
               <Plus className="h-4 w-4" />
               Novo Template
             </Button>
-            <Button className="gap-2">
+            <Button className="gap-2" onClick={() => setShowNewConsentModal(true)}>
               <Send className="h-4 w-4" />
               Enviar Consentimento
             </Button>
@@ -232,18 +256,33 @@ const Consentimentos = () => {
 
                         {/* Actions */}
                         <div className="flex gap-2">
-                          <Button variant="outline" size="sm" className="gap-1">
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            className="gap-1"
+                            onClick={() => handleViewConsent(consent)}
+                          >
                             <Eye className="h-4 w-4" />
                             Ver
                           </Button>
                           {consent.status === "signed" && (
-                            <Button variant="outline" size="sm" className="gap-1">
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              className="gap-1"
+                              onClick={() => handleDownloadPDF(consent)}
+                            >
                               <Download className="h-4 w-4" />
                               PDF
                             </Button>
                           )}
                           {consent.status === "pending" && (
-                            <Button variant="outline" size="sm" className="gap-1">
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              className="gap-1"
+                              onClick={() => handleResend(consent)}
+                            >
                               <Send className="h-4 w-4" />
                               Reenviar
                             </Button>
@@ -299,11 +338,20 @@ const Consentimentos = () => {
                 </CardHeader>
                 <CardContent className="pt-0">
                   <div className="flex gap-2">
-                    <Button variant="outline" size="sm" className="flex-1">
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="flex-1"
+                      onClick={() => handleViewTemplate(template)}
+                    >
                       <Eye className="h-4 w-4 mr-1" />
                       Visualizar
                     </Button>
-                    <Button size="sm" className="flex-1">
+                    <Button 
+                      size="sm" 
+                      className="flex-1"
+                      onClick={() => handleUseTemplate(template)}
+                    >
                       <Send className="h-4 w-4 mr-1" />
                       Usar
                     </Button>
@@ -315,6 +363,11 @@ const Consentimentos = () => {
         </TabsContent>
       </Tabs>
       </PageContent>
+
+      <NewConsentModal 
+        open={showNewConsentModal} 
+        onOpenChange={setShowNewConsentModal} 
+      />
     </PageContainer>
   );
 };

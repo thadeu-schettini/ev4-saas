@@ -30,6 +30,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { NewProtocolModal } from "@/components/protocolos/NewProtocolModal";
+import { toast } from "sonner";
 
 const mockProtocolos = [
   {
@@ -97,11 +99,24 @@ const mockProtocolos = [
 const Protocolos = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [protocols, setProtocols] = useState(mockProtocolos);
+  const [showNewProtocolModal, setShowNewProtocolModal] = useState(false);
 
   const handleToggleProtocol = (id: number) => {
     setProtocols(protocols.map(p => 
       p.id === id ? { ...p, active: !p.active } : p
     ));
+    const protocol = protocols.find(p => p.id === id);
+    if (protocol) {
+      toast.success(`Protocolo "${protocol.name}" ${protocol.active ? 'desativado' : 'ativado'}`);
+    }
+  };
+
+  const handleViewPatients = (protocol: typeof mockProtocolos[0]) => {
+    toast.info(`Visualizando ${protocol.patientsEnrolled} pacientes do protocolo "${protocol.name}"`);
+  };
+
+  const handleViewHistory = (protocol: typeof mockProtocolos[0]) => {
+    toast.info(`Histórico do protocolo "${protocol.name}"`);
   };
 
   const stats = [
@@ -118,7 +133,7 @@ const Protocolos = () => {
         description="Fluxos automatizados baseados em diagnósticos e condições"
         icon={GitBranch}
         actions={
-          <Button className="gap-2">
+          <Button className="gap-2" onClick={() => setShowNewProtocolModal(true)}>
             <Plus className="h-4 w-4" />
             Novo Protocolo
           </Button>
@@ -206,11 +221,11 @@ const Protocolos = () => {
                               <Settings2 className="h-4 w-4 mr-2" />
                               Editar
                             </DropdownMenuItem>
-                            <DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => handleViewPatients(protocol)}>
                               <Users className="h-4 w-4 mr-2" />
                               Ver Pacientes
                             </DropdownMenuItem>
-                            <DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => handleViewHistory(protocol)}>
                               <Activity className="h-4 w-4 mr-2" />
                               Histórico
                             </DropdownMenuItem>
@@ -268,6 +283,11 @@ const Protocolos = () => {
         </div>
       </ScrollArea>
       </PageContent>
+
+      <NewProtocolModal 
+        open={showNewProtocolModal} 
+        onOpenChange={setShowNewProtocolModal} 
+      />
     </PageContainer>
   );
 };
