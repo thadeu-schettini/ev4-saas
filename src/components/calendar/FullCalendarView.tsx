@@ -245,27 +245,29 @@ export const FullCalendarView = () => {
 
     return (
       <div className={cn(
-        "w-full h-full p-1.5 sm:p-2 rounded-lg border-l-4 overflow-hidden transition-all duration-200 hover:shadow-md cursor-pointer",
+        "w-full h-full p-2 rounded-lg border-l-4 transition-all duration-200 hover:shadow-md cursor-pointer",
         colors.bg,
         colors.border
-      )}>
-        <div className="flex flex-col h-full">
-          <div className="flex items-center gap-1 mb-0.5 sm:mb-1">
-            <span className={cn("w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full flex-shrink-0", colors.dot)} />
-            <span className={cn("text-[10px] sm:text-xs font-bold truncate", colors.text)}>
+      )}
+      style={{ overflow: 'hidden' }}
+      >
+        <div className="flex flex-col h-full min-w-0 overflow-hidden">
+          <div className="flex items-center gap-1.5 mb-1 min-w-0">
+            <span className={cn("w-2 h-2 rounded-full flex-shrink-0", colors.dot)} />
+            <span className={cn("text-xs font-bold", colors.text)}>
               {eventInfo.timeText}
             </span>
           </div>
-          <p className="text-xs sm:text-sm font-semibold text-foreground truncate">
+          <p className="text-sm font-semibold text-foreground truncate min-w-0">
             {eventInfo.event.extendedProps.patient}
           </p>
-          <p className="text-[10px] sm:text-xs text-muted-foreground truncate hidden sm:block">
+          <p className="text-xs text-muted-foreground truncate min-w-0">
             {eventInfo.event.extendedProps.service}
           </p>
           {eventInfo.event.extendedProps.room && (
-            <div className="hidden sm:flex items-center gap-1 mt-auto pt-1">
-              <MapPin className="w-3 h-3 text-muted-foreground" />
-              <span className="text-xs text-muted-foreground">
+            <div className="flex items-center gap-1 mt-auto pt-1 min-w-0">
+              <MapPin className="w-3 h-3 text-muted-foreground flex-shrink-0" />
+              <span className="text-xs text-muted-foreground truncate">
                 {eventInfo.event.extendedProps.room}
               </span>
             </div>

@@ -14,77 +14,73 @@ export const CalendarFilters = () => {
   return (
     <div className="bg-gradient-to-r from-card to-muted/20 border-b border-border/50 animate-fade-in backdrop-blur-sm">
       {/* Main Filters Row */}
-      <div className="flex items-start sm:items-center gap-3 p-4 flex-wrap">
+      <div className="flex items-center gap-2 sm:gap-3 p-3 sm:p-4 overflow-x-auto scrollbar-hide">
         {/* Quick action button */}
         <Button 
           variant="outline" 
           size="sm"
-          className="h-9 px-3 sm:px-4 text-xs sm:text-sm font-semibold hover:bg-primary/10 hover:text-primary hover:border-primary/30 transition-all duration-300 group"
+          className="h-8 sm:h-9 px-2.5 sm:px-4 text-xs sm:text-sm font-semibold hover:bg-primary/10 hover:text-primary hover:border-primary/30 transition-all duration-300 group flex-shrink-0"
         >
-          <Filter className="h-3.5 w-3.5 mr-2 group-hover:rotate-12 transition-transform duration-300" />
+          <Filter className="h-3.5 w-3.5 sm:mr-2 group-hover:rotate-12 transition-transform duration-300" />
           <span className="hidden sm:inline">Ocultar próximos</span>
-          <span className="sm:hidden">Ocultar</span>
         </Button>
 
-        <div className="hidden sm:block h-6 w-px bg-border/50" />
+        <div className="hidden sm:block h-6 w-px bg-border/50 flex-shrink-0" />
 
-        {/* Filter dropdowns with modern design */}
-        <div className="flex items-center gap-2 group">
-          <span className="text-xs text-muted-foreground font-semibold uppercase tracking-wide hidden sm:inline">Serviço</span>
+        {/* Filter dropdowns - horizontal scroll on mobile */}
+        <div className="flex items-center gap-2 flex-shrink-0">
+          <span className="text-xs text-muted-foreground font-semibold uppercase tracking-wide hidden lg:inline">Serviço</span>
           <Button 
             variant="outline" 
             size="sm"
-            className="h-9 px-3 sm:px-4 text-xs sm:text-sm font-medium hover:bg-primary/10 hover:text-primary hover:border-primary/30 transition-all duration-300 hover:scale-105"
+            className="h-8 sm:h-9 px-2.5 sm:px-4 text-xs sm:text-sm font-medium hover:bg-primary/10 hover:text-primary hover:border-primary/30 transition-all"
           >
-            <span className="sm:hidden">Serv.</span>
-            <span className="hidden sm:inline">Todos</span>
-            <ChevronDown className="ml-1 sm:ml-2 h-3 sm:h-3.5 w-3 sm:w-3.5 group-hover:translate-y-0.5 transition-transform duration-300" />
+            Serv.
+            <ChevronDown className="ml-1 h-3 w-3" />
           </Button>
         </div>
 
-        <div className="flex items-center gap-2 group">
-          <span className="text-xs text-muted-foreground font-semibold uppercase tracking-wide hidden sm:inline">Profissional</span>
+        <div className="flex items-center gap-2 flex-shrink-0">
+          <span className="text-xs text-muted-foreground font-semibold uppercase tracking-wide hidden lg:inline">Profissional</span>
           <Button 
             variant="outline" 
             size="sm"
-            className="h-9 px-3 sm:px-4 text-xs sm:text-sm font-medium hover:bg-primary/10 hover:text-primary hover:border-primary/30 transition-all duration-300 hover:scale-105"
+            className="h-8 sm:h-9 px-2.5 sm:px-4 text-xs sm:text-sm font-medium hover:bg-primary/10 hover:text-primary hover:border-primary/30 transition-all"
           >
-            <span className="sm:hidden">Prof.</span>
-            <span className="hidden sm:inline">Todos</span>
-            <ChevronDown className="ml-1 sm:ml-2 h-3 sm:h-3.5 w-3 sm:w-3.5 group-hover:translate-y-0.5 transition-transform duration-300" />
+            Prof.
+            <ChevronDown className="ml-1 h-3 w-3" />
           </Button>
         </div>
 
-        <div className="flex items-center gap-2 group">
-          <span className="text-xs text-muted-foreground font-semibold uppercase tracking-wide hidden sm:inline">Status</span>
+        <div className="flex items-center gap-2 flex-shrink-0">
+          <span className="text-xs text-muted-foreground font-semibold uppercase tracking-wide hidden lg:inline">Status</span>
           <Button 
             variant="outline" 
             size="sm"
-            className="h-9 px-3 sm:px-4 text-xs sm:text-sm font-medium hover:bg-primary/10 hover:text-primary hover:border-primary/30 transition-all duration-300 hover:scale-105"
+            className="h-8 sm:h-9 px-2.5 sm:px-4 text-xs sm:text-sm font-medium hover:bg-primary/10 hover:text-primary hover:border-primary/30 transition-all"
           >
-            <span className="sm:hidden">Stat.</span>
-            <span className="hidden sm:inline">Todos</span>
-            <ChevronDown className="ml-1 sm:ml-2 h-3 sm:h-3.5 w-3 sm:w-3.5 group-hover:translate-y-0.5 transition-transform duration-300" />
+            Stat.
+            <ChevronDown className="ml-1 h-3 w-3" />
           </Button>
         </div>
 
         {/* Switches with modern styling */}
-        <div className="hidden lg:flex items-center gap-6 ml-auto">
-          <div className="flex items-center gap-3 px-3 py-1.5 rounded-lg hover:bg-muted/40 transition-all duration-300 cursor-pointer group">
-            <Switch id="show-external" className="data-[state=checked]:bg-primary" />
+        <div className="hidden lg:flex items-center gap-4 ml-auto flex-shrink-0">
+          <div className="flex items-center gap-2 px-2 py-1 rounded-lg hover:bg-muted/40 transition-all cursor-pointer group">
+            <Switch id="show-external" className="data-[state=checked]:bg-primary scale-90" />
             <label 
               htmlFor="show-external" 
-              className="text-sm font-medium text-foreground cursor-pointer group-hover:text-primary transition-colors"
+              className="text-sm font-medium text-foreground cursor-pointer group-hover:text-primary transition-colors whitespace-nowrap"
             >
               Mostrar externos
             </label>
           </div>
 
-          <div className="flex items-center gap-3 px-3 py-1.5 rounded-lg hover:bg-muted/40 transition-all duration-300 cursor-pointer group">
-            <Switch id="show-blocks" className="data-[state=checked]:bg-primary" />
+          <div className="flex items-center gap-2 px-2 py-1 rounded-lg hover:bg-muted/40 transition-all cursor-pointer group">
+            <Switch id="show-blocks" className="data-[state=checked]:bg-primary scale-90" />
             <label 
               htmlFor="show-blocks" 
-              className="text-sm font-medium text-foreground cursor-pointer group-hover:text-primary transition-colors"
+              className="text-sm font-medium text-foreground cursor-pointer group-hover:text-primary transition-colors whitespace-nowrap"
             >
               Mostrar bloqueios
             </label>
