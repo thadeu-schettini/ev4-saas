@@ -15,6 +15,7 @@ import { PageHeader } from "@/components/ui/page-header";
 import { PageContainer, PageContent } from "@/components/ui/page-container";
 import { PacientesSkeleton } from "@/components/skeletons/PageSkeletons";
 import { useSimulatedLoading } from "@/hooks/use-loading";
+import { NewPatientModal } from "@/components/pacientes/NewPatientModal";
 import {
   Select,
   SelectContent,
@@ -87,6 +88,7 @@ export default function Pacientes() {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(15);
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: "asc" | "desc" } | null>(null);
+  const [isNewPatientOpen, setIsNewPatientOpen] = useState(false);
   const [filters, setFilters] = useState<FilterState>({
     status: "",
     financialStatus: "",
@@ -251,11 +253,13 @@ export default function Pacientes() {
         icon={Users}
         iconColor="from-blue-500 to-cyan-500"
       >
-        <Button className="shrink-0 gap-2">
+        <Button className="shrink-0 gap-2" onClick={() => setIsNewPatientOpen(true)}>
           <UserPlus className="h-4 w-4" />
           <span className="hidden sm:inline">Novo Paciente</span>
         </Button>
       </PageHeader>
+
+      <NewPatientModal open={isNewPatientOpen} onOpenChange={setIsNewPatientOpen} />
 
       <PageContent>
         {isLoading ? (
@@ -264,7 +268,7 @@ export default function Pacientes() {
           <>
         {/* Stats Mini Cards */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
-          <Card className="border-border/50 bg-card/50 backdrop-blur-sm">
+          <Card className="border-border/50 bg-card/50 backdrop-blur-sm animate-fade-in" style={{ animationDelay: "0ms", animationFillMode: "forwards" }}>
             <CardContent className="p-2 sm:p-3 flex items-center gap-2 sm:gap-3">
               <div className="h-8 w-8 sm:h-9 sm:w-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
                 <Users className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary" />
@@ -275,29 +279,29 @@ export default function Pacientes() {
               </div>
             </CardContent>
           </Card>
-          <Card className="border-border/50 bg-card/50 backdrop-blur-sm">
+          <Card className="border-border/50 bg-card/50 backdrop-blur-sm animate-fade-in" style={{ animationDelay: "50ms", animationFillMode: "forwards" }}>
             <CardContent className="p-2 sm:p-3 flex items-center gap-2 sm:gap-3">
-              <div className="h-8 w-8 sm:h-9 sm:w-9 rounded-lg bg-emerald-500/10 flex items-center justify-center shrink-0">
-                <UserCheck className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-emerald-600" />
+              <div className="h-8 w-8 sm:h-9 sm:w-9 rounded-lg bg-success/10 flex items-center justify-center shrink-0">
+                <UserCheck className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-success" />
               </div>
               <div>
                 <p className="text-[10px] sm:text-xs text-muted-foreground">Ativos</p>
-                <p className="text-base sm:text-lg font-bold text-emerald-600">{stats.active.toLocaleString()}</p>
+                <p className="text-base sm:text-lg font-bold text-success">{stats.active.toLocaleString()}</p>
               </div>
             </CardContent>
           </Card>
-          <Card className="border-border/50 bg-card/50 backdrop-blur-sm">
+          <Card className="border-border/50 bg-card/50 backdrop-blur-sm animate-fade-in" style={{ animationDelay: "100ms", animationFillMode: "forwards" }}>
             <CardContent className="p-2 sm:p-3 flex items-center gap-2 sm:gap-3">
-              <div className="h-8 w-8 sm:h-9 sm:w-9 rounded-lg bg-amber-500/10 flex items-center justify-center shrink-0">
-                <AlertCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-amber-600" />
+              <div className="h-8 w-8 sm:h-9 sm:w-9 rounded-lg bg-warning/10 flex items-center justify-center shrink-0">
+                <AlertCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-warning" />
               </div>
               <div>
                 <p className="text-[10px] sm:text-xs text-muted-foreground">Pendências</p>
-                <p className="text-base sm:text-lg font-bold text-amber-600">{stats.pending}</p>
+                <p className="text-base sm:text-lg font-bold text-warning">{stats.pending}</p>
               </div>
             </CardContent>
           </Card>
-          <Card className="border-border/50 bg-card/50 backdrop-blur-sm">
+          <Card className="border-border/50 bg-card/50 backdrop-blur-sm animate-fade-in" style={{ animationDelay: "150ms", animationFillMode: "forwards" }}>
             <CardContent className="p-2 sm:p-3 flex items-center gap-2 sm:gap-3">
               <div className="h-8 w-8 sm:h-9 sm:w-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
                 <Calendar className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary" />

@@ -7,8 +7,9 @@ interface MetricCardProps {
   change?: string;
   changeType?: "positive" | "negative" | "neutral";
   icon: LucideIcon;
-  iconColor?: string;
+  iconGradient?: string;
   description?: string;
+  index?: number;
 }
 
 export function MetricCard({
@@ -17,13 +18,23 @@ export function MetricCard({
   change,
   changeType = "neutral",
   icon: Icon,
-  iconColor = "text-primary",
+  iconGradient = "from-primary to-primary/80",
   description,
+  index = 0,
 }: MetricCardProps) {
   return (
-    <div className="group relative overflow-hidden rounded-2xl border border-border/50 bg-card p-6 shadow-sm transition-all duration-300 hover:shadow-lg hover:border-primary/20 hover:-translate-y-1">
+    <div 
+      className="group relative overflow-hidden rounded-2xl border border-border/50 bg-card p-6 shadow-sm transition-all duration-300 hover:shadow-lg hover:border-primary/20 hover:-translate-y-1 animate-fade-in opacity-0"
+      style={{ 
+        animationDelay: `${index * 50}ms`,
+        animationFillMode: "forwards"
+      }}
+    >
       {/* Background gradient on hover */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+      <div className={cn(
+        "absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-5 bg-gradient-to-br",
+        iconGradient
+      )} />
       
       <div className="relative flex items-start justify-between">
         <div className="space-y-2">
@@ -50,8 +61,11 @@ export function MetricCard({
           )}
         </div>
         
-        <div className={cn("rounded-xl bg-primary/10 p-3", iconColor)}>
-          <Icon className="h-6 w-6" />
+        <div className={cn(
+          "rounded-xl p-3 bg-gradient-to-br shadow-lg group-hover:scale-110 transition-transform duration-300",
+          iconGradient
+        )}>
+          <Icon className="h-6 w-6 text-white" />
         </div>
       </div>
     </div>

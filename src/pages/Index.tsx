@@ -60,7 +60,9 @@ const Index = () => {
                 change="+12%"
                 changeType="positive"
                 icon={Calendar}
+                iconGradient="from-blue-500 to-cyan-500"
                 description="vs. semana passada"
+                index={0}
               />
               <MetricCard
                 title="Pacientes Ativos"
@@ -68,7 +70,9 @@ const Index = () => {
                 change="+48"
                 changeType="positive"
                 icon={Users}
+                iconGradient="from-violet-500 to-purple-500"
                 description="este mês"
+                index={1}
               />
               <MetricCard
                 title="Receita Mensal"
@@ -76,7 +80,9 @@ const Index = () => {
                 change="+8.2%"
                 changeType="positive"
                 icon={DollarSign}
+                iconGradient="from-emerald-500 to-green-500"
                 description="vs. mês anterior"
+                index={2}
               />
               <MetricCard
                 title="Taxa de Ocupação"
@@ -84,7 +90,9 @@ const Index = () => {
                 change="-3%"
                 changeType="negative"
                 icon={TrendingUp}
+                iconGradient="from-amber-500 to-orange-500"
                 description="capacidade utilizada"
+                index={3}
               />
             </div>
 
