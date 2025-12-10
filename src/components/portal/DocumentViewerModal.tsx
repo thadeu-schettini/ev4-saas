@@ -13,10 +13,12 @@ import {
   CheckCircle2,
   ZoomIn,
   ZoomOut,
-  RotateCw
+  RotateCw,
+  Sparkles
 } from "lucide-react";
 import { toast } from "sonner";
 import { useState } from "react";
+import { cn } from "@/lib/utils";
 
 interface Document {
   id: number;
@@ -33,6 +35,16 @@ interface DocumentViewerModalProps {
 
 export function DocumentViewerModal({ open, onOpenChange, document }: DocumentViewerModalProps) {
   const [zoom, setZoom] = useState(100);
+  const [rotation, setRotation] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Simulate document loading
+  useState(() => {
+    if (open) {
+      setIsLoading(true);
+      setTimeout(() => setIsLoading(false), 800);
+    }
+  });
 
   if (!document) return null;
 
@@ -52,6 +64,10 @@ export function DocumentViewerModal({ open, onOpenChange, document }: DocumentVi
     toast.info("Preparando impressão...");
   };
 
+  const handleRotate = () => {
+    setRotation((prev) => (prev + 90) % 360);
+  };
+
   const getDocumentIcon = (type: string) => {
     switch (type) {
       case "Exame": return "🔬";
@@ -62,20 +78,32 @@ export function DocumentViewerModal({ open, onOpenChange, document }: DocumentVi
     }
   };
 
+  const getTypeColor = (type: string) => {
+    switch (type) {
+      case "Exame": return "bg-info/10 text-info border-info/20";
+      case "Receita": return "bg-success/10 text-success border-success/20";
+      case "Atestado": return "bg-warning/10 text-warning border-warning/20";
+      case "Laudo": return "bg-primary/10 text-primary border-primary/20";
+      default: return "bg-muted text-muted-foreground";
+    }
+  };
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-3xl max-h-[90vh] overflow-hidden bg-card/95 backdrop-blur-xl border-2 border-primary/20 rounded-2xl shadow-2xl">
         <DialogHeader className="pb-4 border-b">
           <DialogTitle className="flex items-center gap-3">
-            <div className="p-2 rounded-xl bg-gradient-to-br from-primary to-primary/70">
+            <div className="p-2 rounded-xl bg-gradient-to-br from-primary to-primary/70 animate-[scale-in_0.2s_ease-out]">
               <FileText className="h-5 w-5 text-primary-foreground" />
             </div>
             <div className="flex-1">
               <div className="flex items-center gap-2">
-                <span>{document.name}</span>
-                <Badge variant="outline">{document.type}</Badge>
+                <span className="animate-[fade-in_0.2s_ease-out]">{document.name}</span>
+                <Badge className={cn(getTypeColor(document.type), "animate-[scale-in_0.2s_ease-out_0.1s_both]")}>
+                  {document.type}
+                </Badge>
               </div>
-              <p className="text-sm text-muted-foreground font-normal mt-0.5">
+              <p className="text-sm text-muted-foreground font-normal mt-0.5 animate-[fade-in_0.2s_ease-out_0.2s_both]">
                 Emitido em {document.date}
               </p>
             </div>
@@ -87,132 +115,176 @@ export function DocumentViewerModal({ open, onOpenChange, document }: DocumentVi
           <div className="flex-1">
             <div className="bg-muted/30 rounded-xl p-4 h-[400px] overflow-hidden">
               {/* Toolbar */}
-              <div className="flex items-center justify-between mb-4 pb-4 border-b">
+              <div className="flex items-center justify-between mb-4 pb-4 border-b animate-[fade-in_0.3s_ease-out]">
                 <div className="flex items-center gap-2">
                   <Button 
                     variant="outline" 
                     size="icon" 
-                    className="h-8 w-8"
+                    className="h-8 w-8 hover:scale-110 transition-transform"
                     onClick={() => setZoom(Math.max(50, zoom - 25))}
                   >
                     <ZoomOut className="h-4 w-4" />
                   </Button>
-                  <span className="text-sm min-w-[60px] text-center">{zoom}%</span>
+                  <span className="text-sm min-w-[60px] text-center font-medium">{zoom}%</span>
                   <Button 
                     variant="outline" 
                     size="icon" 
-                    className="h-8 w-8"
+                    className="h-8 w-8 hover:scale-110 transition-transform"
                     onClick={() => setZoom(Math.min(200, zoom + 25))}
                   >
                     <ZoomIn className="h-4 w-4" />
                   </Button>
-                  <Button variant="outline" size="icon" className="h-8 w-8">
+                  <Button 
+                    variant="outline" 
+                    size="icon" 
+                    className="h-8 w-8 hover:scale-110 hover:rotate-90 transition-all"
+                    onClick={handleRotate}
+                  >
                     <RotateCw className="h-4 w-4" />
                   </Button>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Button variant="outline" size="sm" className="gap-2" onClick={handlePrint}>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="gap-2 hover:scale-105 transition-transform" 
+                    onClick={handlePrint}
+                  >
                     <Printer className="h-4 w-4" />
                     Imprimir
                   </Button>
-                  <Button variant="outline" size="sm" className="gap-2" onClick={handleShare}>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="gap-2 hover:scale-105 transition-transform" 
+                    onClick={handleShare}
+                  >
                     <Share2 className="h-4 w-4" />
                     Compartilhar
                   </Button>
-                  <Button size="sm" className="gap-2" onClick={handleDownload}>
+                  <Button 
+                    size="sm" 
+                    className="gap-2 hover:scale-105 transition-transform" 
+                    onClick={handleDownload}
+                  >
                     <Download className="h-4 w-4" />
                     Baixar
                   </Button>
                 </div>
               </div>
 
-              {/* Mock Document Content */}
+              {/* Document Content */}
               <ScrollArea className="h-[300px]">
-                <div 
-                  className="bg-card rounded-lg p-6 shadow-sm border mx-auto"
-                  style={{ 
-                    transform: `scale(${zoom / 100})`,
-                    transformOrigin: "top center",
-                    width: "100%",
-                    maxWidth: "500px"
-                  }}
-                >
-                  <div className="text-center mb-6">
-                    <div className="text-4xl mb-2">{getDocumentIcon(document.type)}</div>
-                    <h2 className="text-xl font-bold">{document.type}</h2>
-                    <p className="text-sm text-muted-foreground">MedClinic Saúde</p>
+                {isLoading ? (
+                  <div className="flex flex-col items-center justify-center h-full">
+                    <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-4 animate-pulse">
+                      <FileText className="h-8 w-8 text-primary" />
+                    </div>
+                    <p className="text-sm text-muted-foreground">Carregando documento...</p>
                   </div>
-
-                  <div className="space-y-4 text-sm">
-                    <div className="flex items-center gap-2 p-3 rounded-lg bg-muted/30">
-                      <User className="h-4 w-4 text-muted-foreground" />
-                      <div>
-                        <p className="text-xs text-muted-foreground">Paciente</p>
-                        <p className="font-medium">Maria Silva Santos</p>
+                ) : (
+                  <div 
+                    className="bg-card rounded-lg p-6 shadow-sm border mx-auto transition-all duration-300 animate-[fade-in_0.5s_ease-out]"
+                    style={{ 
+                      transform: `scale(${zoom / 100}) rotate(${rotation}deg)`,
+                      transformOrigin: "top center",
+                      width: "100%",
+                      maxWidth: "500px"
+                    }}
+                  >
+                    <div className="text-center mb-6">
+                      <div className="text-5xl mb-2 animate-[bounce-in_0.5s_ease-out]">
+                        {getDocumentIcon(document.type)}
+                      </div>
+                      <h2 className="text-xl font-bold">{document.type}</h2>
+                      <p className="text-sm text-muted-foreground">MedClinic Saúde</p>
+                      <div className="flex items-center justify-center gap-1 mt-2">
+                        <Sparkles className="h-4 w-4 text-warning animate-pulse" />
+                        <span className="text-xs text-muted-foreground">Documento Digital Verificado</span>
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-2 p-3 rounded-lg bg-muted/30">
-                      <Calendar className="h-4 w-4 text-muted-foreground" />
-                      <div>
-                        <p className="text-xs text-muted-foreground">Data de Emissão</p>
-                        <p className="font-medium">{document.date}</p>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-2 p-3 rounded-lg bg-muted/30">
-                      <Building2 className="h-4 w-4 text-muted-foreground" />
-                      <div>
-                        <p className="text-xs text-muted-foreground">Profissional</p>
-                        <p className="font-medium">Dr. Ricardo Carvalho</p>
-                        <p className="text-xs text-muted-foreground">CRM 123456 - SP</p>
-                      </div>
-                    </div>
-
-                    {document.type === "Exame" && (
-                      <div className="p-4 rounded-lg border">
-                        <h4 className="font-medium mb-3">Resultados</h4>
-                        <div className="space-y-2 text-xs">
-                          <div className="flex justify-between">
-                            <span>Hemoglobina</span>
-                            <span className="font-medium">14.2 g/dL</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span>Glicose</span>
-                            <span className="font-medium">92 mg/dL</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span>Colesterol Total</span>
-                            <span className="font-medium">185 mg/dL</span>
-                          </div>
+                    <div className="space-y-4 text-sm">
+                      <div className="flex items-center gap-2 p-3 rounded-lg bg-muted/30 transition-all hover:bg-muted/50 hover:scale-[1.02]">
+                        <User className="h-4 w-4 text-muted-foreground" />
+                        <div>
+                          <p className="text-xs text-muted-foreground">Paciente</p>
+                          <p className="font-medium">Maria Silva Santos</p>
                         </div>
                       </div>
-                    )}
 
-                    {document.type === "Receita" && (
-                      <div className="p-4 rounded-lg border">
-                        <h4 className="font-medium mb-3">Prescrição</h4>
-                        <div className="space-y-3 text-xs">
-                          <div className="p-2 bg-muted/30 rounded">
-                            <p className="font-medium">Losartana 50mg</p>
-                            <p className="text-muted-foreground">1 comprimido por dia, pela manhã</p>
-                          </div>
-                          <div className="p-2 bg-muted/30 rounded">
-                            <p className="font-medium">AAS 100mg</p>
-                            <p className="text-muted-foreground">1 comprimido por dia, após almoço</p>
-                          </div>
+                      <div className="flex items-center gap-2 p-3 rounded-lg bg-muted/30 transition-all hover:bg-muted/50 hover:scale-[1.02]">
+                        <Calendar className="h-4 w-4 text-muted-foreground" />
+                        <div>
+                          <p className="text-xs text-muted-foreground">Data de Emissão</p>
+                          <p className="font-medium">{document.date}</p>
                         </div>
                       </div>
-                    )}
 
-                    <div className="pt-4 border-t text-center">
-                      <div className="inline-flex items-center gap-2 text-success">
-                        <CheckCircle2 className="h-4 w-4" />
-                        <span className="text-xs font-medium">Documento Verificado</span>
+                      <div className="flex items-center gap-2 p-3 rounded-lg bg-muted/30 transition-all hover:bg-muted/50 hover:scale-[1.02]">
+                        <Building2 className="h-4 w-4 text-muted-foreground" />
+                        <div>
+                          <p className="text-xs text-muted-foreground">Profissional</p>
+                          <p className="font-medium">Dr. Ricardo Carvalho</p>
+                          <p className="text-xs text-muted-foreground">CRM 123456 - SP</p>
+                        </div>
+                      </div>
+
+                      {document.type === "Exame" && (
+                        <div className="p-4 rounded-lg border animate-[fade-in_0.3s_ease-out]">
+                          <h4 className="font-medium mb-3 flex items-center gap-2">
+                            <span>Resultados</span>
+                            <Badge variant="outline" className="text-xs">Normal</Badge>
+                          </h4>
+                          <div className="space-y-2 text-xs">
+                            {[
+                              { label: "Hemoglobina", value: "14.2 g/dL", status: "normal" },
+                              { label: "Glicose", value: "92 mg/dL", status: "normal" },
+                              { label: "Colesterol Total", value: "185 mg/dL", status: "normal" }
+                            ].map((item, index) => (
+                              <div 
+                                key={item.label}
+                                className="flex justify-between p-2 rounded bg-muted/30 transition-all hover:bg-muted/50"
+                                style={{ animationDelay: `${index * 100}ms` }}
+                              >
+                                <span>{item.label}</span>
+                                <span className="font-medium text-success">{item.value}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {document.type === "Receita" && (
+                        <div className="p-4 rounded-lg border animate-[fade-in_0.3s_ease-out]">
+                          <h4 className="font-medium mb-3">Prescrição</h4>
+                          <div className="space-y-3 text-xs">
+                            {[
+                              { med: "Losartana 50mg", dosage: "1 comprimido por dia, pela manhã" },
+                              { med: "AAS 100mg", dosage: "1 comprimido por dia, após almoço" }
+                            ].map((item, index) => (
+                              <div 
+                                key={item.med}
+                                className="p-3 bg-muted/30 rounded transition-all hover:bg-muted/50 hover:scale-[1.01]"
+                                style={{ animationDelay: `${index * 100}ms` }}
+                              >
+                                <p className="font-medium">{item.med}</p>
+                                <p className="text-muted-foreground">{item.dosage}</p>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      <div className="pt-4 border-t text-center">
+                        <div className="inline-flex items-center gap-2 text-success animate-pulse">
+                          <CheckCircle2 className="h-4 w-4" />
+                          <span className="text-xs font-medium">Documento Verificado</span>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
+                )}
               </ScrollArea>
             </div>
           </div>

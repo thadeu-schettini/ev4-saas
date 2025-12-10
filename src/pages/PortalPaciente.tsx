@@ -324,13 +324,42 @@ export default function PortalPaciente() {
                       </div>
                       <div className="flex items-center gap-2 mt-3">
                         {apt.status === "pending" && (
-                          <Button size="sm" variant="default" className="gap-1">
+                          <Button 
+                            size="sm" 
+                            variant="default" 
+                            className="gap-1"
+                            onClick={() => openAppointmentDetail(apt, "view")}
+                          >
                             <CheckCircle2 className="h-3 w-3" />
                             Confirmar
                           </Button>
                         )}
-                        <Button size="sm" variant="outline">Remarcar</Button>
-                        <Button size="sm" variant="ghost" className="text-destructive">Cancelar</Button>
+                        {apt.type === "online" && (
+                          <Button 
+                            size="sm" 
+                            variant="default" 
+                            className="gap-1 bg-info hover:bg-info/90"
+                            onClick={() => setOnlineRoomOpen(true)}
+                          >
+                            <Video className="h-3 w-3" />
+                            Entrar
+                          </Button>
+                        )}
+                        <Button 
+                          size="sm" 
+                          variant="outline"
+                          onClick={() => openAppointmentDetail(apt, "reschedule")}
+                        >
+                          Remarcar
+                        </Button>
+                        <Button 
+                          size="sm" 
+                          variant="ghost" 
+                          className="text-destructive"
+                          onClick={() => openAppointmentDetail(apt, "cancel")}
+                        >
+                          Cancelar
+                        </Button>
                       </div>
                     </div>
                   ))}
@@ -355,7 +384,16 @@ export default function PortalPaciente() {
                           <p className="text-xs text-muted-foreground">{apt.specialty} • {apt.date}</p>
                         </div>
                       </div>
-                      <Button variant="ghost" size="sm" className="gap-1">
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        className="gap-1"
+                        onClick={() => openAppointmentDetail({
+                          ...apt,
+                          time: "10:00",
+                          type: "presencial"
+                        }, "view")}
+                      >
                         <Eye className="h-4 w-4" />
                         Ver
                       </Button>
@@ -457,11 +495,21 @@ export default function PortalPaciente() {
                       </div>
                     </div>
                     <div className="flex items-center gap-2 mt-3">
-                      <Button size="sm" variant="outline" className="flex-1 gap-1">
+                      <Button 
+                        size="sm" 
+                        variant="outline" 
+                        className="flex-1 gap-1"
+                        onClick={() => openDocumentViewer(doc)}
+                      >
                         <Eye className="h-3 w-3" />
                         Ver
                       </Button>
-                      <Button size="sm" variant="outline" className="flex-1 gap-1">
+                      <Button 
+                        size="sm" 
+                        variant="outline" 
+                        className="flex-1 gap-1"
+                        onClick={() => openDocumentViewer(doc)}
+                      >
                         <Download className="h-3 w-3" />
                         Baixar
                       </Button>

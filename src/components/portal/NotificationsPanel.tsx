@@ -16,7 +16,8 @@ import {
   AlertCircle,
   Trash2,
   CheckCheck,
-  Settings
+  Settings,
+  Sparkles
 } from "lucide-react";
 
 interface NotificationsPanelProps {
@@ -84,6 +85,7 @@ const notifications = [
 export function NotificationsPanel({ open, onOpenChange }: NotificationsPanelProps) {
   const [notificationsList, setNotificationsList] = useState(notifications);
   const [filter, setFilter] = useState("all");
+  const [deletingId, setDeletingId] = useState<number | null>(null);
 
   const unreadCount = notificationsList.filter(n => !n.read).length;
 
@@ -98,7 +100,11 @@ export function NotificationsPanel({ open, onOpenChange }: NotificationsPanelPro
   };
 
   const deleteNotification = (id: number) => {
-    setNotificationsList(prev => prev.filter(n => n.id !== id));
+    setDeletingId(id);
+    setTimeout(() => {
+      setNotificationsList(prev => prev.filter(n => n.id !== id));
+      setDeletingId(null);
+    }, 300);
   };
 
   const filteredNotifications = notificationsList.filter(n => {
@@ -124,17 +130,17 @@ export function NotificationsPanel({ open, onOpenChange }: NotificationsPanelPro
         <SheetHeader className="p-4 pb-0">
           <div className="flex items-center justify-between">
             <SheetTitle className="flex items-center gap-3">
-              <div className="p-2 rounded-xl bg-gradient-to-br from-primary to-primary/70">
+              <div className="p-2 rounded-xl bg-gradient-to-br from-primary to-primary/70 animate-[scale-in_0.2s_ease-out]">
                 <Bell className="h-5 w-5 text-primary-foreground" />
               </div>
-              Notificações
+              <span>Notificações</span>
               {unreadCount > 0 && (
-                <Badge className="bg-destructive text-destructive-foreground">
+                <Badge className="bg-destructive text-destructive-foreground animate-pulse">
                   {unreadCount} novas
                 </Badge>
               )}
             </SheetTitle>
-            <Button variant="ghost" size="icon">
+            <Button variant="ghost" size="icon" className="hover:rotate-90 transition-transform duration-300">
               <Settings className="h-4 w-4" />
             </Button>
           </div>
@@ -146,7 +152,7 @@ export function NotificationsPanel({ open, onOpenChange }: NotificationsPanelPro
             <Button 
               variant="outline" 
               size="sm" 
-              className="w-full gap-2"
+              className="w-full gap-2 animate-[fade-in_0.3s_ease-out] hover:scale-[1.02] transition-transform"
               onClick={markAllAsRead}
             >
               <CheckCheck className="h-4 w-4" />
@@ -157,17 +163,23 @@ export function NotificationsPanel({ open, onOpenChange }: NotificationsPanelPro
           {/* Filters */}
           <Tabs value={filter} onValueChange={setFilter}>
             <TabsList className="grid grid-cols-4 w-full h-auto p-1">
-              <TabsTrigger value="all" className="text-xs py-1.5">Todas</TabsTrigger>
-              <TabsTrigger value="unread" className="text-xs py-1.5">
+              <TabsTrigger value="all" className="text-xs py-1.5 transition-all data-[state=active]:scale-105">
+                Todas
+              </TabsTrigger>
+              <TabsTrigger value="unread" className="text-xs py-1.5 transition-all data-[state=active]:scale-105">
                 Não lidas
                 {unreadCount > 0 && (
-                  <span className="ml-1 w-4 h-4 rounded-full bg-destructive text-destructive-foreground text-[10px] flex items-center justify-center">
+                  <span className="ml-1 w-4 h-4 rounded-full bg-destructive text-destructive-foreground text-[10px] flex items-center justify-center animate-pulse">
                     {unreadCount}
                   </span>
                 )}
               </TabsTrigger>
-              <TabsTrigger value="appointment" className="text-xs py-1.5">Consultas</TabsTrigger>
-              <TabsTrigger value="payment" className="text-xs py-1.5">Pagamentos</TabsTrigger>
+              <TabsTrigger value="appointment" className="text-xs py-1.5 transition-all data-[state=active]:scale-105">
+                Consultas
+              </TabsTrigger>
+              <TabsTrigger value="payment" className="text-xs py-1.5 transition-all data-[state=active]:scale-105">
+                Pagamentos
+              </TabsTrigger>
             </TabsList>
           </Tabs>
 
@@ -175,32 +187,44 @@ export function NotificationsPanel({ open, onOpenChange }: NotificationsPanelPro
           <ScrollArea className="h-[calc(100vh-220px)]">
             <div className="space-y-2 pr-4">
               {filteredNotifications.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-12 text-center">
-                  <Bell className="h-12 w-12 text-muted-foreground/30 mb-4" />
+                <div className="flex flex-col items-center justify-center py-12 text-center animate-[fade-in_0.3s_ease-out]">
+                  <div className="relative">
+                    <Bell className="h-16 w-16 text-muted-foreground/30 mb-4" />
+                    <Sparkles className="h-6 w-6 text-warning absolute -top-1 -right-1 animate-bounce" />
+                  </div>
                   <p className="text-muted-foreground">Nenhuma notificação</p>
+                  <p className="text-xs text-muted-foreground/70">Você está em dia!</p>
                 </div>
               ) : (
-                filteredNotifications.map((notification) => {
+                filteredNotifications.map((notification, index) => {
                   const Icon = notification.icon;
                   return (
                     <div
                       key={notification.id}
+                      style={{ animationDelay: `${index * 50}ms` }}
                       className={cn(
-                        "group relative p-4 rounded-xl transition-all hover:shadow-md cursor-pointer",
+                        "group relative p-4 rounded-xl transition-all duration-300 cursor-pointer",
+                        "animate-[fade-in_0.3s_ease-out_both]",
+                        "hover:shadow-md hover:scale-[1.01]",
+                        deletingId === notification.id && "opacity-0 scale-95 -translate-x-full",
                         notification.read 
-                          ? "bg-muted/30" 
-                          : "bg-primary/5 border border-primary/10"
+                          ? "bg-muted/30 hover:bg-muted/50" 
+                          : "bg-primary/5 border border-primary/10 hover:bg-primary/10"
                       )}
                       onClick={() => markAsRead(notification.id)}
                     >
                       {!notification.read && (
-                        <div className="absolute top-4 right-4 w-2 h-2 rounded-full bg-primary animate-pulse" />
+                        <div className="absolute top-4 right-4 w-2 h-2 rounded-full bg-primary animate-ping" />
+                      )}
+                      {!notification.read && (
+                        <div className="absolute top-4 right-4 w-2 h-2 rounded-full bg-primary" />
                       )}
                       
                       <div className="flex gap-3">
                         <div className={cn(
-                          "p-2 rounded-lg h-fit",
-                          getTypeColor(notification.type)
+                          "p-2 rounded-lg h-fit transition-all duration-300",
+                          getTypeColor(notification.type),
+                          !notification.read && "animate-[scale-in_0.3s_ease-out]"
                         )}>
                           <Icon className="h-4 w-4" />
                         </div>
@@ -208,7 +232,7 @@ export function NotificationsPanel({ open, onOpenChange }: NotificationsPanelPro
                         <div className="flex-1 min-w-0">
                           <div className="flex items-start justify-between gap-2">
                             <h4 className={cn(
-                              "font-medium text-sm",
+                              "font-medium text-sm transition-colors",
                               !notification.read && "text-foreground"
                             )}>
                               {notification.title}
@@ -224,13 +248,13 @@ export function NotificationsPanel({ open, onOpenChange }: NotificationsPanelPro
                             <Button
                               variant="ghost"
                               size="icon"
-                              className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                              className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-all hover:scale-110 hover:bg-destructive/10 hover:text-destructive"
                               onClick={(e) => {
                                 e.stopPropagation();
                                 deleteNotification(notification.id);
                               }}
                             >
-                              <Trash2 className="h-3 w-3 text-muted-foreground" />
+                              <Trash2 className="h-3 w-3" />
                             </Button>
                           </div>
                         </div>
