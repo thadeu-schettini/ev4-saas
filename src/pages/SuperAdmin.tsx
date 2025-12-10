@@ -602,227 +602,225 @@ export default function SuperAdmin() {
         title="Painel SuperAdmin"
         description="Gestão completa de usuários, clínicas, métricas e sistema"
       >
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
           <Select value={selectedPeriod} onValueChange={setSelectedPeriod}>
-            <SelectTrigger className="w-[130px]">
+            <SelectTrigger className="w-[100px] sm:w-[130px] h-8 sm:h-9 text-xs sm:text-sm">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="7d">Últimos 7 dias</SelectItem>
-              <SelectItem value="30d">Últimos 30 dias</SelectItem>
-              <SelectItem value="90d">Últimos 90 dias</SelectItem>
-              <SelectItem value="1y">Último ano</SelectItem>
+              <SelectItem value="7d">7 dias</SelectItem>
+              <SelectItem value="30d">30 dias</SelectItem>
+              <SelectItem value="90d">90 dias</SelectItem>
+              <SelectItem value="1y">1 ano</SelectItem>
             </SelectContent>
           </Select>
+          <Button variant="outline" size="sm" className="gap-1.5 h-8 sm:h-9 px-2 sm:px-3">
+            <Download className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+            <span className="hidden sm:inline text-xs sm:text-sm">Exportar</span>
+          </Button>
+          <Button size="sm" className="gap-1.5 bg-gradient-to-r from-red-500 to-orange-600 hover:from-red-600 hover:to-orange-700 h-8 sm:h-9 px-2 sm:px-3">
+            <Settings className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+            <span className="hidden sm:inline text-xs sm:text-sm">Config</span>
+          </Button>
         </div>
-        <Button variant="outline" className="gap-2">
-          <Download className="h-4 w-4" />
-          <span className="hidden sm:inline">Exportar</span>
-        </Button>
-        <Button className="gap-2 bg-gradient-to-r from-red-500 to-orange-600 hover:from-red-600 hover:to-orange-700">
-          <Settings className="h-4 w-4" />
-          <span className="hidden sm:inline">Configurações</span>
-        </Button>
       </PageHeader>
 
       {/* Live Stats Bar */}
-      <div className="px-4 sm:px-6 mb-4">
-        <Card className="p-3 bg-gradient-to-r from-primary/5 via-transparent to-success/5 border-primary/20">
-          <div className="flex items-center justify-between flex-wrap gap-4">
-            <div className="flex items-center gap-6 flex-wrap">
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 rounded-full bg-success animate-pulse" />
-                <span className="text-sm font-medium">{metricsData.activeUsers.toLocaleString()} usuários online</span>
+      <div className="px-3 sm:px-4 md:px-6 mb-3 sm:mb-4">
+        <Card className="p-2.5 sm:p-3 bg-gradient-to-r from-primary/5 via-transparent to-success/5 border-primary/20">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-4">
+            <div className="flex items-center gap-3 sm:gap-6 flex-wrap text-xs sm:text-sm">
+              <div className="flex items-center gap-1.5 sm:gap-2">
+                <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-success animate-pulse" />
+                <span className="font-medium">{metricsData.activeUsers.toLocaleString()} online</span>
               </div>
-              <Separator orientation="vertical" className="h-4 hidden sm:block" />
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Zap className="h-4 w-4 text-warning" />
-                <span>{metricsData.apiCalls.toLocaleString()} API calls/24h</span>
+              <Separator orientation="vertical" className="h-3 sm:h-4 hidden sm:block" />
+              <div className="flex items-center gap-1.5 text-muted-foreground">
+                <Zap className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-warning" />
+                <span className="hidden sm:inline">{metricsData.apiCalls.toLocaleString()} API/24h</span>
+                <span className="sm:hidden">{(metricsData.apiCalls / 1000000).toFixed(1)}M</span>
               </div>
-              <Separator orientation="vertical" className="h-4 hidden sm:block" />
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Activity className="h-4 w-4 text-info" />
-                <span>Uptime: {metricsData.uptime}%</span>
+              <div className="flex items-center gap-1.5 text-muted-foreground">
+                <Activity className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-info" />
+                <span>{metricsData.uptime}%</span>
               </div>
             </div>
-            <div className="flex items-center gap-2">
-              <Button variant="ghost" size="sm" className="gap-2 text-xs">
-                <RefreshCw className="h-3 w-3" />
-                Atualizado há 30s
-              </Button>
-            </div>
+            <Button variant="ghost" size="sm" className="gap-1.5 text-[10px] sm:text-xs h-7 self-start sm:self-center">
+              <RefreshCw className="h-3 w-3" />
+              <span className="hidden sm:inline">Atualizado há 30s</span>
+            </Button>
           </div>
         </Card>
       </div>
 
       {/* Main Metrics */}
-      <div className="px-4 sm:px-6 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4 mb-4 sm:mb-6">
-        <Card className="p-4 bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20 hover:shadow-lg transition-all">
+      <div className="px-3 sm:px-4 md:px-6 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-3 md:gap-4 mb-3 sm:mb-4 md:mb-6">
+        <Card className="p-2.5 sm:p-3 md:p-4 bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20 hover:shadow-lg transition-all">
           <div className="flex flex-col">
             <div className="flex items-center justify-between">
-              <div className="p-2 rounded-lg bg-primary/10">
-                <Building2 className="h-5 w-5 text-primary" />
+              <div className="p-1.5 sm:p-2 rounded-lg bg-primary/10">
+                <Building2 className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
               </div>
-              <Badge variant="outline" className="text-success text-xs">+8.2%</Badge>
+              <Badge variant="outline" className="text-success text-[10px] sm:text-xs h-5">+8.2%</Badge>
             </div>
-            <p className="text-2xl font-bold mt-3">{metricsData.totalClinics.toLocaleString()}</p>
-            <p className="text-xs text-muted-foreground">Total Clínicas</p>
-            <p className="text-xs text-muted-foreground mt-1">{metricsData.activeClinics.toLocaleString()} ativas</p>
+            <p className="text-lg sm:text-xl md:text-2xl font-bold mt-2 sm:mt-3">{metricsData.totalClinics.toLocaleString()}</p>
+            <p className="text-[10px] sm:text-xs text-muted-foreground">Total Clínicas</p>
+            <p className="text-[10px] sm:text-xs text-muted-foreground mt-0.5 sm:mt-1">{metricsData.activeClinics.toLocaleString()} ativas</p>
           </div>
         </Card>
         
-        <Card className="p-4 bg-gradient-to-br from-success/5 to-success/10 border-success/20 hover:shadow-lg transition-all">
+        <Card className="p-2.5 sm:p-3 md:p-4 bg-gradient-to-br from-success/5 to-success/10 border-success/20 hover:shadow-lg transition-all">
           <div className="flex flex-col">
             <div className="flex items-center justify-between">
-              <div className="p-2 rounded-lg bg-success/10">
-                <DollarSign className="h-5 w-5 text-success" />
+              <div className="p-1.5 sm:p-2 rounded-lg bg-success/10">
+                <DollarSign className="h-4 w-4 sm:h-5 sm:w-5 text-success" />
               </div>
-              <Badge variant="outline" className="text-success text-xs">+{metricsData.growthRate}%</Badge>
+              <Badge variant="outline" className="text-success text-[10px] sm:text-xs h-5">+{metricsData.growthRate}%</Badge>
             </div>
-            <p className="text-2xl font-bold mt-3 text-success">R$ {(metricsData.mrr / 1000).toFixed(0)}k</p>
-            <p className="text-xs text-muted-foreground">MRR</p>
-            <p className="text-xs text-muted-foreground mt-1">ARR: R$ {(metricsData.arr / 1000000).toFixed(1)}M</p>
+            <p className="text-lg sm:text-xl md:text-2xl font-bold mt-2 sm:mt-3 text-success">R$ {(metricsData.mrr / 1000).toFixed(0)}k</p>
+            <p className="text-[10px] sm:text-xs text-muted-foreground">MRR</p>
+            <p className="text-[10px] sm:text-xs text-muted-foreground mt-0.5 sm:mt-1">ARR: R$ {(metricsData.arr / 1000000).toFixed(1)}M</p>
           </div>
         </Card>
         
-        <Card className="p-4 bg-gradient-to-br from-info/5 to-info/10 border-info/20 hover:shadow-lg transition-all">
+        <Card className="p-2.5 sm:p-3 md:p-4 bg-gradient-to-br from-info/5 to-info/10 border-info/20 hover:shadow-lg transition-all">
           <div className="flex flex-col">
             <div className="flex items-center justify-between">
-              <div className="p-2 rounded-lg bg-info/10">
-                <Users className="h-5 w-5 text-info" />
+              <div className="p-1.5 sm:p-2 rounded-lg bg-info/10">
+                <Users className="h-4 w-4 sm:h-5 sm:w-5 text-info" />
               </div>
-              <Badge variant="outline" className="text-success text-xs">+12.4%</Badge>
+              <Badge variant="outline" className="text-success text-[10px] sm:text-xs h-5">+12.4%</Badge>
             </div>
-            <p className="text-2xl font-bold mt-3 text-info">{metricsData.totalUsers.toLocaleString()}</p>
-            <p className="text-xs text-muted-foreground">Total Usuários</p>
-            <p className="text-xs text-muted-foreground mt-1">{metricsData.activeUsers.toLocaleString()} ativos</p>
+            <p className="text-lg sm:text-xl md:text-2xl font-bold mt-2 sm:mt-3 text-info">{metricsData.totalUsers.toLocaleString()}</p>
+            <p className="text-[10px] sm:text-xs text-muted-foreground">Total Usuários</p>
+            <p className="text-[10px] sm:text-xs text-muted-foreground mt-0.5 sm:mt-1">{metricsData.activeUsers.toLocaleString()} ativos</p>
           </div>
         </Card>
         
-        <Card className="p-4 bg-gradient-to-br from-purple-500/5 to-purple-500/10 border-purple-500/20 hover:shadow-lg transition-all">
+        <Card className="p-2.5 sm:p-3 md:p-4 bg-gradient-to-br from-purple-500/5 to-purple-500/10 border-purple-500/20 hover:shadow-lg transition-all">
           <div className="flex flex-col">
             <div className="flex items-center justify-between">
-              <div className="p-2 rounded-lg bg-purple-500/10">
-                <Target className="h-5 w-5 text-purple-600" />
+              <div className="p-1.5 sm:p-2 rounded-lg bg-purple-500/10">
+                <Target className="h-4 w-4 sm:h-5 sm:w-5 text-purple-600" />
               </div>
-              <Badge variant="outline" className="text-purple-600 text-xs">LTV/CAC</Badge>
+              <Badge variant="outline" className="text-purple-600 text-[10px] sm:text-xs h-5">LTV/CAC</Badge>
             </div>
-            <p className="text-2xl font-bold mt-3 text-purple-600">{(metricsData.ltv / metricsData.cac).toFixed(1)}x</p>
-            <p className="text-xs text-muted-foreground">LTV/CAC Ratio</p>
-            <p className="text-xs text-muted-foreground mt-1">LTV: R${metricsData.ltv}</p>
+            <p className="text-lg sm:text-xl md:text-2xl font-bold mt-2 sm:mt-3 text-purple-600">{(metricsData.ltv / metricsData.cac).toFixed(1)}x</p>
+            <p className="text-[10px] sm:text-xs text-muted-foreground">LTV/CAC</p>
+            <p className="text-[10px] sm:text-xs text-muted-foreground mt-0.5 sm:mt-1">LTV: R${metricsData.ltv}</p>
           </div>
         </Card>
         
-        <Card className="p-4 bg-gradient-to-br from-warning/5 to-warning/10 border-warning/20 hover:shadow-lg transition-all">
+        <Card className="p-2.5 sm:p-3 md:p-4 bg-gradient-to-br from-warning/5 to-warning/10 border-warning/20 hover:shadow-lg transition-all">
           <div className="flex flex-col">
             <div className="flex items-center justify-between">
-              <div className="p-2 rounded-lg bg-warning/10">
-                <TrendingDown className="h-5 w-5 text-warning" />
+              <div className="p-1.5 sm:p-2 rounded-lg bg-warning/10">
+                <TrendingDown className="h-4 w-4 sm:h-5 sm:w-5 text-warning" />
               </div>
-              <Badge variant="outline" className="text-success text-xs">-0.5%</Badge>
+              <Badge variant="outline" className="text-success text-[10px] sm:text-xs h-5">-0.5%</Badge>
             </div>
-            <p className="text-2xl font-bold mt-3 text-warning">{metricsData.churnRate}%</p>
-            <p className="text-xs text-muted-foreground">Churn Rate</p>
-            <p className="text-xs text-muted-foreground mt-1">Meta: &lt;2%</p>
+            <p className="text-lg sm:text-xl md:text-2xl font-bold mt-2 sm:mt-3 text-warning">{metricsData.churnRate}%</p>
+            <p className="text-[10px] sm:text-xs text-muted-foreground">Churn Rate</p>
+            <p className="text-[10px] sm:text-xs text-muted-foreground mt-0.5 sm:mt-1">Meta: &lt;2%</p>
           </div>
         </Card>
         
-        <Card className="p-4 bg-gradient-to-br from-cyan-500/5 to-cyan-500/10 border-cyan-500/20 hover:shadow-lg transition-all">
+        <Card className="p-2.5 sm:p-3 md:p-4 bg-gradient-to-br from-cyan-500/5 to-cyan-500/10 border-cyan-500/20 hover:shadow-lg transition-all">
           <div className="flex flex-col">
             <div className="flex items-center justify-between">
-              <div className="p-2 rounded-lg bg-cyan-500/10">
-                <Heart className="h-5 w-5 text-cyan-600" />
+              <div className="p-1.5 sm:p-2 rounded-lg bg-cyan-500/10">
+                <Heart className="h-4 w-4 sm:h-5 sm:w-5 text-cyan-600" />
               </div>
-              <Badge variant="outline" className="text-cyan-600 text-xs">Excelente</Badge>
+              <Badge variant="outline" className="text-cyan-600 text-[10px] sm:text-xs h-5">Excelente</Badge>
             </div>
-            <p className="text-2xl font-bold mt-3 text-cyan-600">{metricsData.nps}</p>
-            <p className="text-xs text-muted-foreground">NPS Score</p>
-            <p className="text-xs text-muted-foreground mt-1">Benchmark: 50+</p>
+            <p className="text-lg sm:text-xl md:text-2xl font-bold mt-2 sm:mt-3 text-cyan-600">{metricsData.nps}</p>
+            <p className="text-[10px] sm:text-xs text-muted-foreground">NPS Score</p>
+            <p className="text-[10px] sm:text-xs text-muted-foreground mt-0.5 sm:mt-1">Benchmark: 50+</p>
           </div>
         </Card>
       </div>
 
-      <div className="px-4 sm:px-6 pb-6">
-        <Tabs value={selectedTab} onValueChange={setSelectedTab} className="space-y-4 sm:space-y-6">
+      <div className="px-3 sm:px-4 md:px-6 pb-4 sm:pb-6">
+        <Tabs value={selectedTab} onValueChange={setSelectedTab} className="space-y-3 sm:space-y-4 md:space-y-6">
           <ScrollArea className="w-full">
-            <TabsList className="bg-muted/50 p-1 h-auto gap-1 w-max min-w-full sm:w-auto">
-              <TabsTrigger value="overview" className="gap-2 text-xs sm:text-sm">
-                <LayoutDashboard className="h-4 w-4" />
-                <span className="hidden sm:inline">Visão Geral</span>
+            <TabsList className="bg-muted/50 p-1 h-auto gap-0.5 sm:gap-1 w-max min-w-full">
+              <TabsTrigger value="overview" className="gap-1 sm:gap-2 text-[10px] sm:text-xs md:text-sm px-2 sm:px-3">
+                <LayoutDashboard className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                <span className="hidden md:inline">Visão Geral</span>
               </TabsTrigger>
-              <TabsTrigger value="clinics" className="gap-2 text-xs sm:text-sm">
-                <Building2 className="h-4 w-4" />
-                <span className="hidden sm:inline">Clínicas</span>
+              <TabsTrigger value="clinics" className="gap-1 sm:gap-2 text-[10px] sm:text-xs md:text-sm px-2 sm:px-3">
+                <Building2 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                <span className="hidden md:inline">Clínicas</span>
               </TabsTrigger>
-              <TabsTrigger value="users" className="gap-2 text-xs sm:text-sm">
-                <Users className="h-4 w-4" />
-                <span className="hidden sm:inline">Usuários</span>
+              <TabsTrigger value="users" className="gap-1 sm:gap-2 text-[10px] sm:text-xs md:text-sm px-2 sm:px-3">
+                <Users className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                <span className="hidden md:inline">Usuários</span>
               </TabsTrigger>
-              <TabsTrigger value="revenue" className="gap-2 text-xs sm:text-sm">
-                <DollarSign className="h-4 w-4" />
-                <span className="hidden sm:inline">Financeiro</span>
+              <TabsTrigger value="revenue" className="gap-1 sm:gap-2 text-[10px] sm:text-xs md:text-sm px-2 sm:px-3">
+                <DollarSign className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                <span className="hidden md:inline">Financeiro</span>
               </TabsTrigger>
-              <TabsTrigger value="support" className="gap-2 text-xs sm:text-sm">
-                <HeadphonesIcon className="h-4 w-4" />
-                <span className="hidden sm:inline">Suporte</span>
+              <TabsTrigger value="support" className="gap-1 sm:gap-2 text-[10px] sm:text-xs md:text-sm px-2 sm:px-3">
+                <HeadphonesIcon className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                <span className="hidden md:inline">Suporte</span>
               </TabsTrigger>
-              <TabsTrigger value="audit" className="gap-2 text-xs sm:text-sm">
-                <History className="h-4 w-4" />
-                <span className="hidden sm:inline">Auditoria</span>
+              <TabsTrigger value="audit" className="gap-1 sm:gap-2 text-[10px] sm:text-xs md:text-sm px-2 sm:px-3">
+                <History className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                <span className="hidden md:inline">Auditoria</span>
               </TabsTrigger>
-              <TabsTrigger value="features" className="gap-2 text-xs sm:text-sm">
-                <Flag className="h-4 w-4" />
-                <span className="hidden sm:inline">Features</span>
+              <TabsTrigger value="features" className="gap-1 sm:gap-2 text-[10px] sm:text-xs md:text-sm px-2 sm:px-3">
+                <Flag className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                <span className="hidden md:inline">Features</span>
               </TabsTrigger>
-              <TabsTrigger value="system" className="gap-2 text-xs sm:text-sm">
-                <Server className="h-4 w-4" />
-                <span className="hidden sm:inline">Sistema</span>
+              <TabsTrigger value="system" className="gap-1 sm:gap-2 text-[10px] sm:text-xs md:text-sm px-2 sm:px-3">
+                <Server className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                <span className="hidden md:inline">Sistema</span>
               </TabsTrigger>
-              <TabsTrigger value="analytics" className="gap-2 text-xs sm:text-sm">
-                <BarChart3 className="h-4 w-4" />
-                <span className="hidden sm:inline">Analytics</span>
+              <TabsTrigger value="analytics" className="gap-1 sm:gap-2 text-[10px] sm:text-xs md:text-sm px-2 sm:px-3">
+                <BarChart3 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                <span className="hidden md:inline">Analytics</span>
               </TabsTrigger>
             </TabsList>
           </ScrollArea>
 
           {/* Overview Tab */}
-          <TabsContent value="overview" className="space-y-6">
+          <TabsContent value="overview" className="space-y-4 sm:space-y-6">
             {/* Advanced Analytics Section */}
-            <div className="grid lg:grid-cols-2 gap-6">
+            <div className="grid lg:grid-cols-2 gap-4 sm:gap-6">
               {/* Usage Heatmap */}
-              <Card className="p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="font-semibold flex items-center gap-2">
-                    <LayoutGrid className="h-5 w-5 text-primary" />
-                    Mapa de Calor - Uso por Horário
+              <Card className="p-3 sm:p-4 md:p-6">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-3 sm:mb-4 gap-2">
+                  <h3 className="font-semibold flex items-center gap-2 text-sm sm:text-base">
+                    <LayoutGrid className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
+                    <span className="truncate">Mapa de Calor - Uso</span>
                   </h3>
-                  <Badge variant="outline" className="text-xs">Última semana</Badge>
+                  <Badge variant="outline" className="text-[10px] sm:text-xs self-start sm:self-center">Última semana</Badge>
                 </div>
-                <div className="overflow-x-auto">
-                  <table className="w-full text-xs">
+                <div className="overflow-x-auto -mx-3 px-3 sm:mx-0 sm:px-0">
+                  <table className="w-full text-[10px] sm:text-xs min-w-[400px]">
                     <thead>
                       <tr>
-                        <th className="text-left py-2 px-1 font-medium text-muted-foreground">Dia</th>
-                        <th className="text-center py-2 px-1 font-medium text-muted-foreground">06h</th>
-                        <th className="text-center py-2 px-1 font-medium text-muted-foreground">08h</th>
-                        <th className="text-center py-2 px-1 font-medium text-muted-foreground">10h</th>
-                        <th className="text-center py-2 px-1 font-medium text-muted-foreground">12h</th>
-                        <th className="text-center py-2 px-1 font-medium text-muted-foreground">14h</th>
-                        <th className="text-center py-2 px-1 font-medium text-muted-foreground">16h</th>
-                        <th className="text-center py-2 px-1 font-medium text-muted-foreground">18h</th>
-                        <th className="text-center py-2 px-1 font-medium text-muted-foreground">20h</th>
+                        <th className="text-left py-1.5 sm:py-2 px-0.5 sm:px-1 font-medium text-muted-foreground">Dia</th>
+                        <th className="text-center py-1.5 sm:py-2 px-0.5 sm:px-1 font-medium text-muted-foreground">06h</th>
+                        <th className="text-center py-1.5 sm:py-2 px-0.5 sm:px-1 font-medium text-muted-foreground">08h</th>
+                        <th className="text-center py-1.5 sm:py-2 px-0.5 sm:px-1 font-medium text-muted-foreground">10h</th>
+                        <th className="text-center py-1.5 sm:py-2 px-0.5 sm:px-1 font-medium text-muted-foreground">12h</th>
+                        <th className="text-center py-1.5 sm:py-2 px-0.5 sm:px-1 font-medium text-muted-foreground">14h</th>
+                        <th className="text-center py-1.5 sm:py-2 px-0.5 sm:px-1 font-medium text-muted-foreground">16h</th>
+                        <th className="text-center py-1.5 sm:py-2 px-0.5 sm:px-1 font-medium text-muted-foreground">18h</th>
+                        <th className="text-center py-1.5 sm:py-2 px-0.5 sm:px-1 font-medium text-muted-foreground">20h</th>
                       </tr>
                     </thead>
                     <tbody>
                       {heatmapData.map((row) => (
                         <tr key={row.day}>
-                          <td className="py-1 px-1 font-medium">{row.day}</td>
+                          <td className="py-0.5 sm:py-1 px-0.5 sm:px-1 font-medium text-[10px] sm:text-xs">{row.day}</td>
                           {[row.h6, row.h8, row.h10, row.h12, row.h14, row.h16, row.h18, row.h20].map((val, idx) => {
                             const intensity = Math.min(val / 120, 1);
                             return (
-                              <td key={idx} className="py-1 px-1">
+                              <td key={idx} className="py-0.5 sm:py-1 px-0.5 sm:px-1">
                                 <div 
-                                  className="w-full h-8 rounded flex items-center justify-center text-xs font-medium transition-all hover:scale-105"
+                                  className="w-full h-6 sm:h-8 rounded flex items-center justify-center text-[10px] sm:text-xs font-medium transition-all hover:scale-105"
                                   style={{ 
                                     backgroundColor: `hsl(var(--primary) / ${0.1 + intensity * 0.7})`,
                                     color: intensity > 0.5 ? 'white' : 'hsl(var(--foreground))'
@@ -838,35 +836,35 @@ export default function SuperAdmin() {
                     </tbody>
                   </table>
                 </div>
-                <div className="flex items-center justify-center gap-4 mt-4">
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                    <div className="w-4 h-4 rounded bg-primary/10" />
+                <div className="flex items-center justify-center gap-3 sm:gap-4 mt-3 sm:mt-4">
+                  <div className="flex items-center gap-1.5 sm:gap-2 text-[10px] sm:text-xs text-muted-foreground">
+                    <div className="w-3 h-3 sm:w-4 sm:h-4 rounded bg-primary/10" />
                     <span>Baixo</span>
                   </div>
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                    <div className="w-4 h-4 rounded bg-primary/40" />
+                  <div className="flex items-center gap-1.5 sm:gap-2 text-[10px] sm:text-xs text-muted-foreground">
+                    <div className="w-3 h-3 sm:w-4 sm:h-4 rounded bg-primary/40" />
                     <span>Médio</span>
                   </div>
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                    <div className="w-4 h-4 rounded bg-primary/80" />
+                  <div className="flex items-center gap-1.5 sm:gap-2 text-[10px] sm:text-xs text-muted-foreground">
+                    <div className="w-3 h-3 sm:w-4 sm:h-4 rounded bg-primary/80" />
                     <span>Alto</span>
                   </div>
                 </div>
               </Card>
 
               {/* Conversion Funnel */}
-              <Card className="p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="font-semibold flex items-center gap-2">
-                    <Target className="h-5 w-5 text-primary" />
+              <Card className="p-3 sm:p-4 md:p-6">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-3 sm:mb-4 gap-2">
+                  <h3 className="font-semibold flex items-center gap-2 text-sm sm:text-base">
+                    <Target className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
                     Funil de Conversão
                   </h3>
-                  <Badge variant="outline" className="text-xs gap-1">
+                  <Badge variant="outline" className="text-[10px] sm:text-xs gap-1 self-start sm:self-center">
                     <TrendingUp className="h-3 w-3 text-success" />
                     9.8% taxa
                   </Badge>
                 </div>
-                <div className="space-y-3">
+                <div className="space-y-2 sm:space-y-3">
                   {funnelData.map((item, idx) => {
                     const widthPercent = (item.value / funnelData[0].value) * 100;
                     const conversionRate = idx > 0 
@@ -874,27 +872,27 @@ export default function SuperAdmin() {
                       : "100";
                     return (
                       <div key={item.stage} className="relative">
-                        <div className="flex items-center justify-between text-sm mb-1">
-                          <span className="font-medium">{item.stage}</span>
-                          <div className="flex items-center gap-2">
-                            <span className="text-muted-foreground">{item.value.toLocaleString()}</span>
+                        <div className="flex items-center justify-between text-xs sm:text-sm mb-0.5 sm:mb-1 gap-2">
+                          <span className="font-medium truncate">{item.stage}</span>
+                          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+                            <span className="text-muted-foreground text-[10px] sm:text-xs">{item.value.toLocaleString()}</span>
                             {idx > 0 && (
-                              <Badge variant="outline" className="text-xs">
+                              <Badge variant="outline" className="text-[10px] sm:text-xs h-4 sm:h-5">
                                 {conversionRate}%
                               </Badge>
                             )}
                           </div>
                         </div>
-                        <div className="h-8 bg-muted/30 rounded-lg overflow-hidden">
+                        <div className="h-6 sm:h-8 bg-muted/30 rounded-lg overflow-hidden">
                           <div 
-                            className="h-full rounded-lg transition-all duration-500 flex items-center justify-end pr-2"
+                            className="h-full rounded-lg transition-all duration-500 flex items-center justify-end pr-1.5 sm:pr-2"
                             style={{ 
                               width: `${widthPercent}%`,
                               background: `linear-gradient(90deg, ${item.color}80, ${item.color})`
                             }}
                           >
                             {widthPercent > 30 && (
-                              <span className="text-xs font-medium text-white">
+                              <span className="text-[10px] sm:text-xs font-medium text-white">
                                 {widthPercent.toFixed(0)}%
                               </span>
                             )}
@@ -904,45 +902,45 @@ export default function SuperAdmin() {
                     );
                   })}
                 </div>
-                <Separator className="my-4" />
-                <div className="grid grid-cols-3 gap-4 text-center">
+                <Separator className="my-3 sm:my-4" />
+                <div className="grid grid-cols-3 gap-2 sm:gap-4 text-center">
                   <div>
-                    <p className="text-lg font-bold text-success">9.8%</p>
-                    <p className="text-xs text-muted-foreground">Taxa Conversão</p>
+                    <p className="text-sm sm:text-lg font-bold text-success">9.8%</p>
+                    <p className="text-[10px] sm:text-xs text-muted-foreground">Taxa</p>
                   </div>
                   <div>
-                    <p className="text-lg font-bold text-primary">R$ 125</p>
-                    <p className="text-xs text-muted-foreground">CAC</p>
+                    <p className="text-sm sm:text-lg font-bold text-primary">R$ 125</p>
+                    <p className="text-[10px] sm:text-xs text-muted-foreground">CAC</p>
                   </div>
                   <div>
-                    <p className="text-lg font-bold text-info">12 dias</p>
-                    <p className="text-xs text-muted-foreground">Tempo Médio</p>
+                    <p className="text-sm sm:text-lg font-bold text-info">12 dias</p>
+                    <p className="text-[10px] sm:text-xs text-muted-foreground">Tempo</p>
                   </div>
                 </div>
               </Card>
             </div>
 
             {/* Feature Usage Radar + Actions */}
-            <div className="grid lg:grid-cols-3 gap-6">
-              <Card className="p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="font-semibold flex items-center gap-2">
-                    <Layers className="h-5 w-5 text-primary" />
-                    Uso de Funcionalidades
+            <div className="grid lg:grid-cols-3 gap-4 sm:gap-6">
+              <Card className="p-3 sm:p-4 md:p-6">
+                <div className="flex items-center justify-between mb-3 sm:mb-4">
+                  <h3 className="font-semibold flex items-center gap-2 text-sm sm:text-base">
+                    <Layers className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
+                    <span className="truncate">Uso Funcionalidades</span>
                   </h3>
                 </div>
-                <div className="h-[250px]">
+                <div className="h-[200px] sm:h-[250px]">
                   <ResponsiveContainer width="100%" height="100%">
                     <RadarChart data={featureUsageData}>
                       <PolarGrid stroke="hsl(var(--border))" />
                       <PolarAngleAxis 
                         dataKey="feature" 
-                        tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 11 }}
+                        tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 9 }}
                       />
                       <PolarRadiusAxis 
                         angle={30} 
                         domain={[0, 100]}
-                        tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10 }}
+                        tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 8 }}
                       />
                       <Radar
                         name="Uso"
@@ -965,81 +963,81 @@ export default function SuperAdmin() {
               </Card>
 
               {/* Quick Actions */}
-              <Card className="lg:col-span-2 p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="font-semibold flex items-center gap-2">
-                    <Zap className="h-5 w-5 text-primary" />
+              <Card className="lg:col-span-2 p-3 sm:p-4 md:p-6">
+                <div className="flex items-center justify-between mb-3 sm:mb-4">
+                  <h3 className="font-semibold flex items-center gap-2 text-sm sm:text-base">
+                    <Zap className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
                     Ações Rápidas
                   </h3>
                 </div>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <div className="grid grid-cols-4 gap-1.5 sm:gap-2 md:gap-3">
                   <Button 
                     variant="outline" 
-                    className="h-auto py-4 flex-col gap-2 hover:bg-primary/5 hover:border-primary/30"
+                    className="h-auto py-2.5 sm:py-3 md:py-4 flex-col gap-1 sm:gap-2 hover:bg-primary/5 hover:border-primary/30 text-[10px] sm:text-xs"
                     onClick={() => setShowBroadcastModal(true)}
                   >
-                    <Megaphone className="h-5 w-5 text-primary" />
-                    <span className="text-xs">Broadcast</span>
+                    <Megaphone className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
+                    <span className="hidden sm:inline">Broadcast</span>
                   </Button>
                   <Button 
                     variant="outline" 
-                    className="h-auto py-4 flex-col gap-2 hover:bg-success/5 hover:border-success/30"
+                    className="h-auto py-2.5 sm:py-3 md:py-4 flex-col gap-1 sm:gap-2 hover:bg-success/5 hover:border-success/30 text-[10px] sm:text-xs"
                     onClick={() => setShowNewClinicModal(true)}
                   >
-                    <UserPlus className="h-5 w-5 text-success" />
-                    <span className="text-xs">Nova Clínica</span>
+                    <UserPlus className="h-4 w-4 sm:h-5 sm:w-5 text-success" />
+                    <span className="hidden sm:inline">Nova Clínica</span>
                   </Button>
                   <Button 
                     variant="outline" 
-                    className="h-auto py-4 flex-col gap-2 hover:bg-info/5 hover:border-info/30"
+                    className="h-auto py-2.5 sm:py-3 md:py-4 flex-col gap-1 sm:gap-2 hover:bg-info/5 hover:border-info/30 text-[10px] sm:text-xs"
                     onClick={() => setShowNewTicketModal(true)}
                   >
-                    <Ticket className="h-5 w-5 text-info" />
-                    <span className="text-xs">Novo Ticket</span>
+                    <Ticket className="h-4 w-4 sm:h-5 sm:w-5 text-info" />
+                    <span className="hidden sm:inline">Novo Ticket</span>
                   </Button>
                   <Button 
                     variant="outline" 
-                    className="h-auto py-4 flex-col gap-2 hover:bg-warning/5 hover:border-warning/30"
+                    className="h-auto py-2.5 sm:py-3 md:py-4 flex-col gap-1 sm:gap-2 hover:bg-warning/5 hover:border-warning/30 text-[10px] sm:text-xs"
                     onClick={() => setShowAlertsConfigModal(true)}
                   >
-                    <AlertTriangle className="h-5 w-5 text-warning" />
-                    <span className="text-xs">Alertas</span>
+                    <AlertTriangle className="h-4 w-4 sm:h-5 sm:w-5 text-warning" />
+                    <span className="hidden sm:inline">Alertas</span>
                   </Button>
                   <Button 
                     variant="outline" 
-                    className="h-auto py-4 flex-col gap-2 hover:bg-purple-500/5 hover:border-purple-500/30"
+                    className="h-auto py-2.5 sm:py-3 md:py-4 flex-col gap-1 sm:gap-2 hover:bg-purple-500/5 hover:border-purple-500/30 text-[10px] sm:text-xs"
                     onClick={() => {
                       setFeatureFlagMode("create");
                       setSelectedFeatureFlag(null);
                       setShowFeatureFlagModal(true);
                     }}
                   >
-                    <Flag className="h-5 w-5 text-purple-500" />
-                    <span className="text-xs">Nova Flag</span>
+                    <Flag className="h-4 w-4 sm:h-5 sm:w-5 text-purple-500" />
+                    <span className="hidden sm:inline">Nova Flag</span>
                   </Button>
                   <Button 
                     variant="outline" 
-                    className="h-auto py-4 flex-col gap-2 hover:bg-cyan-500/5 hover:border-cyan-500/30"
+                    className="h-auto py-2.5 sm:py-3 md:py-4 flex-col gap-1 sm:gap-2 hover:bg-cyan-500/5 hover:border-cyan-500/30 text-[10px] sm:text-xs"
                     onClick={() => setShowReportsModal(true)}
                   >
-                    <BarChart3 className="h-5 w-5 text-cyan-500" />
-                    <span className="text-xs">Relatórios</span>
+                    <BarChart3 className="h-4 w-4 sm:h-5 sm:w-5 text-cyan-500" />
+                    <span className="hidden sm:inline">Relatórios</span>
                   </Button>
                   <Button 
                     variant="outline" 
-                    className="h-auto py-4 flex-col gap-2 hover:bg-orange-500/5 hover:border-orange-500/30"
+                    className="h-auto py-2.5 sm:py-3 md:py-4 flex-col gap-1 sm:gap-2 hover:bg-orange-500/5 hover:border-orange-500/30 text-[10px] sm:text-xs"
                     onClick={() => setSelectedTab("system")}
                   >
-                    <Settings className="h-5 w-5 text-orange-500" />
-                    <span className="text-xs">Sistema</span>
+                    <Settings className="h-4 w-4 sm:h-5 sm:w-5 text-orange-500" />
+                    <span className="hidden sm:inline">Sistema</span>
                   </Button>
                   <Button 
                     variant="outline" 
-                    className="h-auto py-4 flex-col gap-2 hover:bg-destructive/5 hover:border-destructive/30"
+                    className="h-auto py-2.5 sm:py-3 md:py-4 flex-col gap-1 sm:gap-2 hover:bg-destructive/5 hover:border-destructive/30 text-[10px] sm:text-xs"
                     onClick={() => setShowSecurityConfigModal(true)}
                   >
-                    <Shield className="h-5 w-5 text-destructive" />
-                    <span className="text-xs">Segurança</span>
+                    <Shield className="h-4 w-4 sm:h-5 sm:w-5 text-destructive" />
+                    <span className="hidden sm:inline">Segurança</span>
                   </Button>
                 </div>
               </Card>
