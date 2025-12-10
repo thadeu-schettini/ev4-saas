@@ -12,6 +12,10 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tooltip as UITooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Tooltip as RechartsTooltip } from "recharts";
+import { ClinicDetailModal } from "@/components/superadmin/ClinicDetailModal";
+import { UserDetailModal } from "@/components/superadmin/UserDetailModal";
+import { TicketDetailModal } from "@/components/superadmin/TicketDetailModal";
+import { BroadcastModal } from "@/components/superadmin/BroadcastModal";
 import { cn } from "@/lib/utils";
 import {
   Shield,
@@ -431,10 +435,14 @@ const usageByHour = [
 export default function SuperAdmin() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedClinic, setSelectedClinic] = useState<typeof clinics[0] | null>(null);
+  const [selectedUser, setSelectedUser] = useState<typeof systemUsers[0] | null>(null);
+  const [selectedTicket, setSelectedTicket] = useState<typeof supportTickets[0] | null>(null);
   const [selectedPeriod, setSelectedPeriod] = useState("30d");
   const [selectedTab, setSelectedTab] = useState("overview");
   const [showBroadcastModal, setShowBroadcastModal] = useState(false);
-  const [showNewClinicModal, setShowNewClinicModal] = useState(false);
+  const [showClinicModal, setShowClinicModal] = useState(false);
+  const [showUserModal, setShowUserModal] = useState(false);
+  const [showTicketModal, setShowTicketModal] = useState(false);
 
   const getPlanBadge = (plan: string) => {
     switch (plan) {
