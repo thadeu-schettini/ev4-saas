@@ -1043,24 +1043,24 @@ export default function SuperAdmin() {
 
                     <div className="flex items-center gap-2">
                       <TooltipProvider>
-                        <Tooltip>
+                        <UITooltip>
                           <TooltipTrigger asChild>
                             <Button variant="ghost" size="icon">
                               <Eye className="h-4 w-4" />
                             </Button>
                           </TooltipTrigger>
                           <TooltipContent>Ver detalhes</TooltipContent>
-                        </Tooltip>
+                        </UITooltip>
                       </TooltipProvider>
                       <TooltipProvider>
-                        <Tooltip>
+                        <UITooltip>
                           <TooltipTrigger asChild>
                             <Button variant="ghost" size="icon">
                               <MessageSquare className="h-4 w-4" />
                             </Button>
                           </TooltipTrigger>
                           <TooltipContent>Enviar mensagem</TooltipContent>
-                        </Tooltip>
+                        </UITooltip>
                       </TooltipProvider>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
