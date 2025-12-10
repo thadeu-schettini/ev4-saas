@@ -31,6 +31,10 @@ import { ContactChurnModal } from "@/components/superadmin/ContactChurnModal";
 import { AlertsConfigModal } from "@/components/superadmin/AlertsConfigModal";
 import { ReportsModal } from "@/components/superadmin/ReportsModal";
 import { SecurityConfigModal } from "@/components/superadmin/SecurityConfigModal";
+import { FunnelDrilldownModal } from "@/components/superadmin/FunnelDrilldownModal";
+import { LeadSearchModal } from "@/components/superadmin/LeadSearchModal";
+import { NewLeadModal } from "@/components/superadmin/NewLeadModal";
+import { ContactJourneyModal } from "@/components/superadmin/ContactJourneyModal";
 import { cn } from "@/lib/utils";
 import {
   Shield,
@@ -512,6 +516,12 @@ export default function SuperAdmin() {
   const [showAlertsConfigModal, setShowAlertsConfigModal] = useState(false);
   const [showReportsModal, setShowReportsModal] = useState(false);
   const [showSecurityConfigModal, setShowSecurityConfigModal] = useState(false);
+  const [showFunnelDrilldown, setShowFunnelDrilldown] = useState(false);
+  const [selectedFunnelStage, setSelectedFunnelStage] = useState<{ name: string; count: number; color: string } | null>(null);
+  const [showLeadSearch, setShowLeadSearch] = useState(false);
+  const [showNewLead, setShowNewLead] = useState(false);
+  const [showContactJourney, setShowContactJourney] = useState(false);
+  const [selectedContact, setSelectedContact] = useState<any>(null);
 
   const getPlanBadge = (plan: string) => {
     switch (plan) {
@@ -2512,16 +2522,27 @@ export default function SuperAdmin() {
                     <Layers className="h-5 w-5 text-primary" />
                     Funil de Conversão
                   </h3>
-                  <Select defaultValue="30d">
-                    <SelectTrigger className="w-[120px]">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="7d">7 dias</SelectItem>
-                      <SelectItem value="30d">30 dias</SelectItem>
-                      <SelectItem value="90d">90 dias</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <div className="flex items-center gap-2">
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="gap-1"
+                      onClick={() => setShowLeadSearch(true)}
+                    >
+                      <Search className="h-4 w-4" />
+                      Buscar Lead
+                    </Button>
+                    <Select defaultValue="30d">
+                      <SelectTrigger className="w-[120px]">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="7d">7 dias</SelectItem>
+                        <SelectItem value="30d">30 dias</SelectItem>
+                        <SelectItem value="90d">90 dias</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
                 <div className="space-y-4">
                   {funnelData.map((stage, index) => {
@@ -2529,12 +2550,19 @@ export default function SuperAdmin() {
                     const convRate = ((stage.value / prevValue) * 100).toFixed(1);
                     const totalRate = ((stage.value / funnelData[0].value) * 100).toFixed(1);
                     return (
-                      <div key={stage.stage} className="relative">
+                      <div 
+                        key={stage.stage} 
+                        className="relative cursor-pointer group"
+                        onClick={() => {
+                          setSelectedFunnelStage({ name: stage.stage, count: stage.value, color: stage.color });
+                          setShowFunnelDrilldown(true);
+                        }}
+                      >
                         <div className="flex items-center gap-4">
                           <div className="w-40 text-sm font-medium truncate">{stage.stage}</div>
                           <div className="flex-1">
                             <div 
-                              className="h-10 rounded-lg flex items-center px-4 text-white font-semibold text-sm transition-all hover:opacity-90"
+                              className="h-10 rounded-lg flex items-center px-4 text-white font-semibold text-sm transition-all group-hover:opacity-80 group-hover:scale-[1.02] group-hover:shadow-lg"
                               style={{ 
                                 width: `${(stage.value / funnelData[0].value) * 100}%`, 
                                 backgroundColor: stage.color,
@@ -2950,6 +2978,42 @@ export default function SuperAdmin() {
       <SecurityConfigModal
         open={showSecurityConfigModal}
         onOpenChange={setShowSecurityConfigModal}
+      />
+
+      <FunnelDrilldownModal
+        open={showFunnelDrilldown}
+        onOpenChange={setShowFunnelDrilldown}
+        stage={selectedFunnelStage}
+        onViewContact={(contact) => {
+          setSelectedContact(contact);
+          setShowFunnelDrilldown(false);
+          setShowContactJourney(true);
+        }}
+      />
+
+      <LeadSearchModal
+        open={showLeadSearch}
+        onOpenChange={setShowLeadSearch}
+        onViewContact={(contact) => {
+          setSelectedContact(contact);
+          setShowLeadSearch(false);
+          setShowContactJourney(true);
+        }}
+        onNewLead={() => {
+          setShowLeadSearch(false);
+          setShowNewLead(true);
+        }}
+      />
+
+      <NewLeadModal
+        open={showNewLead}
+        onOpenChange={setShowNewLead}
+      />
+
+      <ContactJourneyModal
+        open={showContactJourney}
+        onOpenChange={setShowContactJourney}
+        contact={selectedContact}
       />
     </PageContainer>
   );
