@@ -59,6 +59,7 @@ import { ClinicChatModal } from "@/components/portal/ClinicChatModal";
 import { TeleconsultaConfigModal } from "@/components/portal/TeleconsultaConfigModal";
 import { HealthMetricsModal } from "@/components/portal/HealthMetricsModal";
 import { FamilyAccessModal } from "@/components/portal/FamilyAccessModal";
+import { MedicalHistoryTimelineModal } from "@/components/portal/MedicalHistoryTimelineModal";
 
 // Mock patient data
 const patientData = {
@@ -129,6 +130,7 @@ export default function PortalPaciente() {
   const [teleconsultaConfigOpen, setTeleconsultaConfigOpen] = useState(false);
   const [healthMetricsOpen, setHealthMetricsOpen] = useState(false);
   const [familyAccessOpen, setFamilyAccessOpen] = useState(false);
+  const [medicalHistoryOpen, setMedicalHistoryOpen] = useState(false);
 
   const openAppointmentDetail = (apt: any, mode: "view" | "reschedule" | "cancel") => {
     setSelectedAppointment(apt);
@@ -300,15 +302,19 @@ export default function PortalPaciente() {
               </div>
             </div>
           </Card>
-          <Card className="p-4">
+          <Card 
+            className="p-4 cursor-pointer hover:border-primary/40 hover:shadow-md transition-all duration-300 group"
+            onClick={() => setMedicalHistoryOpen(true)}
+          >
             <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-primary/10">
+              <div className="p-2 rounded-lg bg-primary/10 group-hover:scale-110 transition-transform">
                 <Activity className="h-5 w-5 text-primary" />
               </div>
-              <div>
-                <p className="text-xs text-muted-foreground">Consultas</p>
-                <p className="font-semibold">12 realizadas</p>
+              <div className="flex-1">
+                <p className="text-xs text-muted-foreground">Histórico</p>
+                <p className="font-semibold">12 consultas</p>
               </div>
+              <ChevronRight className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
             </div>
           </Card>
         </div>
@@ -765,6 +771,7 @@ export default function PortalPaciente() {
       <TeleconsultaConfigModal open={teleconsultaConfigOpen} onOpenChange={setTeleconsultaConfigOpen} />
       <HealthMetricsModal open={healthMetricsOpen} onOpenChange={setHealthMetricsOpen} />
       <FamilyAccessModal open={familyAccessOpen} onOpenChange={setFamilyAccessOpen} />
+      <MedicalHistoryTimelineModal open={medicalHistoryOpen} onOpenChange={setMedicalHistoryOpen} />
     </div>
   );
 }
