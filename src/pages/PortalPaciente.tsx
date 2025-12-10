@@ -40,9 +40,18 @@ import {
   Shield,
   LogOut,
   Camera,
-  Calendar as CalendarIcon
+  Calendar as CalendarIcon,
+  Video
 } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { NewAppointmentModal } from "@/components/portal/NewAppointmentModal";
+import { PaymentModal } from "@/components/portal/PaymentModal";
+import { NotificationsPanel } from "@/components/portal/NotificationsPanel";
+import { AppointmentDetailModal } from "@/components/portal/AppointmentDetailModal";
+import { DocumentViewerModal } from "@/components/portal/DocumentViewerModal";
+import { PasswordChangeModal } from "@/components/portal/PasswordChangeModal";
+import { PrivacySettingsModal } from "@/components/portal/PrivacySettingsModal";
+import { OnlineRoomModal } from "@/components/portal/OnlineRoomModal";
 
 // Mock patient data
 const patientData = {
@@ -97,6 +106,28 @@ const chatMessages = [
 export default function PortalPaciente() {
   const [isEditing, setIsEditing] = useState(false);
   const [messageInput, setMessageInput] = useState("");
+  const [newAppointmentOpen, setNewAppointmentOpen] = useState(false);
+  const [paymentOpen, setPaymentOpen] = useState(false);
+  const [notificationsOpen, setNotificationsOpen] = useState(false);
+  const [appointmentDetailOpen, setAppointmentDetailOpen] = useState(false);
+  const [selectedAppointment, setSelectedAppointment] = useState<any>(null);
+  const [appointmentMode, setAppointmentMode] = useState<"view" | "reschedule" | "cancel">("view");
+  const [documentViewerOpen, setDocumentViewerOpen] = useState(false);
+  const [selectedDocument, setSelectedDocument] = useState<any>(null);
+  const [passwordChangeOpen, setPasswordChangeOpen] = useState(false);
+  const [privacySettingsOpen, setPrivacySettingsOpen] = useState(false);
+  const [onlineRoomOpen, setOnlineRoomOpen] = useState(false);
+
+  const openAppointmentDetail = (apt: any, mode: "view" | "reschedule" | "cancel") => {
+    setSelectedAppointment(apt);
+    setAppointmentMode(mode);
+    setAppointmentDetailOpen(true);
+  };
+
+  const openDocumentViewer = (doc: any) => {
+    setSelectedDocument(doc);
+    setDocumentViewerOpen(true);
+  };
 
   const getStatusBadge = (status: string) => {
     switch (status) {
@@ -131,7 +162,7 @@ export default function PortalPaciente() {
               </div>
             </div>
             <div className="flex items-center gap-3">
-              <Button variant="ghost" size="icon" className="relative">
+              <Button variant="ghost" size="icon" className="relative" onClick={() => setNotificationsOpen(true)}>
                 <Bell className="h-5 w-5" />
                 <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-red-500 text-white text-xs flex items-center justify-center">
                   2
@@ -166,7 +197,7 @@ export default function PortalPaciente() {
               </div>
             </div>
             <div className="flex flex-wrap gap-2">
-              <Button className="gap-2">
+              <Button className="gap-2" onClick={() => setNewAppointmentOpen(true)}>
                 <Plus className="h-4 w-4" />
                 Agendar Consulta
               </Button>
@@ -261,7 +292,7 @@ export default function PortalPaciente() {
                     <CalendarIcon className="h-5 w-5 text-primary" />
                     Próximos Agendamentos
                   </h3>
-                  <Button size="sm" className="gap-2">
+                  <Button size="sm" className="gap-2" onClick={() => setNewAppointmentOpen(true)}>
                     <Plus className="h-4 w-4" />
                     Agendar
                   </Button>
@@ -359,7 +390,7 @@ export default function PortalPaciente() {
                     <p className="text-sm text-muted-foreground">
                       Você tem R$ 280,00 pendentes. Vencimento: 20/12/2024
                     </p>
-                    <Button size="sm" className="mt-2 gap-2">
+                    <Button size="sm" className="mt-2 gap-2" onClick={() => setPaymentOpen(true)}>
                       <CreditCard className="h-4 w-4" />
                       Pagar Agora
                     </Button>
@@ -588,11 +619,11 @@ export default function PortalPaciente() {
                 </div>
 
                 <div className="mt-6 pt-6 border-t space-y-3">
-                  <Button variant="outline" className="w-full justify-start gap-2">
+                  <Button variant="outline" className="w-full justify-start gap-2" onClick={() => setPasswordChangeOpen(true)}>
                     <Lock className="h-4 w-4" />
                     Alterar Senha
                   </Button>
-                  <Button variant="outline" className="w-full justify-start gap-2">
+                  <Button variant="outline" className="w-full justify-start gap-2" onClick={() => setPrivacySettingsOpen(true)}>
                     <Shield className="h-4 w-4" />
                     Privacidade
                   </Button>
@@ -606,6 +637,25 @@ export default function PortalPaciente() {
           </TabsContent>
         </Tabs>
       </div>
+
+      {/* Modals */}
+      <NewAppointmentModal open={newAppointmentOpen} onOpenChange={setNewAppointmentOpen} />
+      <PaymentModal open={paymentOpen} onOpenChange={setPaymentOpen} />
+      <NotificationsPanel open={notificationsOpen} onOpenChange={setNotificationsOpen} />
+      <AppointmentDetailModal 
+        open={appointmentDetailOpen} 
+        onOpenChange={setAppointmentDetailOpen}
+        appointment={selectedAppointment}
+        mode={appointmentMode}
+      />
+      <DocumentViewerModal 
+        open={documentViewerOpen} 
+        onOpenChange={setDocumentViewerOpen}
+        document={selectedDocument}
+      />
+      <PasswordChangeModal open={passwordChangeOpen} onOpenChange={setPasswordChangeOpen} />
+      <PrivacySettingsModal open={privacySettingsOpen} onOpenChange={setPrivacySettingsOpen} />
+      <OnlineRoomModal open={onlineRoomOpen} onOpenChange={setOnlineRoomOpen} />
     </div>
   );
 }
