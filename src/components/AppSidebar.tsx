@@ -40,6 +40,7 @@ import {
   FileSignature,
   MessageCircle,
   Beaker,
+  ShoppingCart,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { NavLink } from "@/components/NavLink";
@@ -112,6 +113,7 @@ const newFeaturesItems: NavItem[] = [
   { title: "Produtividade", url: "/produtividade", icon: TrendingUp },
   { title: "Previsão Demanda", url: "/previsao-demanda", icon: BarChart2 },
   { title: "Estoque", url: "/estoque", icon: Package },
+  { title: "Pedidos Compra", url: "/pedidos-compra", icon: ShoppingCart },
   { title: "Lembretes Med.", url: "/lembretes-medicacao", icon: Pill },
   { title: "Consentimentos", url: "/consentimentos", icon: FileCheck },
   { title: "Pesquisa NPS", url: "/pesquisa-nps", icon: ThumbsUp },
