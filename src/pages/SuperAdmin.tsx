@@ -28,6 +28,9 @@ import { AuditDetailModal } from "@/components/superadmin/AuditDetailModal";
 import { FeatureFlagModal } from "@/components/superadmin/FeatureFlagModal";
 import { AnnouncementModal } from "@/components/superadmin/AnnouncementModal";
 import { ContactChurnModal } from "@/components/superadmin/ContactChurnModal";
+import { AlertsConfigModal } from "@/components/superadmin/AlertsConfigModal";
+import { ReportsModal } from "@/components/superadmin/ReportsModal";
+import { SecurityConfigModal } from "@/components/superadmin/SecurityConfigModal";
 import { cn } from "@/lib/utils";
 import {
   Shield,
@@ -506,6 +509,9 @@ export default function SuperAdmin() {
   const [showContactChurnModal, setShowContactChurnModal] = useState(false);
   const [selectedChurnClinic, setSelectedChurnClinic] = useState<{ name: string; score: number; mrr: number } | null>(null);
   const [selectedAuditLog, setSelectedAuditLog] = useState<typeof auditLogs[0] | null>(null);
+  const [showAlertsConfigModal, setShowAlertsConfigModal] = useState(false);
+  const [showReportsModal, setShowReportsModal] = useState(false);
+  const [showSecurityConfigModal, setShowSecurityConfigModal] = useState(false);
 
   const getPlanBadge = (plan: string) => {
     switch (plan) {
@@ -991,7 +997,11 @@ export default function SuperAdmin() {
                     <Ticket className="h-5 w-5 text-info" />
                     <span className="text-xs">Novo Ticket</span>
                   </Button>
-                  <Button variant="outline" className="h-auto py-4 flex-col gap-2 hover:bg-warning/5 hover:border-warning/30">
+                  <Button 
+                    variant="outline" 
+                    className="h-auto py-4 flex-col gap-2 hover:bg-warning/5 hover:border-warning/30"
+                    onClick={() => setShowAlertsConfigModal(true)}
+                  >
                     <AlertTriangle className="h-5 w-5 text-warning" />
                     <span className="text-xs">Alertas</span>
                   </Button>
@@ -1007,7 +1017,11 @@ export default function SuperAdmin() {
                     <Flag className="h-5 w-5 text-purple-500" />
                     <span className="text-xs">Nova Flag</span>
                   </Button>
-                  <Button variant="outline" className="h-auto py-4 flex-col gap-2 hover:bg-cyan-500/5 hover:border-cyan-500/30">
+                  <Button 
+                    variant="outline" 
+                    className="h-auto py-4 flex-col gap-2 hover:bg-cyan-500/5 hover:border-cyan-500/30"
+                    onClick={() => setShowReportsModal(true)}
+                  >
                     <BarChart3 className="h-5 w-5 text-cyan-500" />
                     <span className="text-xs">Relatórios</span>
                   </Button>
@@ -1019,7 +1033,11 @@ export default function SuperAdmin() {
                     <Settings className="h-5 w-5 text-orange-500" />
                     <span className="text-xs">Sistema</span>
                   </Button>
-                  <Button variant="outline" className="h-auto py-4 flex-col gap-2 hover:bg-destructive/5 hover:border-destructive/30">
+                  <Button 
+                    variant="outline" 
+                    className="h-auto py-4 flex-col gap-2 hover:bg-destructive/5 hover:border-destructive/30"
+                    onClick={() => setShowSecurityConfigModal(true)}
+                  >
                     <Shield className="h-5 w-5 text-destructive" />
                     <span className="text-xs">Segurança</span>
                   </Button>
@@ -2919,6 +2937,21 @@ export default function SuperAdmin() {
         open={showContactChurnModal}
         onOpenChange={setShowContactChurnModal}
         clinic={selectedChurnClinic}
+      />
+
+      <AlertsConfigModal
+        open={showAlertsConfigModal}
+        onOpenChange={setShowAlertsConfigModal}
+      />
+
+      <ReportsModal
+        open={showReportsModal}
+        onOpenChange={setShowReportsModal}
+      />
+
+      <SecurityConfigModal
+        open={showSecurityConfigModal}
+        onOpenChange={setShowSecurityConfigModal}
       />
     </PageContainer>
   );
