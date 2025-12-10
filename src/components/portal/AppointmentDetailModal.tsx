@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -19,7 +19,9 @@ import {
   AlertTriangle,
   Check,
   X,
-  RefreshCw
+  RefreshCw,
+  Sparkles,
+  CheckCircle2
 } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -66,14 +68,39 @@ export function AppointmentDetailModal({
   const [newTime, setNewTime] = useState<string>("");
   const [cancelReason, setCancelReason] = useState<string>("");
   const [cancelDetails, setCancelDetails] = useState("");
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [successMessage, setSuccessMessage] = useState({ title: "", description: "" });
+  const [isTransitioning, setIsTransitioning] = useState(false);
+
+  useEffect(() => {
+    setMode(initialMode);
+  }, [initialMode, open]);
 
   if (!appointment) return null;
 
+  const animateTransition = (newMode: typeof mode) => {
+    setIsTransitioning(true);
+    setTimeout(() => {
+      setMode(newMode);
+      setIsTransitioning(false);
+    }, 200);
+  };
+
+  const showSuccessAnimation = (title: string, description: string) => {
+    setSuccessMessage({ title, description });
+    setShowSuccess(true);
+    setTimeout(() => {
+      setShowSuccess(false);
+      onOpenChange(false);
+    }, 2500);
+  };
+
   const handleConfirm = () => {
-    toast.success("Presença confirmada!", {
-      description: "Você receberá um lembrete 1 hora antes."
-    });
-    onOpenChange(false);
+    showSuccessAnimation(
+      "Presença Confirmada!",
+      "Você receberá um lembrete 1 hora antes."
+    );
+    toast.success("Presença confirmada!");
   };
 
   const handleReschedule = () => {
@@ -81,10 +108,11 @@ export function AppointmentDetailModal({
       toast.error("Selecione uma nova data e horário");
       return;
     }
-    toast.success("Consulta remarcada com sucesso!", {
-      description: `Nova data: ${format(newDate, "dd/MM/yyyy")} às ${newTime}`
-    });
-    onOpenChange(false);
+    showSuccessAnimation(
+      "Consulta Remarcada!",
+      `Nova data: ${format(newDate, "dd/MM/yyyy")} às ${newTime}`
+    );
+    toast.success("Consulta remarcada com sucesso!");
   };
 
   const handleCancel = () => {
@@ -92,24 +120,49 @@ export function AppointmentDetailModal({
       toast.error("Selecione um motivo de cancelamento");
       return;
     }
-    toast.success("Consulta cancelada", {
-      description: "Esperamos vê-lo em breve!"
-    });
+    toast.success("Consulta cancelada");
     onOpenChange(false);
   };
 
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "confirmed":
-        return <Badge className="bg-status-confirmed/10 text-status-confirmed border-status-confirmed/20">Confirmado</Badge>;
+        return <Badge className="bg-status-confirmed/10 text-status-confirmed border-status-confirmed/20 animate-[fade-in_0.3s_ease-out]">Confirmado</Badge>;
       case "pending":
-        return <Badge className="bg-status-pending/10 text-status-pending border-status-pending/20">Aguardando Confirmação</Badge>;
+        return <Badge className="bg-status-pending/10 text-status-pending border-status-pending/20 animate-pulse">Aguardando Confirmação</Badge>;
       case "scheduled":
-        return <Badge className="bg-info/10 text-info border-info/20">Agendado</Badge>;
+        return <Badge className="bg-info/10 text-info border-info/20 animate-[fade-in_0.3s_ease-out]">Agendado</Badge>;
+      case "completed":
+        return <Badge className="bg-muted text-muted-foreground">Realizado</Badge>;
       default:
         return null;
     }
   };
+
+  if (showSuccess) {
+    return (
+      <Dialog open={open} onOpenChange={onOpenChange}>
+        <DialogContent className="sm:max-w-md bg-card/95 backdrop-blur-xl border-2 border-primary/20 rounded-2xl shadow-2xl">
+          <div className="flex flex-col items-center py-8 text-center">
+            <div className="relative">
+              <div className="w-24 h-24 rounded-full bg-gradient-to-br from-success to-success/70 flex items-center justify-center mb-4 animate-[bounce-in_0.6s_ease-out]">
+                <CheckCircle2 className="h-12 w-12 text-success-foreground" />
+              </div>
+              <div className="absolute -top-2 -right-2 animate-[bounce_1s_ease-in-out_infinite]">
+                <Sparkles className="h-8 w-8 text-warning" />
+              </div>
+            </div>
+            <h2 className="text-2xl font-bold mb-2 animate-[fade-in_0.3s_ease-out_0.3s_both]">
+              {successMessage.title}
+            </h2>
+            <p className="text-muted-foreground animate-[fade-in_0.3s_ease-out_0.4s_both]">
+              {successMessage.description}
+            </p>
+          </div>
+        </DialogContent>
+      </Dialog>
+    );
+  }
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -117,29 +170,34 @@ export function AppointmentDetailModal({
         <DialogHeader className="pb-4 border-b">
           <DialogTitle className="flex items-center gap-3">
             <div className={cn(
-              "p-2 rounded-xl",
+              "p-2 rounded-xl transition-all duration-300",
               mode === "cancel" 
                 ? "bg-gradient-to-br from-destructive to-destructive/70" 
                 : "bg-gradient-to-br from-primary to-primary/70"
             )}>
               {mode === "cancel" ? (
-                <X className="h-5 w-5 text-destructive-foreground" />
+                <X className="h-5 w-5 text-destructive-foreground animate-[scale-in_0.2s_ease-out]" />
               ) : mode === "reschedule" ? (
-                <RefreshCw className="h-5 w-5 text-primary-foreground" />
+                <RefreshCw className="h-5 w-5 text-primary-foreground animate-spin" style={{ animationDuration: '2s' }} />
               ) : (
-                <CalendarIcon className="h-5 w-5 text-primary-foreground" />
+                <CalendarIcon className="h-5 w-5 text-primary-foreground animate-[scale-in_0.2s_ease-out]" />
               )}
             </div>
-            {mode === "cancel" ? "Cancelar Consulta" :
-             mode === "reschedule" ? "Remarcar Consulta" : "Detalhes da Consulta"}
+            <span className="animate-[fade-in_0.2s_ease-out]">
+              {mode === "cancel" ? "Cancelar Consulta" :
+               mode === "reschedule" ? "Remarcar Consulta" : "Detalhes da Consulta"}
+            </span>
           </DialogTitle>
         </DialogHeader>
 
-        <div className="py-4 space-y-4">
+        <div className={cn(
+          "py-4 space-y-4 transition-all duration-300",
+          isTransitioning ? "opacity-0 translate-x-4" : "opacity-100 translate-x-0"
+        )}>
           {/* Appointment Info */}
-          <div className="p-4 rounded-xl bg-gradient-to-br from-primary/10 via-primary/5 to-transparent border border-primary/20">
+          <div className="p-4 rounded-xl bg-gradient-to-br from-primary/10 via-primary/5 to-transparent border border-primary/20 animate-[fade-in_0.3s_ease-out]">
             <div className="flex items-center gap-4 mb-4">
-              <div className="w-14 h-14 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center">
+              <div className="w-14 h-14 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center transition-all hover:scale-110">
                 <User className="h-6 w-6 text-primary" />
               </div>
               <div className="flex-1">
@@ -156,17 +214,17 @@ export function AppointmentDetailModal({
             </div>
 
             <div className="grid grid-cols-2 gap-3">
-              <div className="flex items-center gap-2 text-sm">
+              <div className="flex items-center gap-2 text-sm p-2 rounded-lg bg-card/50 transition-all hover:bg-card hover:shadow-sm">
                 <CalendarIcon className="h-4 w-4 text-muted-foreground" />
                 <span>{appointment.date}</span>
               </div>
-              <div className="flex items-center gap-2 text-sm">
+              <div className="flex items-center gap-2 text-sm p-2 rounded-lg bg-card/50 transition-all hover:bg-card hover:shadow-sm">
                 <Clock className="h-4 w-4 text-muted-foreground" />
                 <span>{appointment.time}</span>
               </div>
-              <div className="flex items-center gap-2 text-sm col-span-2">
+              <div className="flex items-center gap-2 text-sm col-span-2 p-2 rounded-lg bg-card/50 transition-all hover:bg-card hover:shadow-sm">
                 {appointment.type === "online" ? (
-                  <Video className="h-4 w-4 text-muted-foreground" />
+                  <Video className="h-4 w-4 text-info" />
                 ) : (
                   <MapPin className="h-4 w-4 text-muted-foreground" />
                 )}
@@ -178,18 +236,18 @@ export function AppointmentDetailModal({
           {/* View Mode */}
           {mode === "view" && (
             <>
-              <div className="p-4 rounded-xl bg-muted/30">
+              <div className="p-4 rounded-xl bg-muted/30 animate-[fade-in_0.3s_ease-out_0.1s_both]">
                 <h4 className="font-medium mb-3">Informações de Contato</h4>
                 <div className="space-y-2">
-                  <div className="flex items-center gap-2 text-sm">
+                  <div className="flex items-center gap-2 text-sm p-2 rounded-lg transition-all hover:bg-muted">
                     <Phone className="h-4 w-4 text-muted-foreground" />
                     <span>(11) 3456-7890</span>
                   </div>
-                  <div className="flex items-center gap-2 text-sm">
+                  <div className="flex items-center gap-2 text-sm p-2 rounded-lg transition-all hover:bg-muted">
                     <Mail className="h-4 w-4 text-muted-foreground" />
                     <span>contato@medclinic.com</span>
                   </div>
-                  <div className="flex items-center gap-2 text-sm">
+                  <div className="flex items-center gap-2 text-sm p-2 rounded-lg transition-all hover:bg-muted">
                     <MapPin className="h-4 w-4 text-muted-foreground" />
                     <span>Av. Paulista, 1000 - São Paulo, SP</span>
                   </div>
@@ -197,25 +255,28 @@ export function AppointmentDetailModal({
               </div>
 
               {appointment.status === "pending" && (
-                <Button onClick={handleConfirm} className="w-full gap-2">
+                <Button 
+                  onClick={handleConfirm} 
+                  className="w-full gap-2 animate-[fade-in_0.3s_ease-out_0.2s_both] hover:scale-[1.02] transition-transform"
+                >
                   <Check className="h-4 w-4" />
                   Confirmar Presença
                 </Button>
               )}
 
-              <div className="flex gap-2">
+              <div className="flex gap-2 animate-[fade-in_0.3s_ease-out_0.3s_both]">
                 <Button 
                   variant="outline" 
-                  className="flex-1 gap-2"
-                  onClick={() => setMode("reschedule")}
+                  className="flex-1 gap-2 hover:scale-[1.02] transition-all"
+                  onClick={() => animateTransition("reschedule")}
                 >
                   <RefreshCw className="h-4 w-4" />
                   Remarcar
                 </Button>
                 <Button 
                   variant="outline" 
-                  className="flex-1 gap-2 text-destructive hover:text-destructive"
-                  onClick={() => setMode("cancel")}
+                  className="flex-1 gap-2 text-destructive hover:text-destructive hover:bg-destructive/10 hover:scale-[1.02] transition-all"
+                  onClick={() => animateTransition("cancel")}
                 >
                   <X className="h-4 w-4" />
                   Cancelar
@@ -227,12 +288,12 @@ export function AppointmentDetailModal({
           {/* Reschedule Mode */}
           {mode === "reschedule" && (
             <>
-              <div className="space-y-4">
+              <div className="space-y-4 animate-[fade-in_0.3s_ease-out]">
                 <div>
                   <label className="text-sm font-medium mb-2 block">Nova Data</label>
                   <Popover>
                     <PopoverTrigger asChild>
-                      <Button variant="outline" className="w-full justify-start">
+                      <Button variant="outline" className="w-full justify-start hover:scale-[1.01] transition-transform">
                         <CalendarIcon className="mr-2 h-4 w-4" />
                         {newDate ? format(newDate, "dd 'de' MMMM, yyyy", { locale: ptBR }) : "Selecione uma data"}
                       </Button>
@@ -251,17 +312,19 @@ export function AppointmentDetailModal({
                 </div>
 
                 {newDate && (
-                  <div>
+                  <div className="animate-[fade-in_0.3s_ease-out]">
                     <label className="text-sm font-medium mb-2 block">Novo Horário</label>
                     <div className="grid grid-cols-4 gap-2">
-                      {timeSlots.map((time) => (
+                      {timeSlots.map((time, index) => (
                         <button
                           key={time}
                           onClick={() => setNewTime(time)}
+                          style={{ animationDelay: `${index * 30}ms` }}
                           className={cn(
-                            "py-2 px-3 rounded-lg text-sm font-medium transition-all",
+                            "py-2 px-3 rounded-lg text-sm font-medium transition-all duration-200 animate-[scale-in_0.2s_ease-out_both]",
+                            "hover:scale-105 active:scale-95",
                             newTime === time
-                              ? "bg-primary text-primary-foreground"
+                              ? "bg-primary text-primary-foreground shadow-md shadow-primary/30"
                               : "bg-muted/50 hover:bg-primary/10"
                           )}
                         >
@@ -274,10 +337,17 @@ export function AppointmentDetailModal({
               </div>
 
               <div className="flex gap-2">
-                <Button variant="outline" onClick={() => setMode("view")} className="flex-1">
+                <Button 
+                  variant="outline" 
+                  onClick={() => animateTransition("view")} 
+                  className="flex-1 hover:scale-[1.02] transition-transform"
+                >
                   Voltar
                 </Button>
-                <Button onClick={handleReschedule} className="flex-1 gap-2">
+                <Button 
+                  onClick={handleReschedule} 
+                  className="flex-1 gap-2 hover:scale-[1.02] transition-transform"
+                >
                   <Check className="h-4 w-4" />
                   Confirmar Remarcação
                 </Button>
@@ -288,9 +358,9 @@ export function AppointmentDetailModal({
           {/* Cancel Mode */}
           {mode === "cancel" && (
             <>
-              <div className="p-4 rounded-xl bg-destructive/10 border border-destructive/20">
+              <div className="p-4 rounded-xl bg-destructive/10 border border-destructive/20 animate-[shake_0.5s_ease-out]">
                 <div className="flex items-start gap-3">
-                  <AlertTriangle className="h-5 w-5 text-destructive mt-0.5" />
+                  <AlertTriangle className="h-5 w-5 text-destructive mt-0.5 animate-pulse" />
                   <div>
                     <h4 className="font-medium text-destructive">Atenção</h4>
                     <p className="text-sm text-muted-foreground">
@@ -300,11 +370,11 @@ export function AppointmentDetailModal({
                 </div>
               </div>
 
-              <div className="space-y-4">
+              <div className="space-y-4 animate-[fade-in_0.3s_ease-out_0.2s_both]">
                 <div>
                   <label className="text-sm font-medium mb-2 block">Motivo do Cancelamento</label>
                   <Select value={cancelReason} onValueChange={setCancelReason}>
-                    <SelectTrigger>
+                    <SelectTrigger className="transition-all hover:scale-[1.01]">
                       <SelectValue placeholder="Selecione um motivo" />
                     </SelectTrigger>
                     <SelectContent>
@@ -324,18 +394,23 @@ export function AppointmentDetailModal({
                     value={cancelDetails}
                     onChange={(e) => setCancelDetails(e.target.value)}
                     rows={3}
+                    className="transition-all focus:scale-[1.01]"
                   />
                 </div>
               </div>
 
               <div className="flex gap-2">
-                <Button variant="outline" onClick={() => setMode("view")} className="flex-1">
+                <Button 
+                  variant="outline" 
+                  onClick={() => animateTransition("view")} 
+                  className="flex-1 hover:scale-[1.02] transition-transform"
+                >
                   Voltar
                 </Button>
                 <Button 
                   variant="destructive" 
                   onClick={handleCancel} 
-                  className="flex-1 gap-2"
+                  className="flex-1 gap-2 hover:scale-[1.02] transition-transform"
                 >
                   <X className="h-4 w-4" />
                   Confirmar Cancelamento
