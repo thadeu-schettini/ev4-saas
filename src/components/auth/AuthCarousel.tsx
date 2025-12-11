@@ -181,12 +181,12 @@ export function AuthCarousel() {
   const slide = shuffledSlides[currentSlide];
 
   return (
-    <div className="relative h-full">
-      {/* Slide Content - Absolutely positioned to prevent layout shifts */}
-      <div className="absolute inset-0 bottom-28 flex items-center">
+    <div className="relative h-full flex flex-col">
+      {/* Slide Content */}
+      <div className="flex-1 flex flex-col justify-center">
         <div 
           key={slide.id} 
-          className="animate-fade-in w-full"
+          className="animate-fade-in"
         >
           {slide.type === "feature" && <FeatureSlide data={slide.data as FeatureData} />}
           {slide.type === "testimonial" && <TestimonialSlide data={slide.data as TestimonialData} />}
@@ -194,8 +194,8 @@ export function AuthCarousel() {
         </div>
       </div>
 
-      {/* Navigation - Fixed at bottom */}
-      <div className="absolute bottom-0 left-0 right-0">
+      {/* Navigation */}
+      <div className="mt-auto pb-8">
         {/* Dots */}
         <div className="flex items-center justify-center gap-2 mb-6">
           {shuffledSlides.map((_, index) => (
