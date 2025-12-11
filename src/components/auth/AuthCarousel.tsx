@@ -182,11 +182,11 @@ export function AuthCarousel() {
 
   return (
     <div className="relative h-full flex flex-col">
-      {/* Slide Content */}
-      <div className="flex-1 flex flex-col justify-center">
+      {/* Slide Content - Fixed height container to prevent layout shifts */}
+      <div className="flex-1 flex flex-col justify-center min-h-[400px]">
         <div 
           key={slide.id} 
-          className="animate-fade-in"
+          className="animate-fade-in h-[360px] flex flex-col justify-center"
         >
           {slide.type === "feature" && <FeatureSlide data={slide.data as FeatureData} />}
           {slide.type === "testimonial" && <TestimonialSlide data={slide.data as TestimonialData} />}
@@ -194,8 +194,8 @@ export function AuthCarousel() {
         </div>
       </div>
 
-      {/* Navigation */}
-      <div className="mt-auto pb-8">
+      {/* Navigation - Fixed at bottom */}
+      <div className="flex-shrink-0 pb-8">
         {/* Dots */}
         <div className="flex items-center justify-center gap-2 mb-6">
           {shuffledSlides.map((_, index) => (
