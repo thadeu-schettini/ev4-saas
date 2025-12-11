@@ -36,6 +36,31 @@ import { LeadSearchModal } from "@/components/superadmin/LeadSearchModal";
 import { NewLeadModal } from "@/components/superadmin/NewLeadModal";
 import { ContactJourneyModal } from "@/components/superadmin/ContactJourneyModal";
 import { CarouselSlidesModal } from "@/components/superadmin/CarouselSlidesModal";
+// New modals - Insights
+import { FeatureUsageModal } from "@/components/superadmin/FeatureUsageModal";
+import { ErrorTrackingModal } from "@/components/superadmin/ErrorTrackingModal";
+import { RevenueProjectionModal } from "@/components/superadmin/RevenueProjectionModal";
+import { CustomerJourneyModal } from "@/components/superadmin/CustomerJourneyModal";
+// New modals - Support
+import { LiveChatModal } from "@/components/superadmin/LiveChatModal";
+import { KnowledgeBaseModal } from "@/components/superadmin/KnowledgeBaseModal";
+import { SLAMonitoringModal } from "@/components/superadmin/SLAMonitoringModal";
+import { SatisfactionSurveyModal } from "@/components/superadmin/SatisfactionSurveyModal";
+// New modals - Operations
+import { MaintenanceModeModal } from "@/components/superadmin/MaintenanceModeModal";
+import { BulkOperationsModal } from "@/components/superadmin/BulkOperationsModal";
+import { RefundsCreditsModal } from "@/components/superadmin/RefundsCreditsModal";
+import { CustomPricingModal } from "@/components/superadmin/CustomPricingModal";
+// New modals - Security
+import { SuspiciousActivityModal } from "@/components/superadmin/SuspiciousActivityModal";
+import { IPBlockingModal } from "@/components/superadmin/IPBlockingModal";
+import { RateLimitingModal } from "@/components/superadmin/RateLimitingModal";
+import { SecurityIncidentsModal } from "@/components/superadmin/SecurityIncidentsModal";
+import { ActiveSessionsModal } from "@/components/superadmin/ActiveSessionsModal";
+// New modals - Communications
+import { EmailMarketingModal } from "@/components/superadmin/EmailMarketingModal";
+import { PushNotificationsModal } from "@/components/superadmin/PushNotificationsModal";
+import { SMSGatewayModal } from "@/components/superadmin/SMSGatewayModal";
 import { cn } from "@/lib/utils";
 import {
   Shield,
@@ -523,6 +548,31 @@ export default function SuperAdmin() {
   const [showContactJourney, setShowContactJourney] = useState(false);
   const [selectedContact, setSelectedContact] = useState<any>(null);
   const [showCarouselSlides, setShowCarouselSlides] = useState(false);
+  // New modal states - Insights
+  const [showFeatureUsage, setShowFeatureUsage] = useState(false);
+  const [showErrorTracking, setShowErrorTracking] = useState(false);
+  const [showRevenueProjection, setShowRevenueProjection] = useState(false);
+  const [showCustomerJourney, setShowCustomerJourney] = useState(false);
+  // New modal states - Support
+  const [showLiveChat, setShowLiveChat] = useState(false);
+  const [showKnowledgeBase, setShowKnowledgeBase] = useState(false);
+  const [showSLAMonitoring, setShowSLAMonitoring] = useState(false);
+  const [showSatisfactionSurvey, setShowSatisfactionSurvey] = useState(false);
+  // New modal states - Operations
+  const [showMaintenanceMode, setShowMaintenanceMode] = useState(false);
+  const [showBulkOperations, setShowBulkOperations] = useState(false);
+  const [showRefundsCredits, setShowRefundsCredits] = useState(false);
+  const [showCustomPricing, setShowCustomPricing] = useState(false);
+  // New modal states - Security
+  const [showSuspiciousActivity, setShowSuspiciousActivity] = useState(false);
+  const [showIPBlocking, setShowIPBlocking] = useState(false);
+  const [showRateLimiting, setShowRateLimiting] = useState(false);
+  const [showSecurityIncidents, setShowSecurityIncidents] = useState(false);
+  const [showActiveSessions, setShowActiveSessions] = useState(false);
+  // New modal states - Communications
+  const [showEmailMarketing, setShowEmailMarketing] = useState(false);
+  const [showPushNotifications, setShowPushNotifications] = useState(false);
+  const [showSMSGateway, setShowSMSGateway] = useState(false);
 
   const getPlanBadge = (plan: string) => {
     switch (plan) {
@@ -981,7 +1031,7 @@ export default function SuperAdmin() {
                     Ações Rápidas
                   </h3>
                 </div>
-                <div className="grid grid-cols-4 gap-1.5 sm:gap-2 md:gap-3">
+                <div className="grid grid-cols-4 gap-1.5 sm:gap-2 md:gap-3 mb-4">
                   <Button 
                     variant="outline" 
                     className="h-auto py-2.5 sm:py-3 md:py-4 flex-col gap-1 sm:gap-2 hover:bg-primary/5 hover:border-primary/30 text-[10px] sm:text-xs"
@@ -1050,6 +1100,139 @@ export default function SuperAdmin() {
                     <Shield className="h-4 w-4 sm:h-5 sm:w-5 text-destructive" />
                     <span className="hidden sm:inline">Segurança</span>
                   </Button>
+                </div>
+
+                {/* Category Cards Grid */}
+                <div className="space-y-3">
+                  {/* Insights Category */}
+                  <div className="p-3 rounded-lg bg-gradient-to-r from-blue-500/5 to-indigo-500/5 border border-blue-500/20">
+                    <h4 className="text-xs font-semibold text-blue-600 mb-2 flex items-center gap-1.5">
+                      <BarChart3 className="h-3.5 w-3.5" />
+                      Insights & Analytics
+                    </h4>
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                      <Button variant="ghost" size="sm" className="h-auto py-2 justify-start gap-2 text-xs hover:bg-blue-500/10" onClick={() => setShowFeatureUsage(true)}>
+                        <Layers className="h-3.5 w-3.5 text-blue-500" />
+                        Uso de Features
+                      </Button>
+                      <Button variant="ghost" size="sm" className="h-auto py-2 justify-start gap-2 text-xs hover:bg-blue-500/10" onClick={() => setShowErrorTracking(true)}>
+                        <Bug className="h-3.5 w-3.5 text-red-500" />
+                        Tracking de Erros
+                      </Button>
+                      <Button variant="ghost" size="sm" className="h-auto py-2 justify-start gap-2 text-xs hover:bg-blue-500/10" onClick={() => setShowRevenueProjection(true)}>
+                        <TrendingUp className="h-3.5 w-3.5 text-success" />
+                        Projeções Receita
+                      </Button>
+                      <Button variant="ghost" size="sm" className="h-auto py-2 justify-start gap-2 text-xs hover:bg-blue-500/10" onClick={() => setShowCustomerJourney(true)}>
+                        <Target className="h-3.5 w-3.5 text-purple-500" />
+                        Jornada Cliente
+                      </Button>
+                    </div>
+                  </div>
+
+                  {/* Support Category */}
+                  <div className="p-3 rounded-lg bg-gradient-to-r from-emerald-500/5 to-teal-500/5 border border-emerald-500/20">
+                    <h4 className="text-xs font-semibold text-emerald-600 mb-2 flex items-center gap-1.5">
+                      <HeadphonesIcon className="h-3.5 w-3.5" />
+                      Suporte & Atendimento
+                    </h4>
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                      <Button variant="ghost" size="sm" className="h-auto py-2 justify-start gap-2 text-xs hover:bg-emerald-500/10" onClick={() => setShowLiveChat(true)}>
+                        <MessageCircle className="h-3.5 w-3.5 text-emerald-500" />
+                        Chat ao Vivo
+                      </Button>
+                      <Button variant="ghost" size="sm" className="h-auto py-2 justify-start gap-2 text-xs hover:bg-emerald-500/10" onClick={() => setShowKnowledgeBase(true)}>
+                        <BookOpen className="h-3.5 w-3.5 text-teal-500" />
+                        Base de Conhecimento
+                      </Button>
+                      <Button variant="ghost" size="sm" className="h-auto py-2 justify-start gap-2 text-xs hover:bg-emerald-500/10" onClick={() => setShowSLAMonitoring(true)}>
+                        <Timer className="h-3.5 w-3.5 text-warning" />
+                        Monitoramento SLA
+                      </Button>
+                      <Button variant="ghost" size="sm" className="h-auto py-2 justify-start gap-2 text-xs hover:bg-emerald-500/10" onClick={() => setShowSatisfactionSurvey(true)}>
+                        <ThumbsUp className="h-3.5 w-3.5 text-info" />
+                        Pesquisa Satisfação
+                      </Button>
+                    </div>
+                  </div>
+
+                  {/* Operations Category */}
+                  <div className="p-3 rounded-lg bg-gradient-to-r from-orange-500/5 to-amber-500/5 border border-orange-500/20">
+                    <h4 className="text-xs font-semibold text-orange-600 mb-2 flex items-center gap-1.5">
+                      <Settings className="h-3.5 w-3.5" />
+                      Operações
+                    </h4>
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                      <Button variant="ghost" size="sm" className="h-auto py-2 justify-start gap-2 text-xs hover:bg-orange-500/10" onClick={() => setShowMaintenanceMode(true)}>
+                        <Construction className="h-3.5 w-3.5 text-orange-500" />
+                        Modo Manutenção
+                      </Button>
+                      <Button variant="ghost" size="sm" className="h-auto py-2 justify-start gap-2 text-xs hover:bg-orange-500/10" onClick={() => setShowBulkOperations(true)}>
+                        <ListChecks className="h-3.5 w-3.5 text-amber-500" />
+                        Operações em Massa
+                      </Button>
+                      <Button variant="ghost" size="sm" className="h-auto py-2 justify-start gap-2 text-xs hover:bg-orange-500/10" onClick={() => setShowRefundsCredits(true)}>
+                        <Coins className="h-3.5 w-3.5 text-yellow-500" />
+                        Reembolsos/Créditos
+                      </Button>
+                      <Button variant="ghost" size="sm" className="h-auto py-2 justify-start gap-2 text-xs hover:bg-orange-500/10" onClick={() => setShowCustomPricing(true)}>
+                        <BadgePercent className="h-3.5 w-3.5 text-success" />
+                        Preços Customizados
+                      </Button>
+                    </div>
+                  </div>
+
+                  {/* Security Category */}
+                  <div className="p-3 rounded-lg bg-gradient-to-r from-red-500/5 to-rose-500/5 border border-red-500/20">
+                    <h4 className="text-xs font-semibold text-red-600 mb-2 flex items-center gap-1.5">
+                      <ShieldCheck className="h-3.5 w-3.5" />
+                      Segurança
+                    </h4>
+                    <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+                      <Button variant="ghost" size="sm" className="h-auto py-2 justify-start gap-2 text-xs hover:bg-red-500/10" onClick={() => setShowSuspiciousActivity(true)}>
+                        <ShieldAlert className="h-3.5 w-3.5 text-red-500" />
+                        Atividades Suspeitas
+                      </Button>
+                      <Button variant="ghost" size="sm" className="h-auto py-2 justify-start gap-2 text-xs hover:bg-red-500/10" onClick={() => setShowIPBlocking(true)}>
+                        <Ban className="h-3.5 w-3.5 text-destructive" />
+                        Bloqueio de IPs
+                      </Button>
+                      <Button variant="ghost" size="sm" className="h-auto py-2 justify-start gap-2 text-xs hover:bg-red-500/10" onClick={() => setShowRateLimiting(true)}>
+                        <Gauge className="h-3.5 w-3.5 text-warning" />
+                        Rate Limiting
+                      </Button>
+                      <Button variant="ghost" size="sm" className="h-auto py-2 justify-start gap-2 text-xs hover:bg-red-500/10" onClick={() => setShowSecurityIncidents(true)}>
+                        <AlertOctagon className="h-3.5 w-3.5 text-orange-500" />
+                        Incidentes
+                      </Button>
+                      <Button variant="ghost" size="sm" className="h-auto py-2 justify-start gap-2 text-xs hover:bg-red-500/10" onClick={() => setShowActiveSessions(true)}>
+                        <Monitor className="h-3.5 w-3.5 text-info" />
+                        Sessões Ativas
+                      </Button>
+                    </div>
+                  </div>
+
+                  {/* Communications Category */}
+                  <div className="p-3 rounded-lg bg-gradient-to-r from-violet-500/5 to-purple-500/5 border border-violet-500/20">
+                    <h4 className="text-xs font-semibold text-violet-600 mb-2 flex items-center gap-1.5">
+                      <Mail className="h-3.5 w-3.5" />
+                      Comunicações
+                    </h4>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                      <Button variant="ghost" size="sm" className="h-auto py-2 justify-start gap-2 text-xs hover:bg-violet-500/10" onClick={() => setShowEmailMarketing(true)}>
+                        <Mail className="h-3.5 w-3.5 text-violet-500" />
+                        Email Marketing
+                      </Button>
+                      <Button variant="ghost" size="sm" className="h-auto py-2 justify-start gap-2 text-xs hover:bg-violet-500/10" onClick={() => setShowPushNotifications(true)}>
+                        <Bell className="h-3.5 w-3.5 text-purple-500" />
+                        Push Notifications
+                      </Button>
+                      <Button variant="ghost" size="sm" className="h-auto py-2 justify-start gap-2 text-xs hover:bg-violet-500/10" onClick={() => setShowSMSGateway(true)}>
+                        <Smartphone className="h-3.5 w-3.5 text-pink-500" />
+                        Gateway SMS
+                      </Button>
+                    </div>
+                  </div>
                 </div>
               </Card>
             </div>
@@ -3085,6 +3268,111 @@ export default function SuperAdmin() {
       <CarouselSlidesModal
         open={showCarouselSlides}
         onOpenChange={setShowCarouselSlides}
+      />
+
+      {/* New Modals - Insights */}
+      <FeatureUsageModal
+        open={showFeatureUsage}
+        onOpenChange={setShowFeatureUsage}
+      />
+
+      <ErrorTrackingModal
+        open={showErrorTracking}
+        onOpenChange={setShowErrorTracking}
+      />
+
+      <RevenueProjectionModal
+        open={showRevenueProjection}
+        onOpenChange={setShowRevenueProjection}
+      />
+
+      <CustomerJourneyModal
+        open={showCustomerJourney}
+        onOpenChange={setShowCustomerJourney}
+      />
+
+      {/* New Modals - Support */}
+      <LiveChatModal
+        open={showLiveChat}
+        onOpenChange={setShowLiveChat}
+      />
+
+      <KnowledgeBaseModal
+        open={showKnowledgeBase}
+        onOpenChange={setShowKnowledgeBase}
+      />
+
+      <SLAMonitoringModal
+        open={showSLAMonitoring}
+        onOpenChange={setShowSLAMonitoring}
+      />
+
+      <SatisfactionSurveyModal
+        open={showSatisfactionSurvey}
+        onOpenChange={setShowSatisfactionSurvey}
+      />
+
+      {/* New Modals - Operations */}
+      <MaintenanceModeModal
+        open={showMaintenanceMode}
+        onOpenChange={setShowMaintenanceMode}
+      />
+
+      <BulkOperationsModal
+        open={showBulkOperations}
+        onOpenChange={setShowBulkOperations}
+      />
+
+      <RefundsCreditsModal
+        open={showRefundsCredits}
+        onOpenChange={setShowRefundsCredits}
+      />
+
+      <CustomPricingModal
+        open={showCustomPricing}
+        onOpenChange={setShowCustomPricing}
+      />
+
+      {/* New Modals - Security */}
+      <SuspiciousActivityModal
+        open={showSuspiciousActivity}
+        onOpenChange={setShowSuspiciousActivity}
+      />
+
+      <IPBlockingModal
+        open={showIPBlocking}
+        onOpenChange={setShowIPBlocking}
+      />
+
+      <RateLimitingModal
+        open={showRateLimiting}
+        onOpenChange={setShowRateLimiting}
+      />
+
+      <SecurityIncidentsModal
+        open={showSecurityIncidents}
+        onOpenChange={setShowSecurityIncidents}
+      />
+
+      <ActiveSessionsModal
+        open={showActiveSessions}
+        onOpenChange={setShowActiveSessions}
+      />
+
+      {/* New Modals - Communications */}
+      <EmailMarketingModal
+        open={showEmailMarketing}
+        onOpenChange={setShowEmailMarketing}
+      />
+
+      <PushNotificationsModal
+        open={showPushNotifications}
+        onOpenChange={setShowPushNotifications}
+      />
+
+      <SMSGatewayModal
+        open={showSMSGateway}
+        onOpenChange={setShowSMSGateway}
       />
     </PageContainer>
   );
