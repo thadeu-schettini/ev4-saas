@@ -1102,138 +1102,6 @@ export default function SuperAdmin() {
                   </Button>
                 </div>
 
-                {/* Category Cards Grid */}
-                <div className="space-y-3">
-                  {/* Insights Category */}
-                  <div className="p-3 rounded-lg bg-gradient-to-r from-blue-500/5 to-indigo-500/5 border border-blue-500/20">
-                    <h4 className="text-xs font-semibold text-blue-600 mb-2 flex items-center gap-1.5">
-                      <BarChart3 className="h-3.5 w-3.5" />
-                      Insights & Analytics
-                    </h4>
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                      <Button variant="ghost" size="sm" className="h-auto py-2 justify-start gap-2 text-xs hover:bg-blue-500/10" onClick={() => setShowFeatureUsage(true)}>
-                        <Layers className="h-3.5 w-3.5 text-blue-500" />
-                        Uso de Features
-                      </Button>
-                      <Button variant="ghost" size="sm" className="h-auto py-2 justify-start gap-2 text-xs hover:bg-blue-500/10" onClick={() => setShowErrorTracking(true)}>
-                        <Bug className="h-3.5 w-3.5 text-red-500" />
-                        Tracking de Erros
-                      </Button>
-                      <Button variant="ghost" size="sm" className="h-auto py-2 justify-start gap-2 text-xs hover:bg-blue-500/10" onClick={() => setShowRevenueProjection(true)}>
-                        <TrendingUp className="h-3.5 w-3.5 text-success" />
-                        Projeções Receita
-                      </Button>
-                      <Button variant="ghost" size="sm" className="h-auto py-2 justify-start gap-2 text-xs hover:bg-blue-500/10" onClick={() => setShowCustomerJourney(true)}>
-                        <Target className="h-3.5 w-3.5 text-purple-500" />
-                        Jornada Cliente
-                      </Button>
-                    </div>
-                  </div>
-
-                  {/* Support Category */}
-                  <div className="p-3 rounded-lg bg-gradient-to-r from-emerald-500/5 to-teal-500/5 border border-emerald-500/20">
-                    <h4 className="text-xs font-semibold text-emerald-600 mb-2 flex items-center gap-1.5">
-                      <HeadphonesIcon className="h-3.5 w-3.5" />
-                      Suporte & Atendimento
-                    </h4>
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                      <Button variant="ghost" size="sm" className="h-auto py-2 justify-start gap-2 text-xs hover:bg-emerald-500/10" onClick={() => setShowLiveChat(true)}>
-                        <MessageCircle className="h-3.5 w-3.5 text-emerald-500" />
-                        Chat ao Vivo
-                      </Button>
-                      <Button variant="ghost" size="sm" className="h-auto py-2 justify-start gap-2 text-xs hover:bg-emerald-500/10" onClick={() => setShowKnowledgeBase(true)}>
-                        <BookOpen className="h-3.5 w-3.5 text-teal-500" />
-                        Base de Conhecimento
-                      </Button>
-                      <Button variant="ghost" size="sm" className="h-auto py-2 justify-start gap-2 text-xs hover:bg-emerald-500/10" onClick={() => setShowSLAMonitoring(true)}>
-                        <Timer className="h-3.5 w-3.5 text-warning" />
-                        Monitoramento SLA
-                      </Button>
-                      <Button variant="ghost" size="sm" className="h-auto py-2 justify-start gap-2 text-xs hover:bg-emerald-500/10" onClick={() => setShowSatisfactionSurvey(true)}>
-                        <ThumbsUp className="h-3.5 w-3.5 text-info" />
-                        Pesquisa Satisfação
-                      </Button>
-                    </div>
-                  </div>
-
-                  {/* Operations Category */}
-                  <div className="p-3 rounded-lg bg-gradient-to-r from-orange-500/5 to-amber-500/5 border border-orange-500/20">
-                    <h4 className="text-xs font-semibold text-orange-600 mb-2 flex items-center gap-1.5">
-                      <Settings className="h-3.5 w-3.5" />
-                      Operações
-                    </h4>
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                      <Button variant="ghost" size="sm" className="h-auto py-2 justify-start gap-2 text-xs hover:bg-orange-500/10" onClick={() => setShowMaintenanceMode(true)}>
-                        <Construction className="h-3.5 w-3.5 text-orange-500" />
-                        Modo Manutenção
-                      </Button>
-                      <Button variant="ghost" size="sm" className="h-auto py-2 justify-start gap-2 text-xs hover:bg-orange-500/10" onClick={() => setShowBulkOperations(true)}>
-                        <ListChecks className="h-3.5 w-3.5 text-amber-500" />
-                        Operações em Massa
-                      </Button>
-                      <Button variant="ghost" size="sm" className="h-auto py-2 justify-start gap-2 text-xs hover:bg-orange-500/10" onClick={() => setShowRefundsCredits(true)}>
-                        <Coins className="h-3.5 w-3.5 text-yellow-500" />
-                        Reembolsos/Créditos
-                      </Button>
-                      <Button variant="ghost" size="sm" className="h-auto py-2 justify-start gap-2 text-xs hover:bg-orange-500/10" onClick={() => setShowCustomPricing(true)}>
-                        <BadgePercent className="h-3.5 w-3.5 text-success" />
-                        Preços Customizados
-                      </Button>
-                    </div>
-                  </div>
-
-                  {/* Security Category */}
-                  <div className="p-3 rounded-lg bg-gradient-to-r from-red-500/5 to-rose-500/5 border border-red-500/20">
-                    <h4 className="text-xs font-semibold text-red-600 mb-2 flex items-center gap-1.5">
-                      <ShieldCheck className="h-3.5 w-3.5" />
-                      Segurança
-                    </h4>
-                    <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
-                      <Button variant="ghost" size="sm" className="h-auto py-2 justify-start gap-2 text-xs hover:bg-red-500/10" onClick={() => setShowSuspiciousActivity(true)}>
-                        <ShieldAlert className="h-3.5 w-3.5 text-red-500" />
-                        Atividades Suspeitas
-                      </Button>
-                      <Button variant="ghost" size="sm" className="h-auto py-2 justify-start gap-2 text-xs hover:bg-red-500/10" onClick={() => setShowIPBlocking(true)}>
-                        <Ban className="h-3.5 w-3.5 text-destructive" />
-                        Bloqueio de IPs
-                      </Button>
-                      <Button variant="ghost" size="sm" className="h-auto py-2 justify-start gap-2 text-xs hover:bg-red-500/10" onClick={() => setShowRateLimiting(true)}>
-                        <Gauge className="h-3.5 w-3.5 text-warning" />
-                        Rate Limiting
-                      </Button>
-                      <Button variant="ghost" size="sm" className="h-auto py-2 justify-start gap-2 text-xs hover:bg-red-500/10" onClick={() => setShowSecurityIncidents(true)}>
-                        <AlertOctagon className="h-3.5 w-3.5 text-orange-500" />
-                        Incidentes
-                      </Button>
-                      <Button variant="ghost" size="sm" className="h-auto py-2 justify-start gap-2 text-xs hover:bg-red-500/10" onClick={() => setShowActiveSessions(true)}>
-                        <Monitor className="h-3.5 w-3.5 text-info" />
-                        Sessões Ativas
-                      </Button>
-                    </div>
-                  </div>
-
-                  {/* Communications Category */}
-                  <div className="p-3 rounded-lg bg-gradient-to-r from-violet-500/5 to-purple-500/5 border border-violet-500/20">
-                    <h4 className="text-xs font-semibold text-violet-600 mb-2 flex items-center gap-1.5">
-                      <Mail className="h-3.5 w-3.5" />
-                      Comunicações
-                    </h4>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                      <Button variant="ghost" size="sm" className="h-auto py-2 justify-start gap-2 text-xs hover:bg-violet-500/10" onClick={() => setShowEmailMarketing(true)}>
-                        <Mail className="h-3.5 w-3.5 text-violet-500" />
-                        Email Marketing
-                      </Button>
-                      <Button variant="ghost" size="sm" className="h-auto py-2 justify-start gap-2 text-xs hover:bg-violet-500/10" onClick={() => setShowPushNotifications(true)}>
-                        <Bell className="h-3.5 w-3.5 text-purple-500" />
-                        Push Notifications
-                      </Button>
-                      <Button variant="ghost" size="sm" className="h-auto py-2 justify-start gap-2 text-xs hover:bg-violet-500/10" onClick={() => setShowSMSGateway(true)}>
-                        <Smartphone className="h-3.5 w-3.5 text-pink-500" />
-                        Gateway SMS
-                      </Button>
-                    </div>
-                  </div>
-                </div>
               </Card>
             </div>
 
@@ -1983,6 +1851,30 @@ export default function SuperAdmin() {
               </Card>
             </div>
 
+            {/* Financial Tools */}
+            <Card className="p-4 bg-gradient-to-r from-success/5 to-emerald-500/5 border-success/20">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="font-semibold text-sm flex items-center gap-2">
+                  <Coins className="h-4 w-4 text-success" />
+                  Ferramentas Financeiras
+                </h3>
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                <Button variant="outline" size="sm" className="h-auto py-3 flex-col gap-1.5 hover:bg-success/10 hover:border-success/30" onClick={() => setShowRevenueProjection(true)}>
+                  <TrendingUp className="h-4 w-4 text-success" />
+                  <span className="text-xs">Projeções de Receita</span>
+                </Button>
+                <Button variant="outline" size="sm" className="h-auto py-3 flex-col gap-1.5 hover:bg-warning/10 hover:border-warning/30" onClick={() => setShowRefundsCredits(true)}>
+                  <Coins className="h-4 w-4 text-warning" />
+                  <span className="text-xs">Reembolsos/Créditos</span>
+                </Button>
+                <Button variant="outline" size="sm" className="h-auto py-3 flex-col gap-1.5 hover:bg-purple-500/10 hover:border-purple-500/30" onClick={() => setShowCustomPricing(true)}>
+                  <BadgePercent className="h-4 w-4 text-purple-500" />
+                  <span className="text-xs">Preços Customizados</span>
+                </Button>
+              </div>
+            </Card>
+
             <Card className="p-6">
               <h3 className="font-semibold mb-4 flex items-center gap-2">
                 <Receipt className="h-5 w-5 text-primary" />
@@ -2086,6 +1978,34 @@ export default function SuperAdmin() {
                 </div>
               </Card>
             </div>
+
+            {/* Support Tools */}
+            <Card className="p-4 bg-gradient-to-r from-emerald-500/5 to-teal-500/5 border-emerald-500/20">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="font-semibold text-sm flex items-center gap-2">
+                  <Wrench className="h-4 w-4 text-emerald-600" />
+                  Ferramentas de Suporte
+                </h3>
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                <Button variant="outline" size="sm" className="h-auto py-3 flex-col gap-1.5 hover:bg-emerald-500/10 hover:border-emerald-500/30" onClick={() => setShowLiveChat(true)}>
+                  <MessageCircle className="h-4 w-4 text-emerald-500" />
+                  <span className="text-xs">Chat ao Vivo</span>
+                </Button>
+                <Button variant="outline" size="sm" className="h-auto py-3 flex-col gap-1.5 hover:bg-teal-500/10 hover:border-teal-500/30" onClick={() => setShowKnowledgeBase(true)}>
+                  <BookOpen className="h-4 w-4 text-teal-500" />
+                  <span className="text-xs">Base de Conhecimento</span>
+                </Button>
+                <Button variant="outline" size="sm" className="h-auto py-3 flex-col gap-1.5 hover:bg-warning/10 hover:border-warning/30" onClick={() => setShowSLAMonitoring(true)}>
+                  <Timer className="h-4 w-4 text-warning" />
+                  <span className="text-xs">Monitoramento SLA</span>
+                </Button>
+                <Button variant="outline" size="sm" className="h-auto py-3 flex-col gap-1.5 hover:bg-info/10 hover:border-info/30" onClick={() => setShowSatisfactionSurvey(true)}>
+                  <ThumbsUp className="h-4 w-4 text-info" />
+                  <span className="text-xs">Pesquisa Satisfação</span>
+                </Button>
+              </div>
+            </Card>
 
             <Card className="p-6">
               <div className="flex items-center justify-between mb-6">
@@ -2260,6 +2180,30 @@ export default function SuperAdmin() {
 
               <div className="flex items-center justify-center mt-6 pt-4 border-t">
                 <Button variant="outline">Carregar mais logs</Button>
+              </div>
+            </Card>
+
+            {/* Audit Tools */}
+            <Card className="p-4 bg-gradient-to-r from-red-500/5 to-orange-500/5 border-red-500/20">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="font-semibold text-sm flex items-center gap-2">
+                  <ShieldCheck className="h-4 w-4 text-red-600" />
+                  Segurança & Incidentes
+                </h3>
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                <Button variant="outline" size="sm" className="h-auto py-3 flex-col gap-1.5 hover:bg-red-500/10 hover:border-red-500/30" onClick={() => setShowSuspiciousActivity(true)}>
+                  <ShieldAlert className="h-4 w-4 text-red-500" />
+                  <span className="text-xs">Atividades Suspeitas</span>
+                </Button>
+                <Button variant="outline" size="sm" className="h-auto py-3 flex-col gap-1.5 hover:bg-orange-500/10 hover:border-orange-500/30" onClick={() => setShowSecurityIncidents(true)}>
+                  <AlertOctagon className="h-4 w-4 text-orange-500" />
+                  <span className="text-xs">Log de Incidentes</span>
+                </Button>
+                <Button variant="outline" size="sm" className="h-auto py-3 flex-col gap-1.5 hover:bg-info/10 hover:border-info/30" onClick={() => setShowActiveSessions(true)}>
+                  <Monitor className="h-4 w-4 text-info" />
+                  <span className="text-xs">Sessões Ativas</span>
+                </Button>
               </div>
             </Card>
           </TabsContent>
@@ -2463,11 +2407,63 @@ export default function SuperAdmin() {
                   </p>
                 </div>
               </Card>
+
+              {/* Communications Tools */}
+              <Card className="lg:col-span-3 p-4 bg-gradient-to-r from-violet-500/5 to-purple-500/5 border-violet-500/20">
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="font-semibold text-sm flex items-center gap-2">
+                    <Mail className="h-4 w-4 text-violet-600" />
+                    Canais de Comunicação
+                  </h3>
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                  <Button variant="outline" size="sm" className="h-auto py-3 flex-col gap-1.5 hover:bg-violet-500/10 hover:border-violet-500/30" onClick={() => setShowEmailMarketing(true)}>
+                    <Mail className="h-4 w-4 text-violet-500" />
+                    <span className="text-xs">Email Marketing</span>
+                  </Button>
+                  <Button variant="outline" size="sm" className="h-auto py-3 flex-col gap-1.5 hover:bg-purple-500/10 hover:border-purple-500/30" onClick={() => setShowPushNotifications(true)}>
+                    <Bell className="h-4 w-4 text-purple-500" />
+                    <span className="text-xs">Push Notifications</span>
+                  </Button>
+                  <Button variant="outline" size="sm" className="h-auto py-3 flex-col gap-1.5 hover:bg-pink-500/10 hover:border-pink-500/30" onClick={() => setShowSMSGateway(true)}>
+                    <Smartphone className="h-4 w-4 text-pink-500" />
+                    <span className="text-xs">Gateway SMS</span>
+                  </Button>
+                </div>
+              </Card>
             </div>
           </TabsContent>
 
           {/* Analytics Tab */}
           <TabsContent value="analytics" className="space-y-6">
+            {/* Analytics Tools */}
+            <Card className="p-4 bg-gradient-to-r from-blue-500/5 to-indigo-500/5 border-blue-500/20">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="font-semibold text-sm flex items-center gap-2">
+                  <BarChart3 className="h-4 w-4 text-blue-600" />
+                  Ferramentas de Analytics
+                </h3>
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                <Button variant="outline" size="sm" className="h-auto py-3 flex-col gap-1.5 hover:bg-blue-500/10 hover:border-blue-500/30" onClick={() => setShowFeatureUsage(true)}>
+                  <Layers className="h-4 w-4 text-blue-500" />
+                  <span className="text-xs">Uso de Features</span>
+                </Button>
+                <Button variant="outline" size="sm" className="h-auto py-3 flex-col gap-1.5 hover:bg-purple-500/10 hover:border-purple-500/30" onClick={() => setShowCustomerJourney(true)}>
+                  <Target className="h-4 w-4 text-purple-500" />
+                  <span className="text-xs">Jornada do Cliente</span>
+                </Button>
+                <Button variant="outline" size="sm" className="h-auto py-3 flex-col gap-1.5 hover:bg-success/10 hover:border-success/30" onClick={() => setShowRevenueProjection(true)}>
+                  <TrendingUp className="h-4 w-4 text-success" />
+                  <span className="text-xs">Projeções de Receita</span>
+                </Button>
+                <Button variant="outline" size="sm" className="h-auto py-3 flex-col gap-1.5 hover:bg-red-500/10 hover:border-red-500/30" onClick={() => setShowErrorTracking(true)}>
+                  <Bug className="h-4 w-4 text-red-500" />
+                  <span className="text-xs">Tracking de Erros</span>
+                </Button>
+              </div>
+            </Card>
+
             {/* Cohort Analysis Full */}
             <Card className="p-6">
               <div className="flex items-center justify-between mb-6">
@@ -3025,25 +3021,53 @@ export default function SuperAdmin() {
                   <RotateCcw className="h-5 w-5" />
                   <span className="text-xs">Reiniciar Serviços</span>
                 </Button>
-                <Button variant="outline" className="h-auto py-4 flex-col gap-2">
-                  <Bug className="h-5 w-5" />
-                  <span className="text-xs">Debug Mode</span>
+                <Button variant="outline" className="h-auto py-4 flex-col gap-2" onClick={() => setShowErrorTracking(true)}>
+                  <Bug className="h-5 w-5 text-red-500" />
+                  <span className="text-xs">Tracking de Erros</span>
                 </Button>
                 <Button variant="outline" className="h-auto py-4 flex-col gap-2">
                   <Mail className="h-5 w-5" />
                   <span className="text-xs">Testar Email</span>
                 </Button>
-                <Button variant="outline" className="h-auto py-4 flex-col gap-2">
-                  <MessageSquare className="h-5 w-5" />
-                  <span className="text-xs">Testar SMS</span>
+                <Button variant="outline" className="h-auto py-4 flex-col gap-2" onClick={() => setShowSMSGateway(true)}>
+                  <MessageSquare className="h-5 w-5 text-pink-500" />
+                  <span className="text-xs">Gateway SMS</span>
                 </Button>
                 <Button variant="outline" className="h-auto py-4 flex-col gap-2">
                   <Webhook className="h-5 w-5" />
                   <span className="text-xs">Webhooks</span>
                 </Button>
-                <Button variant="outline" className="h-auto py-4 flex-col gap-2 text-destructive hover:bg-destructive/5">
+                <Button variant="outline" className="h-auto py-4 flex-col gap-2 text-destructive hover:bg-destructive/5" onClick={() => setShowMaintenanceMode(true)}>
                   <Power className="h-5 w-5" />
                   <span className="text-xs">Modo Manutenção</span>
+                </Button>
+              </div>
+            </Card>
+
+            {/* System Security & Limits */}
+            <Card className="p-4 bg-gradient-to-r from-red-500/5 to-orange-500/5 border-red-500/20">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="font-semibold text-sm flex items-center gap-2">
+                  <ShieldCheck className="h-4 w-4 text-red-600" />
+                  Segurança & Limites
+                </h3>
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                <Button variant="outline" size="sm" className="h-auto py-3 flex-col gap-1.5 hover:bg-destructive/10 hover:border-destructive/30" onClick={() => setShowIPBlocking(true)}>
+                  <Ban className="h-4 w-4 text-destructive" />
+                  <span className="text-xs">Bloqueio de IPs</span>
+                </Button>
+                <Button variant="outline" size="sm" className="h-auto py-3 flex-col gap-1.5 hover:bg-warning/10 hover:border-warning/30" onClick={() => setShowRateLimiting(true)}>
+                  <Gauge className="h-4 w-4 text-warning" />
+                  <span className="text-xs">Rate Limiting</span>
+                </Button>
+                <Button variant="outline" size="sm" className="h-auto py-3 flex-col gap-1.5 hover:bg-orange-500/10 hover:border-orange-500/30" onClick={() => setShowBulkOperations(true)}>
+                  <ListChecks className="h-4 w-4 text-orange-500" />
+                  <span className="text-xs">Operações em Massa</span>
+                </Button>
+                <Button variant="outline" size="sm" className="h-auto py-3 flex-col gap-1.5 hover:bg-info/10 hover:border-info/30" onClick={() => setShowActiveSessions(true)}>
+                  <Monitor className="h-4 w-4 text-info" />
+                  <span className="text-xs">Sessões Ativas</span>
                 </Button>
               </div>
             </Card>
