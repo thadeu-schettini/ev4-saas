@@ -144,7 +144,18 @@ const slides: Slide[] = [
   },
 ];
 
+// Shuffle array utility
+const shuffleArray = <T,>(array: T[]): T[] => {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+};
+
 export function AuthCarousel() {
+  const [shuffledSlides] = useState(() => shuffleArray(slides));
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
 
@@ -152,11 +163,11 @@ export function AuthCarousel() {
     if (!isAutoPlaying) return;
     
     const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % slides.length);
+      setCurrentSlide((prev) => (prev + 1) % shuffledSlides.length);
     }, 6000);
 
     return () => clearInterval(interval);
-  }, [isAutoPlaying]);
+  }, [isAutoPlaying, shuffledSlides.length]);
 
   const goToSlide = (index: number) => {
     setCurrentSlide(index);
@@ -164,10 +175,10 @@ export function AuthCarousel() {
     setTimeout(() => setIsAutoPlaying(true), 15000);
   };
 
-  const nextSlide = () => goToSlide((currentSlide + 1) % slides.length);
-  const prevSlide = () => goToSlide((currentSlide - 1 + slides.length) % slides.length);
+  const nextSlide = () => goToSlide((currentSlide + 1) % shuffledSlides.length);
+  const prevSlide = () => goToSlide((currentSlide - 1 + shuffledSlides.length) % shuffledSlides.length);
 
-  const slide = slides[currentSlide];
+  const slide = shuffledSlides[currentSlide];
 
   return (
     <div className="relative h-full flex flex-col">
@@ -187,13 +198,13 @@ export function AuthCarousel() {
       <div className="mt-auto pb-8">
         {/* Dots */}
         <div className="flex items-center justify-center gap-2 mb-6">
-          {slides.map((_, index) => (
+          {shuffledSlides.map((_, index) => (
             <button
               key={index}
               onClick={() => goToSlide(index)}
               className={cn(
                 "h-2 rounded-full transition-all duration-300",
-                currentSlide === index 
+                currentSlide === index
                   ? "w-8 bg-white" 
                   : "w-2 bg-white/40 hover:bg-white/60"
               )}

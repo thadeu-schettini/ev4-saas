@@ -35,6 +35,7 @@ import { FunnelDrilldownModal } from "@/components/superadmin/FunnelDrilldownMod
 import { LeadSearchModal } from "@/components/superadmin/LeadSearchModal";
 import { NewLeadModal } from "@/components/superadmin/NewLeadModal";
 import { ContactJourneyModal } from "@/components/superadmin/ContactJourneyModal";
+import { CarouselSlidesModal } from "@/components/superadmin/CarouselSlidesModal";
 import { cn } from "@/lib/utils";
 import {
   Shield,
@@ -159,7 +160,6 @@ import {
   BadgePercent,
   Gift,
   PartyPopper,
-  
   Heart,
   ThumbsUp,
   ThumbsDown,
@@ -522,6 +522,7 @@ export default function SuperAdmin() {
   const [showNewLead, setShowNewLead] = useState(false);
   const [showContactJourney, setShowContactJourney] = useState(false);
   const [selectedContact, setSelectedContact] = useState<any>(null);
+  const [showCarouselSlides, setShowCarouselSlides] = useState(false);
 
   const getPlanBadge = (plan: string) => {
     switch (plan) {
@@ -2214,6 +2215,71 @@ export default function SuperAdmin() {
                   ))}
                 </div>
               </Card>
+
+              {/* Carousel Slides Management */}
+              <Card className="lg:col-span-3 p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-blue-600 flex items-center justify-center">
+                      <Layers className="h-5 w-5 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold">Carrossel do Login</h3>
+                      <p className="text-sm text-muted-foreground">Gerencie novidades, depoimentos e dicas exibidos na tela de login</p>
+                    </div>
+                  </div>
+                  <Button 
+                    className="gap-2"
+                    onClick={() => setShowCarouselSlides(true)}
+                  >
+                    <Settings className="h-4 w-4" />
+                    Gerenciar Slides
+                  </Button>
+                </div>
+
+                <div className="grid sm:grid-cols-3 gap-4">
+                  <div className="p-4 rounded-xl bg-primary/5 border border-primary/20">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                        <Rocket className="h-5 w-5 text-primary" />
+                      </div>
+                      <div>
+                        <p className="text-2xl font-bold text-primary">4</p>
+                        <p className="text-xs text-muted-foreground">Novidades</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="p-4 rounded-xl bg-warning/5 border border-warning/20">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-lg bg-warning/10 flex items-center justify-center">
+                        <MessageSquare className="h-5 w-5 text-warning" />
+                      </div>
+                      <div>
+                        <p className="text-2xl font-bold text-warning">3</p>
+                        <p className="text-xs text-muted-foreground">Depoimentos</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="p-4 rounded-xl bg-info/5 border border-info/20">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-lg bg-info/10 flex items-center justify-center">
+                        <Lightbulb className="h-5 w-5 text-info" />
+                      </div>
+                      <div>
+                        <p className="text-2xl font-bold text-info">2</p>
+                        <p className="text-xs text-muted-foreground">Dicas</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-4 p-3 rounded-lg bg-muted/30 border">
+                  <p className="text-sm text-muted-foreground flex items-center gap-2">
+                    <Shuffle className="h-4 w-4" />
+                    A ordem dos slides é aleatória para cada visitante, garantindo que todos vejam conteúdos diferentes.
+                  </p>
+                </div>
+              </Card>
             </div>
           </TabsContent>
 
@@ -3014,6 +3080,11 @@ export default function SuperAdmin() {
         open={showContactJourney}
         onOpenChange={setShowContactJourney}
         contact={selectedContact}
+      />
+
+      <CarouselSlidesModal
+        open={showCarouselSlides}
+        onOpenChange={setShowCarouselSlides}
       />
     </PageContainer>
   );
