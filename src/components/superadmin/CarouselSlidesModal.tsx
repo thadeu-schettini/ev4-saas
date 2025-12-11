@@ -12,7 +12,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   Select,
   SelectContent,
@@ -28,7 +28,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import {
-  Plus,
   GripVertical,
   Eye,
   EyeOff,
@@ -51,6 +50,7 @@ import {
   Sparkles,
   Image,
   Save,
+  Monitor,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -293,9 +293,102 @@ export function CarouselSlidesModal({ open, onOpenChange }: CarouselSlidesModalP
     toast.success(isCreating ? "Slide criado" : "Slide atualizado");
   };
 
+  // Preview components
+  const SlidePreview = ({ slide }: { slide: SlideItem }) => {
+    const IconComponent = getIconComponent(slide.icon);
+    
+    if (slide.type === "feature") {
+      return (
+        <div className="space-y-4">
+          <Badge className="bg-white/20 text-white border-0 text-xs px-3 py-1">
+            <Rocket className="w-3 h-3 mr-1.5" />
+            {slide.badge || "Novo"}
+          </Badge>
+          <div className={cn(
+            "w-14 h-14 rounded-xl flex items-center justify-center bg-gradient-to-br shadow-xl",
+            slide.gradient || "from-primary to-blue-600"
+          )}>
+            <IconComponent className="w-7 h-7 text-white" />
+          </div>
+          <div>
+            <h3 className="text-xl font-bold mb-2">{slide.title || "Título"}</h3>
+            <p className="text-sm text-white/70 leading-relaxed">
+              {slide.description || "Descrição do slide..."}
+            </p>
+          </div>
+          {slide.highlights && slide.highlights.length > 0 && (
+            <div className="flex flex-wrap gap-2">
+              {slide.highlights.map((h, i) => (
+                <div key={i} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/10 text-xs">
+                  <Sparkles className="w-3 h-3" />
+                  {h}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      );
+    }
+    
+    if (slide.type === "testimonial") {
+      return (
+        <div className="space-y-4">
+          <Badge className="bg-white/20 text-white border-0 text-xs px-3 py-1">
+            <MessageSquare className="w-3 h-3 mr-1.5" />
+            Depoimento
+          </Badge>
+          <div className="flex gap-1">
+            {Array.from({ length: slide.rating || 5 }).map((_, i) => (
+              <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
+            ))}
+          </div>
+          <blockquote className="text-lg font-medium leading-relaxed">
+            "{slide.description || "Depoimento do cliente..."}"
+          </blockquote>
+          <div className="flex items-center gap-3 pt-2">
+            <Avatar className="w-10 h-10 border-2 border-white/30">
+              <AvatarFallback className="bg-white/20 text-white text-sm">
+                {(slide.author || "??").split(' ').map(n => n[0]).join('')}
+              </AvatarFallback>
+            </Avatar>
+            <div>
+              <div className="font-semibold text-sm">{slide.author || "Nome do Autor"}</div>
+              <div className="text-white/70 text-xs">
+                {slide.role || "Cargo"} • {slide.clinic || "Clínica"}
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+    
+    return (
+      <div className="space-y-4">
+        <Badge className="bg-white/20 text-white border-0 text-xs px-3 py-1">
+          <Lightbulb className="w-3 h-3 mr-1.5" />
+          {slide.title || "Dica"}
+        </Badge>
+        <div className="w-14 h-14 rounded-xl flex items-center justify-center bg-gradient-to-br from-amber-400 to-orange-500 shadow-xl">
+          <IconComponent className="w-7 h-7 text-white" />
+        </div>
+        <p className="text-lg font-medium leading-relaxed">
+          {slide.description || "Conteúdo da dica..."}
+        </p>
+        {slide.shortcut && (
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/10 border border-white/20">
+            <span className="text-white/70 text-sm">Atalho:</span>
+            <kbd className="px-2 py-1 rounded bg-white/20 font-mono text-xs font-semibold">
+              {slide.shortcut}
+            </kbd>
+          </div>
+        )}
+      </div>
+    );
+  };
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl max-h-[90vh] p-0">
+      <DialogContent className="max-w-5xl max-h-[90vh] p-0">
         <DialogHeader className="p-6 pb-4 border-b">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -317,162 +410,183 @@ export function CarouselSlidesModal({ open, onOpenChange }: CarouselSlidesModalP
         </DialogHeader>
 
         {editingSlide ? (
-          <div className="p-6">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="font-semibold text-lg">
-                {isCreating ? "Criar" : "Editar"} {getTypeLabel(editingSlide.type)}
-              </h3>
-              <Button variant="outline" onClick={() => { setEditingSlide(null); setIsCreating(false); }}>
-                Cancelar
-              </Button>
-            </div>
-
-            <div className="space-y-6">
-              <div className="grid sm:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label>Título</Label>
-                  <Input 
-                    value={editingSlide.title}
-                    onChange={(e) => setEditingSlide({ ...editingSlide, title: e.target.value })}
-                    placeholder="Título do slide"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>Ícone</Label>
-                  <Select 
-                    value={editingSlide.icon} 
-                    onValueChange={(v) => setEditingSlide({ ...editingSlide, icon: v })}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {iconOptions.map(opt => (
-                        <SelectItem key={opt.value} value={opt.value}>
-                          <span className="flex items-center gap-2">
-                            <opt.icon className="h-4 w-4" />
-                            {opt.label}
-                          </span>
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label>Descrição / Conteúdo</Label>
-                <Textarea 
-                  value={editingSlide.description}
-                  onChange={(e) => setEditingSlide({ ...editingSlide, description: e.target.value })}
-                  placeholder="Texto do slide..."
-                  className="min-h-[100px]"
-                />
-              </div>
-
-              {editingSlide.type === "feature" && (
-                <>
-                  <div className="grid sm:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label>Badge</Label>
-                      <Select 
-                        value={editingSlide.badge || "Novo"} 
-                        onValueChange={(v) => setEditingSlide({ ...editingSlide, badge: v })}
-                      >
-                        <SelectTrigger>
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="Novo">Novo</SelectItem>
-                          <SelectItem value="Em breve">Em breve</SelectItem>
-                          <SelectItem value="Atualização">Atualização</SelectItem>
-                          <SelectItem value="Beta">Beta</SelectItem>
-                          <SelectItem value="Popular">Popular</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div className="space-y-2">
-                      <Label>Gradiente</Label>
-                      <Select 
-                        value={editingSlide.gradient || gradientOptions[0].value} 
-                        onValueChange={(v) => setEditingSlide({ ...editingSlide, gradient: v })}
-                      >
-                        <SelectTrigger>
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {gradientOptions.map(opt => (
-                            <SelectItem key={opt.value} value={opt.value}>
-                              <span className="flex items-center gap-2">
-                                <div className={cn("w-4 h-4 rounded bg-gradient-to-r", opt.value)} />
-                                {opt.label}
-                              </span>
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Destaques (separados por vírgula)</Label>
-                    <Input 
-                      value={editingSlide.highlights?.join(", ") || ""}
-                      onChange={(e) => setEditingSlide({ 
-                        ...editingSlide, 
-                        highlights: e.target.value.split(",").map(s => s.trim()).filter(Boolean)
-                      })}
-                      placeholder="Destaque 1, Destaque 2, Destaque 3"
-                    />
-                  </div>
-                </>
-              )}
-
-              {editingSlide.type === "testimonial" && (
-                <div className="grid sm:grid-cols-3 gap-4">
-                  <div className="space-y-2">
-                    <Label>Autor</Label>
-                    <Input 
-                      value={editingSlide.author || ""}
-                      onChange={(e) => setEditingSlide({ ...editingSlide, author: e.target.value })}
-                      placeholder="Nome do autor"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Cargo / Especialidade</Label>
-                    <Input 
-                      value={editingSlide.role || ""}
-                      onChange={(e) => setEditingSlide({ ...editingSlide, role: e.target.value })}
-                      placeholder="Cardiologista"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Clínica</Label>
-                    <Input 
-                      value={editingSlide.clinic || ""}
-                      onChange={(e) => setEditingSlide({ ...editingSlide, clinic: e.target.value })}
-                      placeholder="Nome da clínica"
-                    />
-                  </div>
-                </div>
-              )}
-
-              {editingSlide.type === "tip" && (
-                <div className="space-y-2">
-                  <Label>Atalho (opcional)</Label>
-                  <Input 
-                    value={editingSlide.shortcut || ""}
-                    onChange={(e) => setEditingSlide({ ...editingSlide, shortcut: e.target.value })}
-                    placeholder="Ctrl + K"
-                  />
-                </div>
-              )}
-
-              <div className="flex justify-end pt-4">
-                <Button onClick={saveSlide} className="gap-2">
-                  <Save className="h-4 w-4" />
-                  {isCreating ? "Criar Slide" : "Salvar Alterações"}
+          <div className="flex flex-col lg:flex-row min-h-[500px]">
+            {/* Form Panel */}
+            <div className="flex-1 p-6 overflow-y-auto">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="font-semibold text-lg">
+                  {isCreating ? "Criar" : "Editar"} {getTypeLabel(editingSlide.type)}
+                </h3>
+                <Button variant="outline" size="sm" onClick={() => { setEditingSlide(null); setIsCreating(false); }}>
+                  Cancelar
                 </Button>
               </div>
+
+              <div className="space-y-5">
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label>Título</Label>
+                    <Input 
+                      value={editingSlide.title}
+                      onChange={(e) => setEditingSlide({ ...editingSlide, title: e.target.value })}
+                      placeholder="Título do slide"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Ícone</Label>
+                    <Select 
+                      value={editingSlide.icon} 
+                      onValueChange={(v) => setEditingSlide({ ...editingSlide, icon: v })}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {iconOptions.map(opt => (
+                          <SelectItem key={opt.value} value={opt.value}>
+                            <span className="flex items-center gap-2">
+                              <opt.icon className="h-4 w-4" />
+                              {opt.label}
+                            </span>
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Descrição / Conteúdo</Label>
+                  <Textarea 
+                    value={editingSlide.description}
+                    onChange={(e) => setEditingSlide({ ...editingSlide, description: e.target.value })}
+                    placeholder="Texto do slide..."
+                    className="min-h-[80px]"
+                  />
+                </div>
+
+                {editingSlide.type === "feature" && (
+                  <>
+                    <div className="grid sm:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label>Badge</Label>
+                        <Select 
+                          value={editingSlide.badge || "Novo"} 
+                          onValueChange={(v) => setEditingSlide({ ...editingSlide, badge: v })}
+                        >
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="Novo">Novo</SelectItem>
+                            <SelectItem value="Em breve">Em breve</SelectItem>
+                            <SelectItem value="Atualização">Atualização</SelectItem>
+                            <SelectItem value="Beta">Beta</SelectItem>
+                            <SelectItem value="Popular">Popular</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Gradiente</Label>
+                        <Select 
+                          value={editingSlide.gradient || gradientOptions[0].value} 
+                          onValueChange={(v) => setEditingSlide({ ...editingSlide, gradient: v })}
+                        >
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {gradientOptions.map(opt => (
+                              <SelectItem key={opt.value} value={opt.value}>
+                                <span className="flex items-center gap-2">
+                                  <div className={cn("w-4 h-4 rounded bg-gradient-to-r", opt.value)} />
+                                  {opt.label}
+                                </span>
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Destaques (separados por vírgula)</Label>
+                      <Input 
+                        value={editingSlide.highlights?.join(", ") || ""}
+                        onChange={(e) => setEditingSlide({ 
+                          ...editingSlide, 
+                          highlights: e.target.value.split(",").map(s => s.trim()).filter(Boolean)
+                        })}
+                        placeholder="Destaque 1, Destaque 2, Destaque 3"
+                      />
+                    </div>
+                  </>
+                )}
+
+                {editingSlide.type === "testimonial" && (
+                  <div className="grid sm:grid-cols-3 gap-4">
+                    <div className="space-y-2">
+                      <Label>Autor</Label>
+                      <Input 
+                        value={editingSlide.author || ""}
+                        onChange={(e) => setEditingSlide({ ...editingSlide, author: e.target.value })}
+                        placeholder="Nome do autor"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Cargo / Especialidade</Label>
+                      <Input 
+                        value={editingSlide.role || ""}
+                        onChange={(e) => setEditingSlide({ ...editingSlide, role: e.target.value })}
+                        placeholder="Cardiologista"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Clínica</Label>
+                      <Input 
+                        value={editingSlide.clinic || ""}
+                        onChange={(e) => setEditingSlide({ ...editingSlide, clinic: e.target.value })}
+                        placeholder="Nome da clínica"
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {editingSlide.type === "tip" && (
+                  <div className="space-y-2">
+                    <Label>Atalho (opcional)</Label>
+                    <Input 
+                      value={editingSlide.shortcut || ""}
+                      onChange={(e) => setEditingSlide({ ...editingSlide, shortcut: e.target.value })}
+                      placeholder="Ctrl + K"
+                    />
+                  </div>
+                )}
+
+                <div className="flex justify-end pt-4">
+                  <Button onClick={saveSlide} className="gap-2">
+                    <Save className="h-4 w-4" />
+                    {isCreating ? "Criar Slide" : "Salvar Alterações"}
+                  </Button>
+                </div>
+              </div>
+            </div>
+
+            {/* Preview Panel */}
+            <div className="lg:w-[360px] border-t lg:border-t-0 lg:border-l bg-gradient-to-br from-primary via-primary/90 to-primary/80 text-white p-6 flex flex-col">
+              <div className="flex items-center gap-2 mb-4 pb-3 border-b border-white/20">
+                <Monitor className="h-4 w-4" />
+                <span className="text-sm font-medium">Preview em Tempo Real</span>
+              </div>
+              
+              <div className="flex-1 flex items-center justify-center">
+                <div className="w-full max-w-[280px]">
+                  <SlidePreview slide={editingSlide} />
+                </div>
+              </div>
+              
+              <p className="text-xs text-white/50 text-center mt-4">
+                As alterações aparecem instantaneamente
+              </p>
             </div>
           </div>
         ) : (
