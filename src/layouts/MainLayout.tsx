@@ -5,7 +5,8 @@ import { Outlet, useLocation } from "react-router-dom";
 import { CommandPalette } from "@/components/CommandPalette";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { OnboardingTour } from "@/components/OnboardingTour";
-import { InternalChat } from "@/components/InternalChat";
+import { InternalChatButton, InternalChatPanel } from "@/components/InternalChat";
+import { InternalChatProvider } from "@/hooks/use-internal-chat";
 import { Button } from "@/components/ui/button";
 import {
   Home,
@@ -67,67 +68,71 @@ export function MainLayout({ children }: MainLayoutProps) {
   }, []);
 
   return (
-    <SidebarProvider>
-      <div className="flex h-screen w-full bg-background overflow-hidden">
-        <AppSidebar />
-        <main className="flex-1 flex flex-col overflow-hidden">
-          {/* Mobile header with menu trigger */}
-          <div className="sticky top-0 z-40 flex h-14 items-center gap-2 border-b border-border/50 bg-background/80 px-3 sm:px-4 backdrop-blur-sm lg:hidden">
-            <SidebarTrigger className="shrink-0" />
-            <div className="flex items-center gap-2 flex-1 min-w-0">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-primary/70 shrink-0">
-                <PageIcon className="h-4 w-4 text-primary-foreground" />
+    <InternalChatProvider>
+      <SidebarProvider>
+        <div className="flex h-screen w-full bg-background overflow-hidden">
+          <AppSidebar />
+          <main className="flex-1 flex flex-col overflow-hidden">
+            {/* Mobile header with menu trigger */}
+            <div className="sticky top-0 z-40 flex h-14 items-center gap-2 border-b border-border/50 bg-background/80 px-3 sm:px-4 backdrop-blur-sm lg:hidden">
+              <SidebarTrigger className="shrink-0" />
+              <div className="flex items-center gap-2 flex-1 min-w-0">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-primary/70 shrink-0">
+                  <PageIcon className="h-4 w-4 text-primary-foreground" />
+                </div>
+                <span className="font-semibold text-foreground truncate">{currentPage.title}</span>
               </div>
-              <span className="font-semibold text-foreground truncate">{currentPage.title}</span>
+              {/* Mobile Actions */}
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-9 w-9 shrink-0"
+                onClick={() => setCommandOpen(true)}
+              >
+                <Search className="h-4 w-4" />
+              </Button>
+              <InternalChatButton />
+              <div data-theme-toggle className="shrink-0">
+                <ThemeToggle variant="minimal" />
+              </div>
             </div>
-            {/* Mobile Actions */}
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-9 w-9 shrink-0"
-              onClick={() => setCommandOpen(true)}
-            >
-              <Search className="h-4 w-4" />
-            </Button>
-            <div data-theme-toggle className="shrink-0">
-              <ThemeToggle variant="minimal" />
+
+            {/* Desktop header bar */}
+            <div className="hidden lg:flex sticky top-0 z-40 h-12 items-center justify-end gap-2 border-b border-border/50 bg-background/80 px-4 backdrop-blur-sm">
+              <Button
+                variant="outline"
+                size="sm"
+                className="h-8 px-3 gap-2 text-muted-foreground"
+                onClick={() => setCommandOpen(true)}
+              >
+                <Search className="h-3.5 w-3.5" />
+                <span className="text-sm">Buscar...</span>
+                <kbd className="pointer-events-none hidden h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 sm:flex">
+                  <span className="text-xs">⌘</span>K
+                </kbd>
+              </Button>
+              <InternalChatButton />
+              <div data-theme-toggle>
+                <ThemeToggle />
+              </div>
             </div>
-          </div>
 
-          {/* Desktop header bar */}
-          <div className="hidden lg:flex sticky top-0 z-40 h-12 items-center justify-end gap-2 border-b border-border/50 bg-background/80 px-4 backdrop-blur-sm">
-            <Button
-              variant="outline"
-              size="sm"
-              className="h-8 px-3 gap-2 text-muted-foreground"
-              onClick={() => setCommandOpen(true)}
-            >
-              <Search className="h-3.5 w-3.5" />
-              <span className="text-sm">Buscar...</span>
-              <kbd className="pointer-events-none hidden h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 sm:flex">
-                <span className="text-xs">⌘</span>K
-              </kbd>
-            </Button>
-            <div data-theme-toggle>
-              <ThemeToggle />
+            {/* Page content with transition animation */}
+            <div className="flex-1 overflow-auto animate-fade-in">
+              {children || <Outlet />}
             </div>
-          </div>
+          </main>
 
-          {/* Page content with transition animation */}
-          <div className="flex-1 overflow-auto animate-fade-in">
-            {children || <Outlet />}
-          </div>
-        </main>
+          {/* Command Palette */}
+          <CommandPalette open={commandOpen} onOpenChange={setCommandOpen} />
 
-        {/* Command Palette */}
-        <CommandPalette open={commandOpen} onOpenChange={setCommandOpen} />
+          {/* Onboarding Tour */}
+          <OnboardingTour />
 
-        {/* Onboarding Tour */}
-        <OnboardingTour />
-
-        {/* Internal Chat - Floating */}
-        <InternalChat />
-      </div>
-    </SidebarProvider>
+          {/* Internal Chat Panel - Floating */}
+          <InternalChatPanel />
+        </div>
+      </SidebarProvider>
+    </InternalChatProvider>
   );
 }

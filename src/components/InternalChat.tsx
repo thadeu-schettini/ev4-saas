@@ -17,6 +17,7 @@ import {
   Plus,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useInternalChat } from "@/hooks/use-internal-chat";
 
 interface Message {
   id: string;
@@ -182,15 +183,36 @@ function formatMessageTime(date: Date): string {
 
 type ChatView = "list" | "chat" | "professionals";
 
-export function InternalChat() {
-  const [isOpen, setIsOpen] = useState(false);
+// Button component to trigger the chat
+export function InternalChatButton() {
+  const { toggle } = useInternalChat();
+  const totalUnread = mockConversations.reduce((sum, conv) => sum + conv.unreadCount, 0);
+
+  return (
+    <Button
+      variant="ghost"
+      size="icon"
+      className="relative h-9 w-9 shrink-0"
+      onClick={toggle}
+    >
+      <MessageCircle className="h-4 w-4" />
+      {totalUnread > 0 && (
+        <span className="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-destructive text-[10px] font-medium text-destructive-foreground animate-pulse">
+          {totalUnread > 9 ? "9+" : totalUnread}
+        </span>
+      )}
+    </Button>
+  );
+}
+
+// Panel component (floating)
+export function InternalChatPanel() {
+  const { isOpen, setIsOpen } = useInternalChat();
   const [view, setView] = useState<ChatView>("list");
   const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null);
   const [newMessage, setNewMessage] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [conversations, setConversations] = useState(mockConversations);
-
-  const totalUnread = conversations.reduce((sum, conv) => sum + conv.unreadCount, 0);
 
   const filteredConversations = conversations.filter(
     (conv) =>
@@ -251,14 +273,12 @@ export function InternalChat() {
   };
 
   const handleStartNewChat = (professional: Professional) => {
-    // Check if conversation already exists
     const existingConv = conversations.find((c) => c.participantId === professional.id);
     if (existingConv) {
       handleSelectConversation(existingConv);
       return;
     }
 
-    // Create new conversation
     const newConv: Conversation = {
       id: `conv-${Date.now()}`,
       participantId: professional.id,
@@ -294,378 +314,370 @@ export function InternalChat() {
     setSearchQuery("");
   };
 
-  return (
-    <>
-      {/* Chat Toggle Button */}
-      <Button
-        variant="ghost"
-        size="icon"
-        className="relative h-9 w-9 shrink-0"
-        onClick={() => setIsOpen(!isOpen)}
-      >
-        <MessageCircle className="h-4 w-4" />
-        {totalUnread > 0 && (
-          <span className="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-destructive text-[10px] font-medium text-destructive-foreground animate-pulse">
-            {totalUnread > 9 ? "9+" : totalUnread}
-          </span>
-        )}
-      </Button>
+  if (!isOpen) return null;
 
-      {/* Floating Chat Panel */}
-      {isOpen && (
-        <div className="fixed bottom-4 right-4 z-[9999] flex h-[520px] w-[380px] max-w-[calc(100vw-2rem)] flex-col overflow-hidden rounded-2xl border-2 border-primary/20 bg-card shadow-2xl backdrop-blur-xl animate-in slide-in-from-bottom-4 duration-300">
-          {/* Header */}
-          <div className="flex items-center justify-between border-b border-border/50 bg-gradient-to-r from-primary/10 via-primary/5 to-transparent px-4 py-3">
-            {view === "chat" && selectedConversation ? (
-              <div className="flex items-center gap-3">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-8 w-8"
-                  onClick={handleBack}
-                >
-                  <ArrowLeft className="h-4 w-4" />
-                </Button>
-                <div className="relative">
-                  <Avatar className="h-9 w-9 border-2 border-background">
-                    <AvatarImage src={selectedConversation.participantAvatar} />
-                    <AvatarFallback className="bg-primary/20 text-primary text-xs">
-                      {selectedConversation.participantName
-                        .split(" ")
-                        .map((n) => n[0])
-                        .join("")
-                        .slice(0, 2)}
-                    </AvatarFallback>
-                  </Avatar>
-                  {selectedConversation.online && (
-                    <Circle className="absolute bottom-0 right-0 h-3 w-3 fill-emerald-500 text-emerald-500" />
-                  )}
-                </div>
-                <div className="min-w-0">
-                  <h3 className="font-semibold text-sm truncate">
-                    {selectedConversation.participantName}
-                  </h3>
-                  <p className="text-xs text-muted-foreground">
-                    {selectedConversation.online ? "Online" : "Offline"}
+  return (
+    <div className="fixed bottom-4 right-4 z-[9999] flex h-[520px] w-[380px] max-w-[calc(100vw-2rem)] flex-col overflow-hidden rounded-2xl border-2 border-primary/20 bg-card shadow-2xl backdrop-blur-xl animate-in slide-in-from-bottom-4 duration-300">
+      {/* Header */}
+      <div className="flex items-center justify-between border-b border-border/50 bg-gradient-to-r from-primary/10 via-primary/5 to-transparent px-4 py-3">
+        {view === "chat" && selectedConversation ? (
+          <div className="flex items-center gap-3">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8"
+              onClick={handleBack}
+            >
+              <ArrowLeft className="h-4 w-4" />
+            </Button>
+            <div className="relative">
+              <Avatar className="h-9 w-9 border-2 border-background">
+                <AvatarImage src={selectedConversation.participantAvatar} />
+                <AvatarFallback className="bg-primary/20 text-primary text-xs">
+                  {selectedConversation.participantName
+                    .split(" ")
+                    .map((n) => n[0])
+                    .join("")
+                    .slice(0, 2)}
+                </AvatarFallback>
+              </Avatar>
+              {selectedConversation.online && (
+                <Circle className="absolute bottom-0 right-0 h-3 w-3 fill-emerald-500 text-emerald-500" />
+              )}
+            </div>
+            <div className="min-w-0">
+              <h3 className="font-semibold text-sm truncate">
+                {selectedConversation.participantName}
+              </h3>
+              <p className="text-xs text-muted-foreground">
+                {selectedConversation.online ? "Online" : "Offline"}
+              </p>
+            </div>
+          </div>
+        ) : view === "professionals" ? (
+          <div className="flex items-center gap-3">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8"
+              onClick={handleBack}
+            >
+              <ArrowLeft className="h-4 w-4" />
+            </Button>
+            <div>
+              <h3 className="font-semibold text-sm">Nova Conversa</h3>
+              <p className="text-xs text-muted-foreground">Selecione um profissional</p>
+            </div>
+          </div>
+        ) : (
+          <div className="flex items-center gap-2">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-primary/70">
+              <Users className="h-4 w-4 text-primary-foreground" />
+            </div>
+            <div>
+              <h3 className="font-semibold text-sm">Chat Interno</h3>
+              <p className="text-xs text-muted-foreground">Equipe da clínica</p>
+            </div>
+          </div>
+        )}
+        <div className="flex items-center gap-1">
+          {view === "list" && (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8"
+              onClick={() => setView("professionals")}
+              title="Nova conversa"
+            >
+              <Plus className="h-4 w-4" />
+            </Button>
+          )}
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 rounded-full hover:bg-destructive/10 hover:text-destructive"
+            onClick={handleClose}
+          >
+            <X className="h-4 w-4" />
+          </Button>
+        </div>
+      </div>
+
+      {/* Content */}
+      {view === "chat" && selectedConversation ? (
+        <>
+          {/* Messages */}
+          <ScrollArea className="flex-1 p-4">
+            <div className="flex flex-col gap-3">
+              {selectedConversation.messages.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-12 text-center">
+                  <MessageCircle className="h-12 w-12 text-muted-foreground/30 mb-3" />
+                  <p className="text-sm text-muted-foreground">
+                    Nenhuma mensagem ainda
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Envie a primeira mensagem para {selectedConversation.participantName}
                   </p>
                 </div>
-              </div>
-            ) : view === "professionals" ? (
-              <div className="flex items-center gap-3">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-8 w-8"
-                  onClick={handleBack}
-                >
-                  <ArrowLeft className="h-4 w-4" />
-                </Button>
-                <div>
-                  <h3 className="font-semibold text-sm">Nova Conversa</h3>
-                  <p className="text-xs text-muted-foreground">Selecione um profissional</p>
-                </div>
-              </div>
-            ) : (
-              <div className="flex items-center gap-2">
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-primary/70">
-                  <Users className="h-4 w-4 text-primary-foreground" />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-sm">Chat Interno</h3>
-                  <p className="text-xs text-muted-foreground">Equipe da clínica</p>
-                </div>
-              </div>
-            )}
-            <div className="flex items-center gap-1">
-              {view === "list" && (
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-8 w-8"
-                  onClick={() => setView("professionals")}
-                  title="Nova conversa"
-                >
-                  <Plus className="h-4 w-4" />
-                </Button>
+              ) : (
+                selectedConversation.messages.map((message) => {
+                  const isMe = message.senderId === "me";
+                  return (
+                    <div
+                      key={message.id}
+                      className={cn(
+                        "flex flex-col max-w-[80%] gap-1",
+                        isMe ? "self-end items-end" : "self-start items-start"
+                      )}
+                    >
+                      <div
+                        className={cn(
+                          "rounded-2xl px-4 py-2 text-sm",
+                          isMe
+                            ? "bg-primary text-primary-foreground rounded-br-md"
+                            : "bg-muted rounded-bl-md"
+                        )}
+                      >
+                        {message.content}
+                      </div>
+                      <div className="flex items-center gap-1.5 px-1">
+                        <span className="text-[10px] text-muted-foreground">
+                          {formatMessageTime(message.timestamp)}
+                        </span>
+                        {isMe && (
+                          <CheckCheck
+                            className={cn(
+                              "h-3 w-3",
+                              message.read ? "text-primary" : "text-muted-foreground"
+                            )}
+                          />
+                        )}
+                      </div>
+                    </div>
+                  );
+                })
               )}
+            </div>
+          </ScrollArea>
+
+          {/* Message Input */}
+          <div className="border-t border-border/50 p-3">
+            <div className="flex items-center gap-2">
+              <Input
+                value={newMessage}
+                onChange={(e) => setNewMessage(e.target.value)}
+                placeholder="Digite sua mensagem..."
+                className="flex-1 rounded-full border-border/50 bg-muted/50 px-4 text-sm"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    handleSendMessage();
+                  }
+                }}
+              />
               <Button
-                variant="ghost"
                 size="icon"
-                className="h-8 w-8 rounded-full hover:bg-destructive/10 hover:text-destructive"
-                onClick={handleClose}
+                className="h-9 w-9 rounded-full shrink-0"
+                onClick={handleSendMessage}
+                disabled={!newMessage.trim()}
               >
-                <X className="h-4 w-4" />
+                <Send className="h-4 w-4" />
               </Button>
             </div>
           </div>
+        </>
+      ) : view === "professionals" ? (
+        <>
+          {/* Search Professionals */}
+          <div className="border-b border-border/50 p-3">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Buscar profissional..."
+                className="pl-9 rounded-full border-border/50 bg-muted/50 text-sm"
+              />
+            </div>
+          </div>
 
-          {/* Content */}
-          {view === "chat" && selectedConversation ? (
-            <>
-              {/* Messages */}
-              <ScrollArea className="flex-1 p-4">
-                <div className="flex flex-col gap-3">
-                  {selectedConversation.messages.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center py-12 text-center">
-                      <MessageCircle className="h-12 w-12 text-muted-foreground/30 mb-3" />
-                      <p className="text-sm text-muted-foreground">
-                        Nenhuma mensagem ainda
-                      </p>
-                      <p className="text-xs text-muted-foreground mt-1">
-                        Envie a primeira mensagem para {selectedConversation.participantName}
+          {/* Professionals List */}
+          <ScrollArea className="flex-1">
+            <div className="divide-y divide-border/30">
+              {filteredProfessionals.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-12 text-center">
+                  <Users className="h-12 w-12 text-muted-foreground/30 mb-3" />
+                  <p className="text-sm text-muted-foreground">
+                    Nenhum profissional encontrado
+                  </p>
+                </div>
+              ) : (
+                filteredProfessionals.map((prof) => (
+                  <button
+                    key={prof.id}
+                    className="flex w-full items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-muted/50"
+                    onClick={() => handleStartNewChat(prof)}
+                  >
+                    <div className="relative shrink-0">
+                      <Avatar className="h-11 w-11 border-2 border-background">
+                        <AvatarImage src={prof.avatar} />
+                        <AvatarFallback className="bg-primary/20 text-primary text-xs">
+                          {prof.name
+                            .split(" ")
+                            .map((n) => n[0])
+                            .join("")
+                            .slice(0, 2)}
+                        </AvatarFallback>
+                      </Avatar>
+                      {prof.online && (
+                        <Circle className="absolute bottom-0 right-0 h-3 w-3 fill-emerald-500 text-emerald-500" />
+                      )}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <span className="font-medium text-sm truncate block">
+                        {prof.name}
+                      </span>
+                      <p className="text-xs text-muted-foreground">
+                        {prof.role}
                       </p>
                     </div>
-                  ) : (
-                    selectedConversation.messages.map((message) => {
-                      const isMe = message.senderId === "me";
-                      return (
-                        <div
-                          key={message.id}
-                          className={cn(
-                            "flex flex-col max-w-[80%] gap-1",
-                            isMe ? "self-end items-end" : "self-start items-start"
-                          )}
-                        >
-                          <div
-                            className={cn(
-                              "rounded-2xl px-4 py-2 text-sm",
-                              isMe
-                                ? "bg-primary text-primary-foreground rounded-br-md"
-                                : "bg-muted rounded-bl-md"
-                            )}
-                          >
-                            {message.content}
-                          </div>
-                          <div className="flex items-center gap-1.5 px-1">
-                            <span className="text-[10px] text-muted-foreground">
-                              {formatMessageTime(message.timestamp)}
-                            </span>
-                            {isMe && (
-                              <CheckCheck
-                                className={cn(
-                                  "h-3 w-3",
-                                  message.read ? "text-primary" : "text-muted-foreground"
-                                )}
-                              />
-                            )}
-                          </div>
-                        </div>
-                      );
-                    })
-                  )}
-                </div>
-              </ScrollArea>
+                    <div className="text-xs text-muted-foreground">
+                      {prof.online ? (
+                        <span className="text-emerald-500">Online</span>
+                      ) : (
+                        "Offline"
+                      )}
+                    </div>
+                  </button>
+                ))
+              )}
+            </div>
+          </ScrollArea>
+        </>
+      ) : (
+        <>
+          {/* Search Conversations */}
+          <div className="border-b border-border/50 p-3">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Buscar conversa..."
+                className="pl-9 rounded-full border-border/50 bg-muted/50 text-sm"
+              />
+            </div>
+          </div>
 
-              {/* Message Input */}
-              <div className="border-t border-border/50 p-3">
-                <div className="flex items-center gap-2">
-                  <Input
-                    value={newMessage}
-                    onChange={(e) => setNewMessage(e.target.value)}
-                    placeholder="Digite sua mensagem..."
-                    className="flex-1 rounded-full border-border/50 bg-muted/50 px-4 text-sm"
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" && !e.shiftKey) {
-                        e.preventDefault();
-                        handleSendMessage();
-                      }
-                    }}
-                  />
+          {/* Conversation List */}
+          <ScrollArea className="flex-1">
+            <div className="divide-y divide-border/30">
+              {filteredConversations.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-12 text-center px-4">
+                  <MessageCircle className="h-12 w-12 text-muted-foreground/30 mb-3" />
+                  <p className="text-sm text-muted-foreground">
+                    Nenhuma conversa encontrada
+                  </p>
                   <Button
-                    size="icon"
-                    className="h-9 w-9 rounded-full shrink-0"
-                    onClick={handleSendMessage}
-                    disabled={!newMessage.trim()}
+                    variant="outline"
+                    size="sm"
+                    className="mt-4"
+                    onClick={() => setView("professionals")}
                   >
-                    <Send className="h-4 w-4" />
+                    <Plus className="h-4 w-4 mr-2" />
+                    Iniciar nova conversa
                   </Button>
                 </div>
-              </div>
-            </>
-          ) : view === "professionals" ? (
-            <>
-              {/* Search Professionals */}
-              <div className="border-b border-border/50 p-3">
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                  <Input
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Buscar profissional..."
-                    className="pl-9 rounded-full border-border/50 bg-muted/50 text-sm"
-                  />
-                </div>
-              </div>
-
-              {/* Professionals List */}
-              <ScrollArea className="flex-1">
-                <div className="divide-y divide-border/30">
-                  {filteredProfessionals.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center py-12 text-center">
-                      <Users className="h-12 w-12 text-muted-foreground/30 mb-3" />
-                      <p className="text-sm text-muted-foreground">
-                        Nenhum profissional encontrado
-                      </p>
-                    </div>
-                  ) : (
-                    filteredProfessionals.map((prof) => (
-                      <button
-                        key={prof.id}
-                        className="flex w-full items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-muted/50"
-                        onClick={() => handleStartNewChat(prof)}
-                      >
-                        <div className="relative shrink-0">
-                          <Avatar className="h-11 w-11 border-2 border-background">
-                            <AvatarImage src={prof.avatar} />
-                            <AvatarFallback className="bg-primary/20 text-primary text-xs">
-                              {prof.name
-                                .split(" ")
-                                .map((n) => n[0])
-                                .join("")
-                                .slice(0, 2)}
-                            </AvatarFallback>
-                          </Avatar>
-                          {prof.online && (
-                            <Circle className="absolute bottom-0 right-0 h-3 w-3 fill-emerald-500 text-emerald-500" />
-                          )}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <span className="font-medium text-sm truncate block">
-                            {prof.name}
-                          </span>
-                          <p className="text-xs text-muted-foreground">
-                            {prof.role}
-                          </p>
-                        </div>
-                        <div className="text-xs text-muted-foreground">
-                          {prof.online ? (
-                            <span className="text-emerald-500">Online</span>
+              ) : (
+                filteredConversations.map((conv) => (
+                  <button
+                    key={conv.id}
+                    className={cn(
+                      "flex w-full items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-muted/50",
+                      conv.unreadCount > 0 && "bg-primary/5"
+                    )}
+                    onClick={() => handleSelectConversation(conv)}
+                  >
+                    <div className="relative shrink-0">
+                      <Avatar className="h-11 w-11 border-2 border-background">
+                        <AvatarImage src={conv.participantAvatar} />
+                        <AvatarFallback className="bg-primary/20 text-primary text-xs">
+                          {conv.participantRole === "Grupo" ? (
+                            <Users className="h-4 w-4" />
                           ) : (
-                            "Offline"
+                            conv.participantName
+                              .split(" ")
+                              .map((n) => n[0])
+                              .join("")
+                              .slice(0, 2)
                           )}
-                        </div>
-                      </button>
-                    ))
-                  )}
-                </div>
-              </ScrollArea>
-            </>
-          ) : (
-            <>
-              {/* Search Conversations */}
-              <div className="border-b border-border/50 p-3">
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                  <Input
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Buscar conversa..."
-                    className="pl-9 rounded-full border-border/50 bg-muted/50 text-sm"
-                  />
-                </div>
-              </div>
-
-              {/* Conversation List */}
-              <ScrollArea className="flex-1">
-                <div className="divide-y divide-border/30">
-                  {filteredConversations.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center py-12 text-center px-4">
-                      <MessageCircle className="h-12 w-12 text-muted-foreground/30 mb-3" />
-                      <p className="text-sm text-muted-foreground">
-                        Nenhuma conversa encontrada
-                      </p>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="mt-4"
-                        onClick={() => setView("professionals")}
-                      >
-                        <Plus className="h-4 w-4 mr-2" />
-                        Iniciar nova conversa
-                      </Button>
+                        </AvatarFallback>
+                      </Avatar>
+                      {conv.online && (
+                        <Circle className="absolute bottom-0 right-0 h-3 w-3 fill-emerald-500 text-emerald-500" />
+                      )}
                     </div>
-                  ) : (
-                    filteredConversations.map((conv) => (
-                      <button
-                        key={conv.id}
-                        className={cn(
-                          "flex w-full items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-muted/50",
-                          conv.unreadCount > 0 && "bg-primary/5"
-                        )}
-                        onClick={() => handleSelectConversation(conv)}
-                      >
-                        <div className="relative shrink-0">
-                          <Avatar className="h-11 w-11 border-2 border-background">
-                            <AvatarImage src={conv.participantAvatar} />
-                            <AvatarFallback className="bg-primary/20 text-primary text-xs">
-                              {conv.participantRole === "Grupo" ? (
-                                <Users className="h-4 w-4" />
-                              ) : (
-                                conv.participantName
-                                  .split(" ")
-                                  .map((n) => n[0])
-                                  .join("")
-                                  .slice(0, 2)
-                              )}
-                            </AvatarFallback>
-                          </Avatar>
-                          {conv.online && (
-                            <Circle className="absolute bottom-0 right-0 h-3 w-3 fill-emerald-500 text-emerald-500" />
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between gap-2">
+                        <span
+                          className={cn(
+                            "font-medium text-sm truncate",
+                            conv.unreadCount > 0 && "font-semibold"
                           )}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center justify-between gap-2">
-                            <span
-                              className={cn(
-                                "font-medium text-sm truncate",
-                                conv.unreadCount > 0 && "font-semibold"
-                              )}
-                            >
-                              {conv.participantName}
-                            </span>
-                            <span className="flex items-center gap-1 text-[10px] text-muted-foreground shrink-0">
-                              <Clock className="h-3 w-3" />
-                              {formatTime(conv.lastMessageTime)}
-                            </span>
-                          </div>
-                          <div className="flex items-center justify-between gap-2 mt-0.5">
-                            <p
-                              className={cn(
-                                "text-xs text-muted-foreground truncate",
-                                conv.unreadCount > 0 && "text-foreground font-medium"
-                              )}
-                            >
-                              {conv.lastMessage || "Nenhuma mensagem"}
-                            </p>
-                            {conv.unreadCount > 0 && (
-                              <Badge
-                                variant="default"
-                                className="h-5 min-w-5 px-1.5 text-[10px] rounded-full shrink-0"
-                              >
-                                {conv.unreadCount}
-                              </Badge>
-                            )}
-                          </div>
-                          <p className="text-[10px] text-muted-foreground mt-0.5">
-                            {conv.participantRole}
-                          </p>
-                        </div>
-                      </button>
-                    ))
-                  )}
-                </div>
-              </ScrollArea>
+                        >
+                          {conv.participantName}
+                        </span>
+                        <span className="flex items-center gap-1 text-[10px] text-muted-foreground shrink-0">
+                          <Clock className="h-3 w-3" />
+                          {formatTime(conv.lastMessageTime)}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between gap-2 mt-0.5">
+                        <p
+                          className={cn(
+                            "text-xs text-muted-foreground truncate",
+                            conv.unreadCount > 0 && "text-foreground font-medium"
+                          )}
+                        >
+                          {conv.lastMessage || "Nenhuma mensagem"}
+                        </p>
+                        {conv.unreadCount > 0 && (
+                          <Badge
+                            variant="default"
+                            className="h-5 min-w-5 px-1.5 text-[10px] rounded-full shrink-0"
+                          >
+                            {conv.unreadCount}
+                          </Badge>
+                        )}
+                      </div>
+                      <p className="text-[10px] text-muted-foreground mt-0.5">
+                        {conv.participantRole}
+                      </p>
+                    </div>
+                  </button>
+                ))
+              )}
+            </div>
+          </ScrollArea>
 
-              {/* Footer */}
-              <div className="mt-auto border-t border-border/50 bg-muted/30 px-4 py-2">
-                <p className="text-center text-xs text-muted-foreground">
-                  Chat interno da equipe
-                </p>
-              </div>
-            </>
-          )}
-        </div>
+          {/* Footer */}
+          <div className="mt-auto border-t border-border/50 bg-muted/30 px-4 py-2">
+            <p className="text-center text-xs text-muted-foreground">
+              Chat interno da equipe
+            </p>
+          </div>
+        </>
       )}
+    </div>
+  );
+}
+
+// Legacy export for backwards compatibility
+export function InternalChat() {
+  return (
+    <>
+      <InternalChatButton />
+      <InternalChatPanel />
     </>
   );
 }
