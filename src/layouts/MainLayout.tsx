@@ -89,7 +89,6 @@ export function MainLayout({ children }: MainLayoutProps) {
             >
               <Search className="h-4 w-4" />
             </Button>
-            <InternalChat />
             <div data-theme-toggle className="shrink-0">
               <ThemeToggle variant="minimal" />
             </div>
@@ -109,7 +108,6 @@ export function MainLayout({ children }: MainLayoutProps) {
                 <span className="text-xs">⌘</span>K
               </kbd>
             </Button>
-            <InternalChat />
             <div data-theme-toggle>
               <ThemeToggle />
             </div>
@@ -126,6 +124,9 @@ export function MainLayout({ children }: MainLayoutProps) {
 
         {/* Onboarding Tour */}
         <OnboardingTour />
+
+        {/* Internal Chat - Floating */}
+        <InternalChat />
       </div>
     </SidebarProvider>
   );
