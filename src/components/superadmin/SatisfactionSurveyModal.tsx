@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Textarea } from "@/components/ui/textarea";
 import { Star, ThumbsUp, ThumbsDown, MessageSquare, TrendingUp, Users, Calendar, ChevronRight, Eye, X, Reply, Flag } from "lucide-react";
+import { toast } from "sonner";
 
 interface SatisfactionSurveyModalProps {
   open: boolean;
@@ -235,7 +236,7 @@ export function SatisfactionSurveyModal({ open, onOpenChange }: SatisfactionSurv
                             <Button variant="outline" size="sm" onClick={() => setShowReplyForm(false)}>
                               Cancelar
                             </Button>
-                            <Button size="sm">
+                            <Button size="sm" className="transition-transform hover:scale-105 active:scale-95" onClick={() => { toast.success("Resposta enviada!"); setShowReplyForm(false); setReplyText(""); }}>
                               Enviar Resposta
                             </Button>
                           </div>

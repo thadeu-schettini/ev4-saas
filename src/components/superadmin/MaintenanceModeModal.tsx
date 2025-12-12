@@ -9,6 +9,8 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Wrench, Calendar, Clock, AlertTriangle, CheckCircle2, Bell, Users, Plus, Trash2 } from "lucide-react";
+import { DeleteConfirmDialog } from "./DeleteConfirmDialog";
+import { toast } from "sonner";
 
 interface MaintenanceModeModalProps {
   open: boolean;
@@ -26,6 +28,27 @@ export function MaintenanceModeModal({ open, onOpenChange }: MaintenanceModeModa
   const [showScheduleForm, setShowScheduleForm] = useState(false);
   const [notifyUsers, setNotifyUsers] = useState(true);
   const [allowAdminAccess, setAllowAdminAccess] = useState(true);
+  const [deleteDialog, setDeleteDialog] = useState<{ open: boolean; id: string; title: string } | null>(null);
+
+  const handleToggleMaintenance = (active: boolean) => {
+    setMaintenanceActive(active);
+    if (active) {
+      toast.warning("Modo manutenção ativado! Usuários não conseguem acessar o sistema.");
+    } else {
+      toast.success("Sistema restaurado! Usuários podem acessar normalmente.");
+    }
+  };
+
+  const handleScheduleMaintenance = () => {
+    toast.success("Manutenção agendada com sucesso!");
+    setShowScheduleForm(false);
+  };
+
+  const handleDeleteMaintenance = () => {
+    if (!deleteDialog) return;
+    toast.success(`Manutenção "${deleteDialog.title}" cancelada!`);
+    setDeleteDialog(null);
+  };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -66,7 +89,7 @@ export function MaintenanceModeModal({ open, onOpenChange }: MaintenanceModeModa
                   <Switch
                     id="maintenance-toggle"
                     checked={maintenanceActive}
-                    onCheckedChange={setMaintenanceActive}
+                    onCheckedChange={handleToggleMaintenance}
                   />
                 </div>
               </div>
@@ -155,7 +178,7 @@ export function MaintenanceModeModal({ open, onOpenChange }: MaintenanceModeModa
                               {maintenance.status === "completed" ? "Concluída" : "Agendada"}
                             </Badge>
                             {maintenance.status !== "completed" && (
-                              <Button variant="ghost" size="icon" className="text-destructive">
+                              <Button variant="ghost" size="icon" className="text-destructive transition-transform hover:scale-110 active:scale-95" onClick={() => setDeleteDialog({ open: true, id: maintenance.id, title: maintenance.title })}>
                                 <Trash2 className="h-4 w-4" />
                               </Button>
                             )}
@@ -209,12 +232,22 @@ export function MaintenanceModeModal({ open, onOpenChange }: MaintenanceModeModa
                 </div>
                 <div className="flex justify-end gap-2 mt-4">
                   <Button variant="outline" onClick={() => setShowScheduleForm(false)}>Cancelar</Button>
-                  <Button onClick={() => setShowScheduleForm(false)}>Agendar Manutenção</Button>
+                  <Button className="transition-transform hover:scale-105 active:scale-95" onClick={handleScheduleMaintenance}>Agendar Manutenção</Button>
                 </div>
               </CardContent>
             </Card>
           )}
         </div>
+
+        {deleteDialog && (
+          <DeleteConfirmDialog
+            open={deleteDialog.open}
+            onOpenChange={(open) => !open && setDeleteDialog(null)}
+            title="Cancelar Manutenção"
+            description={`Tem certeza que deseja cancelar a manutenção "${deleteDialog.title}"?`}
+            onConfirm={handleDeleteMaintenance}
+          />
+        )}
       </DialogContent>
     </Dialog>
   );

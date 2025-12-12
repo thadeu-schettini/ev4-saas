@@ -27,6 +27,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
+import { DeleteConfirmDialog } from "./DeleteConfirmDialog";
 import {
   GripVertical,
   Eye,
@@ -252,9 +253,17 @@ export function CarouselSlidesModal({ open, onOpenChange }: CarouselSlidesModalP
     toast.success("Slide duplicado");
   };
 
-  const deleteSlide = (id: number) => {
-    setSlides(prev => prev.filter(s => s.id !== id));
-    toast.success("Slide removido");
+  const [deleteDialog, setDeleteDialog] = useState<{ open: boolean; id: number; title: string } | null>(null);
+
+  const confirmDelete = (id: number, title: string) => {
+    setDeleteDialog({ open: true, id, title });
+  };
+
+  const deleteSlide = () => {
+    if (!deleteDialog) return;
+    setSlides(prev => prev.filter(s => s.id !== deleteDialog.id));
+    toast.success("Slide removido com sucesso!");
+    setDeleteDialog(null);
   };
 
   const handleSave = () => {
@@ -706,7 +715,7 @@ export function CarouselSlidesModal({ open, onOpenChange }: CarouselSlidesModalP
                               </DropdownMenuItem>
                               <DropdownMenuItem 
                                 className="text-destructive"
-                                onClick={() => deleteSlide(slide.id)}
+                                onClick={() => confirmDelete(slide.id, slide.title)}
                               >
                                 <Trash2 className="h-4 w-4 mr-2" />
                                 Excluir
@@ -721,6 +730,16 @@ export function CarouselSlidesModal({ open, onOpenChange }: CarouselSlidesModalP
               </div>
             </ScrollArea>
           </>
+        )}
+
+        {deleteDialog && (
+          <DeleteConfirmDialog
+            open={deleteDialog.open}
+            onOpenChange={(open) => !open && setDeleteDialog(null)}
+            title="Excluir Slide"
+            description={`Tem certeza que deseja excluir o slide "${deleteDialog.title}"? Esta ação não pode ser desfeita.`}
+            onConfirm={deleteSlide}
+          />
         )}
       </DialogContent>
     </Dialog>
