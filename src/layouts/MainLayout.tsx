@@ -5,6 +5,7 @@ import { Outlet, useLocation } from "react-router-dom";
 import { CommandPalette } from "@/components/CommandPalette";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { OnboardingTour } from "@/components/OnboardingTour";
+import { InternalChat } from "@/components/InternalChat";
 import { Button } from "@/components/ui/button";
 import {
   Home,
@@ -88,6 +89,7 @@ export function MainLayout({ children }: MainLayoutProps) {
             >
               <Search className="h-4 w-4" />
             </Button>
+            <InternalChat />
             <div data-theme-toggle className="shrink-0">
               <ThemeToggle variant="minimal" />
             </div>
@@ -107,6 +109,7 @@ export function MainLayout({ children }: MainLayoutProps) {
                 <span className="text-xs">⌘</span>K
               </kbd>
             </Button>
+            <InternalChat />
             <div data-theme-toggle>
               <ThemeToggle />
             </div>
