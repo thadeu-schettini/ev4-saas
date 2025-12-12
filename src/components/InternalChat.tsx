@@ -240,7 +240,7 @@ export function InternalChat() {
 
       {/* Floating Chat Panel */}
       {isOpen && (
-        <div className="fixed bottom-4 right-4 top-auto z-50 flex h-[520px] w-[380px] flex-col overflow-hidden rounded-2xl border-2 border-primary/20 bg-card/95 shadow-2xl backdrop-blur-xl animate-scale-in sm:bottom-4 sm:right-4">
+        <div className="fixed inset-auto bottom-4 right-4 z-[60] flex h-[520px] w-[380px] max-w-[calc(100vw-2rem)] flex-col overflow-hidden rounded-2xl border-2 border-primary/20 bg-card shadow-2xl backdrop-blur-xl animate-in slide-in-from-bottom-4 duration-300">
           {/* Header */}
           <div className="flex items-center justify-between border-b border-border/50 bg-gradient-to-r from-primary/10 via-primary/5 to-transparent px-4 py-3">
             {selectedConversation ? (
@@ -468,11 +468,10 @@ export function InternalChat() {
               </ScrollArea>
 
               {/* Quick Info */}
-              <div className="border-t border-border/50 bg-muted/30 px-4 py-2">
-                <div className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
-                  <Bell className="h-3 w-3" />
-                  <span>Notificações ativas para todas as conversas</span>
-                </div>
+              <div className="mt-auto border-t border-border/50 bg-muted/30 px-4 py-2">
+                <p className="text-center text-xs text-muted-foreground">
+                  Chat interno da equipe
+                </p>
               </div>
             </>
           )}

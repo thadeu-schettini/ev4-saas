@@ -4,6 +4,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -11,6 +12,7 @@ import { Progress } from "@/components/ui/progress";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import {
   Layers,
@@ -30,6 +32,11 @@ import {
   PlayCircle,
   PauseCircle,
   ArrowRight,
+  X,
+  FileText,
+  User,
+  Stethoscope,
+  MapPin,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -37,6 +44,19 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+
+interface SessionDetail {
+  id: number;
+  patient: string;
+  date: string;
+  session: number;
+  status: string;
+  professional: string;
+  duration?: string;
+  notes?: string;
+  services?: string[];
+  room?: string;
+}
 
 interface PlanDetailModalProps {
   open: boolean;
@@ -110,18 +130,19 @@ const linkedPatients = [
   },
 ];
 
-// Mock sessions history
-const sessionsHistory = [
-  { id: 1, patient: "Maria Silva", date: "2024-12-05", session: 4, status: "completed", professional: "Dr. Ricardo" },
-  { id: 2, patient: "Ana Costa", date: "2024-12-04", session: 2, status: "completed", professional: "Dra. Ana Paula" },
-  { id: 3, patient: "Maria Silva", date: "2024-11-28", session: 3, status: "completed", professional: "Dr. Ricardo" },
-  { id: 4, patient: "João Pedro", date: "2024-11-25", session: 6, status: "completed", professional: "Dr. Ricardo" },
-  { id: 5, patient: "Carlos Lima", date: "2024-11-20", session: 1, status: "completed", professional: "Dra. Ana Paula" },
-  { id: 6, patient: "Maria Silva", date: "2024-11-15", session: 2, status: "completed", professional: "Dr. Ricardo" },
+// Mock sessions history with more details
+const sessionsHistory: SessionDetail[] = [
+  { id: 1, patient: "Maria Silva", date: "2024-12-05", session: 4, status: "completed", professional: "Dr. Ricardo", duration: "45 min", notes: "Paciente apresentou boa evolução. Mantido protocolo.", services: ["Consulta", "Avaliação"], room: "Sala 2" },
+  { id: 2, patient: "Ana Costa", date: "2024-12-04", session: 2, status: "completed", professional: "Dra. Ana Paula", duration: "30 min", notes: "Ajuste de medicação realizado.", services: ["Consulta"], room: "Sala 1" },
+  { id: 3, patient: "Maria Silva", date: "2024-11-28", session: 3, status: "completed", professional: "Dr. Ricardo", duration: "40 min", notes: "Evolução satisfatória.", services: ["Consulta", "Procedimento"], room: "Sala 2" },
+  { id: 4, patient: "João Pedro", date: "2024-11-25", session: 6, status: "completed", professional: "Dr. Ricardo", duration: "50 min", notes: "Plano concluído com sucesso. Alta do programa.", services: ["Consulta", "Reavaliação"], room: "Sala 3" },
+  { id: 5, patient: "Carlos Lima", date: "2024-11-20", session: 1, status: "completed", professional: "Dra. Ana Paula", duration: "60 min", notes: "Primeira sessão. Avaliação inicial realizada.", services: ["Avaliação Inicial"], room: "Sala 1" },
+  { id: 6, patient: "Maria Silva", date: "2024-11-15", session: 2, status: "completed", professional: "Dr. Ricardo", duration: "35 min", notes: "Paciente estável.", services: ["Consulta"], room: "Sala 2" },
 ];
 
 export function PlanDetailModal({ open, onOpenChange, plan, onAddPatient, onEditPlan }: PlanDetailModalProps) {
   const [activeTab, setActiveTab] = useState("overview");
+  const [selectedSession, setSelectedSession] = useState<SessionDetail | null>(null);
 
   if (!plan) return null;
 
@@ -409,7 +430,12 @@ export function PlanDetailModal({ open, onOpenChange, plan, onAddPatient, onEdit
                         </p>
                       </div>
                     </div>
-                    <Button variant="ghost" size="sm" className="gap-1 text-xs">
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="gap-1 text-xs"
+                      onClick={() => setSelectedSession(session)}
+                    >
                       Detalhes
                       <ArrowRight className="h-3 w-3" />
                     </Button>
@@ -419,6 +445,103 @@ export function PlanDetailModal({ open, onOpenChange, plan, onAddPatient, onEdit
             </ScrollArea>
           </TabsContent>
         </Tabs>
+
+        {/* Session Detail Modal */}
+        <Dialog open={!!selectedSession} onOpenChange={(open) => !open && setSelectedSession(null)}>
+          <DialogContent className="max-w-lg">
+            <DialogHeader>
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-emerald-500/10">
+                  <CheckCircle2 className="h-5 w-5 text-emerald-500" />
+                </div>
+                <div>
+                  <DialogTitle>Detalhes da Sessão {selectedSession?.session}</DialogTitle>
+                  <DialogDescription>
+                    {selectedSession?.patient} • {selectedSession?.date && new Date(selectedSession.date).toLocaleDateString('pt-BR')}
+                  </DialogDescription>
+                </div>
+              </div>
+            </DialogHeader>
+
+            {selectedSession && (
+              <div className="space-y-6 mt-4">
+                {/* Session Info Grid */}
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="p-4 rounded-xl bg-muted/50 space-y-1">
+                    <div className="flex items-center gap-2 text-muted-foreground">
+                      <User className="h-4 w-4" />
+                      <span className="text-xs">Paciente</span>
+                    </div>
+                    <p className="font-medium">{selectedSession.patient}</p>
+                  </div>
+                  <div className="p-4 rounded-xl bg-muted/50 space-y-1">
+                    <div className="flex items-center gap-2 text-muted-foreground">
+                      <Stethoscope className="h-4 w-4" />
+                      <span className="text-xs">Profissional</span>
+                    </div>
+                    <p className="font-medium">{selectedSession.professional}</p>
+                  </div>
+                  <div className="p-4 rounded-xl bg-muted/50 space-y-1">
+                    <div className="flex items-center gap-2 text-muted-foreground">
+                      <Clock className="h-4 w-4" />
+                      <span className="text-xs">Duração</span>
+                    </div>
+                    <p className="font-medium">{selectedSession.duration || "N/A"}</p>
+                  </div>
+                  <div className="p-4 rounded-xl bg-muted/50 space-y-1">
+                    <div className="flex items-center gap-2 text-muted-foreground">
+                      <MapPin className="h-4 w-4" />
+                      <span className="text-xs">Local</span>
+                    </div>
+                    <p className="font-medium">{selectedSession.room || "N/A"}</p>
+                  </div>
+                </div>
+
+                {/* Services */}
+                {selectedSession.services && selectedSession.services.length > 0 && (
+                  <div>
+                    <h4 className="text-sm font-medium mb-2 flex items-center gap-2">
+                      <Layers className="h-4 w-4 text-muted-foreground" />
+                      Serviços Realizados
+                    </h4>
+                    <div className="flex flex-wrap gap-2">
+                      {selectedSession.services.map((service, idx) => (
+                        <Badge key={idx} variant="outline" className="text-xs">
+                          {service}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Notes */}
+                {selectedSession.notes && (
+                  <div>
+                    <h4 className="text-sm font-medium mb-2 flex items-center gap-2">
+                      <FileText className="h-4 w-4 text-muted-foreground" />
+                      Observações
+                    </h4>
+                    <div className="p-4 rounded-xl bg-muted/30 border border-border/50">
+                      <p className="text-sm text-muted-foreground">{selectedSession.notes}</p>
+                    </div>
+                  </div>
+                )}
+
+                {/* Actions */}
+                <Separator />
+                <div className="flex justify-end gap-2">
+                  <Button variant="outline" onClick={() => setSelectedSession(null)}>
+                    Fechar
+                  </Button>
+                  <Button className="gap-2">
+                    <Eye className="h-4 w-4" />
+                    Ver Prontuário
+                  </Button>
+                </div>
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
       </DialogContent>
     </Dialog>
   );
