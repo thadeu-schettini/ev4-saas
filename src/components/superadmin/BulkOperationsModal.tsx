@@ -11,6 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Progress } from "@/components/ui/progress";
 import { Layers, Mail, CreditCard, Users, Play, Pause, CheckCircle2, AlertTriangle, Clock } from "lucide-react";
+import { toast } from "sonner";
 
 interface BulkOperationsModalProps {
   open: boolean;
@@ -154,8 +155,8 @@ export function BulkOperationsModal({ open, onOpenChange }: BulkOperationsModalP
                     <Badge variant="secondary">{"{{plano}}"}</Badge>
                   </div>
                   <div className="flex justify-end gap-2">
-                    <Button variant="outline">Pré-visualizar</Button>
-                    <Button disabled={selectedClinics.length === 0}>
+                    <Button variant="outline" onClick={() => toast.info("Abrindo pré-visualização...")}>Pré-visualizar</Button>
+                    <Button disabled={selectedClinics.length === 0} className="transition-transform hover:scale-105 active:scale-95" onClick={() => toast.success(`Emails enviados para ${selectedClinics.length} clínicas!`)}>
                       <Mail className="h-4 w-4 mr-2" />
                       Enviar para {selectedClinics.length} clínicas
                     </Button>
@@ -220,7 +221,7 @@ export function BulkOperationsModal({ open, onOpenChange }: BulkOperationsModalP
                         <div className="font-medium">Clínicas Afetadas</div>
                         <div className="text-sm text-muted-foreground">156 clínicas no plano Starter</div>
                       </div>
-                      <Button>
+                      <Button className="transition-transform hover:scale-105 active:scale-95" onClick={() => toast.success("Mudança de plano aplicada em 156 clínicas!")}>
                         <CreditCard className="h-4 w-4 mr-2" />
                         Aplicar Mudança
                       </Button>

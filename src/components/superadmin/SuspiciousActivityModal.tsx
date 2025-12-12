@@ -7,6 +7,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ShieldAlert, AlertTriangle, Eye, Ban, CheckCircle2, Clock, MapPin, Globe, User, Fingerprint } from "lucide-react";
+import { toast } from "sonner";
 
 interface SuspiciousActivityModalProps {
   open: boolean;
@@ -165,10 +166,10 @@ export function SuspiciousActivityModal({ open, onOpenChange }: SuspiciousActivi
                     </div>
                     {alert.status !== "resolved" && (
                       <div className="flex gap-2">
-                        <Button variant="outline" size="sm">
+                        <Button variant="outline" size="sm" onClick={() => toast.info("Iniciando investigação...")}>
                           <Eye className="h-4 w-4 mr-1" /> Investigar
                         </Button>
-                        <Button variant="destructive" size="sm">
+                        <Button variant="destructive" size="sm" className="transition-transform hover:scale-105 active:scale-95" onClick={() => toast.success(`IP ${alert.ip} bloqueado com sucesso!`)}>
                           <Ban className="h-4 w-4 mr-1" /> Bloquear IP
                         </Button>
                       </div>
@@ -209,7 +210,7 @@ export function SuspiciousActivityModal({ open, onOpenChange }: SuspiciousActivi
                 </div>
               </ScrollArea>
               <div className="flex justify-end mt-4">
-                <Button size="sm" onClick={() => setShowRulesConfig(false)}>Salvar Regras</Button>
+                <Button size="sm" className="transition-transform hover:scale-105 active:scale-95" onClick={() => { toast.success("Regras salvas com sucesso!"); setShowRulesConfig(false); }}>Salvar Regras</Button>
               </div>
             </CardContent>
           </Card>

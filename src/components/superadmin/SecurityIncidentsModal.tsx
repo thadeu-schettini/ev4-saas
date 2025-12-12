@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { FileWarning, AlertTriangle, Shield, Clock, User, FileText, ChevronDown, ChevronUp, Plus } from "lucide-react";
+import { toast } from "sonner";
 
 interface SecurityIncidentsModalProps {
   open: boolean;
@@ -116,7 +117,7 @@ export function SecurityIncidentsModal({ open, onOpenChange }: SecurityIncidents
               <SelectItem value="resolved">Resolvidos</SelectItem>
             </SelectContent>
           </Select>
-          <Button>
+          <Button className="transition-transform hover:scale-105 active:scale-95" onClick={() => toast.info("Formulário de novo incidente aberto")}>
             <Plus className="h-4 w-4 mr-2" /> Registrar Incidente
           </Button>
         </div>
@@ -171,8 +172,8 @@ export function SecurityIncidentsModal({ open, onOpenChange }: SecurityIncidents
                             <div className="mt-4">
                               <Textarea placeholder="Adicionar nota ou ação..." rows={2} />
                               <div className="flex justify-end gap-2 mt-2">
-                                <Button variant="outline" size="sm">Adicionar Nota</Button>
-                                <Button size="sm">Resolver Incidente</Button>
+                                <Button variant="outline" size="sm" className="transition-transform hover:scale-105 active:scale-95" onClick={() => toast.success("Nota adicionada!")}>Adicionar Nota</Button>
+                                <Button size="sm" className="transition-transform hover:scale-105 active:scale-95" onClick={() => toast.success("Incidente resolvido!")}>Resolver Incidente</Button>
                               </div>
                             </div>
                           )}

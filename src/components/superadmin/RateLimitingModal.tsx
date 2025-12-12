@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Gauge, Activity, AlertTriangle, CheckCircle2, Settings, Save, X, Edit } from "lucide-react";
 import { ChartContainer } from "@/components/ui/chart";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from "recharts";
+import { toast } from "sonner";
 
 interface RateLimitingModalProps {
   open: boolean;
@@ -243,7 +244,7 @@ export function RateLimitingModal({ open, onOpenChange }: RateLimitingModalProps
           </Card>
 
           <div className="flex justify-end">
-            <Button>
+            <Button className="transition-transform hover:scale-105 active:scale-95" onClick={() => toast.success("Configurações de rate limiting salvas!")}>
               <Save className="h-4 w-4 mr-2" />
               Salvar Configurações
             </Button>

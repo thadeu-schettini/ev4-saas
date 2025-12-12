@@ -212,6 +212,20 @@ export default {
             transform: "translateY(-10px)"
           }
         },
+        "shake": {
+          "0%, 100%": { transform: "translateX(0)" },
+          "10%, 30%, 50%, 70%, 90%": { transform: "translateX(-2px)" },
+          "20%, 40%, 60%, 80%": { transform: "translateX(2px)" }
+        },
+        "pulse-ring": {
+          "0%": { boxShadow: "0 0 0 0 hsl(var(--primary) / 0.4)" },
+          "70%": { boxShadow: "0 0 0 10px hsl(var(--primary) / 0)" },
+          "100%": { boxShadow: "0 0 0 0 hsl(var(--primary) / 0)" }
+        },
+        "success-bounce": {
+          "0%, 100%": { transform: "scale(1)" },
+          "50%": { transform: "scale(1.1)" }
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -229,6 +243,9 @@ export default {
         "pulse-slow": "pulse-slow 3s ease-in-out infinite",
         "slide-in": "slide-in 0.5s ease-out forwards",
         "float": "bounce-slow 3s ease-in-out infinite",
+        "shake": "shake 0.5s ease-in-out",
+        "pulse-ring": "pulse-ring 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+        "success-bounce": "success-bounce 0.3s ease-in-out",
       },
     },
   },

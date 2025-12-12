@@ -281,7 +281,7 @@ export function AlertsConfigModal({ open, onOpenChange }: AlertsConfigModalProps
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             Cancelar
           </Button>
-          <Button onClick={handleSave} className="gap-2">
+          <Button onClick={handleSave} className="gap-2 transition-transform hover:scale-105 active:scale-95">
             <Save className="h-4 w-4" />
             Salvar Configurações
           </Button>
