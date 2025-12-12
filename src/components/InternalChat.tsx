@@ -295,7 +295,7 @@ export function InternalChat() {
   };
 
   return (
-    <div className="relative">
+    <>
       {/* Chat Toggle Button */}
       <Button
         variant="ghost"
@@ -666,6 +666,6 @@ export function InternalChat() {
           )}
         </div>
       )}
-    </div>
+    </>
   );
 }

@@ -13,6 +13,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
+import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import {
   Layers,
@@ -37,6 +38,9 @@ import {
   User,
   Stethoscope,
   MapPin,
+  Trash2,
+  Save,
+  Pencil,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -44,6 +48,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { toast } from "@/hooks/use-toast";
 
 interface SessionDetail {
   id: number;
@@ -143,6 +148,18 @@ const sessionsHistory: SessionDetail[] = [
 export function PlanDetailModal({ open, onOpenChange, plan, onAddPatient, onEditPlan }: PlanDetailModalProps) {
   const [activeTab, setActiveTab] = useState("overview");
   const [selectedSession, setSelectedSession] = useState<SessionDetail | null>(null);
+  const [services, setServices] = useState<string[]>([]);
+  const [editingServiceIndex, setEditingServiceIndex] = useState<number | null>(null);
+  const [editingServiceValue, setEditingServiceValue] = useState("");
+  const [newService, setNewService] = useState("");
+  const [isAddingService, setIsAddingService] = useState(false);
+
+  // Sync services with plan when modal opens
+  useState(() => {
+    if (plan) {
+      setServices(plan.services);
+    }
+  });
 
   if (!plan) return null;
 
@@ -212,21 +229,169 @@ export function PlanDetailModal({ open, onOpenChange, plan, onAddPatient, onEdit
           <TabsContent value="overview" className="mt-4">
             <div className="grid md:grid-cols-2 gap-6">
               <div className="space-y-6">
-                <div>
-                  <h4 className="font-medium mb-3 flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4 text-emerald-500" />
-                    Serviços Inclusos
-                  </h4>
+              <div>
+                  <div className="flex items-center justify-between mb-3">
+                    <h4 className="font-medium flex items-center gap-2">
+                      <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+                      Serviços Inclusos
+                    </h4>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-7 gap-1 text-xs"
+                      onClick={() => setIsAddingService(true)}
+                    >
+                      <Plus className="h-3 w-3" />
+                      Adicionar
+                    </Button>
+                  </div>
                   <div className="space-y-2">
-                    {plan.services.map((service, idx) => (
+                    {/* Add new service input */}
+                    {isAddingService && (
+                      <div className="flex items-center gap-2 p-2 rounded-lg bg-primary/5 border border-primary/20">
+                        <Input
+                          value={newService}
+                          onChange={(e) => setNewService(e.target.value)}
+                          placeholder="Nome do serviço..."
+                          className="h-8 text-sm flex-1"
+                          autoFocus
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter" && newService.trim()) {
+                              setServices([...services, newService.trim()]);
+                              setNewService("");
+                              setIsAddingService(false);
+                              toast({ title: "Serviço adicionado com sucesso" });
+                            } else if (e.key === "Escape") {
+                              setNewService("");
+                              setIsAddingService(false);
+                            }
+                          }}
+                        />
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          className="h-7 w-7"
+                          onClick={() => {
+                            if (newService.trim()) {
+                              setServices([...services, newService.trim()]);
+                              setNewService("");
+                              setIsAddingService(false);
+                              toast({ title: "Serviço adicionado com sucesso" });
+                            }
+                          }}
+                        >
+                          <Save className="h-3.5 w-3.5" />
+                        </Button>
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          className="h-7 w-7 text-muted-foreground"
+                          onClick={() => {
+                            setNewService("");
+                            setIsAddingService(false);
+                          }}
+                        >
+                          <X className="h-3.5 w-3.5" />
+                        </Button>
+                      </div>
+                    )}
+                    
+                    {/* Services list */}
+                    {(services.length > 0 ? services : plan.services).map((service, idx) => (
                       <div 
                         key={idx}
-                        className="flex items-center gap-3 p-3 rounded-lg bg-muted/50"
+                        className="flex items-center gap-3 p-3 rounded-lg bg-muted/50 group hover:bg-muted/70 transition-colors"
                       >
-                        <div className="w-2 h-2 rounded-full bg-primary" />
-                        <span className="text-sm">{service}</span>
+                        {editingServiceIndex === idx ? (
+                          <>
+                            <div className="w-2 h-2 rounded-full bg-primary shrink-0" />
+                            <Input
+                              value={editingServiceValue}
+                              onChange={(e) => setEditingServiceValue(e.target.value)}
+                              className="h-7 text-sm flex-1"
+                              autoFocus
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter" && editingServiceValue.trim()) {
+                                  const newServices = [...services.length > 0 ? services : plan.services];
+                                  newServices[idx] = editingServiceValue.trim();
+                                  setServices(newServices);
+                                  setEditingServiceIndex(null);
+                                  setEditingServiceValue("");
+                                  toast({ title: "Serviço atualizado" });
+                                } else if (e.key === "Escape") {
+                                  setEditingServiceIndex(null);
+                                  setEditingServiceValue("");
+                                }
+                              }}
+                            />
+                            <Button
+                              size="icon"
+                              variant="ghost"
+                              className="h-7 w-7"
+                              onClick={() => {
+                                if (editingServiceValue.trim()) {
+                                  const newServices = [...services.length > 0 ? services : plan.services];
+                                  newServices[idx] = editingServiceValue.trim();
+                                  setServices(newServices);
+                                  setEditingServiceIndex(null);
+                                  setEditingServiceValue("");
+                                  toast({ title: "Serviço atualizado" });
+                                }
+                              }}
+                            >
+                              <Save className="h-3.5 w-3.5" />
+                            </Button>
+                            <Button
+                              size="icon"
+                              variant="ghost"
+                              className="h-7 w-7 text-muted-foreground"
+                              onClick={() => {
+                                setEditingServiceIndex(null);
+                                setEditingServiceValue("");
+                              }}
+                            >
+                              <X className="h-3.5 w-3.5" />
+                            </Button>
+                          </>
+                        ) : (
+                          <>
+                            <div className="w-2 h-2 rounded-full bg-primary shrink-0" />
+                            <span className="text-sm flex-1">{service}</span>
+                            <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                              <Button
+                                size="icon"
+                                variant="ghost"
+                                className="h-7 w-7"
+                                onClick={() => {
+                                  setEditingServiceIndex(idx);
+                                  setEditingServiceValue(service);
+                                }}
+                              >
+                                <Pencil className="h-3.5 w-3.5" />
+                              </Button>
+                              <Button
+                                size="icon"
+                                variant="ghost"
+                                className="h-7 w-7 text-destructive hover:text-destructive"
+                                onClick={() => {
+                                  const newServices = (services.length > 0 ? services : plan.services).filter((_, i) => i !== idx);
+                                  setServices(newServices);
+                                  toast({ title: "Serviço removido" });
+                                }}
+                              >
+                                <Trash2 className="h-3.5 w-3.5" />
+                              </Button>
+                            </div>
+                          </>
+                        )}
                       </div>
                     ))}
+                    
+                    {(services.length === 0 && plan.services.length === 0) && (
+                      <div className="text-center py-6 text-muted-foreground text-sm">
+                        Nenhum serviço cadastrado
+                      </div>
+                    )}
                   </div>
                 </div>
 
