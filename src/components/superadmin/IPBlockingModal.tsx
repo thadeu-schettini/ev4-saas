@@ -10,6 +10,8 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Shield, Ban, Plus, Search, Trash2, Globe, Clock, AlertTriangle, CheckCircle2 } from "lucide-react";
+import { DeleteConfirmDialog } from "./DeleteConfirmDialog";
+import { toast } from "sonner";
 
 interface IPBlockingModalProps {
   open: boolean;
@@ -32,6 +34,22 @@ export function IPBlockingModal({ open, onOpenChange }: IPBlockingModalProps) {
   const [showAddBlock, setShowAddBlock] = useState(false);
   const [showAddWhitelist, setShowAddWhitelist] = useState(false);
   const [autoBlock, setAutoBlock] = useState(true);
+  const [deleteDialog, setDeleteDialog] = useState<{ open: boolean; type: 'blocked' | 'whitelist'; id: string; name: string }>({ open: false, type: 'blocked', id: '', name: '' });
+
+  const handleBlockIP = () => {
+    toast.success("IP bloqueado com sucesso!");
+    setShowAddBlock(false);
+  };
+
+  const handleAddWhitelist = () => {
+    toast.success("IP adicionado à whitelist!");
+    setShowAddWhitelist(false);
+  };
+
+  const handleDelete = () => {
+    toast.success(`IP "${deleteDialog.name}" ${deleteDialog.type === 'blocked' ? 'desbloqueado' : 'removido da whitelist'}!`);
+    setDeleteDialog({ open: false, type: 'blocked', id: '', name: '' });
+  };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -142,7 +160,7 @@ export function IPBlockingModal({ open, onOpenChange }: IPBlockingModalProps) {
                               {ip.expiresAt}
                             </div>
                           </div>
-                          <Button variant="ghost" size="icon" className="text-destructive">
+                          <Button variant="ghost" size="icon" className="text-destructive" onClick={() => setDeleteDialog({ open: true, type: 'blocked', id: ip.id, name: ip.ip })}>
                             <Trash2 className="h-4 w-4" />
                           </Button>
                         </div>
@@ -208,6 +226,14 @@ export function IPBlockingModal({ open, onOpenChange }: IPBlockingModalProps) {
             </CardContent>
           </Card>
         </div>
+
+        <DeleteConfirmDialog
+          open={deleteDialog.open}
+          onOpenChange={(open) => setDeleteDialog({ ...deleteDialog, open })}
+          title={deleteDialog.type === 'blocked' ? "Desbloquear IP" : "Remover da Whitelist"}
+          description={`Tem certeza que deseja ${deleteDialog.type === 'blocked' ? 'desbloquear' : 'remover'} o IP "${deleteDialog.name}"?`}
+          onConfirm={handleDelete}
+        />
       </DialogContent>
     </Dialog>
   );

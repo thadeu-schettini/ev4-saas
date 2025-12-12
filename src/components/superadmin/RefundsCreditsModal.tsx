@@ -8,7 +8,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Wallet, RefreshCw, Plus, Search, CheckCircle2, Clock, XCircle, DollarSign, Gift, Building2 } from "lucide-react";
+import { Wallet, RefreshCw, Plus, Search, CheckCircle2, Clock, XCircle, DollarSign, Gift, Building2, Trash2 } from "lucide-react";
+import { DeleteConfirmDialog } from "./DeleteConfirmDialog";
+import { toast } from "sonner";
 
 interface RefundsCreditsModalProps {
   open: boolean;
@@ -30,6 +32,25 @@ const mockCredits = [
 export function RefundsCreditsModal({ open, onOpenChange }: RefundsCreditsModalProps) {
   const [search, setSearch] = useState("");
   const [showNewCredit, setShowNewCredit] = useState(false);
+  const [deleteDialog, setDeleteDialog] = useState<{ open: boolean; id: string; name: string }>({ open: false, id: '', name: '' });
+
+  const handleApproveRefund = (clinic: string) => {
+    toast.success(`Reembolso para "${clinic}" aprovado!`);
+  };
+
+  const handleRejectRefund = (clinic: string) => {
+    toast.error(`Reembolso para "${clinic}" rejeitado.`);
+  };
+
+  const handleCreateCredit = () => {
+    toast.success("Crédito criado com sucesso!");
+    setShowNewCredit(false);
+  };
+
+  const handleDeleteCredit = () => {
+    toast.success(`Crédito excluído com sucesso!`);
+    setDeleteDialog({ open: false, id: '', name: '' });
+  };
 
   const getStatusBadge = (status: string) => {
     switch (status) {
@@ -128,10 +149,10 @@ export function RefundsCreditsModal({ open, onOpenChange }: RefundsCreditsModalP
                         </div>
                         {refund.status === "pending" && (
                           <div className="flex gap-2">
-                            <Button size="sm" variant="outline" className="text-destructive">
+                            <Button size="sm" variant="outline" className="text-destructive" onClick={() => handleRejectRefund(refund.clinic)}>
                               Rejeitar
                             </Button>
-                            <Button size="sm">Aprovar</Button>
+                            <Button size="sm" onClick={() => handleApproveRefund(refund.clinic)}>Aprovar</Button>
                           </div>
                         )}
                       </div>
@@ -231,6 +252,14 @@ export function RefundsCreditsModal({ open, onOpenChange }: RefundsCreditsModalP
             </ScrollArea>
           </TabsContent>
         </Tabs>
+
+        <DeleteConfirmDialog
+          open={deleteDialog.open}
+          onOpenChange={(open) => setDeleteDialog({ ...deleteDialog, open })}
+          title="Excluir Crédito"
+          description={`Tem certeza que deseja excluir este crédito? Esta ação não pode ser desfeita.`}
+          onConfirm={handleDeleteCredit}
+        />
       </DialogContent>
     </Dialog>
   );

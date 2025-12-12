@@ -9,7 +9,9 @@ import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { MessageSquare, Settings, TestTube, CheckCircle2, XCircle, Clock, DollarSign, Send, AlertTriangle } from "lucide-react";
+import { MessageSquare, Settings, TestTube, CheckCircle2, XCircle, Clock, DollarSign, Send, AlertTriangle, Trash2 } from "lucide-react";
+import { DeleteConfirmDialog } from "./DeleteConfirmDialog";
+import { toast } from "sonner";
 
 interface SMSGatewayModalProps {
   open: boolean;
@@ -33,6 +35,26 @@ export function SMSGatewayModal({ open, onOpenChange }: SMSGatewayModalProps) {
   const [providers, setProviders] = useState(mockProviders);
   const [showAddProvider, setShowAddProvider] = useState(false);
   const [editingProvider, setEditingProvider] = useState<string | null>(null);
+  const [deleteDialog, setDeleteDialog] = useState<{ open: boolean; id: string; name: string }>({ open: false, id: '', name: '' });
+
+  const handleAddProvider = () => {
+    toast.success("Provedor adicionado com sucesso!");
+    setShowAddProvider(false);
+  };
+
+  const handleSaveProvider = () => {
+    toast.success("Provedor atualizado com sucesso!");
+    setEditingProvider(null);
+  };
+
+  const handleSendTest = () => {
+    toast.success("SMS de teste enviado com sucesso!");
+  };
+
+  const handleDelete = () => {
+    toast.success(`Provedor "${deleteDialog.name}" removido!`);
+    setDeleteDialog({ open: false, id: '', name: '' });
+  };
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "active": return <Badge className="bg-success/20 text-success">Ativo</Badge>;
@@ -284,7 +306,7 @@ export function SMSGatewayModal({ open, onOpenChange }: SMSGatewayModalProps) {
                       </SelectContent>
                     </Select>
                   </div>
-                  <Button className="w-full">
+                  <Button className="w-full" onClick={handleSendTest}>
                     <Send className="h-4 w-4 mr-2" /> Enviar SMS de Teste
                   </Button>
                 </div>
@@ -307,6 +329,14 @@ export function SMSGatewayModal({ open, onOpenChange }: SMSGatewayModalProps) {
             </Card>
           </TabsContent>
         </Tabs>
+
+        <DeleteConfirmDialog
+          open={deleteDialog.open}
+          onOpenChange={(open) => setDeleteDialog({ ...deleteDialog, open })}
+          title="Remover Provedor"
+          description={`Tem certeza que deseja remover o provedor "${deleteDialog.name}"?`}
+          onConfirm={handleDelete}
+        />
       </DialogContent>
     </Dialog>
   );

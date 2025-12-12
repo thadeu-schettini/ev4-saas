@@ -10,6 +10,8 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tag, Percent, Building2, Plus, Search, Edit, Trash2, Calendar, Users, X, Check } from "lucide-react";
+import { DeleteConfirmDialog } from "./DeleteConfirmDialog";
+import { toast } from "sonner";
 
 interface CustomPricingModalProps {
   open: boolean;
@@ -33,6 +35,7 @@ export function CustomPricingModal({ open, onOpenChange }: CustomPricingModalPro
   const [showNewPricing, setShowNewPricing] = useState(false);
   const [editingCoupon, setEditingCoupon] = useState<any>(null);
   const [editingPricing, setEditingPricing] = useState<any>(null);
+  const [deleteDialog, setDeleteDialog] = useState<{ open: boolean; type: 'coupon' | 'pricing'; id: string; name: string }>({ open: false, type: 'coupon', id: '', name: '' });
 
   // Form states for coupon
   const [couponForm, setCouponForm] = useState({
@@ -91,13 +94,22 @@ export function CustomPricingModal({ open, onOpenChange }: CustomPricingModalPro
   };
 
   const saveCoupon = () => {
-    // Save logic here
+    toast.success(editingCoupon ? "Cupom atualizado com sucesso!" : "Cupom criado com sucesso!");
     cancelEditCoupon();
   };
 
   const savePricing = () => {
-    // Save logic here
+    toast.success(editingPricing ? "Preço customizado atualizado!" : "Preço customizado criado!");
     cancelEditPricing();
+  };
+
+  const handleDelete = () => {
+    if (deleteDialog.type === 'coupon') {
+      toast.success(`Cupom "${deleteDialog.name}" excluído com sucesso!`);
+    } else {
+      toast.success(`Preço customizado excluído com sucesso!`);
+    }
+    setDeleteDialog({ open: false, type: 'coupon', id: '', name: '' });
   };
 
   return (
@@ -295,7 +307,7 @@ export function CustomPricingModal({ open, onOpenChange }: CustomPricingModalPro
                           <Button variant="ghost" size="icon" onClick={() => handleEditCoupon(coupon)}>
                             <Edit className="h-4 w-4" />
                           </Button>
-                          <Button variant="ghost" size="icon" className="text-destructive">
+                          <Button variant="ghost" size="icon" className="text-destructive" onClick={() => setDeleteDialog({ open: true, type: 'coupon', id: coupon.id, name: coupon.name })}>
                             <Trash2 className="h-4 w-4" />
                           </Button>
                         </div>
@@ -419,7 +431,7 @@ export function CustomPricingModal({ open, onOpenChange }: CustomPricingModalPro
                           <Button variant="ghost" size="icon" onClick={() => handleEditPricing(pricing)}>
                             <Edit className="h-4 w-4" />
                           </Button>
-                          <Button variant="ghost" size="icon" className="text-destructive">
+                          <Button variant="ghost" size="icon" className="text-destructive" onClick={() => setDeleteDialog({ open: true, type: 'pricing', id: pricing.id, name: pricing.clinic })}>
                             <Trash2 className="h-4 w-4" />
                           </Button>
                         </div>
@@ -431,6 +443,14 @@ export function CustomPricingModal({ open, onOpenChange }: CustomPricingModalPro
             </ScrollArea>
           </TabsContent>
         </Tabs>
+
+        <DeleteConfirmDialog
+          open={deleteDialog.open}
+          onOpenChange={(open) => setDeleteDialog({ ...deleteDialog, open })}
+          title={deleteDialog.type === 'coupon' ? "Excluir Cupom" : "Excluir Preço Customizado"}
+          description={`Tem certeza que deseja excluir ${deleteDialog.type === 'coupon' ? 'o cupom' : 'o preço customizado de'} "${deleteDialog.name}"? Esta ação não pode ser desfeita.`}
+          onConfirm={handleDelete}
+        />
       </DialogContent>
     </Dialog>
   );

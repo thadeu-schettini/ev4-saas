@@ -11,6 +11,8 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Bell, Plus, Send, Clock, Users, Eye, Settings, Smartphone, Monitor, Trash2, Edit, X, Check } from "lucide-react";
+import { DeleteConfirmDialog } from "./DeleteConfirmDialog";
+import { toast } from "sonner";
 
 interface PushNotificationsModalProps {
   open: boolean;
@@ -34,6 +36,7 @@ export function PushNotificationsModal({ open, onOpenChange }: PushNotifications
   const [showNewNotification, setShowNewNotification] = useState(false);
   const [editingNotification, setEditingNotification] = useState<any>(null);
   const [types, setTypes] = useState(notificationTypes);
+  const [deleteDialog, setDeleteDialog] = useState<{ open: boolean; id: string; name: string }>({ open: false, id: '', name: '' });
 
   // Form state
   const [notificationForm, setNotificationForm] = useState({
@@ -61,7 +64,13 @@ export function PushNotificationsModal({ open, onOpenChange }: PushNotifications
   };
 
   const saveNotification = () => {
+    toast.success(editingNotification ? "Notificação atualizada!" : "Notificação enviada com sucesso!");
     cancelEdit();
+  };
+
+  const handleDelete = () => {
+    toast.success(`Notificação "${deleteDialog.name}" excluída!`);
+    setDeleteDialog({ open: false, id: '', name: '' });
   };
 
   const toggleType = (type: string) => {
@@ -239,7 +248,7 @@ export function PushNotificationsModal({ open, onOpenChange }: PushNotifications
                           <Button variant="ghost" size="icon" onClick={() => handleEditNotification(notification)}>
                             <Edit className="h-4 w-4" />
                           </Button>
-                          <Button variant="ghost" size="icon" className="text-destructive">
+                          <Button variant="ghost" size="icon" className="text-destructive" onClick={() => setDeleteDialog({ open: true, id: notification.id, name: notification.title })}>
                             <Trash2 className="h-4 w-4" />
                           </Button>
                         </div>
@@ -275,6 +284,14 @@ export function PushNotificationsModal({ open, onOpenChange }: PushNotifications
             </Card>
           </TabsContent>
         </Tabs>
+
+        <DeleteConfirmDialog
+          open={deleteDialog.open}
+          onOpenChange={(open) => setDeleteDialog({ ...deleteDialog, open })}
+          title="Excluir Notificação"
+          description={`Tem certeza que deseja excluir a notificação "${deleteDialog.name}"? Esta ação não pode ser desfeita.`}
+          onConfirm={handleDelete}
+        />
       </DialogContent>
     </Dialog>
   );

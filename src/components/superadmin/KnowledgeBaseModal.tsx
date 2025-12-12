@@ -9,6 +9,8 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { BookOpen, Plus, Search, Eye, Edit, Trash2, FileText, HelpCircle, Video, FolderOpen, TrendingUp, X, Check } from "lucide-react";
+import { DeleteConfirmDialog } from "./DeleteConfirmDialog";
+import { toast } from "sonner";
 
 interface KnowledgeBaseModalProps {
   open: boolean;
@@ -34,6 +36,7 @@ export function KnowledgeBaseModal({ open, onOpenChange }: KnowledgeBaseModalPro
   const [search, setSearch] = useState("");
   const [showNewContent, setShowNewContent] = useState(false);
   const [newContentType, setNewContentType] = useState<"article" | "faq">("article");
+  const [deleteDialog, setDeleteDialog] = useState<{ open: boolean; type: 'article' | 'faq' | 'category'; id: string; name: string }>({ open: false, type: 'article', id: '', name: '' });
   
   // Edit states
   const [editingArticle, setEditingArticle] = useState<any>(null);
@@ -84,18 +87,24 @@ export function KnowledgeBaseModal({ open, onOpenChange }: KnowledgeBaseModalPro
   };
 
   const saveArticle = () => {
-    // Save logic
+    toast.success(editingArticle ? "Artigo atualizado com sucesso!" : "Artigo publicado com sucesso!");
     cancelEdit();
   };
 
   const saveFaq = () => {
-    // Save logic
+    toast.success(editingFaq ? "FAQ atualizada com sucesso!" : "FAQ criada com sucesso!");
     cancelEdit();
   };
 
   const saveCategory = () => {
-    // Save logic
+    toast.success(editingCategory ? "Categoria atualizada!" : "Categoria criada!");
     cancelEdit();
+  };
+
+  const handleDelete = () => {
+    const typeLabels = { article: 'Artigo', faq: 'FAQ', category: 'Categoria' };
+    toast.success(`${typeLabels[deleteDialog.type]} "${deleteDialog.name}" excluído com sucesso!`);
+    setDeleteDialog({ open: false, type: 'article', id: '', name: '' });
   };
 
   return (
@@ -334,7 +343,7 @@ export function KnowledgeBaseModal({ open, onOpenChange }: KnowledgeBaseModalPro
                           <Button variant="ghost" size="icon" onClick={() => handleEditArticle(article)}>
                             <Edit className="h-4 w-4" />
                           </Button>
-                          <Button variant="ghost" size="icon" className="text-destructive">
+                          <Button variant="ghost" size="icon" className="text-destructive" onClick={() => setDeleteDialog({ open: true, type: 'article', id: article.id, name: article.title })}>
                             <Trash2 className="h-4 w-4" />
                           </Button>
                         </div>
@@ -370,7 +379,7 @@ export function KnowledgeBaseModal({ open, onOpenChange }: KnowledgeBaseModalPro
                           <Button variant="ghost" size="icon" onClick={() => handleEditFaq(faq)}>
                             <Edit className="h-4 w-4" />
                           </Button>
-                          <Button variant="ghost" size="icon" className="text-destructive">
+                          <Button variant="ghost" size="icon" className="text-destructive" onClick={() => setDeleteDialog({ open: true, type: 'faq', id: faq.id, name: faq.question })}>
                             <Trash2 className="h-4 w-4" />
                           </Button>
                         </div>
@@ -492,6 +501,14 @@ export function KnowledgeBaseModal({ open, onOpenChange }: KnowledgeBaseModalPro
             </div>
           </TabsContent>
         </Tabs>
+
+        <DeleteConfirmDialog
+          open={deleteDialog.open}
+          onOpenChange={(open) => setDeleteDialog({ ...deleteDialog, open })}
+          title={`Excluir ${deleteDialog.type === 'article' ? 'Artigo' : deleteDialog.type === 'faq' ? 'FAQ' : 'Categoria'}`}
+          description={`Tem certeza que deseja excluir "${deleteDialog.name}"? Esta ação não pode ser desfeita.`}
+          onConfirm={handleDelete}
+        />
       </DialogContent>
     </Dialog>
   );

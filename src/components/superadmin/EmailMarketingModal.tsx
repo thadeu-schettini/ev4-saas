@@ -11,6 +11,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Mail, Plus, Send, Clock, Users, Eye, MousePointer, Edit, Trash2, X, Check } from "lucide-react";
 import { ChartContainer } from "@/components/ui/chart";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid } from "recharts";
+import { DeleteConfirmDialog } from "./DeleteConfirmDialog";
+import { toast } from "sonner";
 
 interface EmailMarketingModalProps {
   open: boolean;
@@ -49,6 +51,7 @@ export function EmailMarketingModal({ open, onOpenChange }: EmailMarketingModalP
   const [editingCampaign, setEditingCampaign] = useState<any>(null);
   const [editingTemplate, setEditingTemplate] = useState<any>(null);
   const [showNewTemplate, setShowNewTemplate] = useState(false);
+  const [deleteDialog, setDeleteDialog] = useState<{ open: boolean; type: 'campaign' | 'template'; id: string; name: string }>({ open: false, type: 'campaign', id: '', name: '' });
 
   // Campaign form
   const [campaignForm, setCampaignForm] = useState({
@@ -99,11 +102,18 @@ export function EmailMarketingModal({ open, onOpenChange }: EmailMarketingModalP
   };
 
   const saveCampaign = () => {
+    toast.success(editingCampaign ? "Campanha atualizada com sucesso!" : "Campanha criada com sucesso!");
     cancelCampaignEdit();
   };
 
   const saveTemplate = () => {
+    toast.success(editingTemplate ? "Template atualizado com sucesso!" : "Template criado com sucesso!");
     cancelTemplateEdit();
+  };
+
+  const handleDelete = () => {
+    toast.success(`${deleteDialog.type === 'campaign' ? 'Campanha' : 'Template'} "${deleteDialog.name}" excluído!`);
+    setDeleteDialog({ open: false, type: 'campaign', id: '', name: '' });
   };
 
   const getStatusBadge = (status: string) => {
@@ -271,7 +281,7 @@ export function EmailMarketingModal({ open, onOpenChange }: EmailMarketingModalP
                           <Button variant="ghost" size="icon" onClick={() => handleEditCampaign(campaign)}>
                             <Edit className="h-4 w-4" />
                           </Button>
-                          <Button variant="ghost" size="icon" className="text-destructive">
+                          <Button variant="ghost" size="icon" className="text-destructive" onClick={() => setDeleteDialog({ open: true, type: 'campaign', id: campaign.id, name: campaign.name })}>
                             <Trash2 className="h-4 w-4" />
                           </Button>
                         </div>
@@ -366,7 +376,7 @@ export function EmailMarketingModal({ open, onOpenChange }: EmailMarketingModalP
                       <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => handleEditTemplate(template)}>
                         <Edit className="h-3 w-3" />
                       </Button>
-                      <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive">
+                      <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive" onClick={() => setDeleteDialog({ open: true, type: 'template', id: template.id, name: template.name })}>
                         <Trash2 className="h-3 w-3" />
                       </Button>
                     </div>
@@ -388,6 +398,14 @@ export function EmailMarketingModal({ open, onOpenChange }: EmailMarketingModalP
             </div>
           </TabsContent>
         </Tabs>
+
+        <DeleteConfirmDialog
+          open={deleteDialog.open}
+          onOpenChange={(open) => setDeleteDialog({ ...deleteDialog, open })}
+          title={deleteDialog.type === 'campaign' ? "Excluir Campanha" : "Excluir Template"}
+          description={`Tem certeza que deseja excluir "${deleteDialog.name}"? Esta ação não pode ser desfeita.`}
+          onConfirm={handleDelete}
+        />
       </DialogContent>
     </Dialog>
   );
