@@ -14,6 +14,8 @@ import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import { OdontogramField } from "@/components/formularios/OdontogramField";
 import { BodyMapField } from "@/components/formularios/BodyMapField";
+import { PainScaleField } from "@/components/formularios/PainScaleField";
+import { DermatologyField } from "@/components/formularios/DermatologyField";
 
 export type FieldType = 
   | "texto-curto" 
@@ -27,7 +29,9 @@ export type FieldType =
   | "escala" 
   | "calculo-automatico"
   | "odontograma"
-  | "mapa-corporal";
+  | "mapa-corporal"
+  | "escala-dor"
+  | "dermatologia";
 
 export type FormField = {
   id: string;
@@ -465,6 +469,22 @@ export const DynamicFormBuilder = ({ sections, onSubmit, initialData = {} }: Dyn
         return (
           <BodyMapField
             value={value || {}}
+            onChange={(data) => updateFieldValue(field.id, data)}
+          />
+        );
+
+      case "escala-dor":
+        return (
+          <PainScaleField
+            value={value || { level: 0, notes: "" }}
+            onChange={(data) => updateFieldValue(field.id, data)}
+          />
+        );
+
+      case "dermatologia":
+        return (
+          <DermatologyField
+            value={value || []}
             onChange={(data) => updateFieldValue(field.id, data)}
           />
         );

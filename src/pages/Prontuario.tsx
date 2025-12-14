@@ -789,6 +789,28 @@ Solicitados exames complementares:
                 type: 'mapa-corporal'
               }
             ]
+          },
+          {
+            id: 'avaliacao_dor',
+            title: 'Avaliação de Dor',
+            fields: [
+              {
+                id: 'escala_dor_paciente',
+                label: 'Escala Visual de Dor',
+                type: 'escala-dor'
+              }
+            ]
+          },
+          {
+            id: 'dermatologia',
+            title: 'Avaliação Dermatológica',
+            fields: [
+              {
+                id: 'lesoes_cutaneas',
+                label: 'Mapeamento de Lesões',
+                type: 'dermatologia'
+              }
+            ]
           }
         ];
 

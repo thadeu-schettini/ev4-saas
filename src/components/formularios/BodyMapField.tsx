@@ -10,59 +10,55 @@ import {
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { User, RotateCcw, Check, MapPin, Ruler, Activity, MessageSquare } from "lucide-react";
+import { Check, MapPin, Ruler, Activity, MessageSquare } from "lucide-react";
 
 type ViewType = "front" | "back";
 
 interface BodyRegion {
   id: string;
   label: string;
-  path: string;
+  cx: number;
+  cy: number;
+  rx: number;
+  ry: number;
   views: ViewType[];
 }
 
-// Anatomically accurate body regions using SVG paths
+// Anatomical body regions with ellipse positioning
 const bodyRegions: BodyRegion[] = [
   // Head & Neck
-  { id: "head", label: "Cabeça", path: "M45,8 a10,10 0 1,0 10,0 a10,10 0 1,0 -10,0", views: ["front", "back"] },
-  { id: "neck", label: "Pescoço", path: "M47,18 L53,18 L53,25 L47,25 Z", views: ["front", "back"] },
+  { id: "head", label: "Cabeça", cx: 50, cy: 8, rx: 6, ry: 6, views: ["front", "back"] },
+  { id: "neck", label: "Pescoço", cx: 50, cy: 17, rx: 3, ry: 3, views: ["front", "back"] },
   
-  // Torso Front
-  { id: "chest", label: "Tórax", path: "M35,26 Q50,24 65,26 L63,45 L37,45 Z", views: ["front"] },
-  { id: "abdomen", label: "Abdômen", path: "M37,46 L63,46 L61,65 L39,65 Z", views: ["front"] },
+  // Torso
+  { id: "chest", label: "Tórax", cx: 50, cy: 28, rx: 12, ry: 8, views: ["front"] },
+  { id: "upperBack", label: "Costas Superior", cx: 50, cy: 28, rx: 12, ry: 8, views: ["back"] },
+  { id: "abdomen", label: "Abdômen", cx: 50, cy: 42, rx: 10, ry: 8, views: ["front"] },
+  { id: "lowerBack", label: "Lombar", cx: 50, cy: 42, rx: 10, ry: 8, views: ["back"] },
+  { id: "pelvis", label: "Pelve", cx: 50, cy: 54, rx: 9, ry: 5, views: ["front", "back"] },
   
-  // Torso Back
-  { id: "upperBack", label: "Costas Superior", path: "M35,26 Q50,24 65,26 L63,45 L37,45 Z", views: ["back"] },
-  { id: "lowerBack", label: "Lombar", path: "M37,46 L63,46 L61,65 L39,65 Z", views: ["back"] },
+  // Arms - Left
+  { id: "shoulderLeft", label: "Ombro Esq.", cx: 32, cy: 22, rx: 5, ry: 4, views: ["front", "back"] },
+  { id: "armLeft", label: "Braço Esq.", cx: 27, cy: 32, rx: 4, ry: 7, views: ["front", "back"] },
+  { id: "forearmLeft", label: "Antebraço Esq.", cx: 22, cy: 48, rx: 3, ry: 8, views: ["front", "back"] },
+  { id: "handLeft", label: "Mão Esq.", cx: 17, cy: 62, rx: 3, ry: 4, views: ["front", "back"] },
   
-  // Pelvis
-  { id: "pelvis", label: "Pelve", path: "M39,66 L61,66 L60,78 L40,78 Z", views: ["front", "back"] },
+  // Arms - Right
+  { id: "shoulderRight", label: "Ombro Dir.", cx: 68, cy: 22, rx: 5, ry: 4, views: ["front", "back"] },
+  { id: "armRight", label: "Braço Dir.", cx: 73, cy: 32, rx: 4, ry: 7, views: ["front", "back"] },
+  { id: "forearmRight", label: "Antebraço Dir.", cx: 78, cy: 48, rx: 3, ry: 8, views: ["front", "back"] },
+  { id: "handRight", label: "Mão Dir.", cx: 83, cy: 62, rx: 3, ry: 4, views: ["front", "back"] },
   
-  // Arms Left
-  { id: "shoulderLeft", label: "Ombro Esq.", path: "M25,28 L36,26 L36,35 L25,37 Z", views: ["front", "back"] },
-  { id: "armLeft", label: "Braço Esq.", path: "M22,38 L34,36 L32,55 L20,53 Z", views: ["front", "back"] },
-  { id: "forearmLeft", label: "Antebraço Esq.", path: "M18,54 L30,56 L28,75 L16,73 Z", views: ["front", "back"] },
-  { id: "handLeft", label: "Mão Esq.", path: "M14,74 L26,76 L24,88 L12,86 Z", views: ["front", "back"] },
+  // Legs - Left
+  { id: "thighLeft", label: "Coxa Esq.", cx: 43, cy: 68, rx: 5, ry: 10, views: ["front", "back"] },
+  { id: "kneeLeft", label: "Joelho Esq.", cx: 43, cy: 82, rx: 4, ry: 3, views: ["front", "back"] },
+  { id: "calfLeft", label: "Panturrilha Esq.", cx: 43, cy: 92, rx: 3, ry: 6, views: ["front", "back"] },
   
-  // Arms Right
-  { id: "shoulderRight", label: "Ombro Dir.", path: "M64,26 L75,28 L75,37 L64,35 Z", views: ["front", "back"] },
-  { id: "armRight", label: "Braço Dir.", path: "M66,36 L78,38 L80,53 L68,55 Z", views: ["front", "back"] },
-  { id: "forearmRight", label: "Antebraço Dir.", path: "M70,56 L82,54 L84,73 L72,75 Z", views: ["front", "back"] },
-  { id: "handRight", label: "Mão Dir.", path: "M74,76 L86,74 L88,86 L76,88 Z", views: ["front", "back"] },
-  
-  // Legs Left
-  { id: "thighLeft", label: "Coxa Esq.", path: "M40,79 L50,79 L48,110 L38,110 Z", views: ["front", "back"] },
-  { id: "kneeLeft", label: "Joelho Esq.", path: "M38,111 L48,111 L48,122 L38,122 Z", views: ["front", "back"] },
-  { id: "calfLeft", label: "Panturrilha Esq.", path: "M38,123 L48,123 L46,155 L40,155 Z", views: ["front", "back"] },
-  { id: "footLeft", label: "Pé Esq.", path: "M38,156 L48,156 L48,168 L36,168 Z", views: ["front", "back"] },
-  
-  // Legs Right
-  { id: "thighRight", label: "Coxa Dir.", path: "M50,79 L60,79 L62,110 L52,110 Z", views: ["front", "back"] },
-  { id: "kneeRight", label: "Joelho Dir.", path: "M52,111 L62,111 L62,122 L52,122 Z", views: ["front", "back"] },
-  { id: "calfRight", label: "Panturrilha Dir.", path: "M52,123 L62,123 L60,155 L54,155 Z", views: ["front", "back"] },
-  { id: "footRight", label: "Pé Dir.", path: "M52,156 L62,156 L64,168 L52,168 Z", views: ["front", "back"] },
+  // Legs - Right
+  { id: "thighRight", label: "Coxa Dir.", cx: 57, cy: 68, rx: 5, ry: 10, views: ["front", "back"] },
+  { id: "kneeRight", label: "Joelho Dir.", cx: 57, cy: 82, rx: 4, ry: 3, views: ["front", "back"] },
+  { id: "calfRight", label: "Panturrilha Dir.", cx: 57, cy: 92, rx: 3, ry: 6, views: ["front", "back"] },
 ];
 
 interface MeasurementType {
@@ -74,10 +70,10 @@ interface MeasurementType {
 }
 
 const measurementTypes: MeasurementType[] = [
-  { id: "circumference", label: "Circunferência", unit: "cm", icon: <Ruler className="w-3 h-3" />, color: "hsl(var(--info))" },
-  { id: "skinfold", label: "Prega Cutânea", unit: "mm", icon: <Activity className="w-3 h-3" />, color: "hsl(var(--warning))" },
-  { id: "pain", label: "Dor", unit: "0-10", icon: <Activity className="w-3 h-3" />, color: "hsl(var(--destructive))" },
-  { id: "observation", label: "Observação", unit: "", icon: <MessageSquare className="w-3 h-3" />, color: "hsl(var(--primary))" },
+  { id: "circumference", label: "Circunferência", unit: "cm", icon: <Ruler className="w-3 h-3" />, color: "#3b82f6" },
+  { id: "skinfold", label: "Prega Cutânea", unit: "mm", icon: <Activity className="w-3 h-3" />, color: "#f59e0b" },
+  { id: "pain", label: "Dor", unit: "0-10", icon: <Activity className="w-3 h-3" />, color: "#ef4444" },
+  { id: "observation", label: "Observação", unit: "", icon: <MessageSquare className="w-3 h-3" />, color: "#8b5cf6" },
 ];
 
 interface RegionData {
@@ -91,6 +87,52 @@ interface BodyMapFieldProps {
   measurementMode?: string[];
   readOnly?: boolean;
 }
+
+// Elegant human silhouette SVG
+const HumanSilhouette = ({ view }: { view: ViewType }) => (
+  <g fill="url(#bodyGradient)" stroke="url(#bodyStroke)" strokeWidth="1">
+    {/* Head */}
+    <ellipse cx="50" cy="8" rx="6" ry="7" />
+    
+    {/* Neck */}
+    <path d="M47,14 L47,19 Q50,20 53,19 L53,14" fill="url(#bodyGradient)" />
+    
+    {/* Torso */}
+    <path d="M38,19 Q32,22 32,24 L30,38 Q29,42 30,46 L32,52 Q35,58 50,60 Q65,58 68,52 L70,46 Q71,42 70,38 L68,24 Q68,22 62,19 Z" />
+    
+    {/* Left Arm */}
+    <path d="M32,22 Q28,22 26,26 L23,38 Q21,44 19,52 L16,62 Q15,66 17,68 L20,66 Q22,62 24,54 L27,42 Q29,34 31,28" />
+    
+    {/* Right Arm */}
+    <path d="M68,22 Q72,22 74,26 L77,38 Q79,44 81,52 L84,62 Q85,66 83,68 L80,66 Q78,62 76,54 L73,42 Q71,34 69,28" />
+    
+    {/* Left Leg */}
+    <path d="M42,58 Q38,60 38,64 L37,78 Q36,82 37,88 L38,98 Q39,100 42,100 L44,100 Q46,99 46,96 L47,86 Q48,80 47,74 L46,64 Q46,60 44,58" />
+    
+    {/* Right Leg */}
+    <path d="M58,58 Q62,60 62,64 L63,78 Q64,82 63,88 L62,98 Q61,100 58,100 L56,100 Q54,99 54,96 L53,86 Q52,80 53,74 L54,64 Q54,60 56,58" />
+    
+    {view === "front" ? (
+      <>
+        {/* Face features hint */}
+        <ellipse cx="47" cy="7" rx="1" ry="0.8" fill="#d1d5db" opacity="0.5" />
+        <ellipse cx="53" cy="7" rx="1" ry="0.8" fill="#d1d5db" opacity="0.5" />
+        {/* Chest line */}
+        <path d="M44,26 Q50,28 56,26" stroke="#d1d5db" strokeWidth="0.5" fill="none" opacity="0.5" />
+        {/* Abs hint */}
+        <line x1="50" y1="32" x2="50" y2="48" stroke="#d1d5db" strokeWidth="0.3" opacity="0.3" />
+      </>
+    ) : (
+      <>
+        {/* Spine hint */}
+        <line x1="50" y1="20" x2="50" y2="55" stroke="#d1d5db" strokeWidth="0.5" opacity="0.4" />
+        {/* Shoulder blades hint */}
+        <ellipse cx="43" cy="28" rx="4" ry="3" fill="none" stroke="#d1d5db" strokeWidth="0.3" opacity="0.3" />
+        <ellipse cx="57" cy="28" rx="4" ry="3" fill="none" stroke="#d1d5db" strokeWidth="0.3" opacity="0.3" />
+      </>
+    )}
+  </g>
+);
 
 export function BodyMapField({
   value = {},
@@ -128,89 +170,72 @@ export function BodyMapField({
   const hasData = (regionId: string) => {
     const data = value[regionId];
     if (!data) return false;
-    return Object.keys(data.measurements).length > 0 || data.notes;
+    return Object.keys(data.measurements).some(k => data.measurements[k]) || data.notes;
   };
 
   const getRegionColor = (regionId: string) => {
     const data = value[regionId];
-    if (!data || Object.keys(data.measurements).length === 0) return "transparent";
+    if (!data || !Object.keys(data.measurements).some(k => data.measurements[k])) return null;
     
-    const firstMeasurementKey = Object.keys(data.measurements)[0];
+    const firstMeasurementKey = Object.keys(data.measurements).find(k => data.measurements[k]);
+    if (!firstMeasurementKey) return null;
     const measurementType = measurementTypes.find((m) => m.id === firstMeasurementKey);
-    return measurementType?.color || "hsl(var(--primary))";
+    return measurementType?.color || "#8b5cf6";
   };
 
   const filledRegions = Object.entries(value).filter(([_, data]) => 
-    Object.keys(data.measurements).length > 0 || data.notes
+    Object.keys(data.measurements).some(k => data.measurements[k]) || data.notes
   );
 
   return (
     <div className="space-y-6">
       {/* View Toggle */}
       <div className="flex justify-center">
-        <div className="inline-flex items-center gap-1 p-1 bg-muted/50 rounded-xl border border-border/50">
+        <div className="inline-flex p-1 bg-muted/50 rounded-xl border border-border/50">
           <Button
             variant={view === "front" ? "default" : "ghost"}
             size="sm"
             onClick={() => setView("front")}
-            className="gap-2"
+            className="rounded-lg"
           >
-            <User className="w-4 h-4" />
-            Frontal
+            Vista Frontal
           </Button>
           <Button
             variant={view === "back" ? "default" : "ghost"}
             size="sm"
             onClick={() => setView("back")}
-            className="gap-2"
+            className="rounded-lg"
           >
-            <RotateCcw className="w-4 h-4" />
-            Posterior
+            Vista Posterior
           </Button>
         </div>
       </div>
 
       {/* Body Map */}
-      <div className="relative flex justify-center">
-        <div className="relative w-full max-w-[320px] aspect-[1/1.8] bg-gradient-to-b from-muted/30 via-muted/10 to-transparent rounded-2xl border border-border/50 p-4">
-          <svg
-            viewBox="0 0 100 180"
-            className="w-full h-full"
-            style={{ filter: "drop-shadow(0 4px 12px rgba(0,0,0,0.08))" }}
-          >
+      <div className="flex justify-center">
+        <div className="relative w-full max-w-[300px] aspect-[1/1.1] bg-gradient-to-b from-muted/20 via-transparent to-muted/10 rounded-2xl border border-border/30 p-4">
+          <svg viewBox="0 0 100 105" className="w-full h-full">
             <defs>
               <linearGradient id="bodyGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" style={{ stopColor: 'hsl(var(--muted))', stopOpacity: 0.6 }} />
-                <stop offset="100%" style={{ stopColor: 'hsl(var(--muted))', stopOpacity: 0.2 }} />
+                <stop offset="0%" stopColor="hsl(var(--muted))" stopOpacity="0.4" />
+                <stop offset="50%" stopColor="hsl(var(--muted))" stopOpacity="0.3" />
+                <stop offset="100%" stopColor="hsl(var(--muted))" stopOpacity="0.2" />
               </linearGradient>
-              <filter id="glow">
-                <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+              <linearGradient id="bodyStroke" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stopColor="hsl(var(--border))" stopOpacity="0.6" />
+                <stop offset="100%" stopColor="hsl(var(--border))" stopOpacity="0.3" />
+              </linearGradient>
+              <filter id="regionGlow" x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur stdDeviation="2" result="blur"/>
                 <feMerge>
-                  <feMergeNode in="coloredBlur"/>
+                  <feMergeNode in="blur"/>
                   <feMergeNode in="SourceGraphic"/>
                 </feMerge>
               </filter>
             </defs>
 
-            {/* Body Silhouette */}
-            <g className="stroke-border/40" strokeWidth="0.5" fill="url(#bodyGradient)">
-              {/* Head */}
-              <ellipse cx="50" cy="12" rx="10" ry="11" />
-              {/* Neck */}
-              <rect x="46" y="22" width="8" height="6" rx="1" />
-              {/* Torso */}
-              <path d="M35,28 Q50,25 65,28 L63,68 Q50,72 37,68 Z" />
-              {/* Pelvis */}
-              <path d="M37,68 Q50,74 63,68 L60,80 Q50,84 40,80 Z" />
-              {/* Left Arm */}
-              <path d="M35,28 Q30,30 26,35 L22,55 Q20,58 18,70 L14,85 Q22,87 28,80 L32,60 Q34,45 36,32" />
-              {/* Right Arm */}
-              <path d="M65,28 Q70,30 74,35 L78,55 Q80,58 82,70 L86,85 Q78,87 72,80 L68,60 Q66,45 64,32" />
-              {/* Left Leg */}
-              <path d="M40,80 L38,120 Q36,130 38,155 L36,170 L48,170 L48,155 Q50,130 48,120 L50,80" />
-              {/* Right Leg */}
-              <path d="M50,80 L52,120 Q50,130 52,155 L52,170 L64,170 L62,155 Q64,130 62,120 L60,80" />
-            </g>
+            {/* Human Silhouette */}
+            <HumanSilhouette view={view} />
 
             {/* Interactive Regions */}
             {visibleRegions.map((region) => {
@@ -225,39 +250,41 @@ export function BodyMapField({
                   onOpenChange={(open) => !open && setSelectedRegion(null)}
                 >
                   <PopoverTrigger asChild>
-                    <path
-                      d={region.path}
+                    <ellipse
+                      cx={region.cx}
+                      cy={region.cy}
+                      rx={region.rx}
+                      ry={region.ry}
                       onClick={() => handleRegionClick(region.id)}
                       className={cn(
                         "cursor-pointer transition-all duration-200",
-                        !readOnly && "hover:opacity-80",
-                        isSelected && "filter-[url(#glow)]"
+                        !readOnly && "hover:opacity-80"
                       )}
-                      fill={regionHasData ? color : "transparent"}
-                      fillOpacity={regionHasData ? 0.4 : 0}
-                      stroke={regionHasData ? color : "hsl(var(--border))"}
+                      fill={regionHasData && color ? `${color}40` : "transparent"}
+                      stroke={regionHasData && color ? color : "hsl(var(--border))"}
                       strokeWidth={isSelected ? 2 : regionHasData ? 1.5 : 0.5}
                       strokeDasharray={regionHasData ? "none" : "2,2"}
-                      style={{ 
-                        transform: isSelected ? 'scale(1.02)' : 'scale(1)',
-                        transformOrigin: 'center'
-                      }}
+                      opacity={isSelected ? 1 : regionHasData ? 0.9 : 0.4}
+                      filter={isSelected ? "url(#regionGlow)" : undefined}
                     />
                   </PopoverTrigger>
                   <PopoverContent className="w-80 p-0" align="center">
                     <div className="p-4 space-y-4">
                       <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-3">
                           <div 
-                            className="w-8 h-8 rounded-lg flex items-center justify-center"
-                            style={{ backgroundColor: color + '20', color: color }}
+                            className="w-10 h-10 rounded-xl flex items-center justify-center"
+                            style={{ 
+                              backgroundColor: color ? `${color}20` : 'hsl(var(--muted))',
+                              color: color || 'hsl(var(--muted-foreground))'
+                            }}
                           >
-                            <MapPin className="w-4 h-4" />
+                            <MapPin className="w-5 h-5" />
                           </div>
                           <div>
-                            <h4 className="font-semibold text-sm">{region.label}</h4>
+                            <h4 className="font-semibold">{region.label}</h4>
                             <span className="text-xs text-muted-foreground">
-                              Vista {view === "front" ? "Frontal" : "Posterior"}
+                              {view === "front" ? "Frontal" : "Posterior"}
                             </span>
                           </div>
                         </div>
@@ -328,25 +355,20 @@ export function BodyMapField({
               );
             })}
 
-            {/* Region markers for filled regions */}
+            {/* Region labels on hover */}
             {visibleRegions.map((region) => {
-              if (!hasData(region.id)) return null;
-              // Extract center from path (simplified)
-              const pathMatch = region.path.match(/M(\d+),(\d+)/);
-              if (!pathMatch) return null;
-              const x = parseInt(pathMatch[1]) + 5;
-              const y = parseInt(pathMatch[2]) + 5;
+              const regionHasData = hasData(region.id);
+              if (!regionHasData) return null;
               
               return (
                 <circle
-                  key={`marker-${region.id}`}
-                  cx={x}
-                  cy={y}
-                  r="3"
+                  key={`dot-${region.id}`}
+                  cx={region.cx}
+                  cy={region.cy}
+                  r="1.5"
                   fill="white"
-                  stroke={getRegionColor(region.id)}
-                  strokeWidth="1.5"
-                  className="pointer-events-none"
+                  stroke={getRegionColor(region.id) || "hsl(var(--primary))"}
+                  strokeWidth="1"
                 />
               );
             })}
@@ -359,10 +381,10 @@ export function BodyMapField({
         {activeMeasurements.map((measurement) => (
           <div 
             key={measurement.id} 
-            className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-muted/50 border border-border/50"
+            className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-card border border-border/50 shadow-sm"
           >
             <div 
-              className="w-4 h-4 rounded flex items-center justify-center text-white"
+              className="w-5 h-5 rounded flex items-center justify-center text-white"
               style={{ backgroundColor: measurement.color }}
             >
               {measurement.icon}
@@ -376,11 +398,11 @@ export function BodyMapField({
       {filledRegions.length > 0 && (
         <div className="space-y-3">
           <div className="flex items-center justify-between">
-            <h5 className="text-sm font-medium flex items-center gap-2">
+            <h5 className="text-sm font-semibold flex items-center gap-2">
               <MapPin className="w-4 h-4 text-primary" />
               Dados Registrados
             </h5>
-            <Badge variant="secondary" className="text-xs">
+            <Badge variant="secondary">
               {filledRegions.length} {filledRegions.length === 1 ? 'região' : 'regiões'}
             </Badge>
           </div>
@@ -393,21 +415,24 @@ export function BodyMapField({
               return (
                 <div 
                   key={regionId} 
-                  className="p-3 rounded-xl bg-card border border-border/50 hover:border-border transition-colors"
+                  className="p-3 rounded-xl bg-card border border-border/50 shadow-sm hover:shadow-md transition-shadow"
                 >
                   <div className="flex items-center gap-2 mb-2">
                     <div 
-                      className="w-6 h-6 rounded-lg flex items-center justify-center"
-                      style={{ backgroundColor: color + '20', color: color }}
+                      className="w-7 h-7 rounded-lg flex items-center justify-center"
+                      style={{ 
+                        backgroundColor: color ? `${color}20` : 'hsl(var(--muted))',
+                        color: color || 'hsl(var(--muted-foreground))'
+                      }}
                     >
-                      <MapPin className="w-3 h-3" />
+                      <MapPin className="w-3.5 h-3.5" />
                     </div>
-                    <span className="font-medium text-sm">{region?.label}</span>
+                    <span className="font-semibold text-sm">{region?.label}</span>
                   </div>
                   <div className="space-y-1">
                     {Object.entries(data.measurements).map(([key, val]) => {
-                      const type = measurementTypes.find((m) => m.id === key);
                       if (!val) return null;
+                      const type = measurementTypes.find((m) => m.id === key);
                       return (
                         <div key={key} className="flex items-center justify-between text-xs">
                           <span className="text-muted-foreground">{type?.label}</span>
