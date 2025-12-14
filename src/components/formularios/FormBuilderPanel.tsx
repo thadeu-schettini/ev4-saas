@@ -68,6 +68,8 @@ const fieldTypes = [
   { value: "arquivo", label: "Upload de Arquivo" },
   { value: "escala", label: "Escala (0-10)" },
   { value: "calculo", label: "Cálculo Automático" },
+  { value: "odontograma", label: "🦷 Odontograma" },
+  { value: "mapa-corporal", label: "🏃 Mapa Corporal" },
 ];
 
 // Sortable Section Component

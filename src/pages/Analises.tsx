@@ -34,6 +34,10 @@ import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, PieChart as RePieChart, Pie, Cell, LineChart as ReLineChart, Line } from "recharts";
 import { AIQueryModal } from "@/components/analises/AIQueryModal";
+import { RevenueDetailModal } from "@/components/analises/RevenueDetailModal";
+import { PatientsDetailModal } from "@/components/analises/PatientsDetailModal";
+import { OccupancyDetailModal } from "@/components/analises/OccupancyDetailModal";
+import { WaitTimeDetailModal } from "@/components/analises/WaitTimeDetailModal";
 
 const revenueData = [
   { month: "Jan", receita: 45000, despesas: 32000 },
@@ -130,10 +134,21 @@ export default function Analises() {
   const [period, setPeriod] = useState("mes");
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isAIQueryOpen, setIsAIQueryOpen] = useState(false);
+  const [revenueModalOpen, setRevenueModalOpen] = useState(false);
+  const [patientsModalOpen, setPatientsModalOpen] = useState(false);
+  const [occupancyModalOpen, setOccupancyModalOpen] = useState(false);
+  const [waitTimeModalOpen, setWaitTimeModalOpen] = useState(false);
 
   const handleRefresh = () => {
     setIsRefreshing(true);
     setTimeout(() => setIsRefreshing(false), 2000);
+  };
+
+  const handleKPIClick = (label: string) => {
+    if (label === "Receita Líquida") setRevenueModalOpen(true);
+    else if (label === "Pacientes Ativos") setPatientsModalOpen(true);
+    else if (label === "Taxa de Ocupação") setOccupancyModalOpen(true);
+    else if (label === "Tempo Médio Espera") setWaitTimeModalOpen(true);
   };
 
   return (
@@ -229,7 +244,7 @@ export default function Analises() {
         {/* KPIs */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           {kpis.map((kpi) => (
-            <Card key={kpi.label} className="group relative overflow-hidden border-border/50 hover:border-primary/30 transition-all duration-300 hover:shadow-lg">
+            <Card key={kpi.label} className="group relative overflow-hidden border-border/50 hover:border-primary/30 transition-all duration-300 hover:shadow-lg cursor-pointer" onClick={() => handleKPIClick(kpi.label)}>
               <div className={cn("absolute inset-0 opacity-5 bg-gradient-to-br", kpi.color)} />
               <CardContent className="p-4 relative">
                 <div className="flex items-start justify-between mb-3">
@@ -478,6 +493,10 @@ export default function Analises() {
           open={isAIQueryOpen} 
           onOpenChange={setIsAIQueryOpen} 
         />
+        <RevenueDetailModal open={revenueModalOpen} onOpenChange={setRevenueModalOpen} />
+        <PatientsDetailModal open={patientsModalOpen} onOpenChange={setPatientsModalOpen} />
+        <OccupancyDetailModal open={occupancyModalOpen} onOpenChange={setOccupancyModalOpen} />
+        <WaitTimeDetailModal open={waitTimeModalOpen} onOpenChange={setWaitTimeModalOpen} />
       </PageContent>
     </PageContainer>
   );
