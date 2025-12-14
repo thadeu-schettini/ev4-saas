@@ -18,6 +18,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import odontogramImage from "@/assets/odontogram-teeth.png";
 
 type NotationSystem = "fdi" | "universal" | "palmer";
 
@@ -42,7 +43,7 @@ const conditions: ToothCondition[] = [
   { id: "mobility", label: "Mobilidade", bgColor: "hsl(48 96% 53%)", borderColor: "hsl(48 96% 53%)", symbol: "M" },
 ];
 
-// FDI/ISO notation
+// FDI/ISO notation - teeth positions (16 upper, 16 lower for adults)
 const fdiAdultTeeth = {
   upperRight: [18, 17, 16, 15, 14, 13, 12, 11],
   upperLeft: [21, 22, 23, 24, 25, 26, 27, 28],
@@ -57,7 +58,6 @@ const fdiChildTeeth = {
   lowerRight: [85, 84, 83, 82, 81],
 };
 
-// Universal (ADA) notation
 const universalAdultTeeth = {
   upperRight: [1, 2, 3, 4, 5, 6, 7, 8],
   upperLeft: [9, 10, 11, 12, 13, 14, 15, 16],
@@ -72,23 +72,11 @@ const universalChildTeeth = {
   lowerRight: ["T", "S", "R", "Q", "P"],
 };
 
-// Palmer notation
 const palmerAdultTeeth = {
   upperRight: ["8┘", "7┘", "6┘", "5┘", "4┘", "3┘", "2┘", "1┘"],
   upperLeft: ["┗1", "┗2", "┗3", "┗4", "┗5", "┗6", "┗7", "┗8"],
   lowerLeft: ["┏1", "┏2", "┏3", "┏4", "┏5", "┏6", "┏7", "┏8"],
   lowerRight: ["8┐", "7┐", "6┐", "5┐", "4┐", "3┐", "2┐", "1┐"],
-};
-
-// Tooth type classification for shapes
-const getToothType = (toothNum: number | string): 'molar' | 'premolar' | 'canine' | 'incisor' => {
-  const num = typeof toothNum === 'number' ? toothNum : parseInt(String(toothNum).replace(/\D/g, ''));
-  const lastDigit = num % 10;
-  
-  if (lastDigit >= 6 && lastDigit <= 8) return 'molar';
-  if (lastDigit >= 4 && lastDigit <= 5) return 'premolar';
-  if (lastDigit === 3) return 'canine';
-  return 'incisor';
 };
 
 interface ToothData {
@@ -103,147 +91,6 @@ interface OdontogramFieldProps {
   showPediatric?: boolean;
   readOnly?: boolean;
 }
-
-// Realistic SVG Tooth Shapes
-const RealisticToothSVG = ({ 
-  type, 
-  isUpper, 
-  condition, 
-  isSelected,
-  isMissing 
-}: { 
-  type: 'molar' | 'premolar' | 'canine' | 'incisor';
-  isUpper: boolean;
-  condition: ToothCondition;
-  isSelected: boolean;
-  isMissing: boolean;
-}) => {
-  const isHealthy = condition.id === 'healthy';
-  const fillColor = isMissing ? "hsl(var(--muted))" : isHealthy ? "hsl(var(--success-light))" : `${condition.bgColor}`;
-  const strokeColor = isMissing ? "hsl(var(--muted-foreground))" : isHealthy ? "hsl(var(--success))" : condition.borderColor;
-  
-  // Anatomically realistic tooth paths
-  const toothPaths = {
-    molar: {
-      upper: {
-        crown: "M6,24 C6,18 8,14 10,12 C12,10 14,8 20,8 C26,8 28,10 30,12 C32,14 34,18 34,24 L34,28 C34,30 32,32 30,32 L10,32 C8,32 6,30 6,28 Z",
-        roots: "M12,32 L10,48 C10,50 11,52 12,52 L14,52 C15,52 16,50 16,48 L15,38 M18,32 L18,46 C18,48 19,50 20,50 L20,50 C21,50 22,48 22,46 L22,38 M24,32 L25,48 C25,50 26,52 27,52 L28,52 C29,52 30,50 30,48 L28,32",
-        surface: "M10,16 L14,18 L20,16 L26,18 L30,16"
-      },
-      lower: {
-        crown: "M6,20 L6,16 C6,14 8,12 10,12 L30,12 C32,12 34,14 34,16 L34,20 C34,26 32,30 30,32 C28,34 26,36 20,36 C14,36 12,34 10,32 C8,30 6,26 6,20 Z",
-        roots: "M14,36 L12,50 C12,52 13,54 14,54 L16,54 C17,54 18,52 18,50 L16,40 M24,36 L26,50 C26,52 27,54 28,54 L30,54 C31,54 32,52 32,50 L28,36",
-        surface: "M10,28 L14,26 L20,28 L26,26 L30,28"
-      }
-    },
-    premolar: {
-      upper: {
-        crown: "M10,24 C10,18 12,12 16,10 C18,9 22,9 24,10 C28,12 30,18 30,24 L30,28 C30,30 28,32 26,32 L14,32 C12,32 10,30 10,28 Z",
-        roots: "M16,32 L14,48 C14,50 15,52 16,52 L18,52 C19,52 20,50 20,48 L18,38 M22,32 L24,48 C24,50 25,52 26,52 L27,52 C28,52 29,50 29,48 L26,32",
-        surface: "M14,16 L20,14 L26,16"
-      },
-      lower: {
-        crown: "M10,18 L10,16 C10,14 12,12 14,12 L26,12 C28,12 30,14 30,16 L30,18 C30,24 28,28 26,30 C24,32 22,34 20,34 C18,34 16,32 14,30 C12,28 10,24 10,18 Z",
-        roots: "M18,34 L16,50 C16,52 17,54 18,54 L22,54 C23,54 24,52 24,50 L22,34",
-        surface: "M14,24 L20,22 L26,24"
-      }
-    },
-    canine: {
-      upper: {
-        crown: "M12,22 C12,16 14,10 18,8 C19,7 21,7 22,8 C26,10 28,16 28,22 L28,28 C28,30 26,32 24,32 L16,32 C14,32 12,30 12,28 Z",
-        roots: "M18,32 L16,52 C16,54 17,56 20,56 C23,56 24,54 24,52 L22,32",
-        surface: ""
-      },
-      lower: {
-        crown: "M12,18 L12,16 C12,14 14,12 16,12 L24,12 C26,12 28,14 28,16 L28,18 C28,24 26,28 24,30 C22,32 21,34 20,34 C19,34 18,32 16,30 C14,28 12,24 12,18 Z",
-        roots: "M18,34 L16,52 C16,54 17,56 20,56 C23,56 24,54 24,52 L22,34",
-        surface: ""
-      }
-    },
-    incisor: {
-      upper: {
-        crown: "M14,20 C14,14 16,10 18,9 C19,8 21,8 22,9 C24,10 26,14 26,20 L26,28 C26,30 24,32 22,32 L18,32 C16,32 14,30 14,28 Z",
-        roots: "M18,32 L17,50 C17,52 18,54 20,54 C22,54 23,52 23,50 L22,32",
-        surface: ""
-      },
-      lower: {
-        crown: "M14,18 L14,16 C14,14 16,12 18,12 L22,12 C24,12 26,14 26,16 L26,18 C26,24 24,28 22,30 C21,31 19,31 18,30 C16,28 14,24 14,18 Z",
-        roots: "M18,30 L17,48 C17,50 18,52 20,52 C22,52 23,50 23,48 L22,30",
-        surface: ""
-      }
-    }
-  };
-
-  const position = isUpper ? 'upper' : 'lower';
-  const paths = toothPaths[type][position];
-
-  return (
-    <svg viewBox="0 0 40 60" className="w-full h-full">
-      <defs>
-        <linearGradient id={`toothFill-${type}-${isUpper}-${condition.id}`} x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor={isMissing ? "hsl(var(--muted))" : isHealthy ? "hsl(142 76% 95%)" : fillColor} stopOpacity={isHealthy ? 1 : 0.3} />
-          <stop offset="100%" stopColor={isMissing ? "hsl(var(--muted))" : isHealthy ? "hsl(142 76% 90%)" : fillColor} stopOpacity={isHealthy ? 1 : 0.5} />
-        </linearGradient>
-        <filter id="toothShadow">
-          <feDropShadow dx="0" dy="1" stdDeviation="1" floodOpacity="0.1"/>
-        </filter>
-      </defs>
-      
-      {/* Roots */}
-      <path
-        d={paths.roots}
-        fill="none"
-        stroke={strokeColor}
-        strokeWidth={isSelected ? 2.5 : 1.5}
-        strokeLinecap="round"
-        opacity={isMissing ? 0.3 : 0.7}
-      />
-      
-      {/* Crown */}
-      <path
-        d={paths.crown}
-        fill={`url(#toothFill-${type}-${isUpper}-${condition.id})`}
-        stroke={strokeColor}
-        strokeWidth={isSelected ? 2.5 : 1.5}
-        filter="url(#toothShadow)"
-        className="transition-all duration-200"
-      />
-      
-      {/* Surface detail lines */}
-      {paths.surface && (
-        <path
-          d={paths.surface}
-          fill="none"
-          stroke={strokeColor}
-          strokeWidth="0.8"
-          opacity="0.4"
-          strokeLinecap="round"
-        />
-      )}
-      
-      {/* Missing X mark */}
-      {isMissing && (
-        <g stroke="hsl(var(--muted-foreground))" strokeWidth="2" opacity="0.5" strokeLinecap="round">
-          <line x1="14" y1="16" x2="26" y2="28" />
-          <line x1="26" y1="16" x2="14" y2="28" />
-        </g>
-      )}
-      
-      {/* Condition indicator */}
-      {!isHealthy && !isMissing && (
-        <circle
-          cx="20"
-          cy="22"
-          r="6"
-          fill={condition.bgColor}
-          stroke="white"
-          strokeWidth="1.5"
-          opacity="0.9"
-        />
-      )}
-    </svg>
-  );
-};
 
 export function OdontogramField({
   value = {},
@@ -306,13 +153,13 @@ export function OdontogramField({
     return conditions.find((c) => c.id === conditionId) || conditions[0];
   };
 
-  const renderTooth = (tooth: number | string, isUpper: boolean) => {
+  const renderToothButton = (tooth: number | string, index: number, isUpper: boolean, totalInRow: number) => {
     const toothId = getToothNumber(tooth);
     const condition = getToothCondition(tooth);
-    const toothType = getToothType(tooth);
     const isSelected = selectedTooth === toothId;
     const hasNotes = value[toothId]?.notes;
     const isMissing = condition.id === 'missing';
+    const isHealthy = condition.id === 'healthy';
 
     return (
       <Popover
@@ -325,35 +172,54 @@ export function OdontogramField({
             onClick={() => handleToothClick(tooth)}
             disabled={readOnly}
             className={cn(
-              "relative flex flex-col items-center transition-all duration-200 group",
-              "w-7 h-16 sm:w-9 sm:h-20 md:w-10 md:h-24",
-              "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-lg",
+              "relative flex flex-col items-center justify-center transition-all duration-200 group",
+              "w-6 h-8 sm:w-8 sm:h-10 md:w-9 md:h-11",
+              "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-md",
               isSelected && "scale-110 z-10",
               !readOnly && "hover:scale-105 hover:z-10",
               readOnly && "cursor-default"
             )}
+            style={{
+              // Position relative to tooth in the image
+            }}
           >
-            {/* Tooth SVG */}
+            {/* Condition Overlay */}
             <div className={cn(
-              "w-full flex-1 relative",
-              isSelected && "drop-shadow-lg"
-            )}>
-              <RealisticToothSVG 
-                type={toothType} 
-                isUpper={isUpper} 
-                condition={condition}
-                isSelected={isSelected}
-                isMissing={isMissing}
-              />
-              {/* Notes indicator */}
-              {hasNotes && (
-                <div className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-primary rounded-full border border-background shadow-sm" />
+              "absolute inset-0 rounded-md transition-all duration-200 flex items-center justify-center",
+              isSelected && "ring-2 ring-primary ring-offset-1 ring-offset-background",
+              isMissing && "bg-muted/60",
+              !isHealthy && !isMissing && "bg-opacity-40"
+            )}
+            style={{
+              backgroundColor: !isHealthy && !isMissing ? `${condition.bgColor}` : undefined,
+              opacity: !isHealthy && !isMissing ? 0.4 : undefined
+            }}
+            >
+              {/* Condition Symbol */}
+              {!isHealthy && (
+                <div
+                  className={cn(
+                    "w-5 h-5 sm:w-6 sm:h-6 rounded-full flex items-center justify-center text-white text-[10px] sm:text-xs font-bold shadow-lg",
+                    isMissing && "bg-muted-foreground"
+                  )}
+                  style={{ 
+                    backgroundColor: isMissing ? undefined : condition.bgColor,
+                  }}
+                >
+                  {condition.symbol}
+                </div>
               )}
             </div>
             
+            {/* Notes indicator */}
+            {hasNotes && (
+              <div className="absolute -top-1 -right-1 w-2 h-2 bg-primary rounded-full border border-background shadow-sm z-10" />
+            )}
+            
             {/* Tooth number */}
             <span className={cn(
-              "text-[9px] sm:text-[10px] md:text-xs font-semibold transition-colors mt-0.5",
+              "absolute -bottom-4 left-1/2 -translate-x-1/2",
+              "text-[8px] sm:text-[9px] md:text-[10px] font-semibold transition-colors",
               condition.id !== 'healthy' ? "text-foreground" : "text-muted-foreground",
               "group-hover:text-primary"
             )}>
@@ -361,17 +227,15 @@ export function OdontogramField({
             </span>
           </button>
         </PopoverTrigger>
-        <PopoverContent className="w-80 p-0 border-2 border-border/50 shadow-xl" align="center" side="top">
+        <PopoverContent className="w-80 p-0 border-2 border-border/50 shadow-xl" align="center" side={isUpper ? "top" : "bottom"}>
           <div className="p-4 space-y-4">
             <div className="flex items-center gap-3">
-              <div className="w-14 h-20">
-                <RealisticToothSVG 
-                  type={toothType} 
-                  isUpper={isUpper} 
-                  condition={condition}
-                  isSelected={false}
-                  isMissing={isMissing}
-                />
+              <div className={cn(
+                "w-12 h-12 rounded-xl flex items-center justify-center text-white text-xl font-bold shadow-lg",
+              )}
+              style={{ backgroundColor: condition.bgColor }}
+              >
+                {condition.symbol}
               </div>
               <div>
                 <h4 className="font-semibold text-lg">Dente {tooth}</h4>
@@ -459,6 +323,9 @@ export function OdontogramField({
 
   const totalAffected = Object.values(stats).reduce((a, b) => a + b, 0);
 
+  const upperTeeth = [...teeth.upperRight, ...teeth.upperLeft];
+  const lowerTeeth = [...teeth.lowerLeft.slice().reverse(), ...teeth.lowerRight.slice().reverse()];
+
   return (
     <div className="space-y-6">
       {/* Header Controls */}
@@ -466,24 +333,25 @@ export function OdontogramField({
         <div className="flex flex-wrap items-center gap-4">
           <div className="flex items-center gap-2">
             <Label className="text-xs font-semibold text-muted-foreground">Notação</Label>
-            <Select value={notation} onValueChange={(v: NotationSystem) => setNotation(v)}>
-              <SelectTrigger className="w-[130px] h-9 text-sm bg-background border-border/50">
+            <Select value={notation} onValueChange={(v) => setNotation(v as NotationSystem)}>
+              <SelectTrigger className="h-8 w-28 text-xs border-border/50">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="fdi">FDI/ISO</SelectItem>
-                <SelectItem value="universal">Universal (ADA)</SelectItem>
+                <SelectItem value="universal">Universal</SelectItem>
                 <SelectItem value="palmer">Palmer</SelectItem>
               </SelectContent>
             </Select>
           </div>
-
+          
           {notation !== "palmer" && (
-            <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-background border border-border/50">
+            <div className="flex items-center gap-2">
               <Switch
+                id="pediatric"
                 checked={isPediatric}
                 onCheckedChange={setIsPediatric}
-                id="pediatric"
+                className="data-[state=checked]:bg-primary"
               />
               <Label htmlFor="pediatric" className="text-xs font-medium cursor-pointer">
                 Dentição Decídua
@@ -493,76 +361,90 @@ export function OdontogramField({
         </div>
 
         {totalAffected > 0 && (
-          <Badge variant="secondary" className="text-xs px-3 py-1.5 font-medium">
-            {totalAffected} alteraç{totalAffected === 1 ? 'ão' : 'ões'}
+          <Badge variant="secondary" className="font-medium">
+            {totalAffected} dente{totalAffected !== 1 ? 's' : ''} com condição
           </Badge>
         )}
       </div>
 
-      {/* Odontogram Grid */}
-      <div className="bg-card rounded-2xl border border-border/50 shadow-sm p-4 sm:p-6 overflow-x-auto">
-        <div className="min-w-[320px]">
-          {/* Upper Arch Label */}
-          <div className="text-xs font-semibold text-success text-center mb-2 tracking-wide">
-            ARCADA SUPERIOR
-          </div>
+      {/* Odontogram with Real Image */}
+      <div className="relative bg-card rounded-2xl border border-border/50 shadow-sm p-4 sm:p-6 overflow-hidden">
+        {/* Real Teeth Image as Background */}
+        <div className="relative mx-auto max-w-4xl">
+          <img 
+            src={odontogramImage} 
+            alt="Odontograma" 
+            className="w-full h-auto opacity-90 select-none pointer-events-none"
+          />
           
-          {/* Upper Teeth Row */}
-          <div className="flex justify-center items-end gap-0.5 sm:gap-1">
-            <div className="flex items-end gap-0.5 sm:gap-1">
-              {(teeth.upperRight as (number | string)[]).map((tooth) => renderTooth(tooth, true))}
-            </div>
-            <div className="w-px h-20 bg-primary/20 mx-1 sm:mx-2 hidden sm:block" />
-            <div className="flex items-end gap-0.5 sm:gap-1">
-              {(teeth.upperLeft as (number | string)[]).map((tooth) => renderTooth(tooth, true))}
-            </div>
-          </div>
-
-          {/* Center Divider with Linha Média */}
-          <div className="flex items-center justify-center gap-4 my-4">
-            <div className="flex-1 h-px bg-gradient-to-r from-transparent via-success/30 to-transparent" />
-            <div className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-success/10 border border-success/30">
-              <div className="w-2 h-2 rounded-full bg-success animate-pulse" />
-              <span className="text-[11px] font-semibold text-success">Linha Média</span>
-              <div className="w-2 h-2 rounded-full bg-success animate-pulse" />
-            </div>
-            <div className="flex-1 h-px bg-gradient-to-r from-transparent via-success/30 to-transparent" />
-          </div>
-
-          {/* Lower Teeth Row */}
-          <div className="flex justify-center items-start gap-0.5 sm:gap-1">
-            <div className="flex items-start gap-0.5 sm:gap-1">
-              {(teeth.lowerRight as (number | string)[]).map((tooth) => renderTooth(tooth, false))}
-            </div>
-            <div className="w-px h-20 bg-primary/20 mx-1 sm:mx-2 hidden sm:block" />
-            <div className="flex items-start gap-0.5 sm:gap-1">
-              {(teeth.lowerLeft as (number | string)[]).map((tooth) => renderTooth(tooth, false))}
+          {/* Upper Teeth Buttons Overlay */}
+          <div className="absolute top-[8%] left-0 right-0 flex justify-center">
+            <div className="flex gap-[0.5%] sm:gap-[0.8%]">
+              {upperTeeth.map((tooth, idx) => renderToothButton(tooth, idx, true, upperTeeth.length))}
             </div>
           </div>
           
-          {/* Lower Arch Label */}
-          <div className="text-xs font-semibold text-success text-center mt-2 tracking-wide">
-            ARCADA INFERIOR
+          {/* Midline Indicator */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
+            <Badge 
+              variant="outline" 
+              className="bg-background/95 backdrop-blur-sm border-primary/30 text-primary text-xs font-semibold px-3 py-1 shadow-lg"
+            >
+              ● Linha Média ●
+            </Badge>
           </div>
+          
+          {/* Lower Teeth Buttons Overlay */}
+          <div className="absolute bottom-[8%] left-0 right-0 flex justify-center">
+            <div className="flex gap-[0.5%] sm:gap-[0.8%]">
+              {lowerTeeth.map((tooth, idx) => renderToothButton(tooth, idx, false, lowerTeeth.length))}
+            </div>
+          </div>
+        </div>
+        
+        {/* Arcade Labels */}
+        <div className="absolute top-2 left-1/2 -translate-x-1/2 z-10">
+          <span className="text-xs font-bold text-primary/80 uppercase tracking-widest">
+            Arcada Superior
+          </span>
+        </div>
+        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 z-10">
+          <span className="text-xs font-bold text-primary/80 uppercase tracking-widest">
+            Arcada Inferior
+          </span>
         </div>
       </div>
 
       {/* Legend */}
-      <div className="flex flex-wrap justify-center gap-2 sm:gap-3">
-        {conditions.map((cond) => (
-          <div 
-            key={cond.id}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-card border border-border/50 shadow-sm"
-          >
-            <div
-              className="w-4 h-4 rounded flex items-center justify-center text-white text-[9px] font-bold"
-              style={{ backgroundColor: cond.bgColor }}
-            >
-              {cond.symbol}
-            </div>
-            <span className="text-xs font-medium text-muted-foreground">{cond.label}</span>
-          </div>
-        ))}
+      <div className="p-4 bg-card rounded-xl border border-border/50 shadow-sm">
+        <div className="flex flex-wrap justify-center gap-2 sm:gap-3">
+          {conditions.map((cond) => {
+            const count = stats[cond.id] || 0;
+            return (
+              <div
+                key={cond.id}
+                className={cn(
+                  "flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg transition-all",
+                  "border bg-background",
+                  count > 0 ? "border-border shadow-sm" : "border-transparent opacity-60"
+                )}
+              >
+                <div
+                  className="w-5 h-5 rounded-md flex items-center justify-center text-white text-[10px] font-bold shadow-sm"
+                  style={{ backgroundColor: cond.bgColor }}
+                >
+                  {cond.symbol}
+                </div>
+                <span className="text-xs font-medium text-foreground">{cond.label}</span>
+                {count > 0 && (
+                  <Badge variant="secondary" className="h-4 px-1.5 text-[10px] ml-1">
+                    {count}
+                  </Badge>
+                )}
+              </div>
+            );
+          })}
+        </div>
       </div>
     </div>
   );

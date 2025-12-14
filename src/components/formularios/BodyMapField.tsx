@@ -6,6 +6,8 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Ruler, MessageSquare, Check } from "lucide-react";
+import bodyFrontImage from "@/assets/body-front.png";
+import bodyBackImage from "@/assets/body-back.png";
 
 type ViewType = "front" | "back";
 
@@ -14,18 +16,17 @@ interface MeasurementPoint {
   label: string;
   position: { front?: { x: number; y: number }; back?: { x: number; y: number } };
   cardSide: "left" | "right";
-  cardPosition: number;
 }
 
-// Measurement points connected to the body silhouette
+// Measurement points connected to the body silhouette (percentages for positioning)
 const measurementPoints: MeasurementPoint[] = [
-  { id: "braco", label: "Braço", position: { front: { x: 24, y: 34 }, back: { x: 24, y: 34 } }, cardSide: "left", cardPosition: 0 },
-  { id: "peito", label: "Peito", position: { front: { x: 52, y: 30 } }, cardSide: "right", cardPosition: 0 },
-  { id: "costas", label: "Costas Superior", position: { back: { x: 52, y: 30 } }, cardSide: "right", cardPosition: 0 },
-  { id: "cintura", label: "Cintura", position: { front: { x: 32, y: 48 }, back: { x: 32, y: 48 } }, cardSide: "left", cardPosition: 1 },
-  { id: "coxa", label: "Coxa", position: { front: { x: 60, y: 58 }, back: { x: 60, y: 58 } }, cardSide: "right", cardPosition: 1 },
-  { id: "quadril", label: "Quadril", position: { front: { x: 28, y: 58 }, back: { x: 28, y: 58 } }, cardSide: "left", cardPosition: 2 },
-  { id: "panturrilha", label: "Panturrilha", position: { front: { x: 58, y: 78 }, back: { x: 58, y: 78 } }, cardSide: "right", cardPosition: 2 },
+  { id: "braco", label: "Braço", position: { front: { x: 18, y: 32 }, back: { x: 18, y: 32 } }, cardSide: "left" },
+  { id: "peito", label: "Peito", position: { front: { x: 58, y: 28 } }, cardSide: "right" },
+  { id: "costas", label: "Costas Superior", position: { back: { x: 58, y: 28 } }, cardSide: "right" },
+  { id: "cintura", label: "Cintura", position: { front: { x: 22, y: 46 }, back: { x: 22, y: 46 } }, cardSide: "left" },
+  { id: "coxa", label: "Coxa", position: { front: { x: 62, y: 58 }, back: { x: 62, y: 58 } }, cardSide: "right" },
+  { id: "quadril", label: "Quadril", position: { front: { x: 25, y: 54 }, back: { x: 25, y: 54 } }, cardSide: "left" },
+  { id: "panturrilha", label: "Panturrilha", position: { front: { x: 58, y: 78 }, back: { x: 58, y: 78 } }, cardSide: "right" },
 ];
 
 interface RegionData {
@@ -39,71 +40,6 @@ interface BodyMapFieldProps {
   measurementMode?: string[];
   readOnly?: boolean;
 }
-
-// Elegant human silhouette
-const HumanSilhouette = ({ view }: { view: ViewType }) => (
-  <g>
-    <defs>
-      <linearGradient id="silhouetteGradient" x1="50%" y1="0%" x2="50%" y2="100%">
-        <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0.15" />
-        <stop offset="50%" stopColor="hsl(var(--primary))" stopOpacity="0.1" />
-        <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity="0.05" />
-      </linearGradient>
-      <filter id="silhouetteShadow" x="-20%" y="-20%" width="140%" height="140%">
-        <feDropShadow dx="0" dy="2" stdDeviation="3" floodColor="hsl(var(--primary))" floodOpacity="0.15"/>
-      </filter>
-    </defs>
-    
-    {/* Main body silhouette */}
-    <g fill="url(#silhouetteGradient)" stroke="hsl(var(--primary))" strokeWidth="0.5" filter="url(#silhouetteShadow)">
-      {/* Head */}
-      <ellipse cx="50" cy="10" rx="7" ry="8" />
-      
-      {/* Neck */}
-      <path d="M46,17 L46,22 Q50,23 54,22 L54,17" />
-      
-      {/* Torso */}
-      <path d="M35,22 Q28,25 26,30 L24,42 Q22,52 26,58 L30,64 Q35,70 50,72 Q65,70 70,64 L74,58 Q78,52 76,42 L74,30 Q72,25 65,22 Z" />
-      
-      {/* Left Arm */}
-      <path d="M28,25 Q22,26 20,32 L16,48 Q14,56 12,62 Q10,68 12,70 Q14,72 18,68 L22,58 Q24,50 26,42 L28,34" />
-      
-      {/* Right Arm */}
-      <path d="M72,25 Q78,26 80,32 L84,48 Q86,56 88,62 Q90,68 88,70 Q86,72 82,68 L78,58 Q76,50 74,42 L72,34" />
-      
-      {/* Left Leg */}
-      <path d="M40,70 Q36,72 36,78 L34,88 Q33,92 34,96 L36,104 Q38,108 42,108 L46,108 Q50,107 50,104 L50,94 Q51,86 50,80 L48,74 Q47,71 44,70" />
-      
-      {/* Right Leg */}
-      <path d="M60,70 Q64,72 64,78 L66,88 Q67,92 66,96 L64,104 Q62,108 58,108 L54,108 Q50,107 50,104 L50,94 Q49,86 50,80 L52,74 Q53,71 56,70" />
-    </g>
-    
-    {/* Anatomical details */}
-    <g stroke="hsl(var(--primary))" strokeWidth="0.3" fill="none" opacity="0.4">
-      {view === "front" ? (
-        <>
-          {/* Eyes hint */}
-          <ellipse cx="47" cy="9" rx="1.2" ry="0.8" />
-          <ellipse cx="53" cy="9" rx="1.2" ry="0.8" />
-          {/* Chest line */}
-          <path d="M42,28 Q50,32 58,28" />
-          {/* Abs hint */}
-          <line x1="50" y1="36" x2="50" y2="58" />
-          <path d="M44,42 Q50,44 56,42" opacity="0.3" />
-          <path d="M44,50 Q50,52 56,50" opacity="0.3" />
-        </>
-      ) : (
-        <>
-          {/* Spine */}
-          <line x1="50" y1="24" x2="50" y2="65" strokeDasharray="2,2" />
-          {/* Shoulder blades */}
-          <ellipse cx="42" cy="32" rx="6" ry="4" />
-          <ellipse cx="58" cy="32" rx="6" ry="4" />
-        </>
-      )}
-    </g>
-  </g>
-);
 
 export function BodyMapField({
   value = {},
@@ -212,14 +148,22 @@ export function BodyMapField({
           ))}
         </div>
 
-        {/* Center: Body Silhouette with Connection Lines */}
+        {/* Center: Body Image with Connection Lines */}
         <div className="relative flex justify-center order-1 lg:order-2">
-          <div className="relative w-full max-w-[220px] sm:max-w-[260px] aspect-[0.55]">
-            <svg viewBox="0 0 100 115" className="w-full h-full">
-              {/* Human silhouette */}
-              <HumanSilhouette view={view} />
-              
-              {/* Connection dots on body */}
+          <div className="relative w-full max-w-[200px] sm:max-w-[240px]">
+            {/* Real body image */}
+            <img 
+              src={view === "front" ? bodyFrontImage : bodyBackImage}
+              alt={view === "front" ? "Corpo Frontal" : "Corpo Posterior"}
+              className="w-full h-auto select-none pointer-events-none drop-shadow-lg"
+            />
+            
+            {/* Connection dots and lines overlay */}
+            <svg 
+              viewBox="0 0 100 200" 
+              className="absolute inset-0 w-full h-full"
+              style={{ pointerEvents: 'none' }}
+            >
               {visiblePoints.map((point) => {
                 const pos = point.position[view];
                 if (!pos) return null;
@@ -228,16 +172,29 @@ export function BodyMapField({
                 
                 return (
                   <g key={point.id}>
+                    {/* Connection line */}
+                    <line
+                      x1={pos.x}
+                      y1={pos.y}
+                      x2={point.cardSide === "left" ? 0 : 100}
+                      y2={pos.y}
+                      stroke={pointHasData ? "hsl(var(--primary))" : "hsl(var(--destructive))"}
+                      strokeWidth="0.8"
+                      strokeDasharray={pointHasData ? "none" : "2,1.5"}
+                      opacity={isActive ? 0.9 : 0.5}
+                      className="transition-all duration-300"
+                    />
+                    
                     {/* Pulsing ring for active */}
                     {isActive && (
                       <circle
                         cx={pos.x}
                         cy={pos.y}
-                        r="5"
+                        r="4"
                         fill="none"
                         stroke="hsl(var(--primary))"
-                        strokeWidth="1"
-                        opacity="0.5"
+                        strokeWidth="0.8"
+                        opacity="0.6"
                         className="animate-ping"
                       />
                     )}
@@ -246,23 +203,10 @@ export function BodyMapField({
                     <circle
                       cx={pos.x}
                       cy={pos.y}
-                      r="3"
+                      r="2.5"
                       fill={pointHasData ? "hsl(var(--primary))" : "hsl(var(--destructive))"}
                       stroke="white"
-                      strokeWidth="1.5"
-                      className="transition-all duration-300 cursor-pointer hover:r-4"
-                    />
-                    
-                    {/* Connection line */}
-                    <line
-                      x1={pos.x}
-                      y1={pos.y}
-                      x2={point.cardSide === "left" ? 8 : 92}
-                      y2={pos.y}
-                      stroke={pointHasData ? "hsl(var(--primary))" : "hsl(var(--destructive))"}
                       strokeWidth="1"
-                      strokeDasharray={pointHasData ? "none" : "3,2"}
-                      opacity={isActive ? 0.8 : 0.4}
                       className="transition-all duration-300"
                     />
                   </g>
@@ -319,7 +263,7 @@ export function BodyMapField({
                 value={value["peso"]?.measurements?.meta || ""}
                 onChange={(e) => updateMeasurement("peso", "meta", e.target.value)}
                 className="h-9 text-sm border-border/50"
-            disabled={readOnly === true}
+                disabled={readOnly === true}
               />
             </div>
           </div>
@@ -358,7 +302,7 @@ export function BodyMapField({
 
 // Measurement Card Component
 interface MeasurementCardProps {
-  point: MeasurementPoint;
+  point: { id: string; label: string };
   data?: RegionData;
   isActive: boolean;
   hasData: boolean;
