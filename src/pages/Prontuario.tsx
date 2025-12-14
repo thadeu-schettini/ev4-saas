@@ -669,6 +669,129 @@ Solicitados exames complementares:
           }
         ];
 
+      case 'completo':
+        return [
+          {
+            id: 'dados_basicos',
+            title: 'Dados Básicos',
+            fields: [
+              {
+                id: 'nome_completo',
+                label: 'Nome Completo',
+                type: 'texto-curto',
+                required: true,
+                placeholder: 'Digite o nome completo...'
+              },
+              {
+                id: 'idade',
+                label: 'Idade',
+                type: 'numero',
+                placeholder: 'Digite a idade'
+              },
+              {
+                id: 'data_consulta',
+                label: 'Data da Consulta',
+                type: 'data',
+                required: true
+              },
+              {
+                id: 'observacoes',
+                label: 'Observações Gerais',
+                type: 'texto-longo',
+                placeholder: 'Digite observações detalhadas...'
+              }
+            ]
+          },
+          {
+            id: 'triagem',
+            title: 'Triagem',
+            fields: [
+              {
+                id: 'primeira_consulta',
+                label: 'É a primeira consulta?',
+                type: 'sim-nao',
+                required: true
+              },
+              {
+                id: 'prioridade',
+                label: 'Nível de Prioridade',
+                type: 'lista-unica',
+                options: ['Baixa', 'Normal', 'Alta', 'Urgente']
+              },
+              {
+                id: 'sintomas',
+                label: 'Sintomas Apresentados',
+                type: 'lista-multipla',
+                options: ['Dor', 'Febre', 'Fadiga', 'Náusea', 'Tontura', 'Outros']
+              },
+              {
+                id: 'nivel_dor',
+                label: 'Nível de Dor (0-10)',
+                type: 'escala',
+                scaleMin: 0,
+                scaleMax: 10
+              }
+            ]
+          },
+          {
+            id: 'documentos',
+            title: 'Documentos e Exames',
+            fields: [
+              {
+                id: 'documentos_anexos',
+                label: 'Anexar Documentos',
+                type: 'imagens-anexos'
+              }
+            ]
+          },
+          {
+            id: 'calculos',
+            title: 'Cálculos Automáticos',
+            fields: [
+              {
+                id: 'peso',
+                label: 'Peso (kg)',
+                type: 'numero',
+                placeholder: 'Ex: 70'
+              },
+              {
+                id: 'altura',
+                label: 'Altura (m)',
+                type: 'numero',
+                placeholder: 'Ex: 1.75'
+              },
+              {
+                id: 'imc',
+                label: 'IMC (calculado)',
+                type: 'calculo-automatico',
+                calculation: '{peso} / ({altura} * {altura})'
+              }
+            ]
+          },
+          {
+            id: 'odontologia',
+            title: 'Avaliação Odontológica',
+            fields: [
+              {
+                id: 'odontograma_paciente',
+                label: 'Odontograma',
+                type: 'odontograma'
+              }
+            ]
+          },
+          {
+            id: 'nutricao',
+            title: 'Avaliação Corporal',
+            fields: [
+              {
+                id: 'mapa_corporal_paciente',
+                label: 'Mapa Corporal',
+                type: 'mapa-corporal'
+              }
+            ]
+          }
+        ];
+
       default:
         return [];
     }
@@ -774,6 +897,7 @@ Solicitados exames complementares:
                     <SelectItem value="soap">SOAP - Consulta Padrão</SelectItem>
                     <SelectItem value="anamnesis">Anamnese Completa</SelectItem>
                     <SelectItem value="return">Consulta de Retorno</SelectItem>
+                    <SelectItem value="completo">Completo - Todos os Campos</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

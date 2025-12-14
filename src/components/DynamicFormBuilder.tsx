@@ -12,6 +12,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Upload, FileText, Image as ImageIcon, X, Eye, Sparkles, Loader2 } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
+import { OdontogramField } from "@/components/formularios/OdontogramField";
+import { BodyMapField } from "@/components/formularios/BodyMapField";
 
 export type FieldType = 
   | "texto-curto" 
@@ -23,7 +25,9 @@ export type FieldType =
   | "lista-multipla" 
   | "imagens-anexos" 
   | "escala" 
-  | "calculo-automatico";
+  | "calculo-automatico"
+  | "odontograma"
+  | "mapa-corporal";
 
 export type FormField = {
   id: string;
@@ -447,6 +451,22 @@ export const DynamicFormBuilder = ({ sections, onSubmit, initialData = {} }: Dyn
             <p className="text-sm text-muted-foreground mb-1">Valor calculado automaticamente:</p>
             <p className="text-2xl font-bold text-primary">{calculatedValue}</p>
           </div>
+        );
+
+      case "odontograma":
+        return (
+          <OdontogramField
+            value={value || {}}
+            onChange={(data) => updateFieldValue(field.id, data)}
+          />
+        );
+
+      case "mapa-corporal":
+        return (
+          <BodyMapField
+            value={value || {}}
+            onChange={(data) => updateFieldValue(field.id, data)}
+          />
         );
 
       default:
