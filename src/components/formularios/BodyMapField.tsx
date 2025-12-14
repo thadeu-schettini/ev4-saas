@@ -2,82 +2,34 @@ import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { Check, MapPin, Ruler, Activity, MessageSquare } from "lucide-react";
+import { Ruler, MessageSquare, Check } from "lucide-react";
 
 type ViewType = "front" | "back";
 
-interface BodyRegion {
+interface MeasurementPoint {
   id: string;
   label: string;
-  cx: number;
-  cy: number;
-  rx: number;
-  ry: number;
-  views: ViewType[];
+  position: { front?: { x: number; y: number }; back?: { x: number; y: number } };
+  cardSide: "left" | "right";
+  cardPosition: number;
 }
 
-// Anatomical body regions with ellipse positioning
-const bodyRegions: BodyRegion[] = [
-  // Head & Neck
-  { id: "head", label: "Cabeça", cx: 50, cy: 8, rx: 6, ry: 6, views: ["front", "back"] },
-  { id: "neck", label: "Pescoço", cx: 50, cy: 17, rx: 3, ry: 3, views: ["front", "back"] },
-  
-  // Torso
-  { id: "chest", label: "Tórax", cx: 50, cy: 28, rx: 12, ry: 8, views: ["front"] },
-  { id: "upperBack", label: "Costas Superior", cx: 50, cy: 28, rx: 12, ry: 8, views: ["back"] },
-  { id: "abdomen", label: "Abdômen", cx: 50, cy: 42, rx: 10, ry: 8, views: ["front"] },
-  { id: "lowerBack", label: "Lombar", cx: 50, cy: 42, rx: 10, ry: 8, views: ["back"] },
-  { id: "pelvis", label: "Pelve", cx: 50, cy: 54, rx: 9, ry: 5, views: ["front", "back"] },
-  
-  // Arms - Left
-  { id: "shoulderLeft", label: "Ombro Esq.", cx: 32, cy: 22, rx: 5, ry: 4, views: ["front", "back"] },
-  { id: "armLeft", label: "Braço Esq.", cx: 27, cy: 32, rx: 4, ry: 7, views: ["front", "back"] },
-  { id: "forearmLeft", label: "Antebraço Esq.", cx: 22, cy: 48, rx: 3, ry: 8, views: ["front", "back"] },
-  { id: "handLeft", label: "Mão Esq.", cx: 17, cy: 62, rx: 3, ry: 4, views: ["front", "back"] },
-  
-  // Arms - Right
-  { id: "shoulderRight", label: "Ombro Dir.", cx: 68, cy: 22, rx: 5, ry: 4, views: ["front", "back"] },
-  { id: "armRight", label: "Braço Dir.", cx: 73, cy: 32, rx: 4, ry: 7, views: ["front", "back"] },
-  { id: "forearmRight", label: "Antebraço Dir.", cx: 78, cy: 48, rx: 3, ry: 8, views: ["front", "back"] },
-  { id: "handRight", label: "Mão Dir.", cx: 83, cy: 62, rx: 3, ry: 4, views: ["front", "back"] },
-  
-  // Legs - Left
-  { id: "thighLeft", label: "Coxa Esq.", cx: 43, cy: 68, rx: 5, ry: 10, views: ["front", "back"] },
-  { id: "kneeLeft", label: "Joelho Esq.", cx: 43, cy: 82, rx: 4, ry: 3, views: ["front", "back"] },
-  { id: "calfLeft", label: "Panturrilha Esq.", cx: 43, cy: 92, rx: 3, ry: 6, views: ["front", "back"] },
-  
-  // Legs - Right
-  { id: "thighRight", label: "Coxa Dir.", cx: 57, cy: 68, rx: 5, ry: 10, views: ["front", "back"] },
-  { id: "kneeRight", label: "Joelho Dir.", cx: 57, cy: 82, rx: 4, ry: 3, views: ["front", "back"] },
-  { id: "calfRight", label: "Panturrilha Dir.", cx: 57, cy: 92, rx: 3, ry: 6, views: ["front", "back"] },
-];
-
-interface MeasurementType {
-  id: string;
-  label: string;
-  unit: string;
-  icon: React.ReactNode;
-  color: string;
-}
-
-const measurementTypes: MeasurementType[] = [
-  { id: "circumference", label: "Circunferência", unit: "cm", icon: <Ruler className="w-3 h-3" />, color: "#3b82f6" },
-  { id: "skinfold", label: "Prega Cutânea", unit: "mm", icon: <Activity className="w-3 h-3" />, color: "#f59e0b" },
-  { id: "pain", label: "Dor", unit: "0-10", icon: <Activity className="w-3 h-3" />, color: "#ef4444" },
-  { id: "observation", label: "Observação", unit: "", icon: <MessageSquare className="w-3 h-3" />, color: "#8b5cf6" },
+// Measurement points connected to the body silhouette
+const measurementPoints: MeasurementPoint[] = [
+  { id: "braco", label: "Braço", position: { front: { x: 24, y: 34 }, back: { x: 24, y: 34 } }, cardSide: "left", cardPosition: 0 },
+  { id: "peito", label: "Peito", position: { front: { x: 52, y: 30 } }, cardSide: "right", cardPosition: 0 },
+  { id: "costas", label: "Costas Superior", position: { back: { x: 52, y: 30 } }, cardSide: "right", cardPosition: 0 },
+  { id: "cintura", label: "Cintura", position: { front: { x: 32, y: 48 }, back: { x: 32, y: 48 } }, cardSide: "left", cardPosition: 1 },
+  { id: "coxa", label: "Coxa", position: { front: { x: 60, y: 58 }, back: { x: 60, y: 58 } }, cardSide: "right", cardPosition: 1 },
+  { id: "quadril", label: "Quadril", position: { front: { x: 28, y: 58 }, back: { x: 28, y: 58 } }, cardSide: "left", cardPosition: 2 },
+  { id: "panturrilha", label: "Panturrilha", position: { front: { x: 58, y: 78 }, back: { x: 58, y: 78 } }, cardSide: "right", cardPosition: 2 },
 ];
 
 interface RegionData {
-  measurements: Record<string, number | string>;
+  measurements: Record<string, string>;
   notes: string;
 }
 
@@ -88,370 +40,405 @@ interface BodyMapFieldProps {
   readOnly?: boolean;
 }
 
-// Elegant human silhouette SVG
+// Elegant human silhouette
 const HumanSilhouette = ({ view }: { view: ViewType }) => (
-  <g fill="url(#bodyGradient)" stroke="url(#bodyStroke)" strokeWidth="1">
-    {/* Head */}
-    <ellipse cx="50" cy="8" rx="6" ry="7" />
+  <g>
+    <defs>
+      <linearGradient id="silhouetteGradient" x1="50%" y1="0%" x2="50%" y2="100%">
+        <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0.15" />
+        <stop offset="50%" stopColor="hsl(var(--primary))" stopOpacity="0.1" />
+        <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity="0.05" />
+      </linearGradient>
+      <filter id="silhouetteShadow" x="-20%" y="-20%" width="140%" height="140%">
+        <feDropShadow dx="0" dy="2" stdDeviation="3" floodColor="hsl(var(--primary))" floodOpacity="0.15"/>
+      </filter>
+    </defs>
     
-    {/* Neck */}
-    <path d="M47,14 L47,19 Q50,20 53,19 L53,14" fill="url(#bodyGradient)" />
+    {/* Main body silhouette */}
+    <g fill="url(#silhouetteGradient)" stroke="hsl(var(--primary))" strokeWidth="0.5" filter="url(#silhouetteShadow)">
+      {/* Head */}
+      <ellipse cx="50" cy="10" rx="7" ry="8" />
+      
+      {/* Neck */}
+      <path d="M46,17 L46,22 Q50,23 54,22 L54,17" />
+      
+      {/* Torso */}
+      <path d="M35,22 Q28,25 26,30 L24,42 Q22,52 26,58 L30,64 Q35,70 50,72 Q65,70 70,64 L74,58 Q78,52 76,42 L74,30 Q72,25 65,22 Z" />
+      
+      {/* Left Arm */}
+      <path d="M28,25 Q22,26 20,32 L16,48 Q14,56 12,62 Q10,68 12,70 Q14,72 18,68 L22,58 Q24,50 26,42 L28,34" />
+      
+      {/* Right Arm */}
+      <path d="M72,25 Q78,26 80,32 L84,48 Q86,56 88,62 Q90,68 88,70 Q86,72 82,68 L78,58 Q76,50 74,42 L72,34" />
+      
+      {/* Left Leg */}
+      <path d="M40,70 Q36,72 36,78 L34,88 Q33,92 34,96 L36,104 Q38,108 42,108 L46,108 Q50,107 50,104 L50,94 Q51,86 50,80 L48,74 Q47,71 44,70" />
+      
+      {/* Right Leg */}
+      <path d="M60,70 Q64,72 64,78 L66,88 Q67,92 66,96 L64,104 Q62,108 58,108 L54,108 Q50,107 50,104 L50,94 Q49,86 50,80 L52,74 Q53,71 56,70" />
+    </g>
     
-    {/* Torso */}
-    <path d="M38,19 Q32,22 32,24 L30,38 Q29,42 30,46 L32,52 Q35,58 50,60 Q65,58 68,52 L70,46 Q71,42 70,38 L68,24 Q68,22 62,19 Z" />
-    
-    {/* Left Arm */}
-    <path d="M32,22 Q28,22 26,26 L23,38 Q21,44 19,52 L16,62 Q15,66 17,68 L20,66 Q22,62 24,54 L27,42 Q29,34 31,28" />
-    
-    {/* Right Arm */}
-    <path d="M68,22 Q72,22 74,26 L77,38 Q79,44 81,52 L84,62 Q85,66 83,68 L80,66 Q78,62 76,54 L73,42 Q71,34 69,28" />
-    
-    {/* Left Leg */}
-    <path d="M42,58 Q38,60 38,64 L37,78 Q36,82 37,88 L38,98 Q39,100 42,100 L44,100 Q46,99 46,96 L47,86 Q48,80 47,74 L46,64 Q46,60 44,58" />
-    
-    {/* Right Leg */}
-    <path d="M58,58 Q62,60 62,64 L63,78 Q64,82 63,88 L62,98 Q61,100 58,100 L56,100 Q54,99 54,96 L53,86 Q52,80 53,74 L54,64 Q54,60 56,58" />
-    
-    {view === "front" ? (
-      <>
-        {/* Face features hint */}
-        <ellipse cx="47" cy="7" rx="1" ry="0.8" fill="#d1d5db" opacity="0.5" />
-        <ellipse cx="53" cy="7" rx="1" ry="0.8" fill="#d1d5db" opacity="0.5" />
-        {/* Chest line */}
-        <path d="M44,26 Q50,28 56,26" stroke="#d1d5db" strokeWidth="0.5" fill="none" opacity="0.5" />
-        {/* Abs hint */}
-        <line x1="50" y1="32" x2="50" y2="48" stroke="#d1d5db" strokeWidth="0.3" opacity="0.3" />
-      </>
-    ) : (
-      <>
-        {/* Spine hint */}
-        <line x1="50" y1="20" x2="50" y2="55" stroke="#d1d5db" strokeWidth="0.5" opacity="0.4" />
-        {/* Shoulder blades hint */}
-        <ellipse cx="43" cy="28" rx="4" ry="3" fill="none" stroke="#d1d5db" strokeWidth="0.3" opacity="0.3" />
-        <ellipse cx="57" cy="28" rx="4" ry="3" fill="none" stroke="#d1d5db" strokeWidth="0.3" opacity="0.3" />
-      </>
-    )}
+    {/* Anatomical details */}
+    <g stroke="hsl(var(--primary))" strokeWidth="0.3" fill="none" opacity="0.4">
+      {view === "front" ? (
+        <>
+          {/* Eyes hint */}
+          <ellipse cx="47" cy="9" rx="1.2" ry="0.8" />
+          <ellipse cx="53" cy="9" rx="1.2" ry="0.8" />
+          {/* Chest line */}
+          <path d="M42,28 Q50,32 58,28" />
+          {/* Abs hint */}
+          <line x1="50" y1="36" x2="50" y2="58" />
+          <path d="M44,42 Q50,44 56,42" opacity="0.3" />
+          <path d="M44,50 Q50,52 56,50" opacity="0.3" />
+        </>
+      ) : (
+        <>
+          {/* Spine */}
+          <line x1="50" y1="24" x2="50" y2="65" strokeDasharray="2,2" />
+          {/* Shoulder blades */}
+          <ellipse cx="42" cy="32" rx="6" ry="4" />
+          <ellipse cx="58" cy="32" rx="6" ry="4" />
+        </>
+      )}
+    </g>
   </g>
 );
 
 export function BodyMapField({
   value = {},
   onChange,
-  measurementMode = ["circumference", "observation"],
   readOnly = false,
 }: BodyMapFieldProps) {
   const [view, setView] = useState<ViewType>("front");
-  const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
+  const [activeField, setActiveField] = useState<string | null>(null);
 
-  const visibleRegions = bodyRegions.filter((r) => r.views.includes(view));
-  const activeMeasurements = measurementTypes.filter((m) => measurementMode.includes(m.id));
+  const visiblePoints = measurementPoints.filter(
+    (p) => p.position[view] !== undefined
+  );
 
-  const handleRegionClick = (regionId: string) => {
-    if (readOnly) return;
-    setSelectedRegion(regionId);
-  };
-
-  const updateRegionData = (regionId: string, data: Partial<RegionData>) => {
-    const current = value[regionId] || { measurements: {}, notes: "" };
+  const updateMeasurement = (pointId: string, fieldType: string, fieldValue: string) => {
+    const current = value[pointId] || { measurements: {}, notes: "" };
     const newValue = {
       ...value,
-      [regionId]: {
+      [pointId]: {
         ...current,
-        ...data,
         measurements: {
           ...current.measurements,
-          ...data.measurements,
+          [fieldType]: fieldValue,
         },
       },
     };
     onChange(newValue);
   };
 
-  const hasData = (regionId: string) => {
-    const data = value[regionId];
+  const updateNotes = (pointId: string, notes: string) => {
+    const current = value[pointId] || { measurements: {}, notes: "" };
+    const newValue = {
+      ...value,
+      [pointId]: {
+        ...current,
+        notes,
+      },
+    };
+    onChange(newValue);
+  };
+
+  const hasData = (pointId: string): boolean => {
+    const data = value[pointId];
     if (!data) return false;
-    return Object.keys(data.measurements).some(k => data.measurements[k]) || data.notes;
+    return Object.values(data.measurements).some(v => v) || Boolean(data.notes);
   };
 
-  const getRegionColor = (regionId: string) => {
-    const data = value[regionId];
-    if (!data || !Object.keys(data.measurements).some(k => data.measurements[k])) return null;
-    
-    const firstMeasurementKey = Object.keys(data.measurements).find(k => data.measurements[k]);
-    if (!firstMeasurementKey) return null;
-    const measurementType = measurementTypes.find((m) => m.id === firstMeasurementKey);
-    return measurementType?.color || "#8b5cf6";
-  };
+  const leftPoints = visiblePoints.filter((p) => p.cardSide === "left");
+  const rightPoints = visiblePoints.filter((p) => p.cardSide === "right");
 
-  const filledRegions = Object.entries(value).filter(([_, data]) => 
-    Object.keys(data.measurements).some(k => data.measurements[k]) || data.notes
-  );
+  const filledCount = Object.keys(value).filter(k => hasData(k)).length;
 
   return (
     <div className="space-y-6">
       {/* View Toggle */}
-      <div className="flex justify-center">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <Badge variant="outline" className="text-xs font-medium px-3 py-1">
+            <Ruler className="w-3 h-3 mr-1.5" />
+            Avaliação Corporal
+          </Badge>
+          {filledCount > 0 && (
+            <Badge variant="secondary" className="text-xs">
+              {filledCount} medidas
+            </Badge>
+          )}
+        </div>
+        
         <div className="inline-flex p-1 bg-muted/50 rounded-xl border border-border/50">
           <Button
             variant={view === "front" ? "default" : "ghost"}
             size="sm"
             onClick={() => setView("front")}
-            className="rounded-lg"
+            className="rounded-lg text-xs h-8 px-4"
           >
-            Vista Frontal
+            Frontal
           </Button>
           <Button
             variant={view === "back" ? "default" : "ghost"}
             size="sm"
             onClick={() => setView("back")}
-            className="rounded-lg"
+            className="rounded-lg text-xs h-8 px-4"
           >
-            Vista Posterior
+            Posterior
           </Button>
         </div>
       </div>
 
-      {/* Body Map */}
-      <div className="flex justify-center">
-        <div className="relative w-full max-w-[300px] aspect-[1/1.1] bg-gradient-to-b from-muted/20 via-transparent to-muted/10 rounded-2xl border border-border/30 p-4">
-          <svg viewBox="0 0 100 105" className="w-full h-full">
-            <defs>
-              <linearGradient id="bodyGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stopColor="hsl(var(--muted))" stopOpacity="0.4" />
-                <stop offset="50%" stopColor="hsl(var(--muted))" stopOpacity="0.3" />
-                <stop offset="100%" stopColor="hsl(var(--muted))" stopOpacity="0.2" />
-              </linearGradient>
-              <linearGradient id="bodyStroke" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stopColor="hsl(var(--border))" stopOpacity="0.6" />
-                <stop offset="100%" stopColor="hsl(var(--border))" stopOpacity="0.3" />
-              </linearGradient>
-              <filter id="regionGlow" x="-50%" y="-50%" width="200%" height="200%">
-                <feGaussianBlur stdDeviation="2" result="blur"/>
-                <feMerge>
-                  <feMergeNode in="blur"/>
-                  <feMergeNode in="SourceGraphic"/>
-                </feMerge>
-              </filter>
-            </defs>
+      {/* Main Body Map Layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] gap-4 lg:gap-6 items-start">
+        {/* Left Measurement Cards */}
+        <div className="flex flex-col gap-3 order-2 lg:order-1">
+          {leftPoints.map((point) => (
+            <MeasurementCard
+              key={point.id}
+              point={point}
+              data={value[point.id]}
+              isActive={activeField === point.id}
+              hasData={hasData(point.id)}
+              readOnly={readOnly}
+              onFocus={() => setActiveField(point.id)}
+              onBlur={() => setActiveField(null)}
+              onMeasurementChange={(field, val) => updateMeasurement(point.id, field, val)}
+              onNotesChange={(notes) => updateNotes(point.id, notes)}
+              side="left"
+            />
+          ))}
+        </div>
 
-            {/* Human Silhouette */}
-            <HumanSilhouette view={view} />
-
-            {/* Interactive Regions */}
-            {visibleRegions.map((region) => {
-              const regionHasData = hasData(region.id);
-              const isSelected = selectedRegion === region.id;
-              const color = getRegionColor(region.id);
-
-              return (
-                <Popover
-                  key={region.id}
-                  open={isSelected}
-                  onOpenChange={(open) => !open && setSelectedRegion(null)}
-                >
-                  <PopoverTrigger asChild>
-                    <ellipse
-                      cx={region.cx}
-                      cy={region.cy}
-                      rx={region.rx}
-                      ry={region.ry}
-                      onClick={() => handleRegionClick(region.id)}
-                      className={cn(
-                        "cursor-pointer transition-all duration-200",
-                        !readOnly && "hover:opacity-80"
-                      )}
-                      fill={regionHasData && color ? `${color}40` : "transparent"}
-                      stroke={regionHasData && color ? color : "hsl(var(--border))"}
-                      strokeWidth={isSelected ? 2 : regionHasData ? 1.5 : 0.5}
-                      strokeDasharray={regionHasData ? "none" : "2,2"}
-                      opacity={isSelected ? 1 : regionHasData ? 0.9 : 0.4}
-                      filter={isSelected ? "url(#regionGlow)" : undefined}
-                    />
-                  </PopoverTrigger>
-                  <PopoverContent className="w-80 p-0" align="center">
-                    <div className="p-4 space-y-4">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <div 
-                            className="w-10 h-10 rounded-xl flex items-center justify-center"
-                            style={{ 
-                              backgroundColor: color ? `${color}20` : 'hsl(var(--muted))',
-                              color: color || 'hsl(var(--muted-foreground))'
-                            }}
-                          >
-                            <MapPin className="w-5 h-5" />
-                          </div>
-                          <div>
-                            <h4 className="font-semibold">{region.label}</h4>
-                            <span className="text-xs text-muted-foreground">
-                              {view === "front" ? "Frontal" : "Posterior"}
-                            </span>
-                          </div>
-                        </div>
-                        {regionHasData && (
-                          <Badge variant="secondary" className="text-xs">
-                            Com dados
-                          </Badge>
-                        )}
-                      </div>
-
-                      {activeMeasurements.map((measurement) => (
-                        <div key={measurement.id} className="space-y-2">
-                          <Label className="text-xs font-medium flex items-center gap-2">
-                            <div 
-                              className="w-5 h-5 rounded flex items-center justify-center text-white"
-                              style={{ backgroundColor: measurement.color }}
-                            >
-                              {measurement.icon}
-                            </div>
-                            {measurement.label}
-                            {measurement.unit && (
-                              <span className="text-muted-foreground">({measurement.unit})</span>
-                            )}
-                          </Label>
-                          <Input
-                            type={measurement.id === "observation" ? "text" : "number"}
-                            placeholder={`Inserir ${measurement.label.toLowerCase()}`}
-                            value={value[region.id]?.measurements[measurement.id] || ""}
-                            onChange={(e) =>
-                              updateRegionData(region.id, {
-                                measurements: {
-                                  [measurement.id]: e.target.value,
-                                },
-                              })
-                            }
-                            className="h-9"
-                          />
-                        </div>
-                      ))}
-
-                      <div className="space-y-2">
-                        <Label className="text-xs font-medium">Observações</Label>
-                        <Textarea
-                          placeholder="Notas sobre esta região..."
-                          value={value[region.id]?.notes || ""}
-                          onChange={(e) =>
-                            updateRegionData(region.id, { notes: e.target.value })
-                          }
-                          rows={2}
-                          className="resize-none"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="border-t p-3 bg-muted/30">
-                      <Button
-                        size="sm"
-                        variant="secondary"
-                        className="w-full"
-                        onClick={() => setSelectedRegion(null)}
-                      >
-                        <Check className="w-4 h-4 mr-2" />
-                        Confirmar
-                      </Button>
-                    </div>
-                  </PopoverContent>
-                </Popover>
-              );
-            })}
-
-            {/* Region labels on hover */}
-            {visibleRegions.map((region) => {
-              const regionHasData = hasData(region.id);
-              if (!regionHasData) return null;
+        {/* Center: Body Silhouette with Connection Lines */}
+        <div className="relative flex justify-center order-1 lg:order-2">
+          <div className="relative w-full max-w-[220px] sm:max-w-[260px] aspect-[0.55]">
+            <svg viewBox="0 0 100 115" className="w-full h-full">
+              {/* Human silhouette */}
+              <HumanSilhouette view={view} />
               
-              return (
-                <circle
-                  key={`dot-${region.id}`}
-                  cx={region.cx}
-                  cy={region.cy}
-                  r="1.5"
-                  fill="white"
-                  stroke={getRegionColor(region.id) || "hsl(var(--primary))"}
-                  strokeWidth="1"
-                />
-              );
-            })}
-          </svg>
+              {/* Connection dots on body */}
+              {visiblePoints.map((point) => {
+                const pos = point.position[view];
+                if (!pos) return null;
+                const pointHasData = hasData(point.id);
+                const isActive = activeField === point.id;
+                
+                return (
+                  <g key={point.id}>
+                    {/* Pulsing ring for active */}
+                    {isActive && (
+                      <circle
+                        cx={pos.x}
+                        cy={pos.y}
+                        r="5"
+                        fill="none"
+                        stroke="hsl(var(--primary))"
+                        strokeWidth="1"
+                        opacity="0.5"
+                        className="animate-ping"
+                      />
+                    )}
+                    
+                    {/* Main dot */}
+                    <circle
+                      cx={pos.x}
+                      cy={pos.y}
+                      r="3"
+                      fill={pointHasData ? "hsl(var(--primary))" : "hsl(var(--destructive))"}
+                      stroke="white"
+                      strokeWidth="1.5"
+                      className="transition-all duration-300 cursor-pointer hover:r-4"
+                    />
+                    
+                    {/* Connection line */}
+                    <line
+                      x1={pos.x}
+                      y1={pos.y}
+                      x2={point.cardSide === "left" ? 8 : 92}
+                      y2={pos.y}
+                      stroke={pointHasData ? "hsl(var(--primary))" : "hsl(var(--destructive))"}
+                      strokeWidth="1"
+                      strokeDasharray={pointHasData ? "none" : "3,2"}
+                      opacity={isActive ? 0.8 : 0.4}
+                      className="transition-all duration-300"
+                    />
+                  </g>
+                );
+              })}
+            </svg>
+          </div>
+        </div>
+
+        {/* Right Measurement Cards */}
+        <div className="flex flex-col gap-3 order-3">
+          {rightPoints.map((point) => (
+            <MeasurementCard
+              key={point.id}
+              point={point}
+              data={value[point.id]}
+              isActive={activeField === point.id}
+              hasData={hasData(point.id)}
+              readOnly={readOnly}
+              onFocus={() => setActiveField(point.id)}
+              onBlur={() => setActiveField(null)}
+              onMeasurementChange={(field, val) => updateMeasurement(point.id, field, val)}
+              onNotesChange={(notes) => updateNotes(point.id, notes)}
+              side="right"
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* Weight and Annotations Section */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="p-4 rounded-xl bg-card border border-border/50 shadow-sm">
+          <Label className="text-xs font-semibold text-primary mb-3 flex items-center gap-2">
+            <Ruler className="w-4 h-4" />
+            PESO
+          </Label>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <Label className="text-[10px] text-muted-foreground mb-1 block">Atual (kg)</Label>
+              <Input
+                type="number"
+                placeholder="0.0"
+                value={value["peso"]?.measurements?.atual || ""}
+                onChange={(e) => updateMeasurement("peso", "atual", e.target.value)}
+                className="h-9 text-sm border-border/50"
+                disabled={readOnly === true}
+              />
+            </div>
+            <div>
+              <Label className="text-[10px] text-muted-foreground mb-1 block">Meta (kg)</Label>
+              <Input
+                type="number"
+                placeholder="0.0"
+                value={value["peso"]?.measurements?.meta || ""}
+                onChange={(e) => updateMeasurement("peso", "meta", e.target.value)}
+                className="h-9 text-sm border-border/50"
+            disabled={readOnly === true}
+              />
+            </div>
+          </div>
+        </div>
+        
+        <div className="p-4 rounded-xl bg-card border border-border/50 shadow-sm">
+          <Label className="text-xs font-semibold text-primary mb-3 flex items-center gap-2">
+            <MessageSquare className="w-4 h-4" />
+            ANOTAÇÕES
+          </Label>
+          <Textarea
+            placeholder="Observações gerais da avaliação..."
+            value={value["anotacoes"]?.notes || ""}
+            onChange={(e) => updateNotes("anotacoes", e.target.value)}
+            rows={2}
+            className="text-sm resize-none border-border/50"
+            disabled={readOnly}
+          />
         </div>
       </div>
 
       {/* Legend */}
-      <div className="flex flex-wrap justify-center gap-3">
-        {activeMeasurements.map((measurement) => (
-          <div 
-            key={measurement.id} 
-            className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-card border border-border/50 shadow-sm"
-          >
-            <div 
-              className="w-5 h-5 rounded flex items-center justify-center text-white"
-              style={{ backgroundColor: measurement.color }}
-            >
-              {measurement.icon}
-            </div>
-            <span className="text-xs font-medium">{measurement.label}</span>
-          </div>
-        ))}
-      </div>
-
-      {/* Data Summary */}
-      {filledRegions.length > 0 && (
-        <div className="space-y-3">
-          <div className="flex items-center justify-between">
-            <h5 className="text-sm font-semibold flex items-center gap-2">
-              <MapPin className="w-4 h-4 text-primary" />
-              Dados Registrados
-            </h5>
-            <Badge variant="secondary">
-              {filledRegions.length} {filledRegions.length === 1 ? 'região' : 'regiões'}
-            </Badge>
-          </div>
-          
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
-            {filledRegions.map(([regionId, data]) => {
-              const region = bodyRegions.find((r) => r.id === regionId);
-              const color = getRegionColor(regionId);
-              
-              return (
-                <div 
-                  key={regionId} 
-                  className="p-3 rounded-xl bg-card border border-border/50 shadow-sm hover:shadow-md transition-shadow"
-                >
-                  <div className="flex items-center gap-2 mb-2">
-                    <div 
-                      className="w-7 h-7 rounded-lg flex items-center justify-center"
-                      style={{ 
-                        backgroundColor: color ? `${color}20` : 'hsl(var(--muted))',
-                        color: color || 'hsl(var(--muted-foreground))'
-                      }}
-                    >
-                      <MapPin className="w-3.5 h-3.5" />
-                    </div>
-                    <span className="font-semibold text-sm">{region?.label}</span>
-                  </div>
-                  <div className="space-y-1">
-                    {Object.entries(data.measurements).map(([key, val]) => {
-                      if (!val) return null;
-                      const type = measurementTypes.find((m) => m.id === key);
-                      return (
-                        <div key={key} className="flex items-center justify-between text-xs">
-                          <span className="text-muted-foreground">{type?.label}</span>
-                          <span className="font-medium">{val} {type?.unit}</span>
-                        </div>
-                      );
-                    })}
-                    {data.notes && (
-                      <div className="text-xs text-muted-foreground mt-1 pt-1 border-t border-border/50 line-clamp-2">
-                        {data.notes}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+      <div className="flex flex-wrap justify-center gap-4">
+        <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-card border border-border/50">
+          <div className="w-3 h-3 rounded-full bg-primary" />
+          <span className="text-xs font-medium text-muted-foreground">Com Medida</span>
         </div>
+        <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-card border border-border/50">
+          <div className="w-3 h-3 rounded-full bg-destructive" />
+          <span className="text-xs font-medium text-muted-foreground">Pendente</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Measurement Card Component
+interface MeasurementCardProps {
+  point: MeasurementPoint;
+  data?: RegionData;
+  isActive: boolean;
+  hasData: boolean;
+  readOnly: boolean;
+  onFocus: () => void;
+  onBlur: () => void;
+  onMeasurementChange: (field: string, value: string) => void;
+  onNotesChange: (notes: string) => void;
+  side: "left" | "right";
+}
+
+function MeasurementCard({
+  point,
+  data,
+  isActive,
+  hasData,
+  readOnly,
+  onFocus,
+  onBlur,
+  onMeasurementChange,
+  onNotesChange,
+  side,
+}: MeasurementCardProps) {
+  return (
+    <div
+      className={cn(
+        "p-3 rounded-xl border-2 transition-all duration-300",
+        "bg-card shadow-sm",
+        isActive 
+          ? "border-primary shadow-md scale-[1.02]" 
+          : hasData 
+            ? "border-primary/30" 
+            : "border-destructive/30 border-dashed",
+        side === "left" ? "lg:ml-auto" : "lg:mr-auto",
+        "w-full lg:max-w-[200px]"
       )}
+    >
+      <div className="flex items-center gap-2 mb-2">
+        <div
+          className={cn(
+            "w-2 h-2 rounded-full transition-colors",
+            hasData ? "bg-primary" : "bg-destructive"
+          )}
+        />
+        <Label className="text-xs font-semibold text-foreground uppercase tracking-wide">
+          {point.label}
+        </Label>
+        {hasData && (
+          <Check className="w-3 h-3 text-primary ml-auto" />
+        )}
+      </div>
+      
+      <div className="space-y-2">
+        <div>
+          <Label className="text-[10px] text-muted-foreground mb-1 block">Circunferência (cm)</Label>
+          <Input
+            type="number"
+            placeholder="0.0"
+            value={data?.measurements?.circumference || ""}
+            onChange={(e) => onMeasurementChange("circumference", e.target.value)}
+            onFocus={onFocus}
+            onBlur={onBlur}
+            className="h-8 text-sm border-border/50 focus:border-primary"
+            disabled={readOnly}
+          />
+        </div>
+        
+        <div>
+          <Label className="text-[10px] text-muted-foreground mb-1 block">Observação</Label>
+          <Input
+            placeholder="Nota..."
+            value={data?.notes || ""}
+            onChange={(e) => onNotesChange(e.target.value)}
+            onFocus={onFocus}
+            onBlur={onBlur}
+            className="h-8 text-sm border-border/50 focus:border-primary"
+            disabled={readOnly}
+          />
+        </div>
+      </div>
     </div>
   );
 }
