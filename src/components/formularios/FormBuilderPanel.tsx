@@ -70,6 +70,8 @@ const fieldTypes = [
   { value: "calculo", label: "Cálculo Automático" },
   { value: "odontograma", label: "🦷 Odontograma" },
   { value: "mapa-corporal", label: "🏃 Mapa Corporal" },
+  { value: "escala-dor", label: "😣 Escala de Dor" },
+  { value: "dermatologia", label: "🩹 Mapa Dermatológico" },
 ];
 
 // Sortable Section Component
