@@ -45,6 +45,10 @@ import { cn } from "@/lib/utils";
 import { PlanPatientModal } from "@/components/planos/PlanPatientModal";
 import { PlanEditModal } from "@/components/planos/PlanEditModal";
 import { PlanDetailModal } from "@/components/planos/PlanDetailModal";
+import { ActivePlansModal } from "@/components/planos/ActivePlansModal";
+import { TreatmentPatientsModal } from "@/components/planos/TreatmentPatientsModal";
+import { CompletionRateModal } from "@/components/planos/CompletionRateModal";
+import { RevenueGeneratedModal } from "@/components/planos/RevenueGeneratedModal";
 
 // Cores por categoria de plano
 const categoryColors: Record<string, string> = {
@@ -160,6 +164,10 @@ export default function PlanosAtendimento() {
   const [isAddPatientOpen, setIsAddPatientOpen] = useState(false);
   const [isEditPlanOpen, setIsEditPlanOpen] = useState(false);
   const [planToEdit, setPlanToEdit] = useState<typeof plans[0] | null>(null);
+  const [activePlansModalOpen, setActivePlansModalOpen] = useState(false);
+  const [treatmentModalOpen, setTreatmentModalOpen] = useState(false);
+  const [completionModalOpen, setCompletionModalOpen] = useState(false);
+  const [revenueModalOpen, setRevenueModalOpen] = useState(false);
 
   const filteredPlans = plans.filter(plan => 
     plan.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -243,8 +251,17 @@ export default function PlanosAtendimento() {
       <PageContent>
         {/* Stats */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        {stats.map((stat) => (
-          <Card key={stat.label} className="group relative overflow-hidden border-border/50 hover:border-primary/30 transition-all duration-300 hover:shadow-lg">
+        {stats.map((stat, idx) => (
+          <Card 
+            key={stat.label} 
+            className="group relative overflow-hidden border-border/50 hover:border-primary/30 transition-all duration-300 hover:shadow-lg cursor-pointer"
+            onClick={() => {
+              if (idx === 0) setActivePlansModalOpen(true);
+              if (idx === 1) setTreatmentModalOpen(true);
+              if (idx === 2) setCompletionModalOpen(true);
+              if (idx === 3) setRevenueModalOpen(true);
+            }}
+          >
             <div className={cn("absolute inset-0 opacity-5 bg-gradient-to-br", stat.color)} />
             <CardContent className="p-4 relative">
               <div className="flex items-start justify-between mb-3">
@@ -261,6 +278,11 @@ export default function PlanosAtendimento() {
           </Card>
         ))}
       </div>
+
+      <ActivePlansModal open={activePlansModalOpen} onOpenChange={setActivePlansModalOpen} />
+      <TreatmentPatientsModal open={treatmentModalOpen} onOpenChange={setTreatmentModalOpen} />
+      <CompletionRateModal open={completionModalOpen} onOpenChange={setCompletionModalOpen} />
+      <RevenueGeneratedModal open={revenueModalOpen} onOpenChange={setRevenueModalOpen} />
 
       {/* Search */}
       <Card className="border-border/50">

@@ -354,16 +354,16 @@ export function OdontogramField({
           
           {/* Upper Teeth Row - positioned over the upper arch */}
           <div 
-            className="absolute left-0 right-0 flex justify-center items-center gap-[0.5%] px-[8%]"
-            style={{ top: '12%' }}
+            className="absolute left-0 right-0 flex justify-center items-center gap-[1px] sm:gap-[2px] px-[6%] sm:px-[8%]"
+            style={{ top: '18%' }}
           >
             {upperTeeth.map((tooth, idx) => renderToothButton(tooth, idx, true))}
           </div>
           
           {/* Lower Teeth Row - positioned over the lower arch */}
           <div 
-            className="absolute left-0 right-0 flex justify-center items-center gap-[0.5%] px-[8%]"
-            style={{ bottom: '12%' }}
+            className="absolute left-0 right-0 flex justify-center items-center gap-[1px] sm:gap-[2px] px-[6%] sm:px-[8%]"
+            style={{ bottom: '18%' }}
           >
             {lowerTeeth.map((tooth, idx) => renderToothButton(tooth, idx, false))}
           </div>

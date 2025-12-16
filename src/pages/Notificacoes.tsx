@@ -36,6 +36,7 @@ import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { NewCampaignModal } from "@/components/notificacoes/NewCampaignModal";
 import { TemplateModal } from "@/components/notificacoes/TemplateModal";
 import { ActivityListModal } from "@/components/notificacoes/ActivityListModal";
+import { ChannelDetailModal } from "@/components/notificacoes/ChannelDetailModal";
 
 const channelData = [
   { name: "Push", icon: Bell, sent: 1247, delivered: 1189, failed: 58, rate: 95.3, color: "from-amber-500 to-orange-500" },
@@ -82,6 +83,7 @@ export default function Notificacoes() {
   const [selectedTemplate, setSelectedTemplate] = useState<typeof templates[0] | null>(null);
   const [isNewTemplateOpen, setIsNewTemplateOpen] = useState(false);
   const [isActivityListOpen, setIsActivityListOpen] = useState(false);
+  const [selectedChannel, setSelectedChannel] = useState<typeof channelData[0] | null>(null);
 
   const toggleChannel = (channel: string) => {
     setSelectedChannels(prev => 
@@ -122,7 +124,8 @@ export default function Notificacoes() {
         {channelData.map((channel) => (
           <Card 
             key={channel.name} 
-            className="group relative overflow-hidden border-border/50 hover:border-primary/30 transition-all duration-300 hover:shadow-lg"
+            className="group relative overflow-hidden border-border/50 hover:border-primary/30 transition-all duration-300 hover:shadow-lg cursor-pointer"
+            onClick={() => setSelectedChannel(channel)}
           >
             <div className={cn(
               "absolute inset-0 opacity-5 bg-gradient-to-br",
@@ -164,6 +167,8 @@ export default function Notificacoes() {
           </Card>
         ))}
       </div>
+
+      <ChannelDetailModal open={!!selectedChannel} onOpenChange={() => setSelectedChannel(null)} channel={selectedChannel} />
 
         {/* Main Content Tabs */}
         <Tabs defaultValue="overview" className="space-y-6">

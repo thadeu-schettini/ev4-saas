@@ -2,6 +2,10 @@ import { useState } from "react";
 import { NewTransactionModal } from "@/components/financeiro/NewTransactionModal";
 import { TransactionDetailModal } from "@/components/financeiro/TransactionDetailModal";
 import { AddPaymentMethodModal } from "@/components/financeiro/AddPaymentMethodModal";
+import { RevenueDetailModal } from "@/components/financeiro/RevenueDetailModal";
+import { ExpensesDetailModal } from "@/components/financeiro/ExpensesDetailModal";
+import { BalanceDetailModal } from "@/components/financeiro/BalanceDetailModal";
+import { PendingDetailModal } from "@/components/financeiro/PendingDetailModal";
 import { PageHeader } from "@/components/ui/page-header";
 import { PageContainer, PageContent } from "@/components/ui/page-container";
 import { FinanceiroSkeleton } from "@/components/skeletons/PageSkeletons";
@@ -119,6 +123,10 @@ export default function Financeiro() {
   const [showNewTransactionModal, setShowNewTransactionModal] = useState(false);
   const [selectedTransaction, setSelectedTransaction] = useState<typeof transactions[0] | null>(null);
   const [isAddPaymentMethodOpen, setIsAddPaymentMethodOpen] = useState(false);
+  const [revenueModalOpen, setRevenueModalOpen] = useState(false);
+  const [expensesModalOpen, setExpensesModalOpen] = useState(false);
+  const [balanceModalOpen, setBalanceModalOpen] = useState(false);
+  const [pendingModalOpen, setPendingModalOpen] = useState(false);
 
   const totalReceita = transactions.filter(t => t.type === "receita" && t.status === "pago").reduce((acc, t) => acc + t.value, 0);
   const totalDespesa = transactions.filter(t => t.type === "despesa" && t.status === "pago").reduce((acc, t) => acc + t.value, 0);
@@ -183,7 +191,10 @@ export default function Financeiro() {
           <>
         {/* Metrics Cards */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-          <Card className="bg-gradient-to-br from-success/10 to-success/5 border-success/20">
+          <Card 
+            className="bg-gradient-to-br from-success/10 to-success/5 border-success/20 cursor-pointer hover:shadow-lg transition-all"
+            onClick={() => setRevenueModalOpen(true)}
+          >
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
@@ -203,7 +214,10 @@ export default function Financeiro() {
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-destructive/10 to-destructive/5 border-destructive/20">
+          <Card 
+            className="bg-gradient-to-br from-destructive/10 to-destructive/5 border-destructive/20 cursor-pointer hover:shadow-lg transition-all"
+            onClick={() => setExpensesModalOpen(true)}
+          >
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
@@ -223,7 +237,10 @@ export default function Financeiro() {
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-info/10 to-info/5 border-info/20">
+          <Card 
+            className="bg-gradient-to-br from-info/10 to-info/5 border-info/20 cursor-pointer hover:shadow-lg transition-all"
+            onClick={() => setBalanceModalOpen(true)}
+          >
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
@@ -243,7 +260,10 @@ export default function Financeiro() {
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-warning/10 to-warning/5 border-warning/20">
+          <Card 
+            className="bg-gradient-to-br from-warning/10 to-warning/5 border-warning/20 cursor-pointer hover:shadow-lg transition-all"
+            onClick={() => setPendingModalOpen(true)}
+          >
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
@@ -263,6 +283,11 @@ export default function Financeiro() {
             </CardContent>
           </Card>
         </div>
+
+        <RevenueDetailModal open={revenueModalOpen} onOpenChange={setRevenueModalOpen} total={totalReceita} />
+        <ExpensesDetailModal open={expensesModalOpen} onOpenChange={setExpensesModalOpen} total={totalDespesa} />
+        <BalanceDetailModal open={balanceModalOpen} onOpenChange={setBalanceModalOpen} total={saldo} />
+        <PendingDetailModal open={pendingModalOpen} onOpenChange={setPendingModalOpen} total={pendente} />
 
         {/* Charts */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

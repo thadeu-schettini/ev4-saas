@@ -20,15 +20,15 @@ interface MeasurementPoint {
 }
 
 // Measurement points - x/y as percentages of the body image container
-// x: 50 = center, y: 0 = top, 100 = bottom
+// Positions calibrated to align with human silhouette
 const measurementPoints: MeasurementPoint[] = [
-  { id: "braco", label: "Braço", position: { front: { x: 22, y: 30 }, back: { x: 22, y: 30 } }, cardSide: "left" },
-  { id: "peito", label: "Peito", position: { front: { x: 50, y: 25 } }, cardSide: "right" },
-  { id: "costas", label: "Costas Superior", position: { back: { x: 50, y: 25 } }, cardSide: "right" },
-  { id: "cintura", label: "Cintura", position: { front: { x: 35, y: 42 }, back: { x: 35, y: 42 } }, cardSide: "left" },
-  { id: "coxa", label: "Coxa", position: { front: { x: 60, y: 58 }, back: { x: 60, y: 58 } }, cardSide: "right" },
-  { id: "quadril", label: "Quadril", position: { front: { x: 30, y: 50 }, back: { x: 30, y: 50 } }, cardSide: "left" },
-  { id: "panturrilha", label: "Panturrilha", position: { front: { x: 58, y: 78 }, back: { x: 58, y: 78 } }, cardSide: "right" },
+  { id: "braco", label: "Braço", position: { front: { x: 25, y: 32 }, back: { x: 25, y: 32 } }, cardSide: "left" },
+  { id: "peito", label: "Peito", position: { front: { x: 50, y: 28 } }, cardSide: "right" },
+  { id: "costas", label: "Costas Superior", position: { back: { x: 50, y: 28 } }, cardSide: "right" },
+  { id: "cintura", label: "Cintura", position: { front: { x: 38, y: 42 }, back: { x: 38, y: 42 } }, cardSide: "left" },
+  { id: "coxa", label: "Coxa", position: { front: { x: 62, y: 56 }, back: { x: 62, y: 56 } }, cardSide: "right" },
+  { id: "quadril", label: "Quadril", position: { front: { x: 35, y: 48 }, back: { x: 35, y: 48 } }, cardSide: "left" },
+  { id: "panturrilha", label: "Panturrilha", position: { front: { x: 60, y: 76 }, back: { x: 60, y: 76 } }, cardSide: "right" },
 ];
 
 interface RegionData {

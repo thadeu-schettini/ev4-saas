@@ -16,6 +16,10 @@ import { PageContainer, PageContent } from "@/components/ui/page-container";
 import { PacientesSkeleton } from "@/components/skeletons/PageSkeletons";
 import { useSimulatedLoading } from "@/hooks/use-loading";
 import { NewPatientModal } from "@/components/pacientes/NewPatientModal";
+import { TotalPatientsModal } from "@/components/pacientes/TotalPatientsModal";
+import { ActivePatientsModal } from "@/components/pacientes/ActivePatientsModal";
+import { PendingPatientsModal } from "@/components/pacientes/PendingPatientsModal";
+import { ScheduledPatientsModal } from "@/components/pacientes/ScheduledPatientsModal";
 import {
   Select,
   SelectContent,
@@ -95,6 +99,10 @@ export default function Pacientes() {
     ageRange: "",
     lastAppointmentRange: "",
   });
+  const [totalModalOpen, setTotalModalOpen] = useState(false);
+  const [activeModalOpen, setActiveModalOpen] = useState(false);
+  const [pendingModalOpen, setPendingModalOpen] = useState(false);
+  const [scheduledModalOpen, setScheduledModalOpen] = useState(false);
 
   // Calculate age from birthDate
   const calculateAge = (birthDate: string) => {
@@ -268,7 +276,11 @@ export default function Pacientes() {
           <>
         {/* Stats Mini Cards */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
-          <Card className="border-border/50 bg-card/50 backdrop-blur-sm animate-fade-in" style={{ animationDelay: "0ms", animationFillMode: "forwards" }}>
+          <Card 
+            className="border-border/50 bg-card/50 backdrop-blur-sm animate-fade-in cursor-pointer hover:shadow-lg transition-all" 
+            style={{ animationDelay: "0ms", animationFillMode: "forwards" }}
+            onClick={() => setTotalModalOpen(true)}
+          >
             <CardContent className="p-2 sm:p-3 flex items-center gap-2 sm:gap-3">
               <div className="h-8 w-8 sm:h-9 sm:w-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
                 <Users className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary" />
@@ -279,7 +291,11 @@ export default function Pacientes() {
               </div>
             </CardContent>
           </Card>
-          <Card className="border-border/50 bg-card/50 backdrop-blur-sm animate-fade-in" style={{ animationDelay: "50ms", animationFillMode: "forwards" }}>
+          <Card 
+            className="border-border/50 bg-card/50 backdrop-blur-sm animate-fade-in cursor-pointer hover:shadow-lg transition-all" 
+            style={{ animationDelay: "50ms", animationFillMode: "forwards" }}
+            onClick={() => setActiveModalOpen(true)}
+          >
             <CardContent className="p-2 sm:p-3 flex items-center gap-2 sm:gap-3">
               <div className="h-8 w-8 sm:h-9 sm:w-9 rounded-lg bg-success/10 flex items-center justify-center shrink-0">
                 <UserCheck className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-success" />
@@ -290,7 +306,11 @@ export default function Pacientes() {
               </div>
             </CardContent>
           </Card>
-          <Card className="border-border/50 bg-card/50 backdrop-blur-sm animate-fade-in" style={{ animationDelay: "100ms", animationFillMode: "forwards" }}>
+          <Card 
+            className="border-border/50 bg-card/50 backdrop-blur-sm animate-fade-in cursor-pointer hover:shadow-lg transition-all" 
+            style={{ animationDelay: "100ms", animationFillMode: "forwards" }}
+            onClick={() => setPendingModalOpen(true)}
+          >
             <CardContent className="p-2 sm:p-3 flex items-center gap-2 sm:gap-3">
               <div className="h-8 w-8 sm:h-9 sm:w-9 rounded-lg bg-warning/10 flex items-center justify-center shrink-0">
                 <AlertCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-warning" />
@@ -301,7 +321,11 @@ export default function Pacientes() {
               </div>
             </CardContent>
           </Card>
-          <Card className="border-border/50 bg-card/50 backdrop-blur-sm animate-fade-in" style={{ animationDelay: "150ms", animationFillMode: "forwards" }}>
+          <Card 
+            className="border-border/50 bg-card/50 backdrop-blur-sm animate-fade-in cursor-pointer hover:shadow-lg transition-all" 
+            style={{ animationDelay: "150ms", animationFillMode: "forwards" }}
+            onClick={() => setScheduledModalOpen(true)}
+          >
             <CardContent className="p-2 sm:p-3 flex items-center gap-2 sm:gap-3">
               <div className="h-8 w-8 sm:h-9 sm:w-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
                 <Calendar className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary" />
@@ -313,6 +337,11 @@ export default function Pacientes() {
             </CardContent>
           </Card>
         </div>
+
+        <TotalPatientsModal open={totalModalOpen} onOpenChange={setTotalModalOpen} total={stats.total} />
+        <ActivePatientsModal open={activeModalOpen} onOpenChange={setActiveModalOpen} active={stats.active} />
+        <PendingPatientsModal open={pendingModalOpen} onOpenChange={setPendingModalOpen} pending={stats.pending} />
+        <ScheduledPatientsModal open={scheduledModalOpen} onOpenChange={setScheduledModalOpen} scheduled={stats.withAppointments} />
 
         {/* Search, Filters and Actions Bar */}
         <div className="flex flex-col sm:flex-row gap-3">
