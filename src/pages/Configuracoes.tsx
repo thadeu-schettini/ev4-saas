@@ -58,6 +58,7 @@ import {
 import { PageContainer, PageContent } from "@/components/ui/page-container";
 import { PageHeader } from "@/components/ui/page-header";
 import { useThemeColor, themeColors } from "@/hooks/use-theme-color";
+import EmailTemplateEditorModal from "@/components/configuracoes/EmailTemplateEditorModal";
 
 type ConfigSection = 
   | "home" 
@@ -73,6 +74,8 @@ type ConfigSection =
 export default function Configuracoes() {
   const { currentTheme, setTheme } = useThemeColor();
   const [activeSection, setActiveSection] = useState<ConfigSection>("home");
+  const [emailEditorOpen, setEmailEditorOpen] = useState(false);
+  const [selectedEmailTemplate, setSelectedEmailTemplate] = useState<{ name: string; type: string } | null>(null);
   const [orgData, setOrgData] = useState({
     nomeFantasia: "Clínica Demo",
     razaoSocial: "Clínica Demo LTDA",
@@ -2905,7 +2908,15 @@ export default function Configuracoes() {
                             />
                           </div>
                           <div className="flex items-center gap-2 mt-4">
-                            <Button variant="outline" size="sm" className="flex-1 gap-1">
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              className="flex-1 gap-1"
+                              onClick={() => {
+                                setSelectedEmailTemplate({ name: template.name, type: template.id });
+                                setEmailEditorOpen(true);
+                              }}
+                            >
                               <FileCode className="h-3 w-3" />
                               Editar Template
                             </Button>
@@ -3045,6 +3056,14 @@ export default function Configuracoes() {
           )}
         </div>
       </div>
+
+      {/* Email Template Editor Modal */}
+      <EmailTemplateEditorModal
+        open={emailEditorOpen}
+        onOpenChange={setEmailEditorOpen}
+        templateName={selectedEmailTemplate?.name || "Novo Template"}
+        templateType={selectedEmailTemplate?.type || "marketing"}
+      />
     </TooltipProvider>
   );
 }
