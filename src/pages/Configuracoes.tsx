@@ -37,6 +37,16 @@ import {
   X,
   Check,
   AlertCircle,
+  Server,
+  Link,
+  ExternalLink,
+  Copy,
+  RefreshCw,
+  Send,
+  FileCode,
+  Database,
+  Lock,
+  Megaphone,
 } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -57,7 +67,8 @@ type ConfigSection =
   | "autopilot" 
   | "telemedicina" 
   | "fiscal" 
-  | "acessos";
+  | "acessos"
+  | "whitelabel";
 
 export default function Configuracoes() {
   const { currentTheme, setTheme } = useThemeColor();
@@ -110,6 +121,42 @@ export default function Configuracoes() {
     autoEmit: false,
     defaultService: "Consulta Médica",
     environment: "homologacao",
+  });
+
+  const [whitelabelConfig, setWhitelabelConfig] = useState({
+    customDomain: "",
+    domainVerified: false,
+    subdomain: "clinica-demo",
+    dnsRecords: {
+      aRecord: "185.158.133.1",
+      cnameRecord: "app.lovable.dev",
+      txtRecord: "_lovable-verify=abc123xyz",
+    },
+    sslEnabled: true,
+    emailConfig: {
+      provider: "resend",
+      fromEmail: "",
+      fromName: "Clínica Demo",
+      replyTo: "",
+      smtpHost: "",
+      smtpPort: "587",
+      smtpUser: "",
+      smtpPassword: "",
+      verified: false,
+    },
+    branding: {
+      primaryColor: "#3b82f6",
+      logoUrl: "",
+      faviconUrl: "",
+      appName: "Clínica Demo",
+      supportEmail: "suporte@clinicademo.com",
+    },
+    emailTemplates: {
+      confirmacao: true,
+      lembrete: true,
+      marketing: false,
+      nps: true,
+    },
   });
 
   const [accessControl, setAccessControl] = useState({
@@ -246,6 +293,16 @@ export default function Configuracoes() {
       color: "from-red-500 to-pink-500",
       completion: 0,
       items: ["Usuários", "Perfis", "Permissões"],
+    },
+    {
+      id: "whitelabel",
+      title: "White Label",
+      description: "Domínio personalizado, DNS e configuração de email",
+      icon: Globe,
+      color: "from-indigo-500 to-purple-500",
+      completion: 25,
+      items: ["Domínio", "DNS", "E-mail Marketing", "Branding"],
+      badge: "PRO",
     },
   ];
 
@@ -2425,6 +2482,565 @@ export default function Configuracoes() {
                   </div>
                 </CardContent>
               </Card>
+            </div>
+          )}
+
+          {/* White Label Section */}
+          {activeSection === "whitelabel" && (
+            <div className="space-y-6 section-content animate-fade-in">
+              {/* Domain Configuration */}
+              <Card className="border-border/50 backdrop-blur-sm bg-card/95 shadow-lg overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-purple-500/5 pointer-events-none" />
+                <CardHeader className="border-b border-border/50">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center shadow-lg">
+                        <Globe className="h-6 w-6 text-white" />
+                      </div>
+                      <div>
+                        <CardTitle className="text-xl">Domínio Personalizado</CardTitle>
+                        <CardDescription>Configure seu domínio ou use o subdomínio padrão</CardDescription>
+                      </div>
+                    </div>
+                    <Badge variant={whitelabelConfig.domainVerified ? "default" : "secondary"} className="gap-1">
+                      {whitelabelConfig.domainVerified ? (
+                        <>
+                          <CheckCircle2 className="h-3 w-3" />
+                          Verificado
+                        </>
+                      ) : (
+                        <>
+                          <Clock className="h-3 w-3" />
+                          Pendente
+                        </>
+                      )}
+                    </Badge>
+                  </div>
+                </CardHeader>
+                <CardContent className="pt-6 space-y-6 relative">
+                  {/* Current URL Display */}
+                  <div className="p-4 rounded-xl bg-gradient-to-br from-muted/50 to-muted/30 border border-border/50">
+                    <Label className="text-xs text-muted-foreground mb-2 block">URL Atual do Sistema</Label>
+                    <div className="flex items-center gap-2">
+                      <div className="flex-1 flex items-center gap-2 px-4 py-3 rounded-lg bg-background border border-border">
+                        <Lock className="h-4 w-4 text-green-500" />
+                        <span className="text-sm font-mono">
+                          {whitelabelConfig.customDomain || `${whitelabelConfig.subdomain}.clinicasystem.app`}
+                        </span>
+                      </div>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button variant="outline" size="icon" onClick={() => toast.success("Link copiado!")}>
+                            <Copy className="h-4 w-4" />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>Copiar URL</TooltipContent>
+                      </Tooltip>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button variant="outline" size="icon">
+                            <ExternalLink className="h-4 w-4" />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>Abrir em nova aba</TooltipContent>
+                      </Tooltip>
+                    </div>
+                  </div>
+
+                  {/* Subdomain Config */}
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Link className="h-4 w-4 text-primary" />
+                        <Label className="font-semibold">Subdomínio Automático</Label>
+                        <Badge variant="outline" className="text-xs">Gratuito</Badge>
+                      </div>
+                      <p className="text-sm text-muted-foreground">
+                        Receba automaticamente um subdomínio exclusivo para sua clínica
+                      </p>
+                      <div className="flex items-center gap-2">
+                        <Input
+                          value={whitelabelConfig.subdomain}
+                          onChange={(e) => setWhitelabelConfig({
+                            ...whitelabelConfig,
+                            subdomain: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '')
+                          })}
+                          placeholder="sua-clinica"
+                          className="flex-1"
+                        />
+                        <span className="text-sm text-muted-foreground">.clinicasystem.app</span>
+                      </div>
+                      <Button variant="outline" className="w-full gap-2">
+                        <RefreshCw className="h-4 w-4" />
+                        Verificar Disponibilidade
+                      </Button>
+                    </div>
+
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Globe className="h-4 w-4 text-primary" />
+                        <Label className="font-semibold">Domínio Personalizado</Label>
+                        <Badge className="text-xs bg-gradient-to-r from-indigo-500 to-purple-500">PRO</Badge>
+                      </div>
+                      <p className="text-sm text-muted-foreground">
+                        Use seu próprio domínio para um branding completo
+                      </p>
+                      <Input
+                        value={whitelabelConfig.customDomain}
+                        onChange={(e) => setWhitelabelConfig({
+                          ...whitelabelConfig,
+                          customDomain: e.target.value
+                        })}
+                        placeholder="app.suaclinica.com.br"
+                      />
+                      <Button className="w-full gap-2 bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600">
+                        <CheckCircle2 className="h-4 w-4" />
+                        Configurar Domínio
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* DNS Configuration */}
+              <Card className="border-border/50 backdrop-blur-sm bg-card/95 shadow-lg">
+                <CardHeader className="border-b border-border/50">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-cyan-500/20 to-blue-500/20 flex items-center justify-center">
+                      <Server className="h-5 w-5 text-cyan-500" />
+                    </div>
+                    <div>
+                      <CardTitle>Configuração de DNS</CardTitle>
+                      <CardDescription>Adicione estes registros no painel do seu provedor de domínio</CardDescription>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent className="pt-6 space-y-4">
+                  <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-start gap-3">
+                    <AlertCircle className="h-5 w-5 text-amber-500 mt-0.5" />
+                    <div>
+                      <p className="text-sm font-medium text-amber-700 dark:text-amber-400">Configuração Necessária</p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Adicione os registros abaixo no painel de DNS do seu domínio. A propagação pode levar até 48 horas.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="space-y-3">
+                    {[
+                      { type: 'A', name: '@', value: whitelabelConfig.dnsRecords.aRecord, description: 'Registro principal' },
+                      { type: 'CNAME', name: 'www', value: whitelabelConfig.dnsRecords.cnameRecord, description: 'Redirecionamento www' },
+                      { type: 'TXT', name: '_lovable', value: whitelabelConfig.dnsRecords.txtRecord, description: 'Verificação de propriedade' },
+                    ].map((record) => (
+                      <div key={record.type} className="flex items-center gap-4 p-4 rounded-lg border border-border bg-muted/30 hover:bg-muted/50 transition-colors">
+                        <div className="w-16 text-center">
+                          <Badge variant="outline" className="font-mono text-xs">
+                            {record.type}
+                          </Badge>
+                        </div>
+                        <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-4">
+                          <div>
+                            <p className="text-xs text-muted-foreground">Nome/Host</p>
+                            <p className="font-mono text-sm">{record.name}</p>
+                          </div>
+                          <div className="md:col-span-2">
+                            <p className="text-xs text-muted-foreground">Valor</p>
+                            <p className="font-mono text-sm truncate">{record.value}</p>
+                          </div>
+                        </div>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button 
+                              variant="ghost" 
+                              size="icon" 
+                              onClick={() => toast.success(`Registro ${record.type} copiado!`)}
+                            >
+                              <Copy className="h-4 w-4" />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>Copiar valor</TooltipContent>
+                        </Tooltip>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="flex items-center justify-between pt-4">
+                    <div className="flex items-center gap-2">
+                      <Switch
+                        checked={whitelabelConfig.sslEnabled}
+                        onCheckedChange={(checked) => setWhitelabelConfig({
+                          ...whitelabelConfig,
+                          sslEnabled: checked
+                        })}
+                      />
+                      <Label>SSL/HTTPS Automático</Label>
+                    </div>
+                    <Button variant="outline" className="gap-2">
+                      <RefreshCw className="h-4 w-4" />
+                      Verificar DNS
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Email Configuration */}
+              <Card className="border-border/50 backdrop-blur-sm bg-card/95 shadow-lg">
+                <CardHeader className="border-b border-border/50">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-green-500/20 to-emerald-500/20 flex items-center justify-center">
+                        <Mail className="h-5 w-5 text-green-500" />
+                      </div>
+                      <div>
+                        <CardTitle>Configuração de E-mail</CardTitle>
+                        <CardDescription>Configure o envio de emails para notificações e marketing</CardDescription>
+                      </div>
+                    </div>
+                    <Switch
+                      checked={whitelabelConfig.emailConfig.verified}
+                      onCheckedChange={(checked) => setWhitelabelConfig({
+                        ...whitelabelConfig,
+                        emailConfig: { ...whitelabelConfig.emailConfig, verified: checked }
+                      })}
+                    />
+                  </div>
+                </CardHeader>
+                <CardContent className="pt-6 space-y-6">
+                  {/* Provider Selection */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {[
+                      { id: 'resend', name: 'Resend', description: 'API moderna e simples', icon: Send, recommended: true },
+                      { id: 'smtp', name: 'SMTP Personalizado', description: 'Configure seu próprio servidor', icon: Server, recommended: false },
+                      { id: 'sendgrid', name: 'SendGrid', description: 'Plataforma de email escalável', icon: Mail, recommended: false },
+                    ].map((provider) => (
+                      <Card
+                        key={provider.id}
+                        className={`cursor-pointer transition-all hover:shadow-md ${
+                          whitelabelConfig.emailConfig.provider === provider.id
+                            ? 'border-2 border-primary bg-primary/5'
+                            : 'border-border hover:border-primary/50'
+                        }`}
+                        onClick={() => setWhitelabelConfig({
+                          ...whitelabelConfig,
+                          emailConfig: { ...whitelabelConfig.emailConfig, provider: provider.id }
+                        })}
+                      >
+                        <CardContent className="p-4">
+                          <div className="flex items-start justify-between mb-3">
+                            <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center">
+                              <provider.icon className="h-5 w-5 text-foreground" />
+                            </div>
+                            {provider.recommended && (
+                              <Badge variant="default" className="text-xs">Recomendado</Badge>
+                            )}
+                          </div>
+                          <h4 className="font-semibold">{provider.name}</h4>
+                          <p className="text-xs text-muted-foreground mt-1">{provider.description}</p>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+
+                  {/* Email Settings */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label>E-mail Remetente</Label>
+                      <Input
+                        type="email"
+                        value={whitelabelConfig.emailConfig.fromEmail}
+                        onChange={(e) => setWhitelabelConfig({
+                          ...whitelabelConfig,
+                          emailConfig: { ...whitelabelConfig.emailConfig, fromEmail: e.target.value }
+                        })}
+                        placeholder="noreply@suaclinica.com.br"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Nome do Remetente</Label>
+                      <Input
+                        value={whitelabelConfig.emailConfig.fromName}
+                        onChange={(e) => setWhitelabelConfig({
+                          ...whitelabelConfig,
+                          emailConfig: { ...whitelabelConfig.emailConfig, fromName: e.target.value }
+                        })}
+                        placeholder="Clínica Exemplo"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>E-mail de Resposta (Reply-To)</Label>
+                      <Input
+                        type="email"
+                        value={whitelabelConfig.emailConfig.replyTo}
+                        onChange={(e) => setWhitelabelConfig({
+                          ...whitelabelConfig,
+                          emailConfig: { ...whitelabelConfig.emailConfig, replyTo: e.target.value }
+                        })}
+                        placeholder="contato@suaclinica.com.br"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Chave API (se aplicável)</Label>
+                      <Input
+                        type="password"
+                        placeholder="••••••••••••••••"
+                      />
+                    </div>
+                  </div>
+
+                  {/* SMTP Configuration (if selected) */}
+                  {whitelabelConfig.emailConfig.provider === 'smtp' && (
+                    <div className="p-4 rounded-xl border border-border bg-muted/30 space-y-4">
+                      <h4 className="font-semibold flex items-center gap-2">
+                        <Server className="h-4 w-4" />
+                        Configuração SMTP
+                      </h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div className="space-y-2">
+                          <Label>Host SMTP</Label>
+                          <Input
+                            value={whitelabelConfig.emailConfig.smtpHost}
+                            onChange={(e) => setWhitelabelConfig({
+                              ...whitelabelConfig,
+                              emailConfig: { ...whitelabelConfig.emailConfig, smtpHost: e.target.value }
+                            })}
+                            placeholder="smtp.exemplo.com"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label>Porta</Label>
+                          <Select
+                            value={whitelabelConfig.emailConfig.smtpPort}
+                            onValueChange={(value) => setWhitelabelConfig({
+                              ...whitelabelConfig,
+                              emailConfig: { ...whitelabelConfig.emailConfig, smtpPort: value }
+                            })}
+                          >
+                            <SelectTrigger>
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="25">25 (SMTP)</SelectItem>
+                              <SelectItem value="465">465 (SMTPS)</SelectItem>
+                              <SelectItem value="587">587 (TLS)</SelectItem>
+                              <SelectItem value="2525">2525 (Alt)</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="space-y-2">
+                          <Label>Usuário</Label>
+                          <Input
+                            value={whitelabelConfig.emailConfig.smtpUser}
+                            onChange={(e) => setWhitelabelConfig({
+                              ...whitelabelConfig,
+                              emailConfig: { ...whitelabelConfig.emailConfig, smtpUser: e.target.value }
+                            })}
+                            placeholder="usuario@smtp.com"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label>Senha</Label>
+                          <Input
+                            type="password"
+                            value={whitelabelConfig.emailConfig.smtpPassword}
+                            onChange={(e) => setWhitelabelConfig({
+                              ...whitelabelConfig,
+                              emailConfig: { ...whitelabelConfig.emailConfig, smtpPassword: e.target.value }
+                            })}
+                            placeholder="••••••••"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  <Button variant="outline" className="w-full gap-2">
+                    <Send className="h-4 w-4" />
+                    Enviar E-mail de Teste
+                  </Button>
+                </CardContent>
+              </Card>
+
+              {/* Email Marketing Templates */}
+              <Card className="border-border/50 backdrop-blur-sm bg-card/95 shadow-lg">
+                <CardHeader className="border-b border-border/50">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-pink-500/20 to-rose-500/20 flex items-center justify-center">
+                      <Megaphone className="h-5 w-5 text-pink-500" />
+                    </div>
+                    <div>
+                      <CardTitle>Templates de E-mail Marketing</CardTitle>
+                      <CardDescription>Gerencie os tipos de e-mails que sua clínica envia</CardDescription>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent className="pt-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {[
+                      { id: 'confirmacao', name: 'Confirmação de Agendamento', description: 'Enviado quando paciente agenda consulta', icon: CheckCircle2, color: 'text-green-500' },
+                      { id: 'lembrete', name: 'Lembrete de Consulta', description: 'Enviado 24h antes da consulta', icon: Clock, color: 'text-blue-500' },
+                      { id: 'marketing', name: 'Campanhas de Marketing', description: 'Promoções e novidades da clínica', icon: Megaphone, color: 'text-pink-500' },
+                      { id: 'nps', name: 'Pesquisa de Satisfação', description: 'Enviado após consulta finalizada', icon: Sparkles, color: 'text-amber-500' },
+                    ].map((template) => (
+                      <Card key={template.id} className="border-border hover:border-primary/50 transition-all">
+                        <CardContent className="p-4">
+                          <div className="flex items-start justify-between">
+                            <div className="flex items-start gap-3">
+                              <div className={`w-10 h-10 rounded-lg bg-muted flex items-center justify-center ${template.color}`}>
+                                <template.icon className="h-5 w-5" />
+                              </div>
+                              <div>
+                                <h4 className="font-semibold text-sm">{template.name}</h4>
+                                <p className="text-xs text-muted-foreground mt-1">{template.description}</p>
+                              </div>
+                            </div>
+                            <Switch
+                              checked={whitelabelConfig.emailTemplates[template.id as keyof typeof whitelabelConfig.emailTemplates]}
+                              onCheckedChange={(checked) => setWhitelabelConfig({
+                                ...whitelabelConfig,
+                                emailTemplates: {
+                                  ...whitelabelConfig.emailTemplates,
+                                  [template.id]: checked
+                                }
+                              })}
+                            />
+                          </div>
+                          <div className="flex items-center gap-2 mt-4">
+                            <Button variant="outline" size="sm" className="flex-1 gap-1">
+                              <FileCode className="h-3 w-3" />
+                              Editar Template
+                            </Button>
+                            <Button variant="ghost" size="sm">
+                              <ExternalLink className="h-3 w-3" />
+                            </Button>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Branding Configuration */}
+              <Card className="border-border/50 backdrop-blur-sm bg-card/95 shadow-lg">
+                <CardHeader className="border-b border-border/50">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-violet-500/20 to-purple-500/20 flex items-center justify-center">
+                      <Palette className="h-5 w-5 text-violet-500" />
+                    </div>
+                    <div>
+                      <CardTitle>Branding White Label</CardTitle>
+                      <CardDescription>Personalize a aparência do sistema para sua marca</CardDescription>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent className="pt-6 space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-4">
+                      <div className="space-y-2">
+                        <Label>Nome do Aplicativo</Label>
+                        <Input
+                          value={whitelabelConfig.branding.appName}
+                          onChange={(e) => setWhitelabelConfig({
+                            ...whitelabelConfig,
+                            branding: { ...whitelabelConfig.branding, appName: e.target.value }
+                          })}
+                          placeholder="Nome da sua clínica"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>E-mail de Suporte</Label>
+                        <Input
+                          type="email"
+                          value={whitelabelConfig.branding.supportEmail}
+                          onChange={(e) => setWhitelabelConfig({
+                            ...whitelabelConfig,
+                            branding: { ...whitelabelConfig.branding, supportEmail: e.target.value }
+                          })}
+                          placeholder="suporte@suaclinica.com.br"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Cor Primária da Marca</Label>
+                        <div className="flex items-center gap-3">
+                          <Input
+                            type="color"
+                            value={whitelabelConfig.branding.primaryColor}
+                            onChange={(e) => setWhitelabelConfig({
+                              ...whitelabelConfig,
+                              branding: { ...whitelabelConfig.branding, primaryColor: e.target.value }
+                            })}
+                            className="w-16 h-10 p-1 cursor-pointer"
+                          />
+                          <Input
+                            value={whitelabelConfig.branding.primaryColor}
+                            onChange={(e) => setWhitelabelConfig({
+                              ...whitelabelConfig,
+                              branding: { ...whitelabelConfig.branding, primaryColor: e.target.value }
+                            })}
+                            placeholder="#3b82f6"
+                            className="flex-1 font-mono"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="space-y-4">
+                      <div className="space-y-2">
+                        <Label>Logo da Marca</Label>
+                        <div className="border-2 border-dashed border-border rounded-lg p-6 text-center hover:border-primary/50 transition-colors cursor-pointer">
+                          <Upload className="h-8 w-8 mx-auto text-muted-foreground mb-2" />
+                          <p className="text-sm text-muted-foreground">Arraste ou clique para fazer upload</p>
+                          <p className="text-xs text-muted-foreground mt-1">PNG, SVG ou JPG (max 2MB)</p>
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Favicon</Label>
+                        <div className="border-2 border-dashed border-border rounded-lg p-4 text-center hover:border-primary/50 transition-colors cursor-pointer">
+                          <div className="flex items-center justify-center gap-4">
+                            <div className="w-8 h-8 bg-muted rounded flex items-center justify-center">
+                              <Globe className="h-4 w-4 text-muted-foreground" />
+                            </div>
+                            <div className="text-left">
+                              <p className="text-sm text-muted-foreground">Upload favicon</p>
+                              <p className="text-xs text-muted-foreground">ICO ou PNG 32x32</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Preview */}
+                  <div className="p-4 rounded-xl bg-muted/30 border border-border">
+                    <p className="text-sm font-medium mb-3">Pré-visualização</p>
+                    <div className="flex items-center gap-3 p-3 rounded-lg bg-background border border-border">
+                      <div 
+                        className="w-10 h-10 rounded-lg flex items-center justify-center"
+                        style={{ backgroundColor: whitelabelConfig.branding.primaryColor }}
+                      >
+                        <Building2 className="h-5 w-5 text-white" />
+                      </div>
+                      <div>
+                        <p className="font-semibold">{whitelabelConfig.branding.appName || 'Nome do App'}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {whitelabelConfig.customDomain || `${whitelabelConfig.subdomain}.clinicasystem.app`}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Save Button */}
+              <div className="flex items-center justify-end gap-3 pt-4">
+                <Button variant="outline" onClick={() => changeSection("home")}>
+                  Cancelar
+                </Button>
+                <Button onClick={handleSave} className="gap-2 bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600">
+                  <Save className="h-4 w-4" />
+                  Salvar Configurações
+                </Button>
+              </div>
             </div>
           )}
         </div>
