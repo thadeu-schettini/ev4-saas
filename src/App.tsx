@@ -48,6 +48,7 @@ import IntegracaoLaboratorios from "./pages/IntegracaoLaboratorios";
 import ReceitaDigital from "./pages/ReceitaDigital";
 import WhatsAppBusiness from "./pages/WhatsAppBusiness";
 import PedidosCompra from "./pages/PedidosCompra";
+import AvaliacaoPaciente from "./pages/AvaliacaoPaciente";
 
 const queryClient = new QueryClient();
 
@@ -108,6 +109,9 @@ const App = () => (
             
             {/* Portal Paciente - separate layout */}
             <Route path="/portal-paciente" element={<PortalPaciente />} />
+            
+            {/* Public patient evaluation page */}
+            <Route path="/avaliacao/:id" element={<AvaliacaoPaciente />} />
             
             {/* Catch-all route */}
             <Route path="*" element={<NotFound />} />
