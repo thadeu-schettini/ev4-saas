@@ -59,6 +59,8 @@ import { PageContainer, PageContent } from "@/components/ui/page-container";
 import { PageHeader } from "@/components/ui/page-header";
 import { useThemeColor, themeColors } from "@/hooks/use-theme-color";
 import EmailTemplateEditorModal from "@/components/configuracoes/EmailTemplateEditorModal";
+import EmailTemplatesLibraryModal from "@/components/configuracoes/EmailTemplatesLibraryModal";
+import EmailClientPreviewModal from "@/components/configuracoes/EmailClientPreviewModal";
 
 type ConfigSection = 
   | "home" 
