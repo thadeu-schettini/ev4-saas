@@ -50,6 +50,7 @@ import WhatsAppBusiness from "./pages/WhatsAppBusiness";
 import PedidosCompra from "./pages/PedidosCompra";
 import AvaliacaoPaciente from "./pages/AvaliacaoPaciente";
 import Cupons from "./pages/Cupons";
+import Parceiros from "./pages/Parceiros";
 
 const queryClient = new QueryClient();
 
@@ -107,6 +108,7 @@ const App = () => (
               <Route path="/whatsapp-business" element={<WhatsAppBusiness />} />
               <Route path="/pedidos-compra" element={<PedidosCompra />} />
               <Route path="/cupons" element={<Cupons />} />
+              <Route path="/parceiros" element={<Parceiros />} />
             </Route>
             
             {/* Portal Paciente - separate layout */}
