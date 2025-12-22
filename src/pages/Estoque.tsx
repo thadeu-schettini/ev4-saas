@@ -35,6 +35,9 @@ import {
 import { NewItemModal } from "@/components/estoque/NewItemModal";
 import { StockMovementModal } from "@/components/estoque/StockMovementModal";
 import { PurchaseOrderModal } from "@/components/estoque/PurchaseOrderModal";
+import { ItemDetailModal } from "@/components/estoque/ItemDetailModal";
+import { ItemHistoryModal } from "@/components/estoque/ItemHistoryModal";
+import { DeleteItemDialog } from "@/components/estoque/DeleteItemDialog";
 
 const mockItems = [
   {
@@ -133,6 +136,9 @@ const Estoque = () => {
   const [movementType, setMovementType] = useState<"entry" | "exit">("entry");
   const [selectedItem, setSelectedItem] = useState<typeof mockItems[0] | null>(null);
   const [showPurchaseOrderModal, setShowPurchaseOrderModal] = useState(false);
+  const [showDetailModal, setShowDetailModal] = useState(false);
+  const [showHistoryModal, setShowHistoryModal] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
   const stats = [
     { label: "Total de Itens", value: 234, icon: Package, color: "text-primary" },
