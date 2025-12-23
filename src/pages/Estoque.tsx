@@ -307,15 +307,34 @@ const Estoque = () => {
                                   <MoreVertical className="h-4 w-4" />
                                 </Button>
                               </DropdownMenuTrigger>
-                              <DropdownMenuContent align="end">
-                                <DropdownMenuItem>Editar</DropdownMenuItem>
+                              <DropdownMenuContent align="end" className="bg-popover">
+                                <DropdownMenuItem onClick={() => {
+                                  setSelectedItem(item);
+                                  setShowDetailModal(true);
+                                }}>
+                                  Editar
+                                </DropdownMenuItem>
                                 <DropdownMenuItem onClick={() => handleMovement(item, "entry")}>
                                   Registrar Entrada
                                 </DropdownMenuItem>
                                 <DropdownMenuItem onClick={() => handleMovement(item, "exit")}>
                                   Registrar Saída
                                 </DropdownMenuItem>
-                                <DropdownMenuItem>Histórico</DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => {
+                                  setSelectedItem(item);
+                                  setShowHistoryModal(true);
+                                }}>
+                                  Histórico
+                                </DropdownMenuItem>
+                                <DropdownMenuItem 
+                                  className="text-destructive"
+                                  onClick={() => {
+                                    setSelectedItem(item);
+                                    setShowDeleteDialog(true);
+                                  }}
+                                >
+                                  Excluir
+                                </DropdownMenuItem>
                               </DropdownMenuContent>
                             </DropdownMenu>
                           </TableCell>
@@ -352,13 +371,33 @@ const Estoque = () => {
                               <MoreVertical className="h-4 w-4" />
                             </Button>
                           </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuItem>Editar</DropdownMenuItem>
+                          <DropdownMenuContent align="end" className="bg-popover">
+                            <DropdownMenuItem onClick={() => {
+                              setSelectedItem(item);
+                              setShowDetailModal(true);
+                            }}>
+                              Editar
+                            </DropdownMenuItem>
                             <DropdownMenuItem onClick={() => handleMovement(item, "entry")}>
                               Registrar Entrada
                             </DropdownMenuItem>
                             <DropdownMenuItem onClick={() => handleMovement(item, "exit")}>
                               Registrar Saída
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => {
+                              setSelectedItem(item);
+                              setShowHistoryModal(true);
+                            }}>
+                              Histórico
+                            </DropdownMenuItem>
+                            <DropdownMenuItem 
+                              className="text-destructive"
+                              onClick={() => {
+                                setSelectedItem(item);
+                                setShowDeleteDialog(true);
+                              }}
+                            >
+                              Excluir
                             </DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
@@ -410,7 +449,26 @@ const Estoque = () => {
         item={selectedItem}
         type={movementType}
       />
+      
       <PurchaseOrderModal open={showPurchaseOrderModal} onOpenChange={setShowPurchaseOrderModal} />
+      
+      <ItemDetailModal 
+        open={showDetailModal} 
+        onOpenChange={setShowDetailModal}
+        item={selectedItem}
+      />
+      
+      <ItemHistoryModal 
+        open={showHistoryModal} 
+        onOpenChange={setShowHistoryModal}
+        item={selectedItem}
+      />
+      
+      <DeleteItemDialog 
+        open={showDeleteDialog} 
+        onOpenChange={setShowDeleteDialog}
+        item={selectedItem}
+      />
     </PageContainer>
   );
 };

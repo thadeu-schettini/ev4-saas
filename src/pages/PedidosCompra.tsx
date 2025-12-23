@@ -33,6 +33,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { PurchaseOrderModal } from "@/components/estoque/PurchaseOrderModal";
+import { OrderDetailModal } from "@/components/estoque/OrderDetailModal";
+import { ApproveOrderDialog } from "@/components/estoque/ApproveOrderDialog";
+import { CancelOrderDialog } from "@/components/estoque/CancelOrderDialog";
+import { ReceiveOrderDialog } from "@/components/estoque/ReceiveOrderDialog";
 import { toast } from "sonner";
 
 const mockOrders = [
@@ -102,6 +106,9 @@ const PedidosCompra = () => {
   const [showNewOrderModal, setShowNewOrderModal] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState<typeof mockOrders[0] | null>(null);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
+  const [showApproveDialog, setShowApproveDialog] = useState(false);
+  const [showCancelDialog, setShowCancelDialog] = useState(false);
+  const [showReceiveDialog, setShowReceiveDialog] = useState(false);
 
   const stats = [
     { label: "Pedidos Ativos", value: 12, icon: ShoppingCart, color: "text-primary" },
@@ -113,19 +120,21 @@ const PedidosCompra = () => {
   const handleViewDetails = (order: typeof mockOrders[0]) => {
     setSelectedOrder(order);
     setShowDetailsModal(true);
-    toast.info(`Visualizando pedido ${order.id}`);
   };
 
   const handleApprove = (order: typeof mockOrders[0]) => {
-    toast.success(`Pedido ${order.id} aprovado!`);
+    setSelectedOrder(order);
+    setShowApproveDialog(true);
   };
 
   const handleCancel = (order: typeof mockOrders[0]) => {
-    toast.success(`Pedido ${order.id} cancelado`);
+    setSelectedOrder(order);
+    setShowCancelDialog(true);
   };
 
   const handleMarkDelivered = (order: typeof mockOrders[0]) => {
-    toast.success(`Pedido ${order.id} marcado como entregue`);
+    setSelectedOrder(order);
+    setShowReceiveDialog(true);
   };
 
   const filteredOrders = mockOrders.filter(order => {
@@ -351,6 +360,30 @@ const PedidosCompra = () => {
       <PurchaseOrderModal 
         open={showNewOrderModal} 
         onOpenChange={setShowNewOrderModal} 
+      />
+      
+      <OrderDetailModal 
+        open={showDetailsModal} 
+        onOpenChange={setShowDetailsModal}
+        order={selectedOrder}
+      />
+      
+      <ApproveOrderDialog 
+        open={showApproveDialog} 
+        onOpenChange={setShowApproveDialog}
+        order={selectedOrder}
+      />
+      
+      <CancelOrderDialog 
+        open={showCancelDialog} 
+        onOpenChange={setShowCancelDialog}
+        order={selectedOrder}
+      />
+      
+      <ReceiveOrderDialog 
+        open={showReceiveDialog} 
+        onOpenChange={setShowReceiveDialog}
+        order={selectedOrder}
       />
     </PageContainer>
   );
