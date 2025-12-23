@@ -36,7 +36,9 @@ import {
   Trash2,
   LayoutGrid,
   List,
-  Eye
+  Eye,
+  ShieldCheck,
+  AlertTriangle
 } from "lucide-react";
 import { ProfessionalGeneralTab } from "@/components/profissionais/ProfessionalGeneralTab";
 import { ProfessionalScheduleTab } from "@/components/profissionais/ProfessionalScheduleTab";
@@ -57,6 +59,7 @@ interface Professional {
   appointmentsToday: number;
   nextAvailable: string;
   avatar?: string;
+  certificateStatus: "configured" | "pending" | "expired";
 }
 
 const mockProfessionals: Professional[] = [
@@ -71,7 +74,8 @@ const mockProfessionals: Professional[] = [
     address: "Consultório 101",
     appointmentsToday: 8,
     nextAvailable: "14:30",
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=joao"
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=joao",
+    certificateStatus: "configured"
   },
   {
     id: "2",
@@ -84,7 +88,8 @@ const mockProfessionals: Professional[] = [
     address: "Consultório 102",
     appointmentsToday: 6,
     nextAvailable: "15:00",
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=maria"
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=maria",
+    certificateStatus: "configured"
   },
   {
     id: "3",
@@ -97,7 +102,8 @@ const mockProfessionals: Professional[] = [
     address: "Consultório 103",
     appointmentsToday: 5,
     nextAvailable: "13:00",
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=pedro"
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=pedro",
+    certificateStatus: "pending"
   },
   {
     id: "4",
@@ -110,7 +116,8 @@ const mockProfessionals: Professional[] = [
     address: "Consultório 104",
     appointmentsToday: 0,
     nextAvailable: "Amanhã 09:00",
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=ana"
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=ana",
+    certificateStatus: "expired"
   },
   {
     id: "5",
@@ -123,7 +130,8 @@ const mockProfessionals: Professional[] = [
     address: "Consultório 105",
     appointmentsToday: 7,
     nextAvailable: "16:30",
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=lucas"
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=lucas",
+    certificateStatus: "configured"
   },
   {
     id: "6",
@@ -136,9 +144,25 @@ const mockProfessionals: Professional[] = [
     address: "Consultório 106",
     appointmentsToday: 9,
     nextAvailable: "14:00",
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=juliana"
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=juliana",
+    certificateStatus: "pending"
   }
 ];
+
+const certificateConfig = {
+  "configured": {
+    label: "Certificado OK",
+    color: "bg-emerald-500/10 text-emerald-600 border-emerald-500/20",
+  },
+  "pending": {
+    label: "Pendente",
+    color: "bg-amber-500/10 text-amber-600 border-amber-500/20",
+  },
+  "expired": {
+    label: "Expirado",
+    color: "bg-destructive/10 text-destructive border-destructive/20",
+  }
+};
 
 const statusConfig = {
   "disponivel": {
@@ -255,6 +279,7 @@ const Profissionais = () => {
                   <TableHead className="hidden md:table-cell">Contato</TableHead>
                   <TableHead className="hidden sm:table-cell">Local</TableHead>
                   <TableHead>Consultas Hoje</TableHead>
+                  <TableHead className="hidden lg:table-cell">Certificado</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead className="text-right">Ações</TableHead>
                 </TableRow>
@@ -294,6 +319,13 @@ const Profissionais = () => {
                     </TableCell>
                     <TableCell>
                       <Badge variant="outline">{professional.appointmentsToday}</Badge>
+                    </TableCell>
+                    <TableCell className="hidden lg:table-cell">
+                      <Badge variant="outline" className={certificateConfig[professional.certificateStatus].color}>
+                        {professional.certificateStatus === "configured" && <ShieldCheck className="h-3 w-3 mr-1" />}
+                        {professional.certificateStatus === "expired" && <AlertTriangle className="h-3 w-3 mr-1" />}
+                        {certificateConfig[professional.certificateStatus].label}
+                      </Badge>
                     </TableCell>
                     <TableCell>
                       <Badge variant="outline" className={statusConfig[professional.status].color}>

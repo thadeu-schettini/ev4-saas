@@ -100,6 +100,15 @@ const profileSections = [
     fields: ["Lembretes", "Alertas"],
     completion: 50,
   },
+  {
+    id: "certificate",
+    title: "Certificado Digital",
+    description: "Assinatura digital para prescrições",
+    icon: FileText,
+    color: "from-sky-500 to-blue-500",
+    fields: ["Credenciais", "Provedor"],
+    completion: 0,
+  },
 ];
 
 // Mock profile data
@@ -142,6 +151,12 @@ export default function MeuPerfil() {
   const [newSpecialty, setNewSpecialty] = useState("");
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [certificateConfig, setCertificateConfig] = useState({
+    clientId: "",
+    clientSecret: "",
+    provider: "",
+    configured: false,
+  });
   
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -471,6 +486,121 @@ export default function MeuPerfil() {
                 <Switch defaultChecked={item.enabled} />
               </div>
             ))}
+          </div>
+        );
+
+      case "certificate":
+        return (
+          <div className="space-y-6">
+            {/* Status Card */}
+            <div className={cn(
+              "p-4 rounded-xl border-2",
+              certificateConfig.configured 
+                ? "bg-emerald-500/10 border-emerald-500/30" 
+                : "bg-amber-500/10 border-amber-500/30"
+            )}>
+              <div className="flex items-center gap-3">
+                <div className={cn(
+                  "h-10 w-10 rounded-xl flex items-center justify-center",
+                  certificateConfig.configured ? "bg-emerald-500/20" : "bg-amber-500/20"
+                )}>
+                  {certificateConfig.configured ? (
+                    <CheckCircle2 className="h-5 w-5 text-emerald-600" />
+                  ) : (
+                    <FileText className="h-5 w-5 text-amber-600" />
+                  )}
+                </div>
+                <div>
+                  <p className="font-medium">
+                    {certificateConfig.configured ? "Certificado Configurado" : "Certificado Não Configurado"}
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    {certificateConfig.configured 
+                      ? `Provedor: ${certificateConfig.provider}` 
+                      : "Configure seu certificado digital para assinar receitas"
+                    }
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Certillion Credentials */}
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label>Provedor de Certificado</Label>
+                <Select 
+                  value={certificateConfig.provider}
+                  onValueChange={(value) => setCertificateConfig(prev => ({ ...prev, provider: value }))}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecione seu provedor" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="vidaas">VIDaaS (VALID)</SelectItem>
+                    <SelectItem value="birdid">BirdID (Soluti)</SelectItem>
+                    <SelectItem value="safeid">SafeID (Safeweb)</SelectItem>
+                    <SelectItem value="remoteid">RemoteID (Certisign)</SelectItem>
+                    <SelectItem value="vaultid">VaultID (Serpro)</SelectItem>
+                    <SelectItem value="neoid">NeoID (Serasa)</SelectItem>
+                  </SelectContent>
+                </Select>
+                <p className="text-xs text-muted-foreground">
+                  Escolha o provedor onde você adquiriu seu certificado ICP-Brasil em nuvem.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Client ID</Label>
+                  <Input 
+                    value={certificateConfig.clientId}
+                    onChange={(e) => setCertificateConfig(prev => ({ ...prev, clientId: e.target.value }))}
+                    placeholder="Seu Client ID"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Client Secret</Label>
+                  <Input 
+                    type="password"
+                    value={certificateConfig.clientSecret}
+                    onChange={(e) => setCertificateConfig(prev => ({ ...prev, clientSecret: e.target.value }))}
+                    placeholder="Seu Client Secret"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Help Card */}
+            <div className="p-4 rounded-xl bg-muted/50 border border-border/50">
+              <div className="flex items-start gap-3">
+                <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                  <Sparkles className="h-4 w-4 text-primary" />
+                </div>
+                <div>
+                  <p className="font-medium text-sm">Como obter seu certificado?</p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Adquira um certificado digital ICP-Brasil em nuvem de um dos provedores acima. 
+                    Após a aquisição, você receberá as credenciais (Client ID e Secret) para configurar aqui.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Save Button */}
+            <Button 
+              className="w-full gap-2"
+              onClick={() => {
+                if (certificateConfig.provider && certificateConfig.clientId && certificateConfig.clientSecret) {
+                  setCertificateConfig(prev => ({ ...prev, configured: true }));
+                  toast.success("Certificado digital configurado com sucesso!");
+                } else {
+                  toast.error("Preencha todos os campos para configurar o certificado");
+                }
+              }}
+            >
+              <Save className="h-4 w-4" />
+              Salvar Configuração do Certificado
+            </Button>
           </div>
         );
 

@@ -71,8 +71,7 @@ type ConfigSection =
   | "telemedicina" 
   | "fiscal" 
   | "acessos"
-  | "whitelabel"
-  | "prescricaoDigital";
+  | "whitelabel";
 
 export default function Configuracoes() {
   const { currentTheme, setTheme } = useThemeColor();
@@ -324,15 +323,6 @@ export default function Configuracoes() {
       completion: 25,
       items: ["Domínio", "DNS", "E-mail Marketing", "Branding"],
       badge: "PRO",
-    },
-    {
-      id: "prescricaoDigital",
-      title: "Prescrição Digital",
-      description: "Assinatura digital com certificado ICP-Brasil em nuvem",
-      icon: FileText,
-      color: "from-blue-500 to-sky-500",
-      completion: 0,
-      items: ["Credenciais Certillion", "Provedores de Certificado"],
     },
   ];
 
@@ -3108,172 +3098,6 @@ export default function Configuracoes() {
             </div>
           )}
 
-          {/* Prescrição Digital Section */}
-          {activeSection === "prescricaoDigital" && (
-            <div className="space-y-6 animate-fade-in section-content">
-              {/* Header */}
-              <Card className="border-border/50 backdrop-blur-sm bg-card/95 shadow-lg overflow-hidden">
-                <div className="bg-gradient-to-br from-blue-500/10 via-sky-500/5 to-transparent p-6">
-                  <div className="flex items-center gap-4">
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
-                      className="gap-2"
-                      onClick={() => changeSection("home")}
-                    >
-                      <ArrowLeft className="h-4 w-4" />
-                      Voltar
-                    </Button>
-                    <div className="flex items-center gap-4">
-                      <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-sky-500 flex items-center justify-center shadow-lg">
-                        <FileText className="h-7 w-7 text-white" />
-                      </div>
-                      <div>
-                        <h2 className="text-2xl font-bold">Prescrição Digital</h2>
-                        <p className="text-muted-foreground">Assinatura digital com certificado ICP-Brasil</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </Card>
-
-              {/* Prescrição Eletrônica (Certillion) */}
-              <Card className="border-border/50 backdrop-blur-sm bg-card/95 shadow-lg">
-                <CardHeader className="border-b border-border/50">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500/20 to-sky-500/20 flex items-center justify-center">
-                      <FileText className="h-5 w-5 text-blue-500" />
-                    </div>
-                    <div>
-                      <CardTitle>Prescrição Eletrônica (Certillion)</CardTitle>
-                      <CardDescription>Configure a integração com o Certillion para assinatura digital de receitas com certificado ICP-Brasil em nuvem.</CardDescription>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent className="pt-6 space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-2">
-                      <Label htmlFor="clientId">Client ID</Label>
-                      <Input
-                        id="clientId"
-                        value={prescricaoDigitalConfig.clientId}
-                        onChange={(e) => setPrescricaoDigitalConfig({
-                          ...prescricaoDigitalConfig,
-                          clientId: e.target.value
-                        })}
-                        placeholder="Seu Client ID do Certillion"
-                      />
-                      <p className="text-xs text-muted-foreground">
-                        Obtido no painel do Certillion após cadastro como integrador.
-                      </p>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="clientSecret">Client Secret</Label>
-                      <div className="relative">
-                        <Input
-                          id="clientSecret"
-                          type="password"
-                          value={prescricaoDigitalConfig.clientSecret}
-                          onChange={(e) => setPrescricaoDigitalConfig({
-                            ...prescricaoDigitalConfig,
-                            clientSecret: e.target.value
-                          })}
-                          placeholder="Seu Client Secret do Certillion"
-                          className="pr-10"
-                        />
-                      </div>
-                      <p className="text-xs text-muted-foreground">
-                        O secret é armazenado de forma criptografada e nunca é exibido novamente.
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Provedores de Certificado */}
-                  <div className="space-y-4">
-                    <Label>Provedores de Certificado Habilitados</Label>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                      {[
-                        { id: 'vidaas', name: 'VIDaaS', provider: 'Valid' },
-                        { id: 'birdid', name: 'BirdID', provider: 'Soluti' },
-                        { id: 'safeid', name: 'SafeID', provider: 'Safeweb' },
-                        { id: 'remoteid', name: 'RemoteID', provider: 'Certisign' },
-                        { id: 'vaultid', name: 'VaultID', provider: 'Valid' },
-                        { id: 'neoid', name: 'NeoID', provider: 'Serpro' },
-                      ].map((provider) => {
-                        const isEnabled = prescricaoDigitalConfig.providers[provider.id as keyof typeof prescricaoDigitalConfig.providers];
-                        return (
-                          <div
-                            key={provider.id}
-                            onClick={() => setPrescricaoDigitalConfig({
-                              ...prescricaoDigitalConfig,
-                              providers: {
-                                ...prescricaoDigitalConfig.providers,
-                                [provider.id]: !isEnabled
-                              }
-                            })}
-                            className={`flex items-center gap-3 p-4 rounded-xl border-2 cursor-pointer transition-all ${
-                              isEnabled
-                                ? 'border-primary bg-primary/5'
-                                : 'border-border hover:border-muted-foreground/30'
-                            }`}
-                          >
-                            <div className={`w-5 h-5 rounded flex items-center justify-center border-2 transition-colors ${
-                              isEnabled
-                                ? 'bg-primary border-primary'
-                                : 'border-muted-foreground/30'
-                            }`}>
-                              {isEnabled && <Check className="h-3 w-3 text-primary-foreground" />}
-                            </div>
-                            <span className="font-medium">{provider.name} ({provider.provider})</span>
-                          </div>
-                        );
-                      })}
-                    </div>
-                    <p className="text-xs text-muted-foreground">
-                      Selecione quais provedores de certificado em nuvem estarão disponíveis para os profissionais.
-                    </p>
-                  </div>
-
-                  {/* Action Buttons */}
-                  <div className="flex items-center justify-end gap-3 pt-4 border-t border-border/50">
-                    <Button variant="outline" onClick={() => changeSection("home")}>
-                      Cancelar
-                    </Button>
-                    <Button onClick={handleSave} className="gap-2 bg-gradient-to-r from-blue-500 to-sky-500 hover:from-blue-600 hover:to-sky-600">
-                      <Save className="h-4 w-4" />
-                      Salvar Configuração
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Help Card */}
-              <Card className="border-blue-200 dark:border-blue-800/50 bg-blue-50/50 dark:bg-blue-950/20">
-                <CardContent className="p-4">
-                  <div className="flex items-start gap-3">
-                    <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center shrink-0">
-                      <AlertCircle className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-                    </div>
-                    <div>
-                      <h4 className="font-semibold text-blue-900 dark:text-blue-100">Como obter credenciais do Certillion?</h4>
-                      <p className="text-sm text-blue-700 dark:text-blue-300 mt-1">
-                        Acesse o portal do Certillion para integradores, crie uma conta e solicite as credenciais de API. Você receberá o Client ID e Client Secret por e-mail após aprovação.
-                      </p>
-                      <Button 
-                        variant="link" 
-                        className="p-0 h-auto mt-2 text-blue-600 dark:text-blue-400 gap-1"
-                        onClick={() => window.open('https://certillion.com', '_blank')}
-                      >
-                        Acessar portal Certillion
-                        <ExternalLink className="h-3 w-3" />
-                      </Button>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          )}
         </div>
       </div>
 
