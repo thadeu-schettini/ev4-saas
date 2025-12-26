@@ -33,6 +33,7 @@ import {
   Circle,
   ArrowLeft,
   Settings,
+  Settings2,
   Zap,
   Clock,
   X,
@@ -54,6 +55,13 @@ import {
   User,
   ArrowRight,
   Stethoscope,
+  MousePointer2,
+  Pencil,
+  Layers,
+  FileSignature,
+  CloudCog,
+  Puzzle,
+  Lightbulb,
 } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -3132,102 +3140,181 @@ export default function Configuracoes() {
 
           {/* TUSS Configuration Section */}
           {activeSection === "tuss" && (
-            <div className="space-y-6">
-              {/* How it works card */}
-              <Card className="border-info/30 bg-info/5">
-                <CardContent className="pt-6">
-                  <div className="flex items-start gap-3">
-                    <Info className="h-5 w-5 text-info mt-0.5" />
-                    <div>
-                      <p className="font-medium text-info">Como funciona?</p>
-                      <ul className="mt-2 space-y-1 text-sm text-muted-foreground list-disc list-inside">
-                        <li>Selecione quais itens de cada tabela você deseja usar</li>
-                        <li>Personalize os rótulos se necessário (ex: "Masculino" para "Homem")</li>
-                        <li>Defina um item padrão para pré-selecionar em formulários</li>
-                        <li>Se nenhum item for selecionado, todos estarão disponíveis</li>
-                      </ul>
+            <div className="space-y-8">
+              {/* Hero Section */}
+              <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary/10 via-primary/5 to-transparent border border-primary/20 p-8">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-primary/20 to-transparent rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+                <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-3">
+                      <div className="h-14 w-14 rounded-2xl bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center shadow-lg shadow-primary/25">
+                        <Database className="h-7 w-7 text-white" />
+                      </div>
+                      <div>
+                        <h2 className="text-2xl font-bold">Terminologia TUSS</h2>
+                        <p className="text-muted-foreground">Personalize tabelas padronizadas para sua clínica</p>
+                      </div>
                     </div>
                   </div>
-                </CardContent>
-              </Card>
-
-              {/* Main Tables */}
-              <div className="space-y-4">
-                <div className="flex items-center gap-2">
-                  <Star className="h-5 w-5 text-pending" />
-                  <h3 className="text-lg font-semibold">Tabelas Principais</h3>
+                  <div className="flex items-center gap-6 text-sm">
+                    <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-success/10 border border-success/20">
+                      <CheckCircle2 className="h-4 w-4 text-success" />
+                      <span className="text-success font-medium">13 tabelas disponíveis</span>
+                    </div>
+                    <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-info/10 border border-info/20">
+                      <Settings2 className="h-4 w-4 text-info" />
+                      <span className="text-info font-medium">5 configuradas</span>
+                    </div>
+                  </div>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              </div>
+
+              {/* Quick Guide - Floating Cards */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                {[
+                  { step: "1", icon: MousePointer2, title: "Selecione", desc: "Escolha os itens que deseja usar" },
+                  { step: "2", icon: Pencil, title: "Personalize", desc: "Altere rótulos se necessário" },
+                  { step: "3", icon: Star, title: "Defina Padrão", desc: "Pré-selecione em formulários" },
+                  { step: "4", icon: Sparkles, title: "Automático", desc: "Sem seleção = todos disponíveis" },
+                ].map((item, idx) => (
+                  <div 
+                    key={idx}
+                    className="group relative p-5 rounded-2xl bg-gradient-to-br from-card to-muted/30 border border-border/50 hover:border-primary/30 hover:shadow-lg transition-all duration-300"
+                  >
+                    <div className="absolute -top-3 -left-1 h-7 w-7 rounded-full bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center text-xs font-bold text-white shadow-lg">
+                      {item.step}
+                    </div>
+                    <div className="pt-2 space-y-2">
+                      <item.icon className="h-5 w-5 text-primary" />
+                      <h4 className="font-semibold">{item.title}</h4>
+                      <p className="text-xs text-muted-foreground">{item.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Main Tables - Premium Cards */}
+              <div className="space-y-5">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-pending/20 to-pending/10 flex items-center justify-center">
+                      <Star className="h-5 w-5 text-pending" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-semibold">Tabelas Principais</h3>
+                      <p className="text-sm text-muted-foreground">Configurações mais utilizadas na rotina clínica</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
                   {[
-                    { id: "23", number: 23, name: "Caráter do Atendimento", description: "Eletivo ou Urgência/Emergência", tags: ["Agendamento", "Prontuário"] },
-                    { id: "24", number: 24, name: "CBO - Ocupações", description: "Código Brasileiro de Ocupações para profissionais de saúde", tags: ["Cadastro de Profissionais"] },
-                    { id: "43", number: 43, name: "Sexo", description: "Masculino ou Feminino (TUSS padronizado)", tags: ["Cadastro de Pacientes"] },
-                    { id: "58", number: 58, name: "Tipo de Atendimento", description: "Consulta, Exame, Telessaúde, Internação, etc.", tags: ["Agendamento", "Faturamento"] },
-                    { id: "52", number: 52, name: "Tipo de Consulta", description: "Primeira Consulta, Retorno, Pré-natal ou Por Encaminhamento", tags: ["Agendamento", "Prontuário"] },
+                    { id: "23", number: 23, name: "Caráter do Atendimento", description: "Eletivo ou Urgência/Emergência", tags: ["Agendamento", "Prontuário"], configured: true, items: 2 },
+                    { id: "24", number: 24, name: "CBO - Ocupações", description: "Código Brasileiro de Ocupações para profissionais", tags: ["Cadastro"], configured: true, items: 156 },
+                    { id: "43", number: 43, name: "Sexo", description: "Masculino ou Feminino (TUSS padronizado)", tags: ["Pacientes"], configured: false, items: 2 },
+                    { id: "58", number: 58, name: "Tipo de Atendimento", description: "Consulta, Exame, Telessaúde, Internação, etc.", tags: ["Agendamento", "Faturamento"], configured: true, items: 8 },
+                    { id: "52", number: 52, name: "Tipo de Consulta", description: "Primeira Consulta, Retorno, Pré-natal", tags: ["Prontuário"], configured: true, items: 4 },
                   ].map((table) => (
-                    <Card 
+                    <div 
                       key={table.id}
-                      className="group cursor-pointer hover:shadow-lg hover:border-primary/30 transition-all"
+                      className="group relative cursor-pointer"
                       onClick={() => {
                         setSelectedTussTable(table);
                         setTussModalOpen(true);
                       }}
                     >
-                      <CardContent className="p-4">
-                        <div className="flex items-start justify-between">
-                          <div className="space-y-2">
-                            <div className="flex items-center gap-2">
-                              <Badge variant="outline" className="text-xs">Tabela {table.number}</Badge>
-                              <Badge variant="secondary" className="text-xs">Padrão</Badge>
+                      <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-transparent rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                      <Card className="relative h-full border-border/50 bg-gradient-to-br from-card via-card to-muted/20 hover:border-primary/40 hover:shadow-xl transition-all duration-300 rounded-2xl overflow-hidden">
+                        <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-primary/10 to-transparent rounded-bl-full" />
+                        <CardContent className="p-5 space-y-4">
+                          <div className="flex items-start justify-between">
+                            <div className="flex items-center gap-3">
+                              <div className="h-11 w-11 rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center border border-primary/20">
+                                <span className="text-sm font-bold text-primary">{table.number}</span>
+                              </div>
+                              <div>
+                                <h4 className="font-semibold text-sm group-hover:text-primary transition-colors line-clamp-1">{table.name}</h4>
+                                <p className="text-xs text-muted-foreground">{table.items} itens</p>
+                              </div>
                             </div>
-                            <h4 className="font-semibold group-hover:text-primary transition-colors">{table.name}</h4>
-                            <p className="text-sm text-muted-foreground">{table.description}</p>
-                            <div className="flex flex-wrap gap-1 pt-1">
+                            {table.configured ? (
+                              <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-success/10 border border-success/20">
+                                <CheckCircle2 className="h-3 w-3 text-success" />
+                                <span className="text-xs text-success font-medium">Ativo</span>
+                              </div>
+                            ) : (
+                              <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-muted border border-border">
+                                <Circle className="h-3 w-3 text-muted-foreground" />
+                                <span className="text-xs text-muted-foreground">Padrão</span>
+                              </div>
+                            )}
+                          </div>
+                          
+                          <p className="text-sm text-muted-foreground line-clamp-2">{table.description}</p>
+                          
+                          <div className="flex items-center justify-between pt-2 border-t border-border/50">
+                            <div className="flex flex-wrap gap-1.5">
                               {table.tags.map((tag) => (
-                                <Badge key={tag} variant="outline" className="text-xs">{tag}</Badge>
+                                <span key={tag} className="px-2 py-0.5 rounded-md bg-muted/50 text-xs text-muted-foreground">{tag}</span>
                               ))}
                             </div>
+                            <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
                           </div>
-                          <ChevronDown className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors rotate-[-90deg]" />
-                        </div>
-                      </CardContent>
-                    </Card>
+                        </CardContent>
+                      </Card>
+                    </div>
                   ))}
                 </div>
               </div>
 
-              {/* Other Tables - Collapsible List */}
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Outras Tabelas</h3>
-                <Card>
-                  <CardContent className="p-0 divide-y">
+              {/* Other Tables - Elegant List */}
+              <div className="space-y-5">
+                <div className="flex items-center gap-3">
+                  <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center">
+                    <Layers className="h-5 w-5 text-muted-foreground" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold">Tabelas Complementares</h3>
+                    <p className="text-sm text-muted-foreground">Configurações adicionais para casos específicos</p>
+                  </div>
+                </div>
+
+                <Card className="rounded-2xl border-border/50 overflow-hidden">
+                  <div className="divide-y divide-border/50">
                     {[
-                      { id: "36", number: 36, name: "Indicador de Acidente" },
-                      { id: "39", number: 39, name: "Motivo de Encerramento" },
-                      { id: "41", number: 41, name: "Regime de Internação" },
-                      { id: "57", number: 57, name: "Tipo de Internação" },
-                      { id: "68", number: 68, name: "Unidade de Medida" },
-                      { id: "76", number: 76, name: "Regime de Atendimento" },
-                      { id: "77", number: 77, name: "Saúde Ocupacional" },
-                      { id: "79", number: 79, name: "Modelos de Remuneração" },
-                    ].map((table) => (
+                      { id: "36", number: 36, name: "Indicador de Acidente", items: 5 },
+                      { id: "39", number: 39, name: "Motivo de Encerramento", items: 12 },
+                      { id: "41", number: 41, name: "Regime de Internação", items: 4 },
+                      { id: "57", number: 57, name: "Tipo de Internação", items: 6 },
+                      { id: "68", number: 68, name: "Unidade de Medida", items: 45 },
+                      { id: "76", number: 76, name: "Regime de Atendimento", items: 3 },
+                      { id: "77", number: 77, name: "Saúde Ocupacional", items: 8 },
+                      { id: "79", number: 79, name: "Modelos de Remuneração", items: 7 },
+                    ].map((table, idx) => (
                       <div 
                         key={table.id}
-                        className="flex items-center justify-between p-4 hover:bg-muted/30 transition-colors cursor-pointer"
+                        className="group flex items-center justify-between p-4 hover:bg-muted/30 transition-all cursor-pointer"
                         onClick={() => {
                           setSelectedTussTable({ ...table, description: "" });
                           setTussModalOpen(true);
                         }}
                       >
-                        <div className="flex items-center gap-3">
-                          <span className="text-sm text-muted-foreground">Tabela {table.number}</span>
-                          <span className="font-medium">{table.name}</span>
-                          <Badge variant="secondary" className="text-xs">Padrão</Badge>
+                        <div className="flex items-center gap-4">
+                          <div className="h-9 w-9 rounded-lg bg-muted/50 flex items-center justify-center text-sm font-semibold text-muted-foreground group-hover:bg-primary/10 group-hover:text-primary transition-colors">
+                            {table.number}
+                          </div>
+                          <div>
+                            <span className="font-medium group-hover:text-primary transition-colors">{table.name}</span>
+                            <p className="text-xs text-muted-foreground">{table.items} itens disponíveis</p>
+                          </div>
                         </div>
-                        <ChevronDown className="h-5 w-5 text-muted-foreground rotate-[-90deg]" />
+                        <div className="flex items-center gap-3">
+                          <Badge variant="outline" className="text-xs opacity-0 group-hover:opacity-100 transition-opacity">Configurar</Badge>
+                          <ChevronDown className="h-4 w-4 text-muted-foreground rotate-[-90deg] group-hover:text-primary group-hover:translate-x-0.5 transition-all" />
+                        </div>
                       </div>
                     ))}
-                  </CardContent>
+                  </div>
                 </Card>
               </div>
             </div>
@@ -3235,77 +3322,160 @@ export default function Configuracoes() {
 
           {/* Prescrição Digital Section */}
           {activeSection === "prescricaoDigital" && (
-            <div className="space-y-6">
-              <Card className="border-border/50 backdrop-blur-sm bg-card/95 shadow-lg overflow-hidden">
-                <CardContent className="p-0">
-                  <div className="p-6 space-y-6">
-                    <div className="space-y-2">
-                      <h3 className="text-lg font-semibold">Prescrição Eletrônica (Certificado Digital)</h3>
-                      <p className="text-muted-foreground">
-                        Configure a assinatura digital de receitas com certificado ICP-Brasil em nuvem (VIDaaS, BirdID, SafeID, etc.).
-                      </p>
-                    </div>
-
-                    {/* Important notice */}
-                    <Card className="border-info/30 bg-info/5">
-                      <CardContent className="pt-6">
-                        <div className="flex items-start gap-3">
-                          <Info className="h-5 w-5 text-info mt-0.5" />
-                          <div>
-                            <p className="font-medium text-info">Configuração Individual por Profissional</p>
-                            <p className="text-sm text-muted-foreground mt-1">
-                              O certificado digital é pessoal e intransferível. Cada profissional deve configurar seu próprio certificado em <strong>Meu Perfil</strong> para poder assinar receitas digitalmente.
-                            </p>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-
-                    {/* Action Card */}
-                    <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-primary/10">
-                      <CardContent className="p-6">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-4">
-                            <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center">
-                              <FileCode className="h-6 w-6 text-white" />
-                            </div>
-                            <div>
-                              <h4 className="font-semibold">Certificado Digital ICP-Brasil</h4>
-                              <p className="text-sm text-muted-foreground">Configure em Meu Perfil → Certificado Digital</p>
-                            </div>
-                          </div>
-                          <Button 
-                            onClick={() => navigate('/meu-perfil')}
-                            className="gap-2"
-                          >
-                            <User className="h-4 w-4" />
-                            Ir para Meu Perfil
-                            <ArrowRight className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </CardContent>
-                    </Card>
-
-                    {/* Supported Providers */}
-                    <div className="space-y-3">
-                      <p className="text-sm font-medium text-muted-foreground">Provedores Suportados:</p>
-                      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                        {[
-                          { name: "VIDaaS", provider: "VALID" },
-                          { name: "BirdID", provider: "Soluti" },
-                          { name: "SafeID", provider: "Safeweb" },
-                          { name: "RemoteID", provider: "Certisign" },
-                          { name: "VaultID", provider: "Serpro" },
-                          { name: "NeoID", provider: "Serasa" },
-                        ].map((item) => (
-                          <div key={item.name} className="flex items-center gap-2 text-sm text-muted-foreground">
-                            <Circle className="h-3 w-3" />
-                            <span className="font-medium">{item.name}</span>
-                            <span className="text-xs">({item.provider})</span>
-                          </div>
-                        ))}
+            <div className="space-y-8">
+              {/* Hero Section */}
+              <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-500/10 via-teal-500/5 to-transparent border border-emerald-500/20 p-8">
+                <div className="absolute top-0 right-0 w-80 h-80 bg-gradient-to-br from-emerald-500/15 to-transparent rounded-full blur-3xl -translate-y-1/2 translate-x-1/3" />
+                <div className="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-teal-500/10 to-transparent rounded-full blur-2xl translate-y-1/2 -translate-x-1/4" />
+                
+                <div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8">
+                  <div className="space-y-4 max-w-xl">
+                    <div className="flex items-center gap-4">
+                      <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-lg shadow-emerald-500/25">
+                        <FileSignature className="h-8 w-8 text-white" />
+                      </div>
+                      <div>
+                        <h2 className="text-2xl font-bold">Prescrição Digital</h2>
+                        <p className="text-muted-foreground">Assinatura com Certificado ICP-Brasil</p>
                       </div>
                     </div>
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      Assine receitas digitalmente com validade jurídica em todo território nacional. 
+                      Integração com os principais provedores de certificado em nuvem.
+                    </p>
+                  </div>
+                  
+                  <div className="flex flex-col gap-3">
+                    <Button 
+                      size="lg"
+                      onClick={() => navigate('/meu-perfil')}
+                      className="gap-3 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 shadow-lg shadow-emerald-500/25 text-white"
+                    >
+                      <User className="h-5 w-5" />
+                      Configurar em Meu Perfil
+                      <ArrowRight className="h-5 w-5" />
+                    </Button>
+                    <p className="text-xs text-center text-muted-foreground">Configuração individual por profissional</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Info Cards */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                <Card className="rounded-2xl border-info/20 bg-gradient-to-br from-info/5 to-transparent">
+                  <CardContent className="p-6 space-y-4">
+                    <div className="h-12 w-12 rounded-xl bg-info/10 flex items-center justify-center">
+                      <Shield className="h-6 w-6 text-info" />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold">Certificado Pessoal</h4>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        O certificado digital é pessoal e intransferível. Cada profissional configura o seu.
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="rounded-2xl border-success/20 bg-gradient-to-br from-success/5 to-transparent">
+                  <CardContent className="p-6 space-y-4">
+                    <div className="h-12 w-12 rounded-xl bg-success/10 flex items-center justify-center">
+                      <CheckCircle2 className="h-6 w-6 text-success" />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold">Validade Jurídica</h4>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        Receitas assinadas têm validade legal conforme Lei 14.063/2020.
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="rounded-2xl border-pending/20 bg-gradient-to-br from-pending/5 to-transparent">
+                  <CardContent className="p-6 space-y-4">
+                    <div className="h-12 w-12 rounded-xl bg-pending/10 flex items-center justify-center">
+                      <CloudCog className="h-6 w-6 text-pending" />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold">Certificado em Nuvem</h4>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        Assine de qualquer dispositivo sem necessidade de token físico.
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Supported Providers */}
+              <Card className="rounded-2xl border-border/50 overflow-hidden">
+                <CardHeader className="pb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center">
+                      <Puzzle className="h-5 w-5 text-primary" />
+                    </div>
+                    <div>
+                      <CardTitle className="text-lg">Provedores Compatíveis</CardTitle>
+                      <CardDescription>Certificados digitais ICP-Brasil em nuvem</CardDescription>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent className="pt-0">
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                    {[
+                      { name: "VIDaaS", provider: "VALID", color: "from-blue-500/20 to-blue-600/10" },
+                      { name: "BirdID", provider: "Soluti", color: "from-orange-500/20 to-orange-600/10" },
+                      { name: "SafeID", provider: "Safeweb", color: "from-green-500/20 to-green-600/10" },
+                      { name: "RemoteID", provider: "Certisign", color: "from-purple-500/20 to-purple-600/10" },
+                      { name: "VaultID", provider: "Serpro", color: "from-red-500/20 to-red-600/10" },
+                      { name: "NeoID", provider: "Serasa", color: "from-cyan-500/20 to-cyan-600/10" },
+                    ].map((item) => (
+                      <div 
+                        key={item.name} 
+                        className={`group relative p-4 rounded-xl bg-gradient-to-br ${item.color} border border-border/30 hover:border-primary/30 transition-all duration-300 hover:shadow-lg cursor-default`}
+                      >
+                        <div className="text-center space-y-1">
+                          <p className="font-semibold text-sm">{item.name}</p>
+                          <p className="text-xs text-muted-foreground">{item.provider}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* How it works */}
+              <Card className="rounded-2xl border-border/50">
+                <CardHeader className="pb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center">
+                      <Lightbulb className="h-5 w-5 text-muted-foreground" />
+                    </div>
+                    <div>
+                      <CardTitle className="text-lg">Como Funciona</CardTitle>
+                      <CardDescription>Passos para começar a usar</CardDescription>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent className="pt-0">
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    {[
+                      { step: 1, title: "Adquira", desc: "Obtenha um certificado digital ICP-Brasil em nuvem de um provedor autorizado" },
+                      { step: 2, title: "Configure", desc: "Acesse Meu Perfil e vincule seu certificado digital na seção dedicada" },
+                      { step: 3, title: "Autorize", desc: "Confirme a autenticação no app do provedor (PIN ou biometria)" },
+                      { step: 4, title: "Assine", desc: "Suas receitas serão assinadas digitalmente com um clique" },
+                    ].map((item) => (
+                      <div key={item.step} className="relative">
+                        <div className="flex flex-col items-center text-center space-y-3">
+                          <div className="h-12 w-12 rounded-full bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center text-lg font-bold text-white shadow-lg shadow-primary/25">
+                            {item.step}
+                          </div>
+                          <h4 className="font-semibold">{item.title}</h4>
+                          <p className="text-sm text-muted-foreground">{item.desc}</p>
+                        </div>
+                        {item.step < 4 && (
+                          <div className="hidden md:block absolute top-6 left-[60%] w-[80%] border-t-2 border-dashed border-border" />
+                        )}
+                      </div>
+                    ))}
                   </div>
                 </CardContent>
               </Card>
