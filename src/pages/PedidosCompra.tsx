@@ -37,6 +37,7 @@ import { OrderDetailModal } from "@/components/estoque/OrderDetailModal";
 import { ApproveOrderDialog } from "@/components/estoque/ApproveOrderDialog";
 import { CancelOrderDialog } from "@/components/estoque/CancelOrderDialog";
 import { ReceiveOrderDialog } from "@/components/estoque/ReceiveOrderDialog";
+import { PurchaseMetricDetailModal } from "@/components/estoque/PurchaseMetricDetailModal";
 import { toast } from "sonner";
 
 const mockOrders = [
@@ -109,12 +110,14 @@ const PedidosCompra = () => {
   const [showApproveDialog, setShowApproveDialog] = useState(false);
   const [showCancelDialog, setShowCancelDialog] = useState(false);
   const [showReceiveDialog, setShowReceiveDialog] = useState(false);
+  const [showMetricModal, setShowMetricModal] = useState(false);
+  const [metricType, setMetricType] = useState<"active" | "transit" | "delivered" | "total">("active");
 
   const stats = [
-    { label: "Pedidos Ativos", value: 12, icon: ShoppingCart, color: "text-primary" },
-    { label: "Em Trânsito", value: 4, icon: Truck, color: "text-info" },
-    { label: "Entregues (Mês)", value: 23, icon: CheckCircle2, color: "text-confirmed" },
-    { label: "Total (Mês)", value: "R$ 15.8k", icon: DollarSign, color: "text-pending" }
+    { label: "Pedidos Ativos", value: 12, icon: ShoppingCart, color: "text-primary", metricType: "active" as const },
+    { label: "Em Trânsito", value: 4, icon: Truck, color: "text-info", metricType: "transit" as const },
+    { label: "Entregues (Mês)", value: 23, icon: CheckCircle2, color: "text-confirmed", metricType: "delivered" as const },
+    { label: "Total (Mês)", value: "R$ 15.8k", icon: DollarSign, color: "text-pending", metricType: "total" as const }
   ];
 
   const handleViewDetails = (order: typeof mockOrders[0]) => {
@@ -160,14 +163,21 @@ const PedidosCompra = () => {
         {/* Stats Cards */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {stats.map((stat, index) => (
-            <Card key={index} className="relative overflow-hidden group hover:shadow-md transition-all">
+            <Card 
+              key={index} 
+              className="relative overflow-hidden group hover:shadow-md transition-all cursor-pointer hover:border-primary/30"
+              onClick={() => {
+                setMetricType(stat.metricType);
+                setShowMetricModal(true);
+              }}
+            >
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm text-muted-foreground">{stat.label}</p>
                     <p className="text-2xl font-bold mt-1">{stat.value}</p>
                   </div>
-                  <div className={`p-3 rounded-xl bg-muted/50 ${stat.color}`}>
+                  <div className={`p-3 rounded-xl bg-muted/50 ${stat.color} group-hover:scale-110 transition-transform`}>
                     <stat.icon className="h-5 w-5" />
                   </div>
                 </div>
@@ -384,6 +394,12 @@ const PedidosCompra = () => {
         open={showReceiveDialog} 
         onOpenChange={setShowReceiveDialog}
         order={selectedOrder}
+      />
+      
+      <PurchaseMetricDetailModal
+        open={showMetricModal}
+        onOpenChange={setShowMetricModal}
+        metricType={metricType}
       />
     </PageContainer>
   );

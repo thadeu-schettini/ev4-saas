@@ -38,6 +38,7 @@ import { PurchaseOrderModal } from "@/components/estoque/PurchaseOrderModal";
 import { ItemDetailModal } from "@/components/estoque/ItemDetailModal";
 import { ItemHistoryModal } from "@/components/estoque/ItemHistoryModal";
 import { DeleteItemDialog } from "@/components/estoque/DeleteItemDialog";
+import { StockMetricDetailModal } from "@/components/estoque/StockMetricDetailModal";
 
 const mockItems = [
   {
@@ -139,12 +140,14 @@ const Estoque = () => {
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [showHistoryModal, setShowHistoryModal] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [showMetricModal, setShowMetricModal] = useState(false);
+  const [metricType, setMetricType] = useState<"total" | "low" | "critical" | "value">("total");
 
   const stats = [
-    { label: "Total de Itens", value: 234, icon: Package, color: "text-primary" },
-    { label: "Estoque Baixo", value: 8, icon: TrendingDown, color: "text-pending" },
-    { label: "Crítico", value: 3, icon: AlertTriangle, color: "text-destructive" },
-    { label: "Valor Total", value: "R$ 45.2k", icon: ShoppingCart, color: "text-info" }
+    { label: "Total de Itens", value: 234, icon: Package, color: "text-primary", metricType: "total" as const },
+    { label: "Estoque Baixo", value: 8, icon: TrendingDown, color: "text-pending", metricType: "low" as const },
+    { label: "Crítico", value: 3, icon: AlertTriangle, color: "text-destructive", metricType: "critical" as const },
+    { label: "Valor Total", value: "R$ 45.2k", icon: ShoppingCart, color: "text-info", metricType: "value" as const }
   ];
 
   const getStockPercentage = (current: number, min: number) => {
@@ -181,14 +184,21 @@ const Estoque = () => {
         {/* Stats Cards */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {stats.map((stat, index) => (
-            <Card key={index} className="relative overflow-hidden group hover:shadow-md transition-all">
+            <Card 
+              key={index} 
+              className="relative overflow-hidden group hover:shadow-md transition-all cursor-pointer hover:border-primary/30"
+              onClick={() => {
+                setMetricType(stat.metricType);
+                setShowMetricModal(true);
+              }}
+            >
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm text-muted-foreground">{stat.label}</p>
                     <p className="text-2xl font-bold mt-1">{stat.value}</p>
                   </div>
-                  <div className={`p-3 rounded-xl bg-muted/50 ${stat.color}`}>
+                  <div className={`p-3 rounded-xl bg-muted/50 ${stat.color} group-hover:scale-110 transition-transform`}>
                     <stat.icon className="h-5 w-5" />
                   </div>
                 </div>
@@ -468,6 +478,12 @@ const Estoque = () => {
         open={showDeleteDialog} 
         onOpenChange={setShowDeleteDialog}
         item={selectedItem}
+      />
+      
+      <StockMetricDetailModal
+        open={showMetricModal}
+        onOpenChange={setShowMetricModal}
+        metricType={metricType}
       />
     </PageContainer>
   );
