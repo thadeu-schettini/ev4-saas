@@ -68,8 +68,9 @@ import { useThemeColor, themeColors } from "@/hooks/use-theme-color";
 import EmailTemplateEditorModal from "@/components/configuracoes/EmailTemplateEditorModal";
 import EmailTemplatesLibraryModal from "@/components/configuracoes/EmailTemplatesLibraryModal";
 import EmailClientPreviewModal from "@/components/configuracoes/EmailClientPreviewModal";
+import { TussConfigModal } from "@/components/configuracoes/TussConfigModal";
 
-type ConfigSection = 
+type ConfigSection =
   | "home" 
   | "organizacao" 
   | "agenda" 
