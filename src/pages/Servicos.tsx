@@ -42,6 +42,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { ServiceDetailModal } from "@/components/servicos/ServiceDetailModal";
 import { ServiceEditModal } from "@/components/servicos/ServiceEditModal";
+import { DeleteServiceDialog } from "@/components/servicos/DeleteServiceDialog";
+import { NewServiceModal } from "@/components/servicos/NewServiceModal";
+import { ServiceMetricDetailModal } from "@/components/servicos/ServiceMetricDetailModal";
 
 const categories = [
   { id: "all", name: "Todos", count: 24 },
@@ -193,6 +196,8 @@ export default function Servicos() {
   const [selectedService, setSelectedService] = useState<typeof services[0] | null>(null);
   const [isEditServiceOpen, setIsEditServiceOpen] = useState(false);
   const [serviceToEdit, setServiceToEdit] = useState<typeof services[0] | null>(null);
+  const [serviceToDelete, setServiceToDelete] = useState<typeof services[0] | null>(null);
+  const [metricModal, setMetricModal] = useState<{ type: string; title: string } | null>(null);
 
   const filteredServices = services.filter(service => {
     const matchesSearch = service.name.toLowerCase().includes(search.toLowerCase());
@@ -275,8 +280,12 @@ export default function Servicos() {
       <PageContent>
         {/* Stats */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        {stats.map((stat) => (
-          <Card key={stat.label} className="group relative overflow-hidden border-border/50 hover:border-primary/30 transition-all duration-300 hover:shadow-md">
+        {stats.map((stat, index) => (
+          <Card 
+            key={stat.label} 
+            className="group relative overflow-hidden border-border/50 hover:border-primary/30 transition-all duration-300 hover:shadow-md cursor-pointer"
+            onClick={() => setMetricModal({ type: ['total', 'ativos', 'receita', 'popular'][index], title: stat.label })}
+          >
             <CardContent className="p-4 relative">
               <div className="flex items-center gap-3 mb-2">
                 <div className={cn("p-1.5 rounded-lg bg-gradient-to-br", stat.color)}>
@@ -605,6 +614,18 @@ export default function Servicos() {
         open={isEditServiceOpen} 
         onOpenChange={setIsEditServiceOpen}
         service={serviceToEdit}
+      />
+      <DeleteServiceDialog
+        open={!!serviceToDelete}
+        onOpenChange={(open) => !open && setServiceToDelete(null)}
+        serviceName={serviceToDelete?.name || ""}
+        onConfirm={() => setServiceToDelete(null)}
+      />
+      <ServiceMetricDetailModal
+        open={!!metricModal}
+        onOpenChange={() => setMetricModal(null)}
+        metricType={metricModal?.type || ""}
+        metricTitle={metricModal?.title || ""}
       />
       </PageContent>
     </PageContainer>

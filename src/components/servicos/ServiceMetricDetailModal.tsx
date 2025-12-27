@@ -26,7 +26,8 @@ import { cn } from "@/lib/utils";
 interface ServiceMetricDetailModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  metricType: "total" | "active" | "revenue" | "popular";
+  metricType: string;
+  metricTitle?: string;
 }
 
 const mockData = {

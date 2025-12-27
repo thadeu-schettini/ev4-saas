@@ -26,10 +26,12 @@ interface CancelAppointmentModalProps {
   onOpenChange: (open: boolean) => void;
   appointment?: {
     id: string;
-    date: Date;
+    date: string;
+    time: string;
     professional: string;
     service: string;
   };
+  onConfirm?: () => void;
 }
 
 const cancelReasons = [
@@ -40,7 +42,7 @@ const cancelReasons = [
   { id: "other", label: "Outro motivo", description: "Especificar nos comentários" },
 ];
 
-export function CancelAppointmentModal({ open, onOpenChange, appointment }: CancelAppointmentModalProps) {
+export function CancelAppointmentModal({ open, onOpenChange, appointment, onConfirm }: CancelAppointmentModalProps) {
   const [selectedReason, setSelectedReason] = useState("");
   const [comments, setComments] = useState("");
   const [isConfirming, setIsConfirming] = useState(false);
@@ -60,6 +62,7 @@ export function CancelAppointmentModal({ open, onOpenChange, appointment }: Canc
       setIsConfirming(false);
       setSelectedReason("");
       setComments("");
+      onConfirm?.();
     }, 1500);
   };
 
@@ -85,15 +88,15 @@ export function CancelAppointmentModal({ open, onOpenChange, appointment }: Canc
           <div className="p-4 rounded-xl bg-muted/50 border space-y-2">
             <div className="flex items-center gap-2 text-sm">
               <Calendar className="h-4 w-4 text-muted-foreground" />
-              <span>Segunda-feira, 30 de Dezembro de 2024</span>
+              <span>{appointment?.date || "Data não informada"}</span>
             </div>
             <div className="flex items-center gap-2 text-sm">
               <Clock className="h-4 w-4 text-muted-foreground" />
-              <span>10:00 - Consulta de Rotina (30 min)</span>
+              <span>{appointment?.time || "Horário"} - {appointment?.service || "Consulta"}</span>
             </div>
             <div className="flex items-center gap-2 text-sm">
               <User className="h-4 w-4 text-muted-foreground" />
-              <span>Dra. Marina Santos - Pediatria</span>
+              <span>{appointment?.professional || "Profissional"}</span>
             </div>
           </div>
 

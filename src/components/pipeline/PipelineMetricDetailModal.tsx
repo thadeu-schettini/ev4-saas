@@ -23,7 +23,8 @@ import { cn } from "@/lib/utils";
 interface PipelineMetricDetailModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  metricType: "total" | "value" | "conversion" | "avgTime" | "reengage";
+  metricType: string;
+  metricTitle?: string;
 }
 
 const mockData = {

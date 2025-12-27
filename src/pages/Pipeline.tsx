@@ -56,6 +56,10 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { NewLeadModal } from "@/components/pipeline/NewLeadModal";
+import { LeadDetailModal } from "@/components/pipeline/LeadDetailModal";
+import { PipelineFiltersModal } from "@/components/pipeline/PipelineFiltersModal";
+import { PipelineMetricDetailModal } from "@/components/pipeline/PipelineMetricDetailModal";
 
 // Pipeline stages
 const pipelineStages = [
@@ -99,6 +103,10 @@ const aiInsights = [
 export default function Pipeline() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedStage, setSelectedStage] = useState<string | null>(null);
+  const [showNewLead, setShowNewLead] = useState(false);
+  const [showFilters, setShowFilters] = useState(false);
+  const [selectedLead, setSelectedLead] = useState<typeof pipelinePatients[0] | null>(null);
+  const [metricModal, setMetricModal] = useState<{ type: string; title: string } | null>(null);
 
   const getPatientsByStage = (stageId: string) => {
     return pipelinePatients.filter(p => p.stage === stageId);
@@ -127,11 +135,11 @@ export default function Pipeline() {
         description="Gerencie a jornada completa dos pacientes do primeiro contato à fidelização"
         actions={
           <>
-            <Button variant="outline" className="gap-2">
+            <Button variant="outline" className="gap-2" onClick={() => setShowFilters(true)}>
               <Filter className="h-4 w-4" />
               <span className="hidden sm:inline">Filtros</span>
             </Button>
-            <Button className="gap-2 bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700">
+            <Button className="gap-2 bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700" onClick={() => setShowNewLead(true)}>
               <Plus className="h-4 w-4" />
               <span className="hidden sm:inline">Novo Lead</span>
             </Button>
@@ -142,7 +150,10 @@ export default function Pipeline() {
       <PageContent>
         {/* Stats Cards */}
         <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
-          <Card className="group relative overflow-hidden border-primary/20 hover:border-primary/40 transition-all duration-300 hover:shadow-lg">
+          <Card 
+            className="group relative overflow-hidden border-primary/20 hover:border-primary/40 transition-all duration-300 hover:shadow-lg cursor-pointer"
+            onClick={() => setMetricModal({ type: 'total', title: 'Total no Pipeline' })}
+          >
             <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-primary/10 opacity-50" />
             <CardContent className="p-4 relative">
               <div className="flex items-center gap-3">
@@ -589,6 +600,20 @@ export default function Pipeline() {
             </div>
           </TabsContent>
         </Tabs>
+
+        <NewLeadModal open={showNewLead} onOpenChange={setShowNewLead} />
+        <PipelineFiltersModal open={showFilters} onOpenChange={setShowFilters} />
+        <LeadDetailModal 
+          open={!!selectedLead} 
+          onOpenChange={() => setSelectedLead(null)} 
+          lead={selectedLead}
+        />
+        <PipelineMetricDetailModal
+          open={!!metricModal}
+          onOpenChange={() => setMetricModal(null)}
+          metricType={metricModal?.type || ""}
+          metricTitle={metricModal?.title || ""}
+        />
       </PageContent>
     </PageContainer>
   );
