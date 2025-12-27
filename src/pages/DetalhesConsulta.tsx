@@ -22,7 +22,8 @@ import {
   MessageCircle,
   Navigation,
   Copy,
-  Check
+  Check,
+  X
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -40,6 +41,8 @@ import {
 } from "@/components/ui/dialog";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { GoogleMap } from "@/components/GoogleMap";
+import { CancelAppointmentModal } from "@/components/consulta/CancelAppointmentModal";
 
 // Mock appointment data
 const appointmentData = {
@@ -88,6 +91,7 @@ const timeSlots = [
 export default function DetalhesConsulta() {
   const navigate = useNavigate();
   const [showReschedule, setShowReschedule] = useState(false);
+  const [showCancelModal, setShowCancelModal] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>();
   const [selectedTime, setSelectedTime] = useState<string>("");
   const [copied, setCopied] = useState(false);
@@ -376,7 +380,12 @@ export default function DetalhesConsulta() {
                 </div>
                 <Separator />
                 <div className="flex gap-2">
-                  <Button variant="outline" size="sm" className="flex-1 gap-1.5">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="flex-1 gap-1.5"
+                    onClick={() => window.open(`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(appointment.location.address + ', ' + appointment.location.city)}`, '_blank')}
+                  >
                     <Navigation className="h-3 w-3" />
                     Rotas
                   </Button>
@@ -389,6 +398,17 @@ export default function DetalhesConsulta() {
             </CardContent>
           </Card>
         </div>
+
+        {/* Google Map Section */}
+        <Card className="border-border/50 overflow-hidden">
+          <CardContent className="p-0">
+            <GoogleMap 
+              address={`${appointment.location.address}, ${appointment.location.city}`}
+              name={appointment.location.name}
+              className="h-[250px]"
+            />
+          </CardContent>
+        </Card>
 
         {/* Preparation Tips */}
         <Card className="mb-4 border-border/50 bg-gradient-to-br from-amber-500/5 to-transparent">
@@ -440,12 +460,30 @@ export default function DetalhesConsulta() {
           <Button 
             variant="link" 
             className="text-destructive hover:text-destructive/80"
-            onClick={() => toast.info("Cancelamento - Em breve")}
+            onClick={() => setShowCancelModal(true)}
           >
             Cancelar consulta
           </Button>
         </div>
       </div>
+
+      {/* Cancel Modal */}
+      <CancelAppointmentModal
+        open={showCancelModal}
+        onOpenChange={setShowCancelModal}
+        appointment={{
+          id: appointment.id,
+          service: appointment.service.name,
+          professional: appointment.professional.name,
+          date: format(appointment.date, "dd/MM/yyyy"),
+          time: format(appointment.date, "HH:mm"),
+        }}
+        onConfirm={() => {
+          setShowCancelModal(false);
+          toast.success("Consulta cancelada com sucesso!");
+          navigate(-1);
+        }}
+      />
 
       {/* Reschedule Modal */}
       <Dialog open={showReschedule} onOpenChange={setShowReschedule}>
