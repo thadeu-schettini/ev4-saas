@@ -51,6 +51,7 @@ import PedidosCompra from "./pages/PedidosCompra";
 import AvaliacaoPaciente from "./pages/AvaliacaoPaciente";
 import Cupons from "./pages/Cupons";
 import Parceiros from "./pages/Parceiros";
+import DetalhesConsulta from "./pages/DetalhesConsulta";
 
 const queryClient = new QueryClient();
 
@@ -116,6 +117,9 @@ const App = () => (
             
             {/* Public patient evaluation page */}
             <Route path="/avaliacao/:id" element={<AvaliacaoPaciente />} />
+            
+            {/* Public appointment details page */}
+            <Route path="/consulta/:id" element={<DetalhesConsulta />} />
             
             {/* Catch-all route */}
             <Route path="*" element={<NotFound />} />
