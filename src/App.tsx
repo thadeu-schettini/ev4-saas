@@ -52,6 +52,7 @@ import AvaliacaoPaciente from "./pages/AvaliacaoPaciente";
 import Cupons from "./pages/Cupons";
 import Parceiros from "./pages/Parceiros";
 import DetalhesConsulta from "./pages/DetalhesConsulta";
+import ConfirmacaoReagendamento from "./pages/ConfirmacaoReagendamento";
 
 const queryClient = new QueryClient();
 
@@ -120,6 +121,9 @@ const App = () => (
             
             {/* Public appointment details page */}
             <Route path="/consulta/:id" element={<DetalhesConsulta />} />
+            
+            {/* Rescheduling confirmation page */}
+            <Route path="/confirmacao-reagendamento" element={<ConfirmacaoReagendamento />} />
             
             {/* Catch-all route */}
             <Route path="*" element={<NotFound />} />

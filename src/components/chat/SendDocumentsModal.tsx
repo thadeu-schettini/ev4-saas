@@ -41,7 +41,7 @@ const availableDocuments = [
 
 const getFileIcon = (type: string) => {
   switch (type) {
-    case "pdf": return FilePdf;
+    case "pdf": return FileText;
     case "excel": return FileSpreadsheet;
     case "image": return Image;
     default: return File;
